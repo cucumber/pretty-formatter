@@ -1,0 +1,19 @@
+
+Example: Not enough money                                 [90m# samples/rules/rules.feature:9[0m
+  [32mGiven [0m[32mthe customer has [0m[32m[1m100[0m[32m cents[0m                        [90m# samples/rules/rules.feature.ts:4[0m
+  [32mAnd [0m[32mthere are chocolate bars in stock[0m                   [90m# samples/rules/rules.feature.ts:8[0m
+  [32mWhen [0m[32mthe customer tries to buy a [0m[32m[1m125[0m[32m cent chocolate bar[0m [90m# samples/rules/rules.feature.ts:16[0m
+  [32mThen [0m[32mthe sale should not happen[0m                         [90m# samples/rules/rules.feature.ts:22[0m
+
+Example: Enough money                                    [90m# samples/rules/rules.feature:16[0m
+  [32mGiven [0m[32mthe customer has [0m[32m[1m100[0m[32m cents[0m                       [90m# samples/rules/rules.feature.ts:4[0m
+  [32mAnd [0m[32mthere are chocolate bars in stock[0m                  [90m# samples/rules/rules.feature.ts:8[0m
+  [32mWhen [0m[32mthe customer tries to buy a [0m[32m[1m75[0m[32m cent chocolate bar[0m [90m# samples/rules/rules.feature.ts:16[0m
+  [32mThen [0m[32mthe sale should happen[0m                            [90m# samples/rules/rules.feature.ts:26[0m
+
+@some-tag
+Example: No chocolates left                             [90m# samples/rules/rules.feature:25[0m
+  [32mGiven [0m[32mthe customer has [0m[32m[1m100[0m[32m cents[0m                      [90m# samples/rules/rules.feature.ts:4[0m
+  [32mAnd [0m[32mthere are no chocolate bars in stock[0m              [90m# samples/rules/rules.feature.ts:12[0m
+  [32mWhen [0m[32mthe customer tries to buy a [0m[32m[1m1[0m[32m cent chocolate bar[0m [90m# samples/rules/rules.feature.ts:16[0m
+  [32mThen [0m[32mthe sale should not happen[0m                       [90m# samples/rules/rules.feature.ts:22[0m

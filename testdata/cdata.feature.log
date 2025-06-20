@@ -1,0 +1,3 @@
+
+Scenario: cdata                                 [90m# samples/cdata/cdata.feature:4[0m
+  [32mGiven [0m[32mI have [0m[32m[1m42[0m[32m <![CDATA[cukes]]> in my belly[0m [90m# samples/cdata/cdata.feature.ts:3[0m

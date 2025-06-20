@@ -1,0 +1,39 @@
+
+Scenario Outline: Ylajali!                                    [90m# samples/markdown/markdown.feature.md:38[0m
+  [32mGiven [0m[32msome TypeScript code:[0m                                 [90m# samples/markdown/markdown.feature.md.ts:4[0m
+    """typescript
+    type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
+    """
+  [32mAnd [0m[32msome classic Gherkin:[0m                                   [90m# samples/markdown/markdown.feature.md.ts:8[0m
+    """gherkin
+    Given there are 24 apples in Mary's basket
+    """
+
+    We are logging some plain text (fail)
+
+  [31mWhen [0m[31mwe use a data table and attach something and then [0m[31m[1mfail[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
+    | name | age |
+    | Bill | 3   |
+    | Jane | 6   |
+    | Isla | 5   |
+      [31mYou asked me to fail[0m
+  [36mThen [0m[36mthis might or might not run[0m                            [90m# samples/markdown/markdown.feature.md.ts:23[0m
+
+Scenario Outline: Ylajali!                                    [90m# samples/markdown/markdown.feature.md:39[0m
+  [32mGiven [0m[32msome TypeScript code:[0m                                 [90m# samples/markdown/markdown.feature.md.ts:4[0m
+    """typescript
+    type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
+    """
+  [32mAnd [0m[32msome classic Gherkin:[0m                                   [90m# samples/markdown/markdown.feature.md.ts:8[0m
+    """gherkin
+    Given there are 24 apples in Mary's basket
+    """
+
+    We are logging some plain text (pass)
+
+  [32mWhen [0m[32mwe use a data table and attach something and then [0m[32m[1mpass[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
+    | name | age |
+    | Bill | 3   |
+    | Jane | 6   |
+    | Isla | 5   |
+  [32mThen [0m[32mthis might or might not run[0m                            [90m# samples/markdown/markdown.feature.md.ts:23[0m

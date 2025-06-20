@@ -1,0 +1,57 @@
+
+Scenario: Strings can be attached with a media type                 [90m# samples/attachments/attachments.feature:12[0m
+
+    hello
+
+  [32mWhen [0m[32mthe string [0m[32m[1m"hello"[0m[32m is attached as [0m[32m[1m"application/octet-stream"[0m [90m# samples/attachments/attachments.feature.ts:4[0m
+
+Scenario: Log text                  [90m# samples/attachments/attachments.feature:18[0m
+
+    hello
+
+  [32mWhen [0m[32mthe string [0m[32m[1m"hello"[0m[32m is logged[0m [90m# samples/attachments/attachments.feature.ts:8[0m
+
+Scenario: Log ANSI coloured text        [90m# samples/attachments/attachments.feature:21[0m
+
+    This displays a [31mr[0m[91ma[0m[33mi[0m[32mn[0m[34mb[0m[95mo[0m[35mw[0m
+
+  [32mWhen [0m[32mtext with ANSI escapes is logged[0m [90m# samples/attachments/attachments.feature.ts:12[0m
+
+Scenario: Log JSON                                             [90m# samples/attachments/attachments.feature:24[0m
+
+    {"message": "The <b>big</b> question", "foo": "bar"}
+
+  [32mWhen [0m[32mthe following string is attached as [0m[32m[1m"application/json"[0m[32m:[0m [90m# samples/attachments/attachments.feature.ts:18[0m
+    """
+    {"message": "The <b>big</b> question", "foo": "bar"}
+    """
+
+Scenario: Byte arrays are base64-encoded regardless of media type [90m# samples/attachments/attachments.feature:30[0m
+
+    Embedding [text/plain 12 bytes]
+
+  [32mWhen [0m[32man array with [0m[32m[1m10[0m[32m bytes is attached as [0m[32m[1m"text/plain"[0m         [90m# samples/attachments/attachments.feature.ts:22[0m
+
+Scenario: Attaching JPEG images [90m# samples/attachments/attachments.feature:33[0m
+
+    Embedding [image/jpeg 1446 bytes]
+
+  [32mWhen [0m[32ma JPEG image is attached[0m [90m# samples/attachments/attachments.feature.ts:31[0m
+
+Scenario: Attaching PNG images [90m# samples/attachments/attachments.feature:36[0m
+
+    Embedding [image/png 1740 bytes]
+
+  [32mWhen [0m[32ma PNG image is attached[0m [90m# samples/attachments/attachments.feature.ts:35[0m
+
+Scenario: Attaching PDFs with a different filename [90m# samples/attachments/attachments.feature:39[0m
+
+    Embedding renamed.pdf [application/pdf 10062 bytes]
+
+  [32mWhen [0m[32ma PDF document is attached and renamed[0m      [90m# samples/attachments/attachments.feature.ts:39[0m
+
+Scenario: Attaching URIs                           [90m# samples/attachments/attachments.feature:42[0m
+
+    https://cucumber.io
+
+  [32mWhen [0m[32ma link to [0m[32m[1m"https://cucumber.io"[0m[32m is attached[0m [90m# samples/attachments/attachments.feature.ts:43[0m
