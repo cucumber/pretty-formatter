@@ -1,11 +1,13 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Envelope;
+import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.PickleStep;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.Step;
 import io.cucumber.messages.types.StepDefinition;
+import io.cucumber.messages.types.TestCase;
 import io.cucumber.query.Lineage;
 import io.cucumber.query.Query;
 
@@ -55,5 +57,24 @@ class PrettyReportData {
         String pickleKeyword = scenario.getKeyword();
         // The ": " between keyword and name adds 2
         return MessagesToPrettyWriter.SCENARIO_INDENT.length() + pickleName.length() + pickleKeyword.length() + 2;
+    }
+
+    String formatPathWithLocation(Pickle pickle) {
+        String path = MessagesToPrettyWriter.relativize(pickle.getUri()).getSchemeSpecificPart();
+        return query.findLocationOf(pickle).map(Location::getLine).map(line -> path + ":" + line).orElse(path);
+    }
+
+    String formatLocationIndent(TestCase testCase, String prefix) {
+        Integer commentStartAt = commentStartIndexByTestCaseId.getOrDefault(testCase.getId(), 0);
+        int padding = commentStartAt - prefix.length();
+
+        if (padding < 0) {
+            return " ";
+        }
+        StringBuilder builder = new StringBuilder(padding);
+        for (int i = 0; i < padding; i++) {
+            builder.append(" ");
+        }
+        return builder.toString();
     }
 }

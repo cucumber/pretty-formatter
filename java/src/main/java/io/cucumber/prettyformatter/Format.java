@@ -1,10 +1,19 @@
 package io.cucumber.prettyformatter;
 
+import static io.cucumber.prettyformatter.AnsiEscapes.INTENSITY_BOLD;
+import static io.cucumber.prettyformatter.AnsiEscapes.RESET_INTENSITY_BOLD;
+
 interface Format {
 
-    String text(String text);
-
-    static Format color(AnsiEscapes... escapes) {
+    default String color(String text) {
+        return text;
+    }
+    
+    default String bold(String text) {
+        return text;
+    }
+    
+    static Format color(AnsiEscapes escapes) {
         return new Color(escapes);
     }
 
@@ -14,37 +23,35 @@ interface Format {
 
     final class Color implements Format {
 
-        private final AnsiEscapes[] escapes;
+        private final AnsiEscapes escapes;
 
-        private Color(AnsiEscapes... escapes) {
+        private Color(AnsiEscapes escapes) {
             this.escapes = escapes;
         }
 
-        public String text(String text) {
+        public String color(String text) {
             StringBuilder sb = new StringBuilder();
-            for (AnsiEscapes escape : escapes) {
-                escape.appendTo(sb);
-            }
+            escapes.appendTo(sb);
             sb.append(text);
-            if (escapes.length > 0) {
-                AnsiEscapes.RESET.appendTo(sb);
-            }
+            AnsiEscapes.RESET.appendTo(sb);
             return sb.toString();
         }
 
+        @Override
+        public String bold(String text) {
+            StringBuilder sb = new StringBuilder();
+            INTENSITY_BOLD.appendTo(sb);
+            sb.append(text);
+            RESET_INTENSITY_BOLD.appendTo(sb);
+            return sb.toString();
+        }
     }
 
-    class Monochrome implements Format {
+    final class Monochrome implements Format {
 
-        private Monochrome() {
+        Monochrome() {
 
         }
-
-        @Override
-        public String text(String text) {
-            return text;
-        }
-
     }
 
 }

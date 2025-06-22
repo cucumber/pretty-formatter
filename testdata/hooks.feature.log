@@ -1,10 +1,10 @@
 
 Scenario: No tags and a passed step [90m# samples/hooks/hooks.feature:4[0m
-  [32mWhen [0m[32ma step passes[0m                [90m# samples/hooks/hooks.feature.ts:7[0m
+  [32mWhen a step passes[0m                [90m# samples/hooks/hooks.feature.ts:7[0m
 
 Scenario: No tags and a failed step [90m# samples/hooks/hooks.feature:7[0m
-  [31mWhen [0m[31ma step fails[0m                 [90m# samples/hooks/hooks.feature.ts:11[0m
+  [31mWhen a step fails[0m                 [90m# samples/hooks/hooks.feature.ts:11[0m
       [31mException in step[0m
 
 Scenario: No tags and a undefined step [90m# samples/hooks/hooks.feature:10[0m
-  [33mWhen [0m[33ma step does not exist[0m
+  [33mWhen a step does not exist[0m

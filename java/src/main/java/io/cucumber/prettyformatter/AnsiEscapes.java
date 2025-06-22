@@ -1,33 +1,31 @@
 package io.cucumber.prettyformatter;
 
 final class AnsiEscapes {
-    static final AnsiEscapes RESET = color(0);
-    static final AnsiEscapes BLACK = color(30);
-    static final AnsiEscapes RED = color(31);
-    static final AnsiEscapes GREEN = color(32);
-    static final AnsiEscapes YELLOW = color(33);
-    static final AnsiEscapes BLUE = color(34);
-    static final AnsiEscapes MAGENTA = color(35);
-    static final AnsiEscapes CYAN = color(36);
-    static final AnsiEscapes WHITE = color(37);
-    static final AnsiEscapes DEFAULT = color(9);
-    static final AnsiEscapes GREY = color(90);
-    static final AnsiEscapes INTENSITY_BOLD = color(1);
-    static final AnsiEscapes UNDERLINE = color(4);
+    static final AnsiEscapes RESET = code(0);
+    static final AnsiEscapes DEFAULT = code(9);
+    static final AnsiEscapes INTENSITY_BOLD = code(1);
+    static final AnsiEscapes UNDERLINE = code(4);
+    static final AnsiEscapes RESET_INTENSITY_BOLD = code(22);
+    static final AnsiEscapes BLACK = code(30);
+    static final AnsiEscapes RED = code(31);
+    static final AnsiEscapes GREEN = code(32);
+    static final AnsiEscapes YELLOW = code(33);
+    static final AnsiEscapes BLUE = code(34);
+    static final AnsiEscapes MAGENTA = code(35);
+    static final AnsiEscapes CYAN = code(36);
+    static final AnsiEscapes WHITE = code(37);
+    static final AnsiEscapes GREY = code(90);
+
     private static final char ESC = 27;
     private static final char BRACKET = '[';
-    private final String value;
+    private final int code;
 
-    private AnsiEscapes(String value) {
-        this.value = value;
+    private AnsiEscapes(int code) {
+        this.code = code;
     }
 
-    private static AnsiEscapes color(int code) {
-        return new AnsiEscapes(code + "m");
-    }
-
-    static AnsiEscapes up(int count) {
-        return new AnsiEscapes(count + "A");
+    private static AnsiEscapes code(int code) {
+        return new AnsiEscapes(code);
     }
 
     @Override
@@ -38,7 +36,7 @@ final class AnsiEscapes {
     }
 
     void appendTo(StringBuilder a) {
-        a.append(ESC).append(BRACKET).append(value);
+        a.append(ESC).append(BRACKET).append(code).append(  "m");
     }
 
 }

@@ -5,9 +5,7 @@ import io.cucumber.messages.types.Envelope;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.xmlunit.builder.Input;
 
-import javax.xml.transform.Source;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
-import static org.xmlunit.assertj.XmlAssert.assertThat;
+import static java.nio.file.Files.readAllBytes;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MessagesToPrettyWriterAcceptanceTest {
     private static final NdjsonToMessageIterable.Deserializer deserializer = (json) -> OBJECT_MAPPER.readValue(json, Envelope.class);
@@ -41,18 +40,14 @@ class MessagesToPrettyWriterAcceptanceTest {
     @MethodSource("acceptance")
     void test(TestCase testCase) throws IOException {
         ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), Formats.ansi());
-        Source expected = Input.fromPath(testCase.expected).build();
-        Source actual = Input.fromByteArray(bytes.toByteArray()).build();
-        assertThat(actual).and(expected).ignoreWhitespace().areIdentical();
+        assertThat(bytes.toString()).isEqualTo(new String(readAllBytes(testCase.expected)));
     }
 
     @ParameterizedTest
     @MethodSource("acceptance")
     void testNoColor(TestCase testCase) throws IOException {
         ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), Formats.monochrome());
-        Source expected = Input.fromPath(testCase.expected).build();
-        Source actual = Input.fromByteArray(bytes.toByteArray()).build();
-        assertThat(actual).and(expected).ignoreWhitespace().areIdentical();
+        assertThat(bytes.toString()).isEqualTo(new String(readAllBytes(testCase.expectedNoColor)));
     }
 
     @ParameterizedTest

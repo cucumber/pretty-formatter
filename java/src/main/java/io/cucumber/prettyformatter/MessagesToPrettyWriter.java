@@ -16,9 +16,11 @@ import io.cucumber.messages.types.Step;
 import io.cucumber.messages.types.StepDefinition;
 import io.cucumber.messages.types.StepMatchArgument;
 import io.cucumber.messages.types.StepMatchArgumentsList;
+import io.cucumber.messages.types.TestCase;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestStep;
 import io.cucumber.messages.types.TestStepFinished;
+import io.cucumber.messages.types.TestStepResultStatus;
 import io.cucumber.query.Lineage;
 
 import java.io.BufferedReader;
@@ -36,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -131,23 +134,22 @@ class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private void printScenarioDefinition(TestCaseStarted event) {
-        data.query.findLineageBy(event)
-                .flatMap(Lineage::scenario)
-                .ifPresent(scenario -> {
-                    data.query.findPickleBy(event)
-                            .ifPresent(pickle -> {
-                                String definitionText = formatScenarioDefinition(scenario, pickle);
-                                String path = relativize(pickle.getUri()).getSchemeSpecificPart();
-                                String locationIndent = calculateLocationIndent(event.getTestCaseId(), definitionText);
-                                String pathWithLine = data.query.findLocationOf(pickle).map(Location::getLine)
-                                        .map(line -> path + ":" + line).orElse(path);
-                                writer.println(definitionText + locationIndent + formatLocation(pathWithLine));
-                            });
-                });
+        data.query.findTestCaseBy(event).ifPresent(testCase -> {
+            data.query.findPickleBy(testCase).ifPresent(pickle -> {
+                data.query.findLineageBy(pickle)
+                        .flatMap(Lineage::scenario)
+                        .ifPresent(scenario -> {
+                            printScenarioDefinition(testCase, pickle, scenario);
+                        });
+            });
+        });
     }
 
-    private static String formatScenarioDefinition(Scenario scenario, Pickle pickle) {
-        return SCENARIO_INDENT + scenario.getKeyword() + ": " + pickle.getName();
+    private void printScenarioDefinition(TestCase testCase, Pickle pickle, Scenario scenario) {
+        String definitionText = SCENARIO_INDENT + scenario.getKeyword() + ": " + pickle.getName();
+        String locationIndent = data.formatLocationIndent(testCase, definitionText);
+        String pathWithLine = data.formatPathWithLocation(pickle);
+        writer.println(definitionText + locationIndent + formatLocation(pathWithLine));
     }
 
     private void printStep(io.cucumber.messages.types.TestStepFinished event) {
@@ -166,7 +168,7 @@ class MessagesToPrettyWriter implements AutoCloseable {
         String keyword = step.getKeyword();
         String stepText = pickleStep.getText();
         // TODO: Use proper enum map.
-        String status = event.getTestStepResult().getStatus().toString().toLowerCase(ROOT);
+        TestStepResultStatus status = event.getTestStepResult().getStatus();
         List<StepMatchArgument> stepMatchArgumentsLists = testStep.getStepMatchArgumentsLists()
                 .map(stepMatchArgumentsLists1 -> stepMatchArgumentsLists1.stream()
                         .map(StepMatchArgumentsList::getStepMatchArguments).flatMap(Collection::stream)
@@ -174,8 +176,7 @@ class MessagesToPrettyWriter implements AutoCloseable {
                 .orElseGet(Collections::emptyList);// TODO: Create separate _arg
         // map
 
-        String formattedStepText = STEP_INDENT + formatStepText(keyword, stepText, formats.get(status),
-                formats.get(status + "_arg"), stepMatchArgumentsLists);
+        String formattedStepText = STEP_INDENT + formatStepText(keyword, stepText, formats.status(status), stepMatchArgumentsLists);
         String locationComment = formatLocationComment(event, testStep, keyword, stepText);
         writer.println(formattedStepText + locationComment);
     }
@@ -227,8 +228,8 @@ class MessagesToPrettyWriter implements AutoCloseable {
                 })
                 .flatMap(MessagesToPrettyWriter::formatSourceReference)
                 .map(codeLocation -> data.query.findTestCaseBy(event).map(testCase -> {
-                    String locationIndent = calculateLocationIndent(testCase.getId(),
-                            formatPlainStep(keyword, stepText));
+                    String prefix = formatPlainStep(keyword, stepText);
+                    String locationIndent = data.formatLocationIndent(testCase, prefix);
                     return locationIndent + formatLocation(codeLocation);
 
                 }).orElse("")).orElse("");
@@ -280,21 +281,21 @@ class MessagesToPrettyWriter implements AutoCloseable {
         event.getTestStepResult()
                 .getException()
                 .ifPresent(exception -> {
-                    String name = event.getTestStepResult().getStatus().name().toLowerCase(ROOT);
-                    printError(STACK_TRACE_INDENT, exception, formats.get(name));
+                    TestStepResultStatus name = event.getTestStepResult().getStatus();
+                    printError(STACK_TRACE_INDENT, exception, formats.status(name));
                 });
     }
 
     private void printError(io.cucumber.messages.types.TestRunFinished event) {
         event.getException()
-                .ifPresent(exception -> printError(SCENARIO_INDENT, exception, formats.get("failed")));
+                .ifPresent(exception -> printError(SCENARIO_INDENT, exception, formats.status(FAILED)));
     }
 
     private void printError(String scenarioIndent, Exception exception, Format format) {
         String text = exception.getStackTrace().orElseGet(() -> exception.getMessage().orElse(""));
         // TODO: Java 12+ use String.indent
         String indented = text.replaceAll("(\r\n|\r|\n)", "$1" + scenarioIndent).trim();
-        writer.println(scenarioIndent + format.text(indented));
+        writer.println(scenarioIndent + format.color(indented));
     }
 
     private void printText(Attachment event) {
@@ -352,29 +353,15 @@ class MessagesToPrettyWriter implements AutoCloseable {
         }
     }
 
-    private String calculateLocationIndent(String testCaseId, String prefix) {
-        Integer commentStartAt = data.commentStartIndexByTestCaseId.getOrDefault(testCaseId, 0);
-        int padding = commentStartAt - prefix.length();
-
-        if (padding < 0) {
-            return " ";
-        }
-        StringBuilder builder = new StringBuilder(padding);
-        for (int i = 0; i < padding; i++) {
-            builder.append(" ");
-        }
-        return builder.toString();
-    }
-
     private String formatLocation(String location) {
-        return formats.get("comment").text("# " + location);
+        return formats.comment().color("# " + location);
     }
 
     String formatStepText(
-            String keyword, String stepText, Format textFormat, Format argFormat, List<StepMatchArgument> arguments
+            String keyword, String stepText, Format textFormat, List<StepMatchArgument> arguments
     ) {
         int beginIndex = 0;
-        StringBuilder result = new StringBuilder(textFormat.text(keyword));
+        StringBuilder result = new StringBuilder(keyword);
         for (StepMatchArgument argument : arguments) {
             // can be null if the argument is missing.
             Group group = argument.getGroup();
@@ -388,17 +375,17 @@ class MessagesToPrettyWriter implements AutoCloseable {
                     continue;
                 }
                 String text = stepText.substring(beginIndex, argumentOffset);
-                result.append(textFormat.text(text));
+                result.append(text);
                 int argumentEndIndex = argumentOffset + value.get().length();
-                result.append(argFormat.text(stepText.substring(argumentOffset, argumentEndIndex)));
+                result.append(textFormat.bold(stepText.substring(argumentOffset, argumentEndIndex)));
                 beginIndex = argumentEndIndex;
             }
         }
         if (beginIndex != stepText.length()) {
             String text = stepText.substring(beginIndex);
-            result.append(textFormat.text(text));
+            result.append(text);
         }
-        return result.toString();
+        return textFormat.color(result.toString());
     }
 
     /**
@@ -406,10 +393,9 @@ class MessagesToPrettyWriter implements AutoCloseable {
      * invocations will cause an IOException to be thrown. Closing a closed
      * stream has no effect.
      *
-     * @throws IOException if an IO error occurs
      */
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (streamClosed) {
             return;
         }
