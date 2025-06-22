@@ -2,10 +2,7 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.TestStepResultStatus;
 
-/**
- *  TODO: Don't expose. Use builder
- */
-public interface Formatter {
+interface Formatter {
     
     String comment(String text);
     

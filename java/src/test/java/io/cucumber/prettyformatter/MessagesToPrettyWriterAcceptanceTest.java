@@ -39,14 +39,14 @@ class MessagesToPrettyWriterAcceptanceTest {
     @ParameterizedTest
     @MethodSource("acceptance")
     void test(TestCase testCase) throws IOException {
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), Formatter.ansi());
+        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), true);
         assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
     }
 
     @ParameterizedTest
     @MethodSource("acceptance")
     void testNoColor(TestCase testCase) throws IOException {
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), Formatter.noAnsi());
+        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), false);
         assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedNoColor)));
     }
 
@@ -55,19 +55,19 @@ class MessagesToPrettyWriterAcceptanceTest {
     @Disabled
     void updateExpectedPrettyFiles(TestCase testCase) throws IOException {
         try (OutputStream out = Files.newOutputStream(testCase.expected)) {
-            writePrettyReport(testCase, out, new AnsiFormatter());
+            writePrettyReport(testCase, out, true);
             // Render output in console, easier to inspect results
             Files.copy(testCase.expected, System.out);
         }
         try (OutputStream out = Files.newOutputStream(testCase.expectedNoColor)) {
-            writePrettyReport(testCase, out, new NoAnsiFormatter());
+            writePrettyReport(testCase, out, false);
         }
     }
 
-    private static <T extends OutputStream> T writePrettyReport(TestCase testCase, T out, Formatter formatter) throws IOException {
+    private static <T extends OutputStream> T writePrettyReport(TestCase testCase, T out, boolean color) throws IOException {
         try (InputStream in = Files.newInputStream(testCase.source)) {
             try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, deserializer)) {
-                try (MessagesToPrettyWriter writer = new MessagesToPrettyWriter(out, formatter)) {
+                try (MessagesToPrettyWriter writer = createWriter(out, color)) {
                     for (Envelope envelope : envelopes) {
                         writer.write(envelope);
                     }
@@ -75,6 +75,13 @@ class MessagesToPrettyWriterAcceptanceTest {
             }
         }
         return out;
+    }
+
+    private static <T extends OutputStream> MessagesToPrettyWriter createWriter(T out, boolean color) {
+        if (color) {
+            return new MessagesToPrettyWriter(out);
+        }
+        return new MessagesToPrettyWriter(out).withNoAnsiColors();
     }
 
     static class TestCase {

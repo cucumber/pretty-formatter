@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static java.util.Objects.requireNonNull;
@@ -49,22 +50,45 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     private static final String STACK_TRACE_INDENT = STEP_SCENARIO_INDENT + "  ";
 
     private final Formatter formatter;
+    private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
     private final PrettyReportData data = new PrettyReportData();
     private boolean streamClosed = false;
 
     public MessagesToPrettyWriter(OutputStream out) {
-        this(out, new AnsiFormatter());
+        this(createPrintWriter(out), Formatter.ansi(), Function.identity());
     }
 
-    public MessagesToPrettyWriter(OutputStream out, Formatter formatter) {
-        this.formatter = requireNonNull(formatter);
-        this.writer = new PrintWriter(
+    private static PrintWriter createPrintWriter(OutputStream out) {
+        return new PrintWriter(
                 new OutputStreamWriter(
                         requireNonNull(out),
                         StandardCharsets.UTF_8
                 )
         );
+    }
+    
+    public MessagesToPrettyWriter withNoAnsiColors(){
+        return new MessagesToPrettyWriter(writer, Formatter.noAnsi(), uriFormatter);
+    }
+
+    public MessagesToPrettyWriter withRemovePathPrefix(String prefix){
+        return new MessagesToPrettyWriter(writer, Formatter.ansi(), removePrefix(prefix));
+    }
+
+    private static Function<String, String> removePrefix(String prefix) {
+        return s -> {
+            if (s.startsWith(prefix)) {
+                return s.substring(prefix.length());
+            }
+            return s;
+        };
+    }
+
+    private MessagesToPrettyWriter(PrintWriter writer, Formatter formatter, Function<String, String> uriFormatter) {
+        this.uriFormatter = uriFormatter;
+        this.formatter = formatter;
+        this.writer = writer;
     }
 
     /**
@@ -112,7 +136,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     private String formatScenarioDefinitionLine(TestCaseStarted testCase, Pickle pickle, Scenario scenario) {
         String definitionText = SCENARIO_INDENT + scenario.getKeyword() + ": " + pickle.getName();
         String locationIndent = data.getLocationIndentFor(testCase, definitionText);
-        String path = UriUtils.relativize(pickle.getUri()).getSchemeSpecificPart();
+        String path = uriFormatter.apply(pickle.getUri());
         String pathWithLine = data.findLineOf(pickle)
                 .map(line -> path + ":" + line)
                 .orElse(path);
@@ -243,7 +267,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         }
         if (sourceReference.getUri().isPresent()) {
             return sourceReference.getUri()
-                    .map(uri -> uri + sourceReference.getLocation()
+                    .map(uri -> uriFormatter.apply(uri) + sourceReference.getLocation()
                             .map(location -> ":" + location.getLine())
                             .orElse(""));
         }
