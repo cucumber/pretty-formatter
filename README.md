@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/io.cucumber/pretty-formatter.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:io.cucumber%20AND%20a:pretty-formatter)
+[![Maven Central](https://img.shields.io/maven-central/v/io.cucumber/pretty-formatters.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:io.cucumber%20AND%20a:pretty-formatters)
 
 Pretty Formatter
 ================

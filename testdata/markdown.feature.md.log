@@ -9,7 +9,7 @@ Scenario Outline: Ylajali!                                    [90m# samples/mar
     Given there are 24 apples in Mary's basket
     """
 
-    We are logging some plain text (fail)
+    [34mWe are logging some plain text (fail)[0m
 
   [31mWhen we use a data table and attach something and then [1mfail[22m[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
     | name | age |
@@ -29,7 +29,7 @@ Scenario Outline: Ylajali!                                    [90m# samples/mar
     Given there are 24 apples in Mary's basket
     """
 
-    We are logging some plain text (pass)
+    [34mWe are logging some plain text (pass)[0m
 
   [32mWhen we use a data table and attach something and then [1mpass[22m[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
     | name | age |

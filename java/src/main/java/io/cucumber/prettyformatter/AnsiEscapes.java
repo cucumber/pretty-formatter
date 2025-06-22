@@ -1,42 +1,80 @@
 package io.cucumber.prettyformatter;
 
-final class AnsiEscapes {
-    static final AnsiEscapes RESET = code(0);
-    static final AnsiEscapes DEFAULT = code(9);
-    static final AnsiEscapes INTENSITY_BOLD = code(1);
-    static final AnsiEscapes UNDERLINE = code(4);
-    static final AnsiEscapes RESET_INTENSITY_BOLD = code(22);
-    static final AnsiEscapes BLACK = code(30);
-    static final AnsiEscapes RED = code(31);
-    static final AnsiEscapes GREEN = code(32);
-    static final AnsiEscapes YELLOW = code(33);
-    static final AnsiEscapes BLUE = code(34);
-    static final AnsiEscapes MAGENTA = code(35);
-    static final AnsiEscapes CYAN = code(36);
-    static final AnsiEscapes WHITE = code(37);
-    static final AnsiEscapes GREY = code(90);
+/**
+ * Select graphic rendition control sequences in the format {@code CSI n m}.
+ */
+class AnsiEscapes {
 
-    private static final char ESC = 27;
-    private static final char BRACKET = '[';
-    private final int code;
+    static final AnsiEscapes RESET = new AnsiEscapes(Attributes.RESET);
+    static final AnsiEscapes INTENSITY_BOLD = new AnsiEscapes(Attributes.INTENSITY_BOLD);
+    static final AnsiEscapes INTENSITY_BOLD_OFF = new AnsiEscapes(Attributes.INTENSITY_BOLD_OFF);
+    static final AnsiEscapes FOREGROUND_RED = new AnsiEscapes(Attributes.FOREGROUND_RED);
+    static final AnsiEscapes FOREGROUND_GREEN = new AnsiEscapes(Attributes.FOREGROUND_GREEN);
+    static final AnsiEscapes FOREGROUND_YELLOW = new AnsiEscapes(Attributes.FOREGROUND_YELLOW);
+    static final AnsiEscapes FOREGROUND_BLUE = new AnsiEscapes(Attributes.FOREGROUND_BLUE);
+    static final AnsiEscapes FOREGROUND_CYAN = new AnsiEscapes(Attributes.FOREGROUND_CYAN);
+    static final AnsiEscapes FOREGROUND_BRIGHT_BLACK = new AnsiEscapes(Attributes.FOREGROUND_BRIGHT_BLACK);
+    static final AnsiEscapes FOREGROUND_DEFAULT = new AnsiEscapes(Attributes.FOREGROUND_DEFAULT);
+    
+    private static final char FIRST_ESCAPE = 27;
+    private static final char SECOND_ESCAPE = '[';
+    private static final String END_SEQUENCE = "m";
+    private final String controlSequence;
 
-    private AnsiEscapes(int code) {
-        this.code = code;
+    AnsiEscapes(Attributes... attributes) {
+        controlSequence = createControlSequence(attributes);
     }
 
-    private static AnsiEscapes code(int code) {
-        return new AnsiEscapes(code);
+    private String createControlSequence(Attributes[] attributes) {
+        int length = attributes.length;
+        int capacity = (length * 2 - 1) + 3;
+        StringBuilder a = new StringBuilder(capacity);
+        a.append(FIRST_ESCAPE).append(SECOND_ESCAPE);
+        for (int i = 0; i < length; i++) {
+            Attributes attribute = attributes[i];
+            if (i > 0) {
+                a.append(";");
+            }
+            a.append(attribute.value);
+        }
+        a.append(END_SEQUENCE);
+        return a.toString();
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        appendTo(sb);
-        return sb.toString();
+        return controlSequence;
     }
 
-    void appendTo(StringBuilder a) {
-        a.append(ESC).append(BRACKET).append(code).append(  "m");
-    }
+    /**
+     * A select number of attributes from all the available <a href=https://en.wikipedia.org/wiki/ANSI_escape_code#Select_Graphic_Rendition_parameters>Select Graphic Rendition attributes</a>.
+     */
+    enum Attributes {
+        RESET(0),
+        INTENSITY_BOLD(1),
+        INTENSITY_BOLD_OFF(22),
 
+        // https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+        FOREGROUND_BLACK(30),
+        FOREGROUND_RED(31),
+        FOREGROUND_GREEN(32),
+        FOREGROUND_YELLOW(33),
+        FOREGROUND_BLUE(34),
+        FOREGROUND_MAGENTA(35),
+        FOREGROUND_CYAN(36),
+        FOREGROUND_WHITE(37),
+        FOREGROUND_DEFAULT(39),
+
+        FOREGROUND_BRIGHT_BLACK(90);
+
+        private final int value;
+
+        Attributes(int index) {
+            this.value = index;
+        }
+
+        public int value() {
+            return value;
+        }
+    }
 }

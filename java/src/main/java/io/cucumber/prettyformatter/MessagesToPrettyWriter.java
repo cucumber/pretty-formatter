@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
-import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -54,18 +53,18 @@ class MessagesToPrettyWriter implements AutoCloseable {
     private static final String STEP_SCENARIO_INDENT = STEP_INDENT + "  ";
     private static final String STACK_TRACE_INDENT = STEP_SCENARIO_INDENT + "  ";
 
-    private final Formats formats;
+    private final Formatter formatter;
     private final PrintWriter writer;
     private final PrettyReportData data = new PrettyReportData();
     private boolean streamClosed = false;
 
     public MessagesToPrettyWriter(OutputStream out) {
-        this(out, Formats.ansi());
+        this(out, new Formatter.Ansi());
     }
 
-    public MessagesToPrettyWriter(OutputStream out, Formats formats) {
+    public MessagesToPrettyWriter(OutputStream out, Formatter formatter) {
         requireNonNull(out);
-        this.formats = requireNonNull(formats);
+        this.formatter = requireNonNull(formatter);
         this.writer = new PrintWriter(
                 new OutputStreamWriter(
                         requireNonNull(out),
@@ -134,15 +133,12 @@ class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private void printScenarioDefinition(TestCaseStarted event) {
-        data.query.findTestCaseBy(event).ifPresent(testCase -> {
-            data.query.findPickleBy(testCase).ifPresent(pickle -> {
-                data.query.findLineageBy(pickle)
-                        .flatMap(Lineage::scenario)
-                        .ifPresent(scenario -> {
-                            printScenarioDefinition(testCase, pickle, scenario);
-                        });
-            });
-        });
+        data.query.findTestCaseBy(event).ifPresent(testCase ->
+                data.query.findPickleBy(testCase).ifPresent(pickle ->
+                        data.query.findLineageBy(pickle)
+                                .flatMap(Lineage::scenario)
+                                .ifPresent(scenario ->
+                                        printScenarioDefinition(testCase, pickle, scenario))));
     }
 
     private void printScenarioDefinition(TestCase testCase, Pickle pickle, Scenario scenario) {
@@ -154,29 +150,25 @@ class MessagesToPrettyWriter implements AutoCloseable {
 
     private void printStep(io.cucumber.messages.types.TestStepFinished event) {
         data.query.findTestStepBy(event)
-                .ifPresent(testStep -> {
-                    data.query.findPickleStepBy(testStep).ifPresent(pickleStep -> {
-                        data.query.findStepBy(pickleStep).ifPresent(step -> {
-                            printStep(event, testStep, pickleStep, step);
-                            printArgument(pickleStep);
-                        });
-                    });
-                });
+                .ifPresent(testStep ->
+                        data.query.findPickleStepBy(testStep).ifPresent(pickleStep ->
+                                data.query.findStepBy(pickleStep).ifPresent(step -> {
+                                    printStep(event, testStep, pickleStep, step);
+                                    printArgument(pickleStep);
+                                })));
     }
 
     private void printStep(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
         String keyword = step.getKeyword();
         String stepText = pickleStep.getText();
-        // TODO: Use proper enum map.
         TestStepResultStatus status = event.getTestStepResult().getStatus();
         List<StepMatchArgument> stepMatchArgumentsLists = testStep.getStepMatchArgumentsLists()
                 .map(stepMatchArgumentsLists1 -> stepMatchArgumentsLists1.stream()
                         .map(StepMatchArgumentsList::getStepMatchArguments).flatMap(Collection::stream)
                         .collect(toList()))
-                .orElseGet(Collections::emptyList);// TODO: Create separate _arg
-        // map
+                .orElseGet(Collections::emptyList);
 
-        String formattedStepText = STEP_INDENT + formatStepText(keyword, stepText, formats.status(status), stepMatchArgumentsLists);
+        String formattedStepText = STEP_INDENT + formatStepText(keyword, stepText, status, stepMatchArgumentsLists);
         String locationComment = formatLocationComment(event, testStep, keyword, stepText);
         writer.println(formattedStepText + locationComment);
     }
@@ -274,28 +266,28 @@ class MessagesToPrettyWriter implements AutoCloseable {
 
     private static String formatJavaMethod(JavaMethod javaMethod) {
         return javaMethod.getClassName() + "." + javaMethod.getMethodName() + "("
-                + javaMethod.getMethodParameterTypes().stream().collect(joining(",")) + ")";
+                + String.join(",", javaMethod.getMethodParameterTypes()) + ")";
     }
 
     private void printError(TestStepFinished event) {
         event.getTestStepResult()
                 .getException()
                 .ifPresent(exception -> {
-                    TestStepResultStatus name = event.getTestStepResult().getStatus();
-                    printError(STACK_TRACE_INDENT, exception, formats.status(name));
+                    TestStepResultStatus status = event.getTestStepResult().getStatus();
+                    printError(STACK_TRACE_INDENT, exception, status);
                 });
     }
 
     private void printError(io.cucumber.messages.types.TestRunFinished event) {
         event.getException()
-                .ifPresent(exception -> printError(SCENARIO_INDENT, exception, formats.status(FAILED)));
+                .ifPresent(exception -> printError(SCENARIO_INDENT, exception, FAILED));
     }
 
-    private void printError(String scenarioIndent, Exception exception, Format format) {
+    private void printError(String scenarioIndent, Exception exception, TestStepResultStatus status) {
         String text = exception.getStackTrace().orElseGet(() -> exception.getMessage().orElse(""));
         // TODO: Java 12+ use String.indent
         String indented = text.replaceAll("(\r\n|\r|\n)", "$1" + scenarioIndent).trim();
-        writer.println(scenarioIndent + format.color(indented));
+        writer.println(scenarioIndent + formatter.status(status, indented));
     }
 
     private void printText(Attachment event) {
@@ -305,7 +297,7 @@ class MessagesToPrettyWriter implements AutoCloseable {
             String line;
             while ((line = lines.readLine()) != null) {
                 builder.append(STEP_SCENARIO_INDENT)
-                        .append(line)
+                        .append(formatter.output(line))
                         // Add system line separator - \n won't do it!
                         .append(System.lineSeparator());
             }
@@ -324,7 +316,7 @@ class MessagesToPrettyWriter implements AutoCloseable {
         } else {
             line = String.format("Embedding [%s %d bytes]", event.getMediaType(), bytes);
         }
-        writer.println(STEP_SCENARIO_INDENT + line);
+        writer.println(STEP_SCENARIO_INDENT + formatter.output(line));
     }
 
     private String formatPlainStep(String keyword, String stepText) {
@@ -354,11 +346,11 @@ class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private String formatLocation(String location) {
-        return formats.comment().color("# " + location);
+        return formatter.comment("# " + location);
     }
 
     String formatStepText(
-            String keyword, String stepText, Format textFormat, List<StepMatchArgument> arguments
+            String keyword, String stepText, TestStepResultStatus status, List<StepMatchArgument> arguments
     ) {
         int beginIndex = 0;
         StringBuilder result = new StringBuilder(keyword);
@@ -377,7 +369,7 @@ class MessagesToPrettyWriter implements AutoCloseable {
                 String text = stepText.substring(beginIndex, argumentOffset);
                 result.append(text);
                 int argumentEndIndex = argumentOffset + value.get().length();
-                result.append(textFormat.bold(stepText.substring(argumentOffset, argumentEndIndex)));
+                result.append(formatter.argument(stepText.substring(argumentOffset, argumentEndIndex)));
                 beginIndex = argumentEndIndex;
             }
         }
@@ -385,14 +377,13 @@ class MessagesToPrettyWriter implements AutoCloseable {
             String text = stepText.substring(beginIndex);
             result.append(text);
         }
-        return textFormat.color(result.toString());
+        return formatter.status(status, result.toString());
     }
 
     /**
      * Closes the stream, flushing it first. Once closed further write()
      * invocations will cause an IOException to be thrown. Closing a closed
      * stream has no effect.
-     *
      */
     @Override
     public void close() {
