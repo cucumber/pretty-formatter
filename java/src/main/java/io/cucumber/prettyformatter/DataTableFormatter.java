@@ -1,10 +1,14 @@
 package io.cucumber.prettyformatter;
 
+import io.cucumber.messages.types.PickleTable;
+import io.cucumber.messages.types.PickleTableCell;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 // TODO: Move?
 final class DataTableFormatter {
@@ -79,7 +83,7 @@ final class DataTableFormatter {
                     appendable.append(" |");
                 }
             }
-            appendable.append("\n");
+            appendable.append(System.lineSeparator());
         }
     }
 
@@ -113,6 +117,14 @@ final class DataTableFormatter {
         for (int i = 0; i < indent; i++) {
             buffer.append(" ");
         }
+    }
+
+    public String format(PickleTable pickleTable) {
+        List<List<String>> cells = pickleTable.getRows().stream()
+                .map(pickleTableRow -> pickleTableRow.getCells().stream().map(PickleTableCell::getValue)
+                        .collect(toList()))
+                .collect(toList());
+        return format(cells);
     }
 
     static final class Builder {

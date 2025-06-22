@@ -1,5 +1,7 @@
 package io.cucumber.prettyformatter;
 
+import io.cucumber.messages.types.PickleDocString;
+
 import java.io.IOException;
 
 import static java.util.Objects.requireNonNull;
@@ -17,12 +19,24 @@ final class DocStringFormatter {
         return new Builder();
     }
 
-    void formatTo(Appendable out, String printableContentType, String content) throws IOException {
-        out.append(indentation).append("\"\"\"").append(printableContentType).append("\n");
-        for (String l : content.split("\\n")) {
-            out.append(indentation).append(l).append("\n");
+    void formatTo(Appendable out, PickleDocString docString) throws IOException {
+        String printableMediaType = docString.getMediaType().orElse("");
+        out.append(indentation).append("\"\"\"").append(printableMediaType).append(System.lineSeparator());
+        for (String l : docString.getContent().split("\\n")) {
+            out.append(indentation).append(l).append(System.lineSeparator());
         }
-        out.append(indentation).append("\"\"\"").append("\n");
+        out.append(indentation).append("\"\"\"").append(System.lineSeparator());
+
+    }
+
+    public String format(PickleDocString pickleDocString) {
+        StringBuilder builder = new StringBuilder();
+        try {
+            formatTo(builder, pickleDocString);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return builder.toString();
     }
 
     static final class Builder {

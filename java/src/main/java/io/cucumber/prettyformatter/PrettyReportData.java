@@ -4,47 +4,27 @@ import io.cucumber.messages.types.Envelope;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.PickleStep;
+import io.cucumber.messages.types.PickleTag;
 import io.cucumber.messages.types.Scenario;
+import io.cucumber.messages.types.SourceReference;
 import io.cucumber.messages.types.Step;
 import io.cucumber.messages.types.StepDefinition;
-import io.cucumber.messages.types.TestCase;
+import io.cucumber.messages.types.TestCaseStarted;
+import io.cucumber.messages.types.TestStep;
+import io.cucumber.messages.types.TestStepFinished;
 import io.cucumber.query.Lineage;
 import io.cucumber.query.Query;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 class PrettyReportData {
 
-    final Query query = new Query();
-    final Map<String, Integer> commentStartIndexByTestCaseId = new HashMap<>();
-    final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
-
-    public void collect(Envelope envelope) {
-        query.update(envelope);
-        envelope.getStepDefinition().ifPresent(this::updateStepDefinitionsById);
-        envelope.getTestCaseStarted().ifPresent(this::preCalculateLocationIndent);
-    }
-
-    private void updateStepDefinitionsById(StepDefinition stepDefinition) {
-        stepDefinitionsById.put(stepDefinition.getId(), stepDefinition);
-    }
-
-    private void preCalculateLocationIndent(io.cucumber.messages.types.TestCaseStarted event) {
-        query.findLineageBy(event)
-                .flatMap(Lineage::scenario)
-                .ifPresent(scenario -> {
-                    query.findPickleBy(event).ifPresent(pickle -> {
-                        int scenarioLineLength = calculateScenarioLineLength(pickle, scenario);
-                        int longestLine = pickle.getSteps().stream()
-                                .mapToInt(pickleStep -> query.findStepBy(pickleStep)
-                                        .map(step -> calculateStepLineLength(step, pickleStep))
-                                        .orElse(0))
-                                .reduce(scenarioLineLength, Math::max);
-                        commentStartIndexByTestCaseId.put(event.getTestCaseId(), longestLine + 1);
-                    });
-                });
-    }
+    private final Query query = new Query();
+    private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
+    private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
 
     private static int calculateStepLineLength(Step step, PickleStep pickleStep) {
         String keyword = step.getKeyword();
@@ -59,14 +39,42 @@ class PrettyReportData {
         return MessagesToPrettyWriter.SCENARIO_INDENT.length() + pickleName.length() + pickleKeyword.length() + 2;
     }
 
-    String formatPathWithLocation(Pickle pickle) {
-        String path = MessagesToPrettyWriter.relativize(pickle.getUri()).getSchemeSpecificPart();
-        return query.findLocationOf(pickle).map(Location::getLine).map(line -> path + ":" + line).orElse(path);
+    public void collect(Envelope envelope) {
+        query.update(envelope);
+        envelope.getStepDefinition().ifPresent(this::updateStepDefinitionsById);
+        envelope.getTestCaseStarted().ifPresent(this::preCalculateLocationIndent);
     }
 
-    String formatLocationIndent(TestCase testCase, String prefix) {
-        Integer commentStartAt = commentStartIndexByTestCaseId.getOrDefault(testCase.getId(), 0);
-        int padding = commentStartAt - prefix.length();
+    private void updateStepDefinitionsById(StepDefinition stepDefinition) {
+        stepDefinitionsById.put(stepDefinition.getId(), stepDefinition);
+    }
+
+    private void preCalculateLocationIndent(io.cucumber.messages.types.TestCaseStarted event) {
+        query.findLineageBy(event)
+                .flatMap(Lineage::scenario)
+                .ifPresent(scenario ->
+                        query.findPickleBy(event).ifPresent(pickle -> {
+                            int scenarioLineLength = calculateScenarioLineLength(pickle, scenario);
+                            int longestLine = pickle.getSteps().stream()
+                                    .mapToInt(pickleStep -> query.findStepBy(pickleStep)
+                                            .map(step -> calculateStepLineLength(step, pickleStep))
+                                            .orElse(0))
+                                    .reduce(scenarioLineLength, Math::max);
+                            commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + 1);
+                        }));
+    }
+
+    String getLocationIndentFor(TestCaseStarted testCaseStarted, String prefix) {
+        return getLocationIndentFor(testCaseStarted.getId(), prefix.length());
+    }
+
+    String getLocationIndentFor(TestStepFinished testStepFinished, int prefix) {
+        return getLocationIndentFor(testStepFinished.getTestCaseStartedId(), prefix);
+    }
+
+    private String getLocationIndentFor(String testCaseStartedId, int prefix) {
+        Integer commentStartAt = commentStartIndexByTestCaseStartedId.getOrDefault(testCaseStartedId, 0);
+        int padding = commentStartAt - prefix;
 
         if (padding < 0) {
             return " ";
@@ -76,5 +84,43 @@ class PrettyReportData {
             builder.append(" ");
         }
         return builder.toString();
+    }
+
+    Optional<List<PickleTag>> findTagsBy(TestCaseStarted testCaseStarted) {
+        return query.findPickleBy(testCaseStarted)
+                .map(Pickle::getTags)
+                .filter(pickleTags -> !pickleTags.isEmpty());
+    }
+
+    Optional<Scenario> findScenarioBy(Pickle pickle) {
+        return query.findLineageBy(pickle)
+                .flatMap(Lineage::scenario);
+    }
+
+    Optional<TestStep> findTestStepBy(TestStepFinished event) {
+        return query.findTestStepBy(event);
+    }
+
+    Optional<PickleStep> findPickleStepBy(TestStep testStep) {
+        return query.findPickleStepBy(testStep);
+    }
+
+    Optional<Step> findStepBy(PickleStep pickleStep) {
+        return query.findStepBy(pickleStep);
+    }
+
+    Optional<SourceReference> findSourceReferenceBy(TestStep testStep) {
+        return testStep.getStepDefinitionIds()
+                .filter(ids -> ids.size() == 1)
+                .map(ids -> stepDefinitionsById.get(ids.get(0)))
+                .map(StepDefinition::getSourceReference);
+    }
+
+    Optional<Pickle> findPickleBy(TestCaseStarted testCaseStarted) {
+        return query.findPickleBy(testCaseStarted);
+    }
+
+    Optional<Long> findLineOf(Pickle pickle) {
+        return query.findLocationOf(pickle).map(Location::getLine);
     }
 }

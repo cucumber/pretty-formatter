@@ -39,15 +39,15 @@ class MessagesToPrettyWriterAcceptanceTest {
     @ParameterizedTest
     @MethodSource("acceptance")
     void test(TestCase testCase) throws IOException {
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), new Formatter.Ansi());
-        assertThat(bytes.toString()).isEqualTo(new String(readAllBytes(testCase.expected)));
+        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), Formatter.ansi());
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
     }
 
     @ParameterizedTest
     @MethodSource("acceptance")
     void testNoColor(TestCase testCase) throws IOException {
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), new Formatter.NoAnsi());
-        assertThat(bytes.toString()).isEqualTo(new String(readAllBytes(testCase.expectedNoColor)));
+        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), Formatter.noAnsi());
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedNoColor)));
     }
 
     @ParameterizedTest
@@ -55,12 +55,12 @@ class MessagesToPrettyWriterAcceptanceTest {
     @Disabled
     void updateExpectedPrettyFiles(TestCase testCase) throws IOException {
         try (OutputStream out = Files.newOutputStream(testCase.expected)) {
-            writePrettyReport(testCase, out, new Formatter.Ansi());
+            writePrettyReport(testCase, out, new AnsiFormatter());
             // Render output in console, easier to inspect results
             Files.copy(testCase.expected, System.out);
         }
         try (OutputStream out = Files.newOutputStream(testCase.expectedNoColor)) {
-            writePrettyReport(testCase, out, new Formatter.NoAnsi());
+            writePrettyReport(testCase, out, new NoAnsiFormatter());
         }
     }
 
