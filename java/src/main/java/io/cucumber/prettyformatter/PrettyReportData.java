@@ -39,7 +39,7 @@ class PrettyReportData {
         return MessagesToPrettyWriter.SCENARIO_INDENT.length() + pickleName.length() + pickleKeyword.length() + 2;
     }
 
-    public void collect(Envelope envelope) {
+    void collect(Envelope envelope) {
         query.update(envelope);
         envelope.getStepDefinition().ifPresent(this::updateStepDefinitionsById);
         envelope.getTestCaseStarted().ifPresent(this::preCalculateLocationIndent);

@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Writes a pretty report of the scenario execution as it happens.
  */
-class MessagesToPrettyWriter implements AutoCloseable {
+public class MessagesToPrettyWriter implements AutoCloseable {
 
     static final String SCENARIO_INDENT = "";
     static final String STEP_INDENT = SCENARIO_INDENT + "  ";
@@ -112,7 +112,7 @@ class MessagesToPrettyWriter implements AutoCloseable {
     private String formatScenarioDefinitionLine(TestCaseStarted testCase, Pickle pickle, Scenario scenario) {
         String definitionText = SCENARIO_INDENT + scenario.getKeyword() + ": " + pickle.getName();
         String locationIndent = data.getLocationIndentFor(testCase, definitionText);
-        String path = pickle.getUri();
+        String path = UriUtils.relativize(pickle.getUri()).getSchemeSpecificPart();
         String pathWithLine = data.findLineOf(pickle)
                 .map(line -> path + ":" + line)
                 .orElse(path);

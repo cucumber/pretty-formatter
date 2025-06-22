@@ -17,7 +17,7 @@ import static io.cucumber.prettyformatter.AnsiEscapes.INTENSITY_BOLD;
 import static io.cucumber.prettyformatter.AnsiEscapes.INTENSITY_BOLD_OFF;
 import static io.cucumber.prettyformatter.AnsiEscapes.RESET;
 
-public class AnsiFormatter implements Formatter {
+class AnsiFormatter implements Formatter {
 
     private final EnumMap<TestStepResultStatus, AnsiEscapes> formats;
 
