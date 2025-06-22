@@ -8,7 +8,7 @@
         <version>4.3.7</version>
     </parent>
 
-    <artifactId>pretty-formatters</artifactId>
+    <artifactId>pretty-formatter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Pretty Formatter</name>
@@ -21,9 +21,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git:git://github.com/cucumber/pretty-formatters.git</connection>
-        <developerConnection>scm:git:git@github.com:cucumber/pretty-formatters.git</developerConnection>
-        <url>git://github.com/cucumber/pretty-formatters.git</url>
+        <connection>scm:git:git://github.com/cucumber/pretty-formatter.git</connection>
+        <developerConnection>scm:git:git@github.com:cucumber/pretty-formatter.git</developerConnection>
+        <url>git://github.com/cucumber/pretty-formatter.git</url>
         <tag>HEAD</tag>
     </scm>
 
