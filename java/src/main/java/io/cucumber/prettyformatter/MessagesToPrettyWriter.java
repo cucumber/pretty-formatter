@@ -55,20 +55,20 @@ public class MessagesToPrettyWriter implements AutoCloseable {
             .indentation(STEP_SCENARIO_INDENT)
             .build();
 
-    private final Formatter formatter;
+    private final Theme theme;
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
     private final PrettyReportData data = new PrettyReportData();
     private boolean streamClosed = false;
 
     public MessagesToPrettyWriter(OutputStream out) {
-        this(createPrintWriter(out), Formatter.ansi(), Function.identity());
+        this(createPrintWriter(out), Theme.color(), Function.identity());
     }
 
-    private MessagesToPrettyWriter(PrintWriter writer, Formatter formatter, Function<String, String> uriFormatter) {
-        this.uriFormatter = uriFormatter;
-        this.formatter = formatter;
+    private MessagesToPrettyWriter(PrintWriter writer, Theme theme, Function<String, String> uriFormatter) {
+        this.theme = theme;
         this.writer = writer;
+        this.uriFormatter = uriFormatter;
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -90,11 +90,11 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     public MessagesToPrettyWriter withNoAnsiColors() {
-        return new MessagesToPrettyWriter(writer, Formatter.noAnsi(), uriFormatter);
+        return new MessagesToPrettyWriter(writer, Theme.monochrome(), uriFormatter);
     }
 
     public MessagesToPrettyWriter withRemovePathPrefix(String prefix) {
-        return new MessagesToPrettyWriter(writer, Formatter.ansi(), removePrefix(prefix));
+        return new MessagesToPrettyWriter(writer, theme, removePrefix(prefix));
     }
 
     /**
@@ -140,11 +140,13 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private String formatScenarioLine(TestCaseStarted event, Pickle pickle, Scenario scenario) {
-        String scenarioTitle = scenario.getKeyword() + ": " + pickle.getName();
-        int unformattedScenarioTextLength = SCENARIO_INDENT.length() + scenarioTitle.length();
-        String locationComment = formatLocation(pickle);
-        String locationIndent = locationComment.isEmpty() ? "" : data.getLocationIndentFor(event, unformattedScenarioTextLength);
-        return SCENARIO_INDENT + formatter.scenario(scenarioTitle) + locationIndent + locationComment;
+        String location = formatLocation(pickle);
+        int commentStartAtIndex = data.getCommentStartAtIndexBy(event);
+        return new LineBuilder(theme, data)
+                .indent(SCENARIO_INDENT)
+                .scenario(scenario.getKeyword(), pickle.getName())
+                .location(commentStartAtIndex, location)
+                .build();
     }
 
     private String formatLocation(Pickle pickle) {
@@ -157,7 +159,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private String formatLocation(String location) {
-        return formatter.comment("# " + location);
+        return location;
     }
 
     private void handleTestStepFinished(io.cucumber.messages.types.TestStepFinished event) {
@@ -183,16 +185,15 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private String formatStep(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
-        int unformattedStepTextLength = STEP_INDENT.length() + step.getKeyword().length() + pickleStep.getText().length();
-        String locationComment = formatLocation(testStep);
-        String locationIndent = locationComment.isEmpty() ? "" : data.getLocationIndentFor(event, unformattedStepTextLength);
-        return STEP_INDENT + formatStepText(event, testStep, pickleStep, step) + locationIndent + locationComment;
+        TestStepResultStatus status = event.getTestStepResult().getStatus();
+        return new LineBuilder(theme, data)
+                .indent(STEP_INDENT)
+                .step(status, step.getKeyword(), line -> formatStepText(line, testStep, pickleStep))
+                .location(data.getCommentStartAtIndexBy(event), formatLocation(testStep).orElse(""))
+                .build();
     }
 
-    private String formatStepText(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
-        String keyword = step.getKeyword();
-        String stepText = pickleStep.getText();
-        TestStepResultStatus status = event.getTestStepResult().getStatus();
+    private void formatStepText(LineBuilder line, TestStep testStep, PickleStep pickleStep) {
         List<StepMatchArgument> stepMatchArguments = testStep.getStepMatchArgumentsLists()
                 .map(stepMatchArgumentsLists -> stepMatchArgumentsLists.stream()
                         .map(StepMatchArgumentsList::getStepMatchArguments)
@@ -201,14 +202,13 @@ public class MessagesToPrettyWriter implements AutoCloseable {
                 )
                 .orElseGet(Collections::emptyList);
 
-        return formatStepText(keyword, stepText, status, stepMatchArguments);
+        formatStepText(line, pickleStep.getText(), stepMatchArguments);
     }
 
-    String formatStepText(
-            String keyword, String stepText, TestStepResultStatus status, List<StepMatchArgument> arguments
+    void formatStepText(
+            LineBuilder line, String stepText, List<StepMatchArgument> arguments
     ) {
         int beginIndex = 0;
-        StringBuilder result = new StringBuilder(keyword);
         for (StepMatchArgument argument : arguments) {
             // can be null if the argument is missing.
             Group group = argument.getGroup();
@@ -217,24 +217,21 @@ public class MessagesToPrettyWriter implements AutoCloseable {
                 // TODO: Messages are silly
                 int argumentOffset = (int) (long) group.getStart().orElse(-1L);
                 String text = stepText.substring(beginIndex, argumentOffset);
-                result.append(text);
+                line.stepText(text);
                 int argumentEndIndex = argumentOffset + value.get().length();
-                result.append(formatter.argument(stepText.substring(argumentOffset, argumentEndIndex)));
+                line.stepArgument(stepText.substring(argumentOffset, argumentEndIndex));
                 beginIndex = argumentEndIndex;
             }
         }
         if (beginIndex != stepText.length()) {
             String text = stepText.substring(beginIndex);
-            result.append(text);
+            line.stepText(text);
         }
-        return formatter.step(status, result.toString());
     }
 
-    private String formatLocation(TestStep testStep) {
+    private Optional<String> formatLocation(TestStep testStep) {
         return data.findSourceReferenceBy(testStep)
-                .flatMap(this::formatSourceReference)
-                .map(location -> formatter.comment("# " + location))
-                .orElse("");
+                .flatMap(this::formatSourceReference);
     }
 
     private Optional<String> formatSourceReference(SourceReference sourceReference) {
@@ -276,7 +273,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         writer.println();
         switch (attachment.getContentEncoding()) {
             case BASE64:
-                writer.println(formatBase64Embedding(attachment));
+                writer.println(formatBase64Attachment(attachment));
                 break;
             case IDENTITY:
                 writer.print(formatTextAttachment(attachment));
@@ -286,7 +283,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         writer.flush();
     }
 
-    private String formatBase64Embedding(Attachment event) {
+    private String formatBase64Attachment(Attachment event) {
         int bytes = (event.getBody().length() / 4) * 3;
         String line;
         if (event.getFileName().isPresent()) {
@@ -294,24 +291,26 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         } else {
             line = String.format("Embedding [%s %d bytes]", event.getMediaType(), bytes);
         }
-        return STEP_SCENARIO_INDENT + formatter.output(line);
+        return new LineBuilder(theme, data)
+                .indent(STEP_SCENARIO_INDENT)
+                .attachmentBase64(line)
+                .build();
     }
 
-    private StringBuilder formatTextAttachment(Attachment event) {
+    private String formatTextAttachment(Attachment event) {
         // Prevent interleaving when multiple threads write to System.out
-        StringBuilder builder = new StringBuilder();
+        LineBuilder builder = new LineBuilder(theme, data);
         try (BufferedReader lines = new BufferedReader(new StringReader(event.getBody()))) {
             String line;
             while ((line = lines.readLine()) != null) {
-                builder.append(STEP_SCENARIO_INDENT)
-                        .append(formatter.output(line))
-                        // Add system line separator - \n won't do it!
-                        .append(System.lineSeparator());
+                builder.indent(STEP_SCENARIO_INDENT)
+                        .attachmentPlainText(line)
+                        .newLine();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return builder;
+        return builder.build();
     }
 
     private void handleTestRunFinished(TestRunFinished event) {
@@ -328,7 +327,10 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         String text = exception.getStackTrace().orElseGet(() -> exception.getMessage().orElse(""));
         // TODO: Java 12+ use String.indent
         String indented = text.replaceAll("(\r\n|\r|\n)", "$1" + scenarioIndent).trim();
-        return scenarioIndent + formatter.error(status, indented);
+        return new LineBuilder(theme, data)
+                .indent(scenarioIndent)
+                .error(status, indented)
+                .build();
     }
 
     /**
@@ -348,4 +350,5 @@ public class MessagesToPrettyWriter implements AutoCloseable {
             streamClosed = true;
         }
     }
+
 }

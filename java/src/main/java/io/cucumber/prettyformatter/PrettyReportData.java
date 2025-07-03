@@ -64,26 +64,17 @@ class PrettyReportData {
                         }));
     }
 
-    String getLocationIndentFor(TestCaseStarted testCaseStarted, int prefix) {
-        return getLocationIndentFor(testCaseStarted.getId(), prefix);
+    int getCommentStartAtIndexBy(TestCaseStarted testCaseStarted) {
+        return getCommentStartAtIndexBy(testCaseStarted.getId());
     }
 
-    String getLocationIndentFor(TestStepFinished testStepFinished, int prefix) {
-        return getLocationIndentFor(testStepFinished.getTestCaseStartedId(), prefix);
+    int getCommentStartAtIndexBy(TestStepFinished testStepFinished) {
+        return getCommentStartAtIndexBy(testStepFinished.getTestCaseStartedId());
     }
 
-    private String getLocationIndentFor(String testCaseStartedId, int prefix) {
-        Integer commentStartAt = commentStartIndexByTestCaseStartedId.getOrDefault(testCaseStartedId, 0);
-        int padding = commentStartAt - prefix;
+    private int getCommentStartAtIndexBy(String testCaseStartedId) {
+        return commentStartIndexByTestCaseStartedId.getOrDefault(testCaseStartedId, 0);
 
-        if (padding < 0) {
-            return " ";
-        }
-        StringBuilder builder = new StringBuilder(padding);
-        for (int i = 0; i < padding; i++) {
-            builder.append(" ");
-        }
-        return builder.toString();
     }
 
     Optional<List<PickleTag>> findTagsBy(TestCaseStarted testCaseStarted) {

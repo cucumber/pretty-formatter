@@ -3,29 +3,29 @@ package io.cucumber.prettyformatter;
 /**
  * Select graphic rendition control sequences in the format {@code CSI n m}.
  */
-class AnsiEscapes {
+class AnsiStyle {
 
-    static final AnsiEscapes RESET = new AnsiEscapes(Attributes.RESET);
-    static final AnsiEscapes INTENSITY_BOLD = new AnsiEscapes(Attributes.INTENSITY_BOLD);
-    static final AnsiEscapes INTENSITY_BOLD_OFF = new AnsiEscapes(Attributes.INTENSITY_BOLD_OFF);
-    static final AnsiEscapes FOREGROUND_RED = new AnsiEscapes(Attributes.FOREGROUND_RED);
-    static final AnsiEscapes FOREGROUND_GREEN = new AnsiEscapes(Attributes.FOREGROUND_GREEN);
-    static final AnsiEscapes FOREGROUND_YELLOW = new AnsiEscapes(Attributes.FOREGROUND_YELLOW);
-    static final AnsiEscapes FOREGROUND_BLUE = new AnsiEscapes(Attributes.FOREGROUND_BLUE);
-    static final AnsiEscapes FOREGROUND_CYAN = new AnsiEscapes(Attributes.FOREGROUND_CYAN);
-    static final AnsiEscapes FOREGROUND_BRIGHT_BLACK = new AnsiEscapes(Attributes.FOREGROUND_BRIGHT_BLACK);
-    static final AnsiEscapes FOREGROUND_DEFAULT = new AnsiEscapes(Attributes.FOREGROUND_DEFAULT);
+    static final AnsiStyle INTENSITY_BOLD = new AnsiStyle(Attributes.INTENSITY_BOLD, Attributes.INTENSITY_BOLD_OFF);
+    static final AnsiStyle FOREGROUND_RED = new AnsiStyle(Attributes.FOREGROUND_RED, Attributes.RESET);
+    static final AnsiStyle FOREGROUND_GREEN = new AnsiStyle(Attributes.FOREGROUND_GREEN, Attributes.RESET);
+    static final AnsiStyle FOREGROUND_YELLOW = new AnsiStyle(Attributes.FOREGROUND_YELLOW, Attributes.RESET);
+    static final AnsiStyle FOREGROUND_BLUE = new AnsiStyle(Attributes.FOREGROUND_BLUE, Attributes.RESET);
+    static final AnsiStyle FOREGROUND_CYAN = new AnsiStyle(Attributes.FOREGROUND_CYAN, Attributes.RESET);
+    static final AnsiStyle FOREGROUND_BRIGHT_BLACK = new AnsiStyle(Attributes.FOREGROUND_BRIGHT_BLACK, Attributes.RESET);
+    static final AnsiStyle FOREGROUND_DEFAULT = new AnsiStyle(Attributes.FOREGROUND_DEFAULT, Attributes.RESET);
     
     private static final char FIRST_ESCAPE = 27;
     private static final char SECOND_ESCAPE = '[';
     private static final String END_SEQUENCE = "m";
-    private final String controlSequence;
+    private final String startControlSequence;
+    private final String endControlSequence;
 
-    AnsiEscapes(Attributes... attributes) {
-        controlSequence = createControlSequence(attributes);
+    AnsiStyle(Attributes startAttribute, Attributes endAttribute) {
+        startControlSequence = createControlSequence(startAttribute);
+        endControlSequence = createControlSequence(endAttribute);
     }
 
-    private String createControlSequence(Attributes[] attributes) {
+    private String createControlSequence(Attributes... attributes) {
         int length = attributes.length;
         int capacity = (length * 2 - 1) + 3;
         StringBuilder a = new StringBuilder(capacity);
@@ -43,7 +43,15 @@ class AnsiEscapes {
 
     @Override
     public String toString() {
-        return controlSequence;
+        return startControlSequence + " and " + endControlSequence;
+    }
+    
+    String getStartControlSequence() {
+        return startControlSequence;
+    }
+
+    String getEndControlSequence() {
+        return endControlSequence;
     }
 
     /**
@@ -73,7 +81,7 @@ class AnsiEscapes {
             this.value = index;
         }
 
-        public int value() {
+        int value() {
             return value;
         }
     }
