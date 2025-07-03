@@ -64,8 +64,8 @@ class PrettyReportData {
                         }));
     }
 
-    String getLocationIndentFor(TestCaseStarted testCaseStarted, String prefix) {
-        return getLocationIndentFor(testCaseStarted.getId(), prefix.length());
+    String getLocationIndentFor(TestCaseStarted testCaseStarted, int prefix) {
+        return getLocationIndentFor(testCaseStarted.getId(), prefix);
     }
 
     String getLocationIndentFor(TestStepFinished testStepFinished, int prefix) {

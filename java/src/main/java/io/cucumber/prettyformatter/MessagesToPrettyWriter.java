@@ -54,7 +54,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     private final PickleDocStringFormatter pickleDocStringFormatter = PickleDocStringFormatter.builder()
             .indentation(STEP_SCENARIO_INDENT)
             .build();
-    
+
     private final Formatter formatter;
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
@@ -65,6 +65,12 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         this(createPrintWriter(out), Formatter.ansi(), Function.identity());
     }
 
+    private MessagesToPrettyWriter(PrintWriter writer, Formatter formatter, Function<String, String> uriFormatter) {
+        this.uriFormatter = uriFormatter;
+        this.formatter = formatter;
+        this.writer = writer;
+    }
+
     private static PrintWriter createPrintWriter(OutputStream out) {
         return new PrintWriter(
                 new OutputStreamWriter(
@@ -72,14 +78,6 @@ public class MessagesToPrettyWriter implements AutoCloseable {
                         StandardCharsets.UTF_8
                 )
         );
-    }
-    
-    public MessagesToPrettyWriter withNoAnsiColors(){
-        return new MessagesToPrettyWriter(writer, Formatter.noAnsi(), uriFormatter);
-    }
-
-    public MessagesToPrettyWriter withRemovePathPrefix(String prefix){
-        return new MessagesToPrettyWriter(writer, Formatter.ansi(), removePrefix(prefix));
     }
 
     private static Function<String, String> removePrefix(String prefix) {
@@ -91,10 +89,12 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         };
     }
 
-    private MessagesToPrettyWriter(PrintWriter writer, Formatter formatter, Function<String, String> uriFormatter) {
-        this.uriFormatter = uriFormatter;
-        this.formatter = formatter;
-        this.writer = writer;
+    public MessagesToPrettyWriter withNoAnsiColors() {
+        return new MessagesToPrettyWriter(writer, Formatter.noAnsi(), uriFormatter);
+    }
+
+    public MessagesToPrettyWriter withRemovePathPrefix(String prefix) {
+        return new MessagesToPrettyWriter(writer, Formatter.ansi(), removePrefix(prefix));
     }
 
     /**
@@ -136,17 +136,24 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     private void printScenarioDefinition(TestCaseStarted event) {
         data.findPickleBy(event).ifPresent(pickle ->
                 data.findScenarioBy(pickle).ifPresent(scenario ->
-                        writer.println(formatScenarioDefinitionLine(event, pickle, scenario))));
+                        writer.println(formatScenarioLine(event, pickle, scenario))));
     }
 
-    private String formatScenarioDefinitionLine(TestCaseStarted testCase, Pickle pickle, Scenario scenario) {
-        String definitionText = SCENARIO_INDENT + scenario.getKeyword() + ": " + pickle.getName();
-        String locationIndent = data.getLocationIndentFor(testCase, definitionText);
+    private String formatScenarioLine(TestCaseStarted event, Pickle pickle, Scenario scenario) {
+        String scenarioTitle = scenario.getKeyword() + ": " + pickle.getName();
+        int unformattedScenarioTextLength = SCENARIO_INDENT.length() + scenarioTitle.length();
+        String locationComment = formatLocation(pickle);
+        String locationIndent = locationComment.isEmpty() ? "" : data.getLocationIndentFor(event, unformattedScenarioTextLength);
+        return SCENARIO_INDENT + formatter.scenario(scenarioTitle) + locationIndent + locationComment;
+    }
+
+    private String formatLocation(Pickle pickle) {
         String path = uriFormatter.apply(pickle.getUri());
         String pathWithLine = data.findLineOf(pickle)
                 .map(line -> path + ":" + line)
                 .orElse(path);
-        return definitionText + locationIndent + formatLocation(pathWithLine);
+
+        return formatLocation(pathWithLine);
     }
 
     private String formatLocation(String location) {
@@ -176,12 +183,13 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private String formatStep(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
-        String formattedStepText = formattedStepText(event, testStep, pickleStep, step);
-        String locationComment = formatLocationComment(event, testStep, pickleStep, step);
-        return STEP_INDENT + formattedStepText + locationComment;
+        int unformattedStepTextLength = STEP_INDENT.length() + step.getKeyword().length() + pickleStep.getText().length();
+        String locationComment = formatLocation(testStep);
+        String locationIndent = locationComment.isEmpty() ? "" : data.getLocationIndentFor(event, unformattedStepTextLength);
+        return STEP_INDENT + formatStepText(event, testStep, pickleStep, step) + locationIndent + locationComment;
     }
 
-    private String formattedStepText(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
+    private String formatStepText(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
         String keyword = step.getKeyword();
         String stepText = pickleStep.getText();
         TestStepResultStatus status = event.getTestStepResult().getStatus();
@@ -222,15 +230,10 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         return formatter.step(status, result.toString());
     }
 
-    private String formatLocationComment(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
+    private String formatLocation(TestStep testStep) {
         return data.findSourceReferenceBy(testStep)
                 .flatMap(this::formatSourceReference)
-                .map(codeLocation -> {
-                    int unformattedStepTextLenght = STEP_INDENT.length() + step.getKeyword().length() + pickleStep.getText().length();
-                    String locationIndent = data.getLocationIndentFor(event, unformattedStepTextLenght);
-                    String location = formatLocation(codeLocation);
-                    return locationIndent + location;
-                })
+                .map(location -> formatter.comment("# " + location))
                 .orElse("");
     }
 

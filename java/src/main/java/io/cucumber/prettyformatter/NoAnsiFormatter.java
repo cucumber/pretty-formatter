@@ -10,6 +10,11 @@ class NoAnsiFormatter implements Formatter {
     }
 
     @Override
+    public String scenario(String text) {
+        return text;
+    }
+
+    @Override
     public String step(TestStepResultStatus status, String text) {
         return text;
     }

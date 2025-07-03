@@ -39,6 +39,11 @@ class AnsiFormatter implements Formatter {
     }
 
     @Override
+    public String scenario(String text) {
+        return text;
+    }
+
+    @Override
     public String step(TestStepResultStatus status, String text) {
         return formats.getOrDefault(status, FOREGROUND_DEFAULT) + text + RESET;
     }
