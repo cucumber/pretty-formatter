@@ -6,9 +6,7 @@ import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Group;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
-import io.cucumber.messages.types.PickleDocString;
 import io.cucumber.messages.types.PickleStep;
-import io.cucumber.messages.types.PickleTable;
 import io.cucumber.messages.types.PickleTag;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.SourceReference;
@@ -49,6 +47,14 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     private static final String STEP_SCENARIO_INDENT = STEP_INDENT + "  ";
     private static final String STACK_TRACE_INDENT = STEP_SCENARIO_INDENT + "  ";
 
+    private final PickleTableFormatter pickleTableFormatter = PickleTableFormatter.builder()
+            .prefixRow(STEP_SCENARIO_INDENT)
+            .build();
+
+    private final PickleDocStringFormatter pickleDocStringFormatter = PickleDocStringFormatter.builder()
+            .indentation(STEP_SCENARIO_INDENT)
+            .build();
+    
     private final Formatter formatter;
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
@@ -160,10 +166,10 @@ public class MessagesToPrettyWriter implements AutoCloseable {
                             writer.println(formatStep(event, testStep, pickleStep, step));
                             pickleStep.getArgument().ifPresent(pickleStepArgument -> {
                                 pickleStepArgument.getDataTable().ifPresent(pickleTable ->
-                                        writer.print(formatDataTable(pickleTable))
+                                        writer.print(pickleTableFormatter.format(pickleTable))
                                 );
                                 pickleStepArgument.getDocString().ifPresent(pickleDocString ->
-                                        writer.print(formatDocString(pickleDocString))
+                                        writer.print(pickleDocStringFormatter.format(pickleDocString))
                                 );
                             });
                         })));
@@ -173,22 +179,6 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         String formattedStepText = formattedStepText(event, testStep, pickleStep, step);
         String locationComment = formatLocationComment(event, testStep, pickleStep, step);
         return STEP_INDENT + formattedStepText + locationComment;
-    }
-
-    private String formatDocString(PickleDocString pickleDocString) {
-        DocStringFormatter docStringFormatter = DocStringFormatter
-                .builder()
-                .indentation(STEP_SCENARIO_INDENT)
-                .build();
-        return docStringFormatter.format(pickleDocString);
-    }
-
-    private String formatDataTable(PickleTable pickleTable) {
-        DataTableFormatter tableFormatter = DataTableFormatter.builder()
-                .prefixRow(STEP_SCENARIO_INDENT)
-                .escapeDelimiters(false)
-                .build();
-        return tableFormatter.format(pickleTable);
     }
 
     private String formattedStepText(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
