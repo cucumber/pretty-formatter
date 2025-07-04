@@ -2,7 +2,6 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.PickleDocString;
 
-import static java.lang.System.lineSeparator;
 import static java.util.Objects.requireNonNull;
 
 final class PickleDocStringFormatter {
@@ -18,26 +17,30 @@ final class PickleDocStringFormatter {
         return new Builder();
     }
 
-    String format(PickleDocString pickleDocString) {
-        StringBuilder builder = new StringBuilder();
+    void formatTo(PickleDocString pickleDocString, LineBuilder lineBuilder) {
         String printableMediaType = pickleDocString.getMediaType().orElse("");
-        builder.append(indentation)
-                .append(DOC_STRING_DELIMITER)
-                .append(printableMediaType)
-                .append(lineSeparator());
+        lineBuilder.indent(indentation)
+                .beginDocString()
+                .docStringDelimiter(DOC_STRING_DELIMITER)
+                .docStringContentType(printableMediaType)
+                .endDocString()
+                .newLine();
 
         // Doc strings are normalized to \n by Gherkin.
         String[] lines = pickleDocString.getContent().split("\\n");
         for (String line : lines) {
-            builder.append(indentation)
-                    .append(line)
-                    .append(lineSeparator());
+            lineBuilder.indent(indentation)
+                    .beginDocString()
+                    .docStringContent(line)
+                    .endDocString()
+                    .newLine();
         }
-        builder.append(indentation)
-                .append(DOC_STRING_DELIMITER)
-                .append(lineSeparator());
+        lineBuilder.indent(indentation)
+                .beginDocString()
+                .docStringDelimiter(DOC_STRING_DELIMITER)
+                .endDocString()
+                .newLine();
 
-        return builder.toString();
     }
 
     static final class Builder {

@@ -4,17 +4,15 @@ import io.cucumber.messages.types.PickleTable;
 import io.cucumber.messages.types.PickleTableCell;
 
 import java.util.List;
-import java.util.function.Function;
 
-import static java.lang.System.lineSeparator;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 final class PickleTableFormatter {
 
-    private final Function<Integer, String> rowPrefix;
+    private final String rowPrefix;
 
-    private PickleTableFormatter(Function<Integer, String> rowPrefix) {
+    private PickleTableFormatter(String rowPrefix) {
         this.rowPrefix = rowPrefix;
     }
 
@@ -36,9 +34,13 @@ final class PickleTableFormatter {
         return longestCellInColumnLength;
     }
 
-    private static void renderCellWithPadding(String cellText, int padding, StringBuilder result) {
+    private static String renderCellWithPadding(String cellText, int padding) {
+        StringBuilder result = new StringBuilder();
+        result.append(" ");
         result.append(cellText);
         padSpace(result, padding);
+        result.append(" ");
+        return result.toString();
     }
 
     private static void padSpace(StringBuilder result, int padding) {
@@ -47,49 +49,50 @@ final class PickleTableFormatter {
         }
     }
 
-    String format(PickleTable pickleTable) {
+    void formatTo(PickleTable pickleTable, LineBuilder lineBuilder) {
         List<List<String>> cells = pickleTable.getRows().stream()
                 .map(pickleTableRow -> pickleTableRow.getCells().stream().map(PickleTableCell::getValue)
                         .collect(toList()))
                 .collect(toList());
-        return format(cells);
+        formatTo(cells, lineBuilder);
     }
 
-    private String format(List<List<String>> table) {
+    private void formatTo(List<List<String>> table, LineBuilder lineBuilder) {
         requireNonNull(table, "table may not be null");
 
         if (table.isEmpty()) {
-            return "";
+            return;
         }
         // render the individual cells
         String[][] renderedCells = renderCells(table);
         // find the length of longest cell per column
         int[] longestCellLengthInColumn = findLongestCellLengthInColumn(renderedCells);
         // print the rendered cells with padding
-        return renderTableWithPadding(renderedCells, longestCellLengthInColumn);
+        renderTableWithPaddingTo(renderedCells, longestCellLengthInColumn, lineBuilder);
     }
 
-    private String renderTableWithPadding(String[][] renderedCells, int[] longestCellLengthInColumn) {
-        StringBuilder result = new StringBuilder();
+    private void renderTableWithPaddingTo(String[][] renderedCells, int[] longestCellLengthInColumn, LineBuilder lineBuilder) {
         // datatables are always square and non-sparse.
-        int height = renderedCells.length;
         int width = renderedCells[0].length;
-        for (int rowIndex = 0; rowIndex < height; rowIndex++) {
-            printRowPrefix(result, rowIndex);
-            result.append("| ");
-            for (int colIndex = 0; colIndex < width; colIndex++) {
-                String cellText = renderedCells[rowIndex][colIndex];
-                int padding = longestCellLengthInColumn[colIndex] - cellText.length();
-                renderCellWithPadding(cellText, padding, result);
-                if (colIndex < width - 1) {
-                    result.append(" | ");
-                } else {
-                    result.append(" |");
-                }
-            }
-            result.append(lineSeparator());
+        for (String[] renderedCell : renderedCells) {
+            lineBuilder.indent(rowPrefix)
+                    .beginDataTable()
+                    .tableDataBorder("|")
+                    .accept(innerLineBuilder -> renderTableRowWithPaddingTo(renderedCell, longestCellLengthInColumn, innerLineBuilder))
+                    .endDataTable()
+                    .newLine();
         }
-        return result.toString();
+    }
+
+    private static void renderTableRowWithPaddingTo(String[] renderedCell, int[] longestCellLengthInColumn, LineBuilder lineBuilder) {
+        int width = renderedCell.length;
+        for (int colIndex = 0; colIndex < width; colIndex++) {
+            String cellText = renderedCell[colIndex];
+            int padding = longestCellLengthInColumn[colIndex] - cellText.length();
+            lineBuilder
+                    .dataTableContent(renderCellWithPadding(cellText, padding))
+                    .tableDataBorder("|");
+        }
     }
 
     private String[][] renderCells(List<List<String>> table) {
@@ -105,13 +108,6 @@ final class PickleTableFormatter {
         return renderedCells;
     }
 
-    private void printRowPrefix(StringBuilder buffer, int rowIndex) {
-        String prefix = rowPrefix.apply(rowIndex);
-        if (prefix != null) {
-            buffer.append(prefix);
-        }
-    }
-
     private String renderCell(String cell) {
         if (cell == null) {
             return "";
@@ -120,17 +116,12 @@ final class PickleTableFormatter {
     }
 
     static final class Builder {
-        private Function<Integer, String> rowPrefix = rowIndex -> "";
-
-        Builder prefixRow(Function<Integer, String> rowPrefix) {
-            requireNonNull(rowPrefix, "rowPrefix may not be null");
-            this.rowPrefix = rowPrefix;
-            return this;
-        }
+        private String rowPrefix = "";
 
         Builder prefixRow(String rowPrefix) {
             requireNonNull(rowPrefix, "rowPrefix may not be null");
-            return prefixRow(rowIndex -> rowPrefix);
+            this.rowPrefix = rowPrefix;
+            return this;
         }
 
         PickleTableFormatter build() {
