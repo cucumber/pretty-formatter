@@ -14,7 +14,6 @@ import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.SourceReference;
 import io.cucumber.messages.types.Step;
 import io.cucumber.messages.types.StepMatchArgument;
-import io.cucumber.messages.types.StepMatchArgumentsList;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStep;
@@ -28,7 +27,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +49,9 @@ import static io.cucumber.prettyformatter.Theme.Element.STEP_ARGUMENT;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_TEXT;
 import static io.cucumber.prettyformatter.Theme.Element.TAG;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Writes a pretty report of the scenario execution as it happens.
@@ -227,15 +226,15 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private void formatStepText(LineBuilder line, TestStep testStep, PickleStep pickleStep) {
-        List<StepMatchArgument> stepMatchArguments = testStep.getStepMatchArgumentsLists()
-                .map(stepMatchArgumentsLists -> stepMatchArgumentsLists.stream()
-                        .map(StepMatchArgumentsList::getStepMatchArguments)
-                        .flatMap(Collection::stream)
-                        .collect(toList())
-                )
-                .orElseGet(Collections::emptyList);
+        formatStepText(line, pickleStep.getText(), getStepMatchArguments(testStep));
+    }
 
-        formatStepText(line, pickleStep.getText(), stepMatchArguments);
+    private static List<StepMatchArgument> getStepMatchArguments(TestStep testStep) {
+        List<StepMatchArgument> stepMatchArguments = new ArrayList<>();
+        testStep.getStepMatchArgumentsLists()
+                .orElse(emptyList())
+                .forEach(list -> stepMatchArguments.addAll(list.getStepMatchArguments()));
+        return stepMatchArguments;
     }
 
     void formatStepText(LineBuilder lineBuilder, String stepText, List<StepMatchArgument> arguments) {
