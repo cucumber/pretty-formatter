@@ -60,9 +60,9 @@ var writer = MessagesToPrettyWriter.builder()
 
 The location of steps and scenarios is included comment (following the `#`).
 Typically, this is a fully qualified URL, which can clutter up the  output. This
-url can be made shorter by removing the a prefix from it. For example:
+url can be made shorter by removing the prefix from it. For example:
 
-```
+```java
 var cwdUri = new File("").toURI().toString();        
 var writer = MessagesToPrettyWriter.builder()
         .removeUriPrefix(cwdUri)
