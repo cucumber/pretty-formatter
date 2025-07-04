@@ -81,7 +81,7 @@ class MessagesToPrettyWriterAcceptanceTest {
     @ParameterizedTest
     @MethodSource("acceptance")
     void testExcludeFeaturesAndRules(TestCase testCase) throws IOException {
-        Builder builder = builder().theme(none()).includeFeatureAndRules(false);
+        Builder builder = builder().theme(none()).includeFeatureAndRuleLines(false);
         ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
         assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedExcludeFeaturesAndRules)));
     }
@@ -109,7 +109,7 @@ class MessagesToPrettyWriterAcceptanceTest {
             // Files.copy(testCase.expectedNoTheme, System.out);
         }
         try (OutputStream out = Files.newOutputStream(testCase.expectedExcludeFeaturesAndRules)) {
-            Builder builder = builder().theme(none()).includeFeatureAndRules(false);
+            Builder builder = builder().theme(none()).includeFeatureAndRuleLines(false);
             writePrettyReport(testCase, out, builder);
             // Render output in console, easier to inspect results
             // Files.copy(testCase.expectedExcludeFeaturesAndRules, System.out);

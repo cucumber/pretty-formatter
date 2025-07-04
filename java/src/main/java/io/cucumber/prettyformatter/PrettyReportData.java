@@ -31,11 +31,11 @@ final class PrettyReportData {
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
     private final Map<String, String> scenarioIndentByTestCaseStartedId = new HashMap<>();
     private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
-    private final boolean includeFeatureAndRules;
+    private final boolean includeFeatureAndRuleLines;
     private final Set<Object> printedFeaturesAndRules = new HashSet<>();
 
-    PrettyReportData(boolean includeFeatureAndRules) {
-        this.includeFeatureAndRules = includeFeatureAndRules;
+    PrettyReportData(boolean includeFeatureAndRuleLines) {
+        this.includeFeatureAndRuleLines = includeFeatureAndRuleLines;
     }
 
     private static int calculateStepLineLength(String scenarioIndent, Step step, PickleStep pickleStep) {
@@ -52,7 +52,7 @@ final class PrettyReportData {
     }
 
     private String calculateScenarioIndent(Lineage lineage) {
-        if (includeFeatureAndRules) {
+        if (includeFeatureAndRuleLines) {
             return lineage.rule().isPresent() ? "    " : lineage.feature().isPresent() ? "  " : "";
         }
         return "";

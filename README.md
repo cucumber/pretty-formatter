@@ -52,7 +52,7 @@ rule lines from the output.
 
 ```java
 var writer = MessagesToPrettyWriter.builder()
-        .includeFeatureAndRules(false)
+        .includeFeatureAndRuleLines(false)
         .build(System.out);
 ```
 

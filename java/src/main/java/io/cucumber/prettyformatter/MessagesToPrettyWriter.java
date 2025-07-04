@@ -28,7 +28,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -62,15 +61,15 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
     private final PrettyReportData data;
-    private final boolean includeFeatureAndRules;
+    private final boolean includeFeatureAndRuleLines;
     private boolean streamClosed = false;
 
-    private MessagesToPrettyWriter(OutputStream out, Theme theme, Function<String, String> uriFormatter, boolean includeFeatureAndRules) {
+    private MessagesToPrettyWriter(OutputStream out, Theme theme, Function<String, String> uriFormatter, boolean includeFeatureAndRuleLines) {
         this.theme = requireNonNull(theme);
         this.writer = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
-        this.includeFeatureAndRules = includeFeatureAndRules;
-        this.data = new PrettyReportData(includeFeatureAndRules);
+        this.includeFeatureAndRuleLines = includeFeatureAndRuleLines;
+        this.data = new PrettyReportData(includeFeatureAndRuleLines);
     }
 
     public static Builder builder() {
@@ -104,7 +103,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private void handleTestCaseStarted(TestCaseStarted event) {
-        if (includeFeatureAndRules) {
+        if (includeFeatureAndRuleLines) {
             data.findLineageBy(event, this).ifPresent(lineage -> {
                 lineage.feature().ifPresent(this::printFeature);
                 lineage.rule().ifPresent(this::printRule);
@@ -387,7 +386,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
 
         private Theme theme = Theme.none();
         private Function<String, String> uriFormatter = Function.identity();
-        private boolean includeFeatureAndRules = true;
+        private boolean includeFeatureAndRuleLines = true;
 
         private Builder() {
         }
@@ -430,14 +429,14 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
          * once. Excluding these can make the report more readable in these
          * circumstances.
          */
-        public Builder includeFeatureAndRules(boolean include) {
-            this.includeFeatureAndRules = include;
+        public Builder includeFeatureAndRuleLines(boolean include) {
+            this.includeFeatureAndRuleLines = include;
             return this;
         }
 
         public MessagesToPrettyWriter build(OutputStream out) {
             requireNonNull(out);
-            return new MessagesToPrettyWriter(out, theme, uriFormatter, includeFeatureAndRules);
+            return new MessagesToPrettyWriter(out, theme, uriFormatter, includeFeatureAndRuleLines);
         }
     }
 
