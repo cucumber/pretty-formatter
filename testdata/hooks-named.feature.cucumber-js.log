@@ -1,4 +1,0 @@
-Feature: Hooks - Named
-
-  [1mScenario:[22m [4mWith a named before and after hook[24m [2m# samples/hooks-named/hooks-named.feature:7[0m
-    [32mWhen a step passes[0m                         [2m# samples/hooks-named/hooks-named.feature.ts:7[0m

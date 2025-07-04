@@ -38,7 +38,7 @@ class MessagesToPrettyWriterTest {
     @Test
     void it_throws_when_writing_after_close() throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        MessagesToPrettyWriter messagesToHtmlWriter = new MessagesToPrettyWriter(bytes);
+        MessagesToPrettyWriter messagesToHtmlWriter = create(bytes);
         messagesToHtmlWriter.close();
         assertThrows(IOException.class, () -> messagesToHtmlWriter.write(null));
     }
@@ -46,19 +46,23 @@ class MessagesToPrettyWriterTest {
     @Test
     void it_can_be_closed_twice() throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        MessagesToPrettyWriter messagesToHtmlWriter = new MessagesToPrettyWriter(bytes);
+        MessagesToPrettyWriter messagesToHtmlWriter = create(bytes);
         messagesToHtmlWriter.close();
         assertDoesNotThrow(messagesToHtmlWriter::close);
     }
 
     private static String renderAsPretty(Envelope... messages) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (MessagesToPrettyWriter messagesToHtmlWriter = new MessagesToPrettyWriter(bytes)) {
+        try (MessagesToPrettyWriter messagesToHtmlWriter = create(bytes)) {
             for (Envelope message : messages) {
                 messagesToHtmlWriter.write(message);
             }
         }
 
         return new String(bytes.toByteArray(), UTF_8);
+    }
+
+    private static MessagesToPrettyWriter create(ByteArrayOutputStream bytes) {
+        return MessagesToPrettyWriter.builder().build(bytes);
     }
 }

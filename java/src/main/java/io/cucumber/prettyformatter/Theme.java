@@ -13,14 +13,14 @@ import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.PENDING;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
 import static io.cucumber.messages.types.TestStepResultStatus.UNDEFINED;
+import static io.cucumber.prettyformatter.Ansi.Attributes.BOLD;
+import static io.cucumber.prettyformatter.Ansi.Attributes.BOLD_OFF;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_BLUE;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_BRIGHT_BLACK;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_CYAN;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_GREEN;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_RED;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_YELLOW;
-import static io.cucumber.prettyformatter.Ansi.Attributes.BOLD;
-import static io.cucumber.prettyformatter.Ansi.Attributes.BOLD_OFF;
 import static io.cucumber.prettyformatter.Ansi.Attributes.RESET;
 import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
@@ -44,7 +44,7 @@ public final class Theme {
         this.styleByStatusByElement = requireNonNull(styleByStatusByElement);
     }
 
-    public static Theme cucumberJvm() {
+    public static Theme cucumber() {
         return Theme.builder()
                 .style(ATTACHMENT, Ansi.with(FOREGROUND_BLUE), Ansi.with(RESET))
                 .style(LOCATION, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
@@ -58,7 +58,7 @@ public final class Theme {
                 .build();
     }
 
-    public static Theme noColor() {
+    public static Theme none() {
         return Theme.builder().build();
     }
 
@@ -85,7 +85,7 @@ public final class Theme {
         Entry<Ansi, Ansi> style = findAnsiBy(element);
         return style == null ? "" : style.getValue().toString();
     }
-    
+
     String endStyle(Element element, TestStepResultStatus status) {
         Entry<Ansi, Ansi> style = findAnsiBy(element, status);
         return style == null ? "" : style.getValue().toString();
@@ -101,7 +101,6 @@ public final class Theme {
     }
 
     public enum Element {
-        
         ATTACHMENT,
         DATA_TABLE,
         DATA_TABLE_BORDER,
@@ -121,9 +120,9 @@ public final class Theme {
         SCENARIO_KEYWORD,
         SCENARIO_NAME,
         STEP,
+        STEP_ARGUMENT,
         STEP_KEYWORD,
         STEP_TEXT,
-        STEP_ARGUMENT,
         TAG
     }
 

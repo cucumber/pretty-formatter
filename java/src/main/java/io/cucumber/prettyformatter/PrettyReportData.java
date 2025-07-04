@@ -2,10 +2,12 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Attachment;
 import io.cucumber.messages.types.Envelope;
+import io.cucumber.messages.types.Feature;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.PickleStep;
 import io.cucumber.messages.types.PickleTag;
+import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.SourceReference;
 import io.cucumber.messages.types.Step;
@@ -17,9 +19,11 @@ import io.cucumber.query.Lineage;
 import io.cucumber.query.Query;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 class PrettyReportData {
 
@@ -28,6 +32,7 @@ class PrettyReportData {
     private final Map<String, String> scenarioIndentByTestCaseStartedId = new HashMap<>();
     private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
     private final boolean includeFeatureAndRules;
+    private final Set<Object> printedFeaturesAndRules = new HashSet<>();
 
     PrettyReportData(boolean includeFeatureAndRules) {
         this.includeFeatureAndRules = includeFeatureAndRules;
@@ -160,5 +165,17 @@ class PrettyReportData {
 
     Optional<Lineage> findLineageBy(TestCaseStarted event, MessagesToPrettyWriter messagesToPrettyWriter) {
         return query.findLineageBy(event);
+    }
+
+    void ifNotSeenBefore(Feature feature, Runnable print) {
+        if (printedFeaturesAndRules.add(feature)) {
+            print.run();
+        }
+    }
+
+    void ifNotSeenBefore(Rule rule, Runnable print) {
+        if (printedFeaturesAndRules.add(rule)) {
+            print.run();
+        }
     }
 }

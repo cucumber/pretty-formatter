@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents an <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">ANSI escape code</a> in the format {@code CSI n m}.
  */
-public class Ansi {
+public final class Ansi {
     
     private static final char FIRST_ESCAPE = 27;
     private static final char SECOND_ESCAPE = '[';

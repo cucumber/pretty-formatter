@@ -68,10 +68,6 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     private Feature currentFeature;
     private Rule currentRule;
 
-    public MessagesToPrettyWriter(OutputStream out) {
-        this(out, Theme.cucumberJvm(), Function.identity(), false);
-    }
-
     private MessagesToPrettyWriter(OutputStream out, Theme theme, Function<String, String> uriFormatter, boolean includeFeatureAndRules) {
         this.theme = requireNonNull(theme);
         this.writer = createPrintWriter(requireNonNull(out));
@@ -125,29 +121,23 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private void printFeature(Feature feature) {
-        if (feature.equals(currentFeature)) {
-            return;
-        }
-        this.currentFeature = feature;
-        writer.println(new LineBuilder(theme)
-                .begin(FEATURE)
-                .title(FEATURE_KEYWORD, feature.getKeyword(), FEATURE_NAME, feature.getName())
-                .end(FEATURE)
-                .build());
+        data.ifNotSeenBefore(feature, () ->
+                writer.println(new LineBuilder(theme)
+                        .begin(FEATURE)
+                        .title(FEATURE_KEYWORD, feature.getKeyword(), FEATURE_NAME, feature.getName())
+                        .end(FEATURE)
+                        .build()));
     }
 
     private void printRule(Rule rule) {
-        if (rule.equals(currentRule)) {
-            return;
-        }
-        this.currentRule = rule;
-        writer.println(new LineBuilder(theme)
-                .newLine()
-                .indent("  ")
-                .begin(RULE)
-                .title(RULE_KEYWORD, rule.getKeyword(), RULE_NAME, rule.getName())
-                .end(RULE)
-                .build());
+        data.ifNotSeenBefore(rule, () ->
+                writer.println(new LineBuilder(theme)
+                        .newLine()
+                        .indent("  ")
+                        .begin(RULE)
+                        .title(RULE_KEYWORD, rule.getKeyword(), RULE_NAME, rule.getName())
+                        .end(RULE)
+                        .build()));
     }
 
     private void printTags(TestCaseStarted event) {
@@ -396,7 +386,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
 
     public static final class Builder {
 
-        private Theme theme = Theme.cucumberJvm();
+        private Theme theme = Theme.cucumber();
         private Function<String, String> uriFormatter = Function.identity();
         private boolean includeFeatureAndRules = true;
 

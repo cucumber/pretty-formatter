@@ -1,9 +1,0 @@
-Feature: Data Tables
-
-  [1mScenario:[22m [4mtransposed table[24m                [2m# samples/data-tables/data-tables.feature:7[0m
-    [32mWhen the following table is transposed:[0m [2m# samples/data-tables/data-tables.feature.ts:5[0m
-      [90m[3m|[23m[3m a [23m[3m|[23m[3m b [23m[3m|[23m[0m
-      [90m[3m|[23m[3m 1 [23m[3m|[23m[3m 2 [23m[3m|[23m[0m
-    [32mThen it should be:[0m                      [2m# samples/data-tables/data-tables.feature.ts:9[0m
-      [90m[3m|[23m[3m a [23m[3m|[23m[3m 1 [23m[3m|[23m[0m
-      [90m[3m|[23m[3m b [23m[3m|[23m[3m 2 [23m[3m|[23m[0m
