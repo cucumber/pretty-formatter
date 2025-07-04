@@ -27,6 +27,11 @@ class PrettyReportData {
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
     private final Map<String, String> scenarioIndentByTestCaseStartedId = new HashMap<>();
     private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
+    private final boolean includeFeatureAndRules;
+
+    PrettyReportData(boolean includeFeatureAndRules) {
+        this.includeFeatureAndRules = includeFeatureAndRules;
+    }
 
     private static int calculateStepLineLength(String scenarioIndent, Step step, PickleStep pickleStep) {
         String keyword = step.getKeyword();
@@ -41,8 +46,11 @@ class PrettyReportData {
         return scenarioIndent.length() + pickleName.length() + pickleKeyword.length() + 2;
     }
 
-    private static String calculateScenarioIndent(Lineage lineage) {
-        return lineage.rule().isPresent() ? "    " : lineage.feature().isPresent() ? "  " : "";
+    private String calculateScenarioIndent(Lineage lineage) {
+        if (includeFeatureAndRules) {
+            return lineage.rule().isPresent() ? "    " : lineage.feature().isPresent() ? "  " : "";
+        }
+        return "";
     }
 
     void collect(Envelope envelope) {
@@ -92,6 +100,10 @@ class PrettyReportData {
     }
 
     String getStackTraceIndentBy(TestStepFinished testStepFinished) {
+        return getStepIndentBy(testStepFinished) + "    ";
+    }
+
+    String getArgumentIndentBy(TestStepFinished testStepFinished) {
         return getStepIndentBy(testStepFinished) + "  ";
     }
 

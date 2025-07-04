@@ -34,25 +34,25 @@ import static io.cucumber.prettyformatter.Theme.Element.TAG;
 public class TestTheme {
     static Theme cucumberJs(){
         return Theme.builder()
-                .with(DATA_TABLE, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
-                .with(DATA_TABLE_BORDER, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
-                .with(DATA_TABLE_CONTENT, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
-                .with(DOC_STRING, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
-                .with(DOC_STRING_CONTENT, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
-                .with(LOCATION, Ansi.with(FAINT), Ansi.with(RESET))
-                .with(SCENARIO, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
-                .with(SCENARIO_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
-                .with(SCENARIO_NAME, Ansi.with(UNDERLINE), Ansi.with(UNDERLINE_OFF))
+                .style(DATA_TABLE, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
+                .style(DATA_TABLE_BORDER, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
+                .style(DATA_TABLE_CONTENT, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
+                .style(DOC_STRING, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
+                .style(DOC_STRING_CONTENT, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
+                .style(LOCATION, Ansi.with(FAINT), Ansi.with(RESET))
+                .style(SCENARIO, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
+                .style(SCENARIO_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
+                .style(SCENARIO_NAME, Ansi.with(UNDERLINE), Ansi.with(UNDERLINE_OFF))
 
-                .with(STEP, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
-                .with(STEP, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
-                .with(STEP, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(RESET))
-                .with(STEP, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
-                .with(STEP, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
-                .with(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
+                .style(STEP, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .style(STEP, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .style(STEP, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(RESET))
+                .style(STEP, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
+                .style(STEP, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
+                .style(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
                 
 //                .with(STEP_KEYWORD, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
-                .with(TAG, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
+                .style(TAG, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
                 .build();
     }
 }

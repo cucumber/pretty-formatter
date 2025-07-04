@@ -1,8 +1,0 @@
-
-Scenario: transposed table                [90m# samples/data-tables/data-tables.feature:7[0m
-  [32mWhen the following table is transposed:[0m [90m# samples/data-tables/data-tables.feature.ts:5[0m
-    | a | b |
-    | 1 | 2 |
-  [32mThen it should be:[0m                      [90m# samples/data-tables/data-tables.feature.ts:9[0m
-    | a | 1 |
-    | b | 2 |

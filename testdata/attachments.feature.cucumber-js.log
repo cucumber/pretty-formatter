@@ -1,0 +1,58 @@
+Feature: Attachments
+
+  [1mScenario:[22m [4mStrings can be attached with a media type[24m                 [2m# samples/attachments/attachments.feature:12[0m
+
+      hello
+
+    [32mWhen the string "hello" is attached as "application/octet-stream"[0m [2m# samples/attachments/attachments.feature.ts:4[0m
+
+  [1mScenario:[22m [4mLog text[24m                  [2m# samples/attachments/attachments.feature:18[0m
+
+      hello
+
+    [32mWhen the string "hello" is logged[0m [2m# samples/attachments/attachments.feature.ts:8[0m
+
+  [1mScenario:[22m [4mLog ANSI coloured text[24m        [2m# samples/attachments/attachments.feature:21[0m
+
+      This displays a [31mr[0m[91ma[0m[33mi[0m[32mn[0m[34mb[0m[95mo[0m[35mw[0m
+
+    [32mWhen text with ANSI escapes is logged[0m [2m# samples/attachments/attachments.feature.ts:12[0m
+
+  [1mScenario:[22m [4mLog JSON[24m                                             [2m# samples/attachments/attachments.feature:24[0m
+
+      {"message": "The <b>big</b> question", "foo": "bar"}
+
+    [32mWhen the following string is attached as "application/json":[0m [2m# samples/attachments/attachments.feature.ts:18[0m
+      [90m"""[0m
+      [90m[3m{"message": "The <b>big</b> question", "foo": "bar"}[23m[0m
+      [90m"""[0m
+
+  [1mScenario:[22m [4mByte arrays are base64-encoded regardless of media type[24m [2m# samples/attachments/attachments.feature:30[0m
+
+      Embedding [text/plain 12 bytes]
+
+    [32mWhen an array with 10 bytes is attached as "text/plain"[0m         [2m# samples/attachments/attachments.feature.ts:22[0m
+
+  [1mScenario:[22m [4mAttaching JPEG images[24m [2m# samples/attachments/attachments.feature:33[0m
+
+      Embedding [image/jpeg 1446 bytes]
+
+    [32mWhen a JPEG image is attached[0m [2m# samples/attachments/attachments.feature.ts:31[0m
+
+  [1mScenario:[22m [4mAttaching PNG images[24m [2m# samples/attachments/attachments.feature:36[0m
+
+      Embedding [image/png 1740 bytes]
+
+    [32mWhen a PNG image is attached[0m [2m# samples/attachments/attachments.feature.ts:35[0m
+
+  [1mScenario:[22m [4mAttaching PDFs with a different filename[24m [2m# samples/attachments/attachments.feature:39[0m
+
+      Embedding renamed.pdf [application/pdf 10062 bytes]
+
+    [32mWhen a PDF document is attached and renamed[0m      [2m# samples/attachments/attachments.feature.ts:39[0m
+
+  [1mScenario:[22m [4mAttaching URIs[24m                           [2m# samples/attachments/attachments.feature:42[0m
+
+      https://cucumber.io
+
+    [32mWhen a link to "https://cucumber.io" is attached[0m [2m# samples/attachments/attachments.feature.ts:43[0m

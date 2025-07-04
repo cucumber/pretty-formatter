@@ -57,28 +57,31 @@ import static java.util.stream.Collectors.toList;
 /**
  * Writes a pretty report of the scenario execution as it happens.
  */
-public class MessagesToPrettyWriter implements AutoCloseable {
+public final class MessagesToPrettyWriter implements AutoCloseable {
 
     private final Theme theme;
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
-    private final PrettyReportData data = new PrettyReportData();
+    private final PrettyReportData data;
+    private final boolean includeFeatureAndRules;
     private boolean streamClosed = false;
     private Feature currentFeature;
     private Rule currentRule;
 
     public MessagesToPrettyWriter(OutputStream out) {
-        this(createPrintWriter(out), Theme.cucumberJvm(), Function.identity());
+        this(out, Theme.cucumberJvm(), Function.identity(), false);
     }
 
-    public MessagesToPrettyWriter(OutputStream out, Theme theme) {
-        this(createPrintWriter(out), theme, Function.identity());
+    private MessagesToPrettyWriter(OutputStream out, Theme theme, Function<String, String> uriFormatter, boolean includeFeatureAndRules) {
+        this.theme = requireNonNull(theme);
+        this.writer = createPrintWriter(requireNonNull(out));
+        this.uriFormatter = requireNonNull(uriFormatter);
+        this.includeFeatureAndRules = includeFeatureAndRules;
+        this.data = new PrettyReportData(includeFeatureAndRules);
     }
 
-    private MessagesToPrettyWriter(PrintWriter writer, Theme theme, Function<String, String> uriFormatter) {
-        this.theme = theme;
-        this.writer = writer;
-        this.uriFormatter = uriFormatter;
+    public static Builder builder() {
+        return new Builder();
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -88,26 +91,6 @@ public class MessagesToPrettyWriter implements AutoCloseable {
                         StandardCharsets.UTF_8
                 )
         );
-    }
-
-    private static Function<String, String> removePrefix(String prefix) {
-        // TODO: Needs coverage
-        return s -> {
-            if (s.startsWith(prefix)) {
-                return s.substring(prefix.length());
-            }
-            return s;
-        };
-    }
-
-    public MessagesToPrettyWriter withNoAnsiColors() {
-        // TODO: With something better
-        return new MessagesToPrettyWriter(writer, Theme.noColor(), uriFormatter);
-    }
-
-    public MessagesToPrettyWriter withRemovePathPrefix(String prefix) {
-        // TODO: With something better
-        return new MessagesToPrettyWriter(writer, theme, removePrefix(prefix));
     }
 
     /**
@@ -128,10 +111,12 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private void handleTestCaseStarted(TestCaseStarted event) {
-        data.findLineageBy(event, this).ifPresent(lineage -> {
-            lineage.feature().ifPresent(this::printFeature);
-            lineage.rule().ifPresent(this::printRule);
-        });
+        if (includeFeatureAndRules) {
+            data.findLineageBy(event, this).ifPresent(lineage -> {
+                lineage.feature().ifPresent(this::printFeature);
+                lineage.rule().ifPresent(this::printRule);
+            });
+        }
 
         writer.println();
         printTags(event);
@@ -217,7 +202,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
                                 pickleStepArgument.getDataTable().ifPresent(pickleTable ->
                                         writer.print(new LineBuilder(theme)
                                                 .accept(lineBuilder -> PickleTableFormatter.builder()
-                                                        .indentation(data.getStepIndentBy(event))
+                                                        .indentation(data.getArgumentIndentBy(event))
                                                         .build()
                                                         .formatTo(pickleTable, lineBuilder))
                                                 .build())
@@ -225,7 +210,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
                                 pickleStepArgument.getDocString().ifPresent(pickleDocString ->
                                         writer.print(new LineBuilder(theme)
                                                 .accept(lineBuilder -> PickleDocStringFormatter.builder()
-                                                        .indentation(data.getStepIndentBy(event))
+                                                        .indentation(data.getArgumentIndentBy(event))
                                                         .build()
                                                         .formatTo(pickleDocString, lineBuilder))
                                                 .build())
@@ -406,6 +391,46 @@ public class MessagesToPrettyWriter implements AutoCloseable {
             writer.close();
         } finally {
             streamClosed = true;
+        }
+    }
+
+    public static final class Builder {
+
+        private Theme theme = Theme.cucumberJvm();
+        private Function<String, String> uriFormatter = Function.identity();
+        private boolean includeFeatureAndRules = true;
+
+        Builder() {
+        }
+
+        private static Function<String, String> removePrefix(String prefix) {
+            // TODO: Needs coverage
+            return s -> {
+                if (s.startsWith(prefix)) {
+                    return s.substring(prefix.length());
+                }
+                return s;
+            };
+        }
+
+        public Builder theme(Theme theme) {
+            this.theme = requireNonNull(theme);
+            return this;
+        }
+
+        public Builder removeUriPrefix(String prefix) {
+            this.uriFormatter = removePrefix(requireNonNull(prefix));
+            return this;
+        }
+
+        public Builder includeFeatureAndRules(boolean include) {
+            this.includeFeatureAndRules = include;
+            return this;
+        }
+
+        public MessagesToPrettyWriter build(OutputStream out) {
+            requireNonNull(out);
+            return new MessagesToPrettyWriter(out, theme, uriFormatter, includeFeatureAndRules);
         }
     }
 

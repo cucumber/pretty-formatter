@@ -2,6 +2,7 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.NdjsonToMessageIterable;
 import io.cucumber.messages.types.Envelope;
+import io.cucumber.prettyformatter.MessagesToPrettyWriter.Builder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.builder;
+import static io.cucumber.prettyformatter.TestTheme.cucumberJs;
+import static io.cucumber.prettyformatter.Theme.noColor;
 import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,50 +40,10 @@ class MessagesToPrettyWriterAcceptanceTest {
         }
     }
 
-    @ParameterizedTest
-    @MethodSource("acceptance")
-    void test(TestCase testCase) throws IOException {
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), Theme.cucumberJvm());
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
-    }
-
-    @ParameterizedTest
-    @MethodSource("acceptance")
-    void testCucumberJs(TestCase testCase) throws IOException {
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), TestTheme.cucumberJs());
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedCucumberJs)));
-    }
-
-    @ParameterizedTest
-    @MethodSource("acceptance")
-    void testNoColor(TestCase testCase) throws IOException {
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), Theme.noColor());
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedNoColor)));
-    }
-
-    @ParameterizedTest
-    @MethodSource("acceptance")
-    @Disabled
-    void updateExpectedPrettyFiles(TestCase testCase) throws IOException {
-        try (OutputStream out = Files.newOutputStream(testCase.expected)) {
-            writePrettyReport(testCase, out, Theme.cucumberJvm());
-            // Render output in console, easier to inspect results
-            Files.copy(testCase.expected, System.out);
-        }
-        try (OutputStream out = Files.newOutputStream(testCase.expectedCucumberJs)) {
-            writePrettyReport(testCase, out, TestTheme.cucumberJs());
-            // Render output in console, easier to inspect results
-            // Files.copy(testCase.expectedCucumberJs, System.out);
-        }
-        try (OutputStream out = Files.newOutputStream(testCase.expectedNoColor)) {
-            writePrettyReport(testCase, out, Theme.noColor());
-        }
-    }
-
-    private static <T extends OutputStream> T writePrettyReport(TestCase testCase, T out, Theme theme) throws IOException {
+    private static <T extends OutputStream> T writePrettyReport(TestCase testCase, T out, Builder builder) throws IOException {
         try (InputStream in = Files.newInputStream(testCase.source)) {
             try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, deserializer)) {
-                try (MessagesToPrettyWriter writer = createWriter(out, theme)) {
+                try (MessagesToPrettyWriter writer = builder.build(out)) {
                     for (Envelope envelope : envelopes) {
                         writer.write(envelope);
                     }
@@ -89,15 +53,59 @@ class MessagesToPrettyWriterAcceptanceTest {
         return out;
     }
 
-    private static <T extends OutputStream> MessagesToPrettyWriter createWriter(T out, Theme theme) {
-        return new MessagesToPrettyWriter(out,theme);
+    @ParameterizedTest
+    @MethodSource("acceptance")
+    void testCucumberJvm(TestCase testCase) throws IOException {
+        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder());
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedCucumberJvm)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("acceptance")
+    void testCucumberJs(TestCase testCase) throws IOException {
+        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder().theme(cucumberJs()));
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedCucumberJs)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("acceptance")
+    void testNoColor(TestCase testCase) throws IOException {
+        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder().theme(noColor()));
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedNoColor)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("acceptance")
+    @Disabled
+    void updateExpectedPrettyFiles(TestCase testCase) throws IOException {
+        try (OutputStream out = Files.newOutputStream(testCase.expectedCucumberJvm)) {
+            writePrettyReport(testCase, out, builder());
+            // Render output in console, easier to inspect results
+            Files.copy(testCase.expectedCucumberJvm, System.out);
+        }
+        try (OutputStream out = Files.newOutputStream(testCase.expectedCucumberJs)) {
+            writePrettyReport(testCase, out, builder().theme(cucumberJs()));
+            // Render output in console, easier to inspect results
+            // Files.copy(testCase.expectedCucumberJs, System.out);
+        }
+        try (OutputStream out = Files.newOutputStream(testCase.expectedNoColor)) {
+            writePrettyReport(testCase, out, builder().theme(noColor()));
+            // Render output in console, easier to inspect results
+            // Files.copy(testCase.expectedNoColor, System.out);
+        }
+        try (OutputStream out = Files.newOutputStream(testCase.expectedExcludeFeaturesAndRules)) {
+            writePrettyReport(testCase, out, builder().theme(noColor()).includeFeatureAndRules(false));
+            // Render output in console, easier to inspect results
+            // Files.copy(testCase.expectedExcludeFeaturesAndRules, System.out);
+        }
     }
 
     static class TestCase {
         private final Path source;
-        private final Path expected;
+        private final Path expectedCucumberJvm;
         private final Path expectedNoColor;
         private final Path expectedCucumberJs;
+        private final Path expectedExcludeFeaturesAndRules;
 
         private final String name;
 
@@ -105,9 +113,10 @@ class MessagesToPrettyWriterAcceptanceTest {
             this.source = source;
             String fileName = source.getFileName().toString();
             this.name = fileName.substring(0, fileName.lastIndexOf(".ndjson"));
-            this.expected = source.getParent().resolve(name + ".log");
+            this.expectedCucumberJvm = source.getParent().resolve(name + "cucumber-jvm.log");
             this.expectedNoColor = source.getParent().resolve(name + ".no-color.log");
-            this.expectedCucumberJs = source.getParent().resolve(name + ".js-color.log");
+            this.expectedCucumberJs = source.getParent().resolve(name + ".cucumber-js.log");
+            this.expectedExcludeFeaturesAndRules = source.getParent().resolve(name + ".exclude-features-and-rules.log");
         }
 
         @Override

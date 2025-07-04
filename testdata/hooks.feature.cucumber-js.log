@@ -1,0 +1,11 @@
+Feature: Hooks
+
+  [1mScenario:[22m [4mNo tags and a passed step[24m [2m# samples/hooks/hooks.feature:4[0m
+    [32mWhen a step passes[0m                [2m# samples/hooks/hooks.feature.ts:7[0m
+
+  [1mScenario:[22m [4mNo tags and a failed step[24m [2m# samples/hooks/hooks.feature:7[0m
+    [31mWhen a step fails[0m                 [2m# samples/hooks/hooks.feature.ts:11[0m
+        [31mException in step[0m
+
+  [1mScenario:[22m [4mNo tags and a undefined step[24m [2m# samples/hooks/hooks.feature:10[0m
+    [33mWhen a step does not exist[0m

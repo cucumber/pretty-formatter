@@ -1,3 +1,0 @@
-
-Scenario: undefined parameter type        [90m# samples/unknown-parameter-type/unknown-parameter-type.feature:5[0m
-  [33mGiven CDG is closed because of a strike[0m

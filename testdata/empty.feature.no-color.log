@@ -1,2 +1,3 @@
+Feature: Empty Scenarios
 
-Scenario: Blank Scenario # samples/empty/empty.feature:7
+  Scenario: Blank Scenario # samples/empty/empty.feature:7

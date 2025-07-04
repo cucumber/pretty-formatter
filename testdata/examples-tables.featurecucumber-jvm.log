@@ -1,0 +1,58 @@
+Feature: Examples Tables
+
+  @passing
+  Scenario Outline: Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:19[0m
+    [32mGiven there are [1m12[22m cucumbers[0m     [90m# samples/examples-tables/examples-tables.feature.ts:4[0m
+    [32mWhen I eat [1m5[22m cucumbers[0m           [90m# samples/examples-tables/examples-tables.feature.ts:12[0m
+    [32mThen I should have [1m7[22m cucumbers[0m   [90m# samples/examples-tables/examples-tables.feature.ts:16[0m
+
+  @passing
+  Scenario Outline: Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:20[0m
+    [32mGiven there are [1m20[22m cucumbers[0m     [90m# samples/examples-tables/examples-tables.feature.ts:4[0m
+    [32mWhen I eat [1m5[22m cucumbers[0m           [90m# samples/examples-tables/examples-tables.feature.ts:12[0m
+    [32mThen I should have [1m15[22m cucumbers[0m  [90m# samples/examples-tables/examples-tables.feature.ts:16[0m
+
+  @failing
+  Scenario Outline: Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[0m
+    [32mGiven there are [1m12[22m cucumbers[0m     [90m# samples/examples-tables/examples-tables.feature.ts:4[0m
+    [32mWhen I eat [1m20[22m cucumbers[0m          [90m# samples/examples-tables/examples-tables.feature.ts:12[0m
+    [31mThen I should have [1m0[22m cucumbers[0m   [90m# samples/examples-tables/examples-tables.feature.ts:16[0m
+        [31mExpected values to be strictly equal:
+        
+        -8 !== 0[0m
+
+  @failing
+  Scenario Outline: Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[0m
+    [32mGiven there are [1m0[22m cucumbers[0m      [90m# samples/examples-tables/examples-tables.feature.ts:4[0m
+    [32mWhen I eat [1m1[22m cucumbers[0m           [90m# samples/examples-tables/examples-tables.feature.ts:12[0m
+    [31mThen I should have [1m0[22m cucumbers[0m   [90m# samples/examples-tables/examples-tables.feature.ts:16[0m
+        [31mExpected values to be strictly equal:
+        
+        -1 !== 0[0m
+
+  @undefined
+  Scenario Outline: Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:31[0m
+    [32mGiven there are [1m12[22m cucumbers[0m     [90m# samples/examples-tables/examples-tables.feature.ts:4[0m
+    [33mWhen I eat banana cucumbers[0m
+    [36mThen I should have [1m12[22m cucumbers[0m  [90m# samples/examples-tables/examples-tables.feature.ts:16[0m
+
+  @undefined
+  Scenario Outline: Eating cucumbers   [90m# samples/examples-tables/examples-tables.feature:32[0m
+    [32mGiven there are [1m0[22m cucumbers[0m        [90m# samples/examples-tables/examples-tables.feature.ts:4[0m
+    [32mWhen I eat [1m1[22m cucumbers[0m             [90m# samples/examples-tables/examples-tables.feature.ts:12[0m
+    [33mThen I should have apple cucumbers[0m
+
+  Scenario Outline: Eating cucumbers with 11 friends [90m# samples/examples-tables/examples-tables.feature:41[0m
+    [32mGiven there are [1m11[22m friends[0m                       [90m# samples/examples-tables/examples-tables.feature.ts:8[0m
+    [32mAnd there are [1m12[22m cucumbers[0m                       [90m# samples/examples-tables/examples-tables.feature.ts:4[0m
+    [32mThen each person can eat [1m1[22m cucumbers[0m             [90m# samples/examples-tables/examples-tables.feature.ts:20[0m
+
+  Scenario Outline: Eating cucumbers with 1 friends [90m# samples/examples-tables/examples-tables.feature:42[0m
+    [32mGiven there are [1m1[22m friends[0m                       [90m# samples/examples-tables/examples-tables.feature.ts:8[0m
+    [32mAnd there are [1m4[22m cucumbers[0m                       [90m# samples/examples-tables/examples-tables.feature.ts:4[0m
+    [32mThen each person can eat [1m2[22m cucumbers[0m            [90m# samples/examples-tables/examples-tables.feature.ts:20[0m
+
+  Scenario Outline: Eating cucumbers with 0 friends [90m# samples/examples-tables/examples-tables.feature:43[0m
+    [32mGiven there are [1m0[22m friends[0m                       [90m# samples/examples-tables/examples-tables.feature.ts:8[0m
+    [32mAnd there are [1m4[22m cucumbers[0m                       [90m# samples/examples-tables/examples-tables.feature.ts:4[0m
+    [32mThen each person can eat [1m4[22m cucumbers[0m            [90m# samples/examples-tables/examples-tables.feature.ts:20[0m

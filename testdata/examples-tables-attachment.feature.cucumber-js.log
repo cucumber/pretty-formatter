@@ -1,0 +1,13 @@
+Feature: Examples Tables - With attachments
+
+  [1mScenario Outline:[22m [4mAttaching images in an examples table[24m [2m# samples/examples-tables-attachment/examples-tables-attachment.feature:12[0m
+
+      Embedding [image/jpeg 1446 bytes]
+
+    [32mWhen a JPEG image is attached[0m                         [2m# samples/examples-tables-attachment/examples-tables-attachment.feature.ts:4[0m
+
+  [1mScenario Outline:[22m [4mAttaching images in an examples table[24m [2m# samples/examples-tables-attachment/examples-tables-attachment.feature:13[0m
+
+      Embedding [image/png 1740 bytes]
+
+    [32mWhen a PNG image is attached[0m                          [2m# samples/examples-tables-attachment/examples-tables-attachment.feature.ts:8[0m

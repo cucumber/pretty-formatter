@@ -1,0 +1,12 @@
+Feature: Undefined steps
+
+  Scenario: An undefined step causes a failure [90m# samples/undefined/undefined.feature:7[0m
+    [33mGiven a step that is yet to be defined[0m
+
+  Scenario: Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:10[0m
+    [32mGiven an implemented step[0m                         [90m# samples/undefined/undefined.feature.ts:3[0m
+    [33mAnd a step that is yet to be defined[0m
+
+  Scenario: Steps after undefined steps are skipped [90m# samples/undefined/undefined.feature:14[0m
+    [33mGiven a step that is yet to be defined[0m
+    [36mAnd a step that will be skipped[0m                 [90m# samples/undefined/undefined.feature.ts:7[0m

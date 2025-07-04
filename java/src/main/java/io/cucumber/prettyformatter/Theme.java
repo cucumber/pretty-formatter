@@ -46,15 +46,15 @@ public final class Theme {
 
     public static Theme cucumberJvm() {
         return Theme.builder()
-                .with(ATTACHMENT, Ansi.with(FOREGROUND_BLUE), Ansi.with(RESET))
-                .with(LOCATION, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
-                .with(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
-                .with(STEP, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
-                .with(STEP, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
-                .with(STEP, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
-                .with(STEP, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(RESET))
-                .with(STEP, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
-                .with(STEP_ARGUMENT, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
+                .style(ATTACHMENT, Ansi.with(FOREGROUND_BLUE), Ansi.with(RESET))
+                .style(LOCATION, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
+                .style(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
+                .style(STEP, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
+                .style(STEP, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .style(STEP, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .style(STEP, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(RESET))
+                .style(STEP, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
+                .style(STEP_ARGUMENT, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .build();
     }
 
@@ -131,7 +131,7 @@ public final class Theme {
         private final Map<Element, Entry<Ansi, Ansi>> styleByElement = new EnumMap<>(Element.class);
         private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement = new EnumMap<>(Element.class);
 
-        public Builder with(Element element, Ansi style, Ansi resetStyle) {
+        public Builder style(Element element, Ansi style, Ansi resetStyle) {
             requireNonNull(element);
             requireNonNull(style);
             requireNonNull(resetStyle);
@@ -140,7 +140,7 @@ public final class Theme {
             return this;
         }
 
-        public Builder with(Element element, TestStepResultStatus status, Ansi style, Ansi resetStyle) {
+        public Builder style(Element element, TestStepResultStatus status, Ansi style, Ansi resetStyle) {
             requireNonNull(element);
             requireNonNull(status);
             requireNonNull(style);

@@ -1,0 +1,42 @@
+Feature: Cheese
+
+  Rule: Nom nom nom
+
+    [1mScenario Outline:[22m [4mYlajali![24m                                    [2m# samples/markdown/markdown.feature.md:38[0m
+      [32mGiven some TypeScript code:[0m                                 [2m# samples/markdown/markdown.feature.md.ts:4[0m
+        [90m"""typescript[0m
+        [90m[3mtype Cheese = 'reblochon' | 'roquefort' | 'rocamadour'[23m[0m
+        [90m"""[0m
+      [32mAnd some classic Gherkin:[0m                                   [2m# samples/markdown/markdown.feature.md.ts:8[0m
+        [90m"""gherkin[0m
+        [90m[3mGiven there are 24 apples in Mary's basket[23m[0m
+        [90m"""[0m
+
+        We are logging some plain text (fail)
+
+      [31mWhen we use a data table and attach something and then fail[0m [2m# samples/markdown/markdown.feature.md.ts:12[0m
+        [90m[3m|[23m[3m name [23m[3m|[23m[3m age [23m[3m|[23m[0m
+        [90m[3m|[23m[3m Bill [23m[3m|[23m[3m 3   [23m[3m|[23m[0m
+        [90m[3m|[23m[3m Jane [23m[3m|[23m[3m 6   [23m[3m|[23m[0m
+        [90m[3m|[23m[3m Isla [23m[3m|[23m[3m 5   [23m[3m|[23m[0m
+          [31mYou asked me to fail[0m
+      [36mThen this might or might not run[0m                            [2m# samples/markdown/markdown.feature.md.ts:23[0m
+
+    [1mScenario Outline:[22m [4mYlajali![24m                                    [2m# samples/markdown/markdown.feature.md:39[0m
+      [32mGiven some TypeScript code:[0m                                 [2m# samples/markdown/markdown.feature.md.ts:4[0m
+        [90m"""typescript[0m
+        [90m[3mtype Cheese = 'reblochon' | 'roquefort' | 'rocamadour'[23m[0m
+        [90m"""[0m
+      [32mAnd some classic Gherkin:[0m                                   [2m# samples/markdown/markdown.feature.md.ts:8[0m
+        [90m"""gherkin[0m
+        [90m[3mGiven there are 24 apples in Mary's basket[23m[0m
+        [90m"""[0m
+
+        We are logging some plain text (pass)
+
+      [32mWhen we use a data table and attach something and then pass[0m [2m# samples/markdown/markdown.feature.md.ts:12[0m
+        [90m[3m|[23m[3m name [23m[3m|[23m[3m age [23m[3m|[23m[0m
+        [90m[3m|[23m[3m Bill [23m[3m|[23m[3m 3   [23m[3m|[23m[0m
+        [90m[3m|[23m[3m Jane [23m[3m|[23m[3m 6   [23m[3m|[23m[0m
+        [90m[3m|[23m[3m Isla [23m[3m|[23m[3m 5   [23m[3m|[23m[0m
+      [32mThen this might or might not run[0m                            [2m# samples/markdown/markdown.feature.md.ts:23[0m
