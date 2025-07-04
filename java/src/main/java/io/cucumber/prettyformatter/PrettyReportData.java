@@ -30,7 +30,7 @@ import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE
 
 final class PrettyReportData {
 
-    final Query query = new Query();
+    private final Query query = new Query();
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
     private final Map<String, Integer> scenarioIndentByTestCaseStartedId = new HashMap<>();
     private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
@@ -86,9 +86,7 @@ final class PrettyReportData {
         return 0;
     }
 
-    int getAfterFeatureIndent() {
-        return afterFeatureIndent;
-    }
+
 
     void collect(Envelope envelope) {
         query.update(envelope);
@@ -108,7 +106,7 @@ final class PrettyReportData {
                                     int scenarioIndent = calculateScenarioIndent(lineage);
                                     int scenarioLineLength = calculateScenarioLineLength(scenarioIndent, pickle, scenario);
                                     int longestLine = pickle.getSteps().stream()
-                                            .mapToInt(pickleStep -> calculatePickleStepLineLength(scenarioIndent, pickleStep))
+                                            .mapToInt(pickleStep -> preCalculatePickleStepLineLength(scenarioIndent, pickleStep))
                                             .reduce(scenarioLineLength, Math::max);
 
                                     scenarioIndentByTestCaseStartedId.put(event.getId(), scenarioIndent);
@@ -116,16 +114,20 @@ final class PrettyReportData {
                                 })));
     }
 
-    private Integer calculatePickleStepLineLength(int indent, PickleStep pickleStep) {
+    private Integer preCalculatePickleStepLineLength(int indent, PickleStep pickleStep) {
         return query.findStepBy(pickleStep)
                 .map(step -> calculateStepLineLength(indent, step, pickleStep))
                 .orElse(0);
+    }
+    
+    int getAfterFeatureIndent() {
+        return afterFeatureIndent;
     }
 
     int getAttachmentIndentBy(Attachment attachment) {
         return attachment.getTestCaseStartedId()
                 .map(s -> scenarioIndentByTestCaseStartedId.getOrDefault(s, 0) + 4)
-                .orElse(2);
+                .orElse(4);
     }
 
     int getScenarioIndentBy(TestCaseStarted testCaseStarted) {
