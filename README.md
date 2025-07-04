@@ -7,8 +7,8 @@ Pretty Formatter
 
 Writes a rich report of the scenario and example execution as it happens. Useful when running Cucumber from the terminal.
 
-<!-- TODO: Image does not work -->
-![](./example.png)
+![Example output of the pretty formatting, showing the different colors used](https://github.com/user-attachments/assets/fcecb5d4-37ad-4244-a74f-1c5bdc096bbb)
+
 
 ## Features and Limitations
 
