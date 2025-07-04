@@ -26,8 +26,8 @@ import static io.cucumber.prettyformatter.Theme.Element.DATA_TABLE_BORDER;
 import static io.cucumber.prettyformatter.Theme.Element.DATA_TABLE_CONTENT;
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING;
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_CONTENT;
-import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_MEDIA_TYPE;
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_DELIMITER;
+import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_MEDIA_TYPE;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_NAME;
@@ -45,7 +45,7 @@ import static io.cucumber.prettyformatter.Theme.Element.STEP_TEXT;
 import static io.cucumber.prettyformatter.Theme.Element.TAG;
 
 public class TestTheme {
-    static Theme demo(){
+    static Theme demo() {
         return Theme.builder()
                 .style(ATTACHMENT, Ansi.with(FOREGROUND_BLUE), Ansi.with(RESET))
                 .style(DATA_TABLE, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))

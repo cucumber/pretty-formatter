@@ -126,104 +126,125 @@ public final class Theme {
      * All style-able elements in a theme.
      */
     public enum Element {
+        
         /**
          * The output from {@code scenario.log} and {@code scenario.attach}.
          */
         ATTACHMENT,
+        
         /**
          * The data table, an optional argument for a step.
          */
         DATA_TABLE,
+        
         /**
          * The data table borders. I.e. the {code |} characters.
          * <p>
          * Styles applied to {@link #DATA_TABLE} are also applied to this element.
          */
         DATA_TABLE_BORDER,
+        
         /**
          * The data table contents. I.e. the individual cell.
          * <p>
          * Styles applied to {@link #DATA_TABLE} are also applied to this element.
          */
         DATA_TABLE_CONTENT,
+        
         /**
          * The doc string, an optional argument for a step.
          */
         DOC_STRING,
+        
         /**
          * The doc string contents.
          * <p>
          * Styles applied to {@link #DOC_STRING} are also applied to this element.
          */
         DOC_STRING_CONTENT,
+        
         /**
          * The doc string media type. E.g. {@code application/json} .
          * <p>
          * Styles applied to {@link #DOC_STRING} are also applied to this element.
          */
         DOC_STRING_MEDIA_TYPE,
+        
         /**
          * The doc string delimiter. I.e. {@code """"}.
          * <p>
          * Styles applied to {@link #DOC_STRING} are also applied to this element.
          */
         DOC_STRING_DELIMITER,
+        
         /**
          * The feature line.
          */
         FEATURE,
+        
         /**
          * The feature keyword.
          * <p>
          * Styles applied to {@link #FEATURE} are also applied to this element.
          */
         FEATURE_KEYWORD,
+        
         /**
          * The feature name.
          * <p>
          * Styles applied to {@link #FEATURE} are also applied to this element.
          */
         FEATURE_NAME,
+        
         /**
          * The location comment. E.g. {@code # samples/undefined/undefined.feature:10}.
          * <p>
          * Styles applied to {@link #FEATURE} are also applied to this element.
          */
         LOCATION,
+        
         /**
          * The rule line.
          */
         RULE,
+        
         /**
          * The rule keyword.
          * <p>
          * Styles applied to {@link #RULE} are also applied to this element.
          */
         RULE_KEYWORD,
+        
         /**
          * The rule name.
          * <p>
          * Styles applied to {@link #RULE} are also applied to this element.
          */
         RULE_NAME,
+        
         /**
          * The scenario line.
          */
         SCENARIO,
+        
         /**
          * The scenario keyword.
          * <p>
          * Styles applied to {@link #SCENARIO} are also applied to this element.
          */
         SCENARIO_KEYWORD,
+        
         /**
          * The scenario name.
          * <p>
          * Styles applied to {@link #SCENARIO} are also applied to this element.
          */
         SCENARIO_NAME,
+        
         /**
          * The step line.
+         * <p>
+         * Always used in combination with a {@link TestStepResultStatus}.
          */
         STEP,
         /**
