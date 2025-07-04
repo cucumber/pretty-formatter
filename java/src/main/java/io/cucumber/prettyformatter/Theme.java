@@ -101,6 +101,7 @@ public final class Theme {
     }
 
     public enum Element {
+        
         ATTACHMENT,
         DATA_TABLE,
         DATA_TABLE_BORDER,
@@ -109,7 +110,13 @@ public final class Theme {
         DOC_STRING_CONTENT,
         DOC_STRING_CONTENT_TYPE,
         DOC_STRING_DELIMITER,
+        FEATURE,
+        FEATURE_KEYWORD,
+        FEATURE_NAME,
         LOCATION,
+        RULE,
+        RULE_KEYWORD,
+        RULE_NAME,
         SCENARIO,
         SCENARIO_KEYWORD,
         SCENARIO_NAME,

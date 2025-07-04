@@ -1,5 +1,6 @@
 package io.cucumber.prettyformatter;
 
+import io.cucumber.messages.types.Attachment;
 import io.cucumber.messages.types.Envelope;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
@@ -22,21 +23,26 @@ import java.util.Optional;
 
 class PrettyReportData {
 
-    private final Query query = new Query();
+    final Query query = new Query();
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
+    private final Map<String, String> scenarioIndentByTestCaseStartedId = new HashMap<>();
     private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
 
-    private static int calculateStepLineLength(Step step, PickleStep pickleStep) {
+    private static int calculateStepLineLength(String scenarioIndent, Step step, PickleStep pickleStep) {
         String keyword = step.getKeyword();
         String text = pickleStep.getText();
-        return MessagesToPrettyWriter.STEP_INDENT.length() + keyword.length() + text.length();
+        return scenarioIndent.length() + 2 + keyword.length() + text.length();
     }
 
-    private static int calculateScenarioLineLength(Pickle pickle, Scenario scenario) {
+    private static int calculateScenarioLineLength(String scenarioIndent, Pickle pickle, Scenario scenario) {
         String pickleName = pickle.getName();
         String pickleKeyword = scenario.getKeyword();
         // The ": " between keyword and name adds 2
-        return MessagesToPrettyWriter.SCENARIO_INDENT.length() + pickleName.length() + pickleKeyword.length() + 2;
+        return scenarioIndent.length() + pickleName.length() + pickleKeyword.length() + 2;
+    }
+
+    private static String calculateScenarioIndent(Lineage lineage) {
+        return lineage.rule().isPresent() ? "    " : lineage.feature().isPresent() ? "  " : "";
     }
 
     void collect(Envelope envelope) {
@@ -51,17 +57,42 @@ class PrettyReportData {
 
     private void preCalculateLocationIndent(io.cucumber.messages.types.TestCaseStarted event) {
         query.findLineageBy(event)
-                .flatMap(Lineage::scenario)
-                .ifPresent(scenario ->
-                        query.findPickleBy(event).ifPresent(pickle -> {
-                            int scenarioLineLength = calculateScenarioLineLength(pickle, scenario);
-                            int longestLine = pickle.getSteps().stream()
-                                    .mapToInt(pickleStep -> query.findStepBy(pickleStep)
-                                            .map(step -> calculateStepLineLength(step, pickleStep))
-                                            .orElse(0))
-                                    .reduce(scenarioLineLength, Math::max);
-                            commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + 1);
-                        }));
+                .ifPresent(lineage ->
+                        lineage.scenario().ifPresent(scenario ->
+                                query.findPickleBy(event).ifPresent(pickle -> {
+                                    String scenarioIndent = calculateScenarioIndent(lineage);
+                                    int scenarioLineLength = calculateScenarioLineLength(scenarioIndent, pickle, scenario);
+                                    int longestLine = pickle.getSteps().stream()
+                                            .mapToInt(pickleStep -> calculatePickleStepLineLength(scenarioIndent, pickleStep))
+                                            .reduce(scenarioLineLength, Math::max);
+
+                                    scenarioIndentByTestCaseStartedId.put(event.getId(), scenarioIndent);
+                                    commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + 1);
+                                })));
+    }
+
+    private Integer calculatePickleStepLineLength(String indent, PickleStep pickleStep) {
+        return query.findStepBy(pickleStep)
+                .map(step -> calculateStepLineLength(indent, step, pickleStep))
+                .orElse(0);
+    }
+
+    public String getAttachmentIndentBy(Attachment attachment) {
+        return attachment.getTestCaseStartedId()
+                .map(s -> scenarioIndentByTestCaseStartedId.getOrDefault(s, "") + "    ")
+                .orElse("  ");
+    }
+
+    String getScenarioIndentBy(TestCaseStarted testCaseStarted) {
+        return scenarioIndentByTestCaseStartedId.getOrDefault(testCaseStarted.getId(), "");
+    }
+
+    String getStepIndentBy(TestStepFinished testStepFinished) {
+        return scenarioIndentByTestCaseStartedId.getOrDefault(testStepFinished.getTestCaseStartedId(), "") + "  ";
+    }
+
+    String getStackTraceIndentBy(TestStepFinished testStepFinished) {
+        return getStepIndentBy(testStepFinished) + "  ";
     }
 
     int getCommentStartAtIndexBy(TestCaseStarted testCaseStarted) {
@@ -113,5 +144,9 @@ class PrettyReportData {
 
     Optional<Long> findLineOf(Pickle pickle) {
         return query.findLocationOf(pickle).map(Location::getLine);
+    }
+
+    Optional<Lineage> findLineageBy(TestCaseStarted event, MessagesToPrettyWriter messagesToPrettyWriter) {
+        return query.findLineageBy(event);
     }
 }
