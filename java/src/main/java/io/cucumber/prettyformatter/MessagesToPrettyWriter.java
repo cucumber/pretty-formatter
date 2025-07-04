@@ -85,6 +85,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private static Function<String, String> removePrefix(String prefix) {
+        // TODO: Needs coverage
         return s -> {
             if (s.startsWith(prefix)) {
                 return s.substring(prefix.length());
@@ -153,7 +154,8 @@ public class MessagesToPrettyWriter implements AutoCloseable {
         return new LineBuilder(theme)
                 .indent(SCENARIO_INDENT)
                 .scenario(scenario.getKeyword(), pickle.getName())
-                .location(data.getCommentStartAtIndexBy(event), formatLocation(pickle))
+                .addPaddingUpTo(data.getCommentStartAtIndexBy(event))
+                .location(formatLocation(pickle))
                 .build();
     }
 
@@ -193,8 +195,14 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     private String formatStep(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
         return new LineBuilder(theme)
                 .indent(STEP_INDENT)
-                .step(event.getTestStepResult().getStatus(), step.getKeyword(), lineBuilder -> formatStepText(lineBuilder, testStep, pickleStep))
-                .location(data.getCommentStartAtIndexBy(event), formatLocation(testStep).orElse(""))
+                .beginStep(event.getTestStepResult().getStatus())
+                .stepKeyword(step.getKeyword())
+                .accept(lineBuilder -> formatStepText(lineBuilder, testStep, pickleStep))
+                .endStep(event.getTestStepResult().getStatus())
+                .accept(lineBuilder -> formatLocation(testStep)
+                        .ifPresent(location -> lineBuilder
+                                .addPaddingUpTo(data.getCommentStartAtIndexBy(event))
+                                .location(location)))
                 .build();
     }
 
@@ -238,6 +246,7 @@ public class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private Optional<String> formatSourceReference(SourceReference sourceReference) {
+        // TODO: Needs coverage
         // TODO: can we do this lazy/functional?
         if (sourceReference.getJavaMethod().isPresent()) {
             return sourceReference.getJavaMethod()

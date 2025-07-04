@@ -47,20 +47,16 @@ class LineBuilder {
                 .append(SCENARIO_NAME, title);
     }
 
-    LineBuilder location(int commentStartAtIndex, String location) {
-        if (location.isEmpty()) {
-            return this;
-        }
-        return append(createPadding(commentStartAtIndex))
-                .append(LOCATION, "# " + location);
+    LineBuilder location(String location) {
+        return append(LOCATION, "# " + location);
+    }
+
+    LineBuilder addPaddingUpTo(int index) {
+        return append(createPadding(index));
     }
 
     private String createPadding(int commentStartAtIndex) {
         int padding = commentStartAtIndex - unstyledLength;
-
-        if (padding <= 0) {
-            return " ";
-        }
         StringBuilder builder = new StringBuilder(padding);
         for (int i = 0; i < padding; i++) {
             builder.append(" ");
@@ -68,11 +64,16 @@ class LineBuilder {
         return builder.toString();
     }
 
-    LineBuilder step(TestStepResultStatus status, String keyword, Consumer<LineBuilder> stepBuilder) {
-        return begin(STEP, status)
-                .append(STEP_KEYWORD, keyword)
-                .accept(stepBuilder)
-                .end(STEP, status);
+    LineBuilder stepKeyword(String keyword) {
+        return append(STEP_KEYWORD, keyword);
+    }
+
+    LineBuilder beginStep(TestStepResultStatus status) {
+        return begin(STEP, status);
+    }
+
+    LineBuilder endStep(TestStepResultStatus status) {
+        return end(STEP, status);
     }
 
     LineBuilder accept(Consumer<LineBuilder> consumer) {
@@ -99,9 +100,9 @@ class LineBuilder {
     }
 
     LineBuilder error(TestStepResultStatus status, String text) {
-        return begin(STEP, status)
+        return beginStep(status)
                 .append(text)
-                .end(STEP, status);
+                .endStep(status);
     }
 
     LineBuilder beginDocString() {
