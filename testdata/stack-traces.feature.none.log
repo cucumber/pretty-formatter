@@ -1,3 +1,4 @@
+
 Feature: Stack traces
 
   Scenario: A failing step          # samples/stack-traces/stack-traces.feature:8

@@ -23,13 +23,22 @@ import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_RED;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_YELLOW;
 import static io.cucumber.prettyformatter.Ansi.Attributes.RESET;
 import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
+import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
+import static io.cucumber.prettyformatter.Theme.Element.RULE_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_ARGUMENT;
+import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An ANSI theme for the pretty report.
+ * An ANSI theme for the pretty formatter.
+ * <p>
+ * The theme consists of a collection of stylable {@linkplain Element elements}.
+ * For each element an {@link Ansi ansi style} is declared. The ansi style
+ * consists of two escape sequences that are wrapped around the text of stylable
+ * element.
  */
 public final class Theme {
 
@@ -44,24 +53,37 @@ public final class Theme {
         this.styleByStatusByElement = requireNonNull(styleByStatusByElement);
     }
 
+    /**
+     * The default Cucumber theme.
+     */
     public static Theme cucumber() {
         return Theme.builder()
                 .style(ATTACHMENT, Ansi.with(FOREGROUND_BLUE), Ansi.with(RESET))
+                .style(FEATURE_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(LOCATION, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
-                .style(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
-                .style(STEP, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
-                .style(STEP, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .style(RULE_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
+                .style(SCENARIO_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(STEP, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .style(STEP, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
                 .style(STEP, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(RESET))
+                .style(STEP, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
                 .style(STEP, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
+                .style(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
                 .style(STEP_ARGUMENT, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
+                .style(STEP_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .build();
     }
 
+    /**
+     * Empty theme that does not apply any styling to the output.
+     */
     public static Theme none() {
         return Theme.builder().build();
     }
 
+    /**
+     * Creates a new builder to construct a theme.
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -100,29 +122,131 @@ public final class Theme {
         return styleByStatus == null ? null : styleByStatus.get(status);
     }
 
+    /**
+     * All style-able elements in a theme.
+     */
     public enum Element {
+        /**
+         * The output from {@code scenario.log} and {@code scenario.attach}.
+         */
         ATTACHMENT,
+        /**
+         * The data table, an optional argument for a step.
+         */
         DATA_TABLE,
+        /**
+         * The data table borders. I.e. the {code |} characters.
+         * <p>
+         * Styles applied to {@link #DATA_TABLE} are also applied to this element.
+         */
         DATA_TABLE_BORDER,
+        /**
+         * The data table contents. I.e. the individual cell.
+         * <p>
+         * Styles applied to {@link #DATA_TABLE} are also applied to this element.
+         */
         DATA_TABLE_CONTENT,
+        /**
+         * The doc string, an optional argument for a step.
+         */
         DOC_STRING,
+        /**
+         * The doc string contents.
+         * <p>
+         * Styles applied to {@link #DOC_STRING} are also applied to this element.
+         */
         DOC_STRING_CONTENT,
-        DOC_STRING_CONTENT_TYPE,
+        /**
+         * The doc string media type. E.g. {@code application/json} .
+         * <p>
+         * Styles applied to {@link #DOC_STRING} are also applied to this element.
+         */
+        DOC_STRING_MEDIA_TYPE,
+        /**
+         * The doc string delimiter. I.e. {@code """"}.
+         * <p>
+         * Styles applied to {@link #DOC_STRING} are also applied to this element.
+         */
         DOC_STRING_DELIMITER,
+        /**
+         * The feature line.
+         */
         FEATURE,
+        /**
+         * The feature keyword.
+         * <p>
+         * Styles applied to {@link #FEATURE} are also applied to this element.
+         */
         FEATURE_KEYWORD,
+        /**
+         * The feature name.
+         * <p>
+         * Styles applied to {@link #FEATURE} are also applied to this element.
+         */
         FEATURE_NAME,
+        /**
+         * The location comment. E.g. {@code # samples/undefined/undefined.feature:10}.
+         * <p>
+         * Styles applied to {@link #FEATURE} are also applied to this element.
+         */
         LOCATION,
+        /**
+         * The rule line.
+         */
         RULE,
+        /**
+         * The rule keyword.
+         * <p>
+         * Styles applied to {@link #RULE} are also applied to this element.
+         */
         RULE_KEYWORD,
+        /**
+         * The rule name.
+         * <p>
+         * Styles applied to {@link #RULE} are also applied to this element.
+         */
         RULE_NAME,
+        /**
+         * The scenario line.
+         */
         SCENARIO,
+        /**
+         * The scenario keyword.
+         * <p>
+         * Styles applied to {@link #SCENARIO} are also applied to this element.
+         */
         SCENARIO_KEYWORD,
+        /**
+         * The scenario name.
+         * <p>
+         * Styles applied to {@link #SCENARIO} are also applied to this element.
+         */
         SCENARIO_NAME,
+        /**
+         * The step line.
+         */
         STEP,
+        /**
+         * A matched argument in a step.
+         * <p>
+         * Styles applied to {@link #STEP} are also applied to this element.
+         */
         STEP_ARGUMENT,
+        /**
+         * The step keyword.
+         * <p>
+         * Styles applied to {@link #STEP} are also applied to this element.
+         */
         STEP_KEYWORD,
+        /**
+         * The step text.
+         * <p>
+         * Styles applied to {@link #STEP} are also applied to this element.
+         */
         STEP_TEXT,
+        /**
+         * The tag line.
+         */
         TAG
     }
 
@@ -130,6 +254,17 @@ public final class Theme {
         private final Map<Element, Entry<Ansi, Ansi>> styleByElement = new EnumMap<>(Element.class);
         private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement = new EnumMap<>(Element.class);
 
+        private Builder() {
+
+        }
+
+        /**
+         * Adds a style and reset style for an element.
+         *
+         * @param element    the element to style
+         * @param style      the ansi style to apply
+         * @param resetStyle the ansi style to reset the applied styling
+         */
         public Builder style(Element element, Ansi style, Ansi resetStyle) {
             requireNonNull(element);
             requireNonNull(style);
@@ -139,6 +274,14 @@ public final class Theme {
             return this;
         }
 
+        /**
+         * Adds a style and reset style for an element.
+         *
+         * @param element    the element to style
+         * @param status     the status of the element to style
+         * @param style      the ansi style to apply
+         * @param resetStyle the ansi style to reset the applied styling
+         */
         public Builder style(Element element, TestStepResultStatus status, Ansi style, Ansi resetStyle) {
             requireNonNull(element);
             requireNonNull(status);

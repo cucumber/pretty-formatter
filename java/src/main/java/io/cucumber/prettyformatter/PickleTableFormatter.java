@@ -80,7 +80,8 @@ final class PickleTableFormatter {
         for (String[] renderedCell : renderedCells) {
             LineBuilder lineBuilder1 = lineBuilder.indent(indentation).begin(DATA_TABLE);
             lineBuilder1.append(DATA_TABLE_BORDER, "|")
-                    .accept(innerLineBuilder -> renderTableRowWithPaddingTo(renderedCell, longestCellLengthInColumn, innerLineBuilder)).end(DATA_TABLE)
+                    .accept(innerLineBuilder -> renderTableRowWithPaddingTo(renderedCell, longestCellLengthInColumn, innerLineBuilder))
+                    .end(DATA_TABLE)
                     .newLine();
         }
     }

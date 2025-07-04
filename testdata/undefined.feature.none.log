@@ -1,3 +1,4 @@
+
 Feature: Undefined steps
 
   Scenario: An undefined step causes a failure # samples/undefined/undefined.feature:7

@@ -1,3 +1,4 @@
+
 [39m[1mFeature:[22m [3mRetry[23m[0m
 
   [1mScenario:[22m [3mTest cases that pass aren't retried[23m [90m# samples/retry/retry.feature:8[0m

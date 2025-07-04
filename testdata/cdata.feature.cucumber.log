@@ -1,4 +1,5 @@
-Feature: cdata
 
-  Scenario: cdata                                 [90m# samples/cdata/cdata.feature:4[0m
-    [32mGiven I have [1m42[22m <![CDATA[cukes]]> in my belly[0m [90m# samples/cdata/cdata.feature.ts:3[0m
+[1mFeature:[22m cdata
+
+  [1mScenario:[22m cdata                                 [90m# samples/cdata/cdata.feature:4[0m
+    [32m[1mGiven [22mI have [1m42[22m <![CDATA[cukes]]> in my belly[0m [90m# samples/cdata/cdata.feature.ts:3[0m

@@ -65,8 +65,6 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     private final PrettyReportData data;
     private final boolean includeFeatureAndRules;
     private boolean streamClosed = false;
-    private Feature currentFeature;
-    private Rule currentRule;
 
     private MessagesToPrettyWriter(OutputStream out, Theme theme, Function<String, String> uriFormatter, boolean includeFeatureAndRules) {
         this.theme = requireNonNull(theme);
@@ -121,12 +119,14 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private void printFeature(Feature feature) {
-        data.ifNotSeenBefore(feature, () ->
-                writer.println(new LineBuilder(theme)
-                        .begin(FEATURE)
-                        .title(FEATURE_KEYWORD, feature.getKeyword(), FEATURE_NAME, feature.getName())
-                        .end(FEATURE)
-                        .build()));
+        data.ifNotSeenBefore(feature, () -> {
+            writer.println();
+            writer.println(new LineBuilder(theme)
+                    .begin(FEATURE)
+                    .title(FEATURE_KEYWORD, feature.getKeyword(), FEATURE_NAME, feature.getName())
+                    .end(FEATURE)
+                    .build());
+        });
     }
 
     private void printRule(Rule rule) {
@@ -386,11 +386,11 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
 
     public static final class Builder {
 
-        private Theme theme = Theme.cucumber();
+        private Theme theme = Theme.none();
         private Function<String, String> uriFormatter = Function.identity();
         private boolean includeFeatureAndRules = true;
 
-        Builder() {
+        private Builder() {
         }
 
         private static Function<String, String> removePrefix(String prefix) {
@@ -403,16 +403,34 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
             };
         }
 
+        /**
+         * Adds a theme to the pretty writer.
+         */
         public Builder theme(Theme theme) {
             this.theme = requireNonNull(theme);
             return this;
         }
 
+        /**
+         * Removes a given prefix from all URI locations.
+         * <p>
+         * The typical usage would be to trim the current working directory.
+         * This makes the report more readable.
+         */
         public Builder removeUriPrefix(String prefix) {
+            // TODO: Needs coverage
             this.uriFormatter = removePrefix(requireNonNull(prefix));
             return this;
         }
 
+        /**
+         * Include feature and rule lines.
+         * <p>
+         * When executing in parallel the feature and rules lines can make the
+         * output even harder to read as they would typically all be emitted at
+         * once. Excluding these can make the report more readable in these
+         * circumstances.
+         */
         public Builder includeFeatureAndRules(boolean include) {
             this.includeFeatureAndRules = include;
             return this;

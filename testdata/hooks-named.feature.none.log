@@ -1,3 +1,4 @@
+
 Feature: Hooks - Named
 
   Scenario: With a named before and after hook # samples/hooks-named/hooks-named.feature:7

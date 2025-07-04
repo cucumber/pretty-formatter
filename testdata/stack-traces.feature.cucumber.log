@@ -1,5 +1,6 @@
-Feature: Stack traces
 
-  Scenario: A failing step          [90m# samples/stack-traces/stack-traces.feature:8[0m
-    [31mWhen a step throws an exception[0m [90m# samples/stack-traces/stack-traces.feature.ts:3[0m
+[1mFeature:[22m Stack traces
+
+  [1mScenario:[22m A failing step          [90m# samples/stack-traces/stack-traces.feature:8[0m
+    [31m[1mWhen [22ma step throws an exception[0m [90m# samples/stack-traces/stack-traces.feature.ts:3[0m
         [31mBOOM[0m

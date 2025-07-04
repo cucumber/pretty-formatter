@@ -1,3 +1,4 @@
+
 Feature: Parameter Types
 
   Scenario: undefined parameter type        # samples/unknown-parameter-type/unknown-parameter-type.feature:5

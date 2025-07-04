@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static java.lang.System.lineSeparator;
 
-class LineBuilder {
+final class LineBuilder {
 
     private final StringBuilder builder = new StringBuilder(80);
     private final Theme theme;
@@ -90,7 +90,7 @@ class LineBuilder {
         return this;
     }
 
-    public String build() {
+    String build() {
         return builder.toString();
     }
 

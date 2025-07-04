@@ -1,3 +1,4 @@
+
 Feature: Usage of a `Rule`
 
   Rule: A sale cannot happen if the customer does not have enough money

@@ -1,3 +1,4 @@
+
 Feature: Hooks
 
   Scenario: No tags and a passed step # samples/hooks/hooks.feature:4

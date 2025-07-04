@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.builder;
 import static io.cucumber.prettyformatter.TestTheme.demo;
+import static io.cucumber.prettyformatter.Theme.cucumber;
 import static io.cucumber.prettyformatter.Theme.none;
 import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +57,7 @@ class MessagesToPrettyWriterAcceptanceTest {
     @ParameterizedTest
     @MethodSource("acceptance")
     void testCucumberTheme(TestCase testCase) throws IOException {
-        Builder builder = builder();
+        Builder builder = builder().theme(cucumber());
         ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
         assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedCumberTheme)));
     }
@@ -82,7 +83,7 @@ class MessagesToPrettyWriterAcceptanceTest {
     void testExcludeFeaturesAndRules(TestCase testCase) throws IOException {
         Builder builder = builder().theme(none()).includeFeatureAndRules(false);
         ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedNoTheme)));
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedExcludeFeaturesAndRules)));
     }
 
     @ParameterizedTest
@@ -90,22 +91,26 @@ class MessagesToPrettyWriterAcceptanceTest {
     @Disabled
     void updateExpectedPrettyFiles(TestCase testCase) throws IOException {
         try (OutputStream out = Files.newOutputStream(testCase.expectedCumberTheme)) {
-            writePrettyReport(testCase, out, builder());
+            Builder builder = builder().theme(cucumber());
+            writePrettyReport(testCase, out, builder);
             // Render output in console, easier to inspect results
-            // Files.copy(testCase.expectedCumberTheme, System.out);
+            Files.copy(testCase.expectedCumberTheme, System.out);
         }
         try (OutputStream out = Files.newOutputStream(testCase.expectedDemoTheme)) {
-            writePrettyReport(testCase, out, builder().theme(demo()));
+            Builder builder = builder().theme(demo());
+            writePrettyReport(testCase, out, builder);
             // Render output in console, easier to inspect results
-            Files.copy(testCase.expectedDemoTheme, System.out);
+            // Files.copy(testCase.expectedDemoTheme, System.out);
         }
         try (OutputStream out = Files.newOutputStream(testCase.expectedNoTheme)) {
-            writePrettyReport(testCase, out, builder().theme(none()));
+            Builder builder = builder().theme(none());
+            writePrettyReport(testCase, out, builder);
             // Render output in console, easier to inspect results
             // Files.copy(testCase.expectedNoTheme, System.out);
         }
         try (OutputStream out = Files.newOutputStream(testCase.expectedExcludeFeaturesAndRules)) {
-            writePrettyReport(testCase, out, builder().theme(none()).includeFeatureAndRules(false));
+            Builder builder = builder().theme(none()).includeFeatureAndRules(false);
+            writePrettyReport(testCase, out, builder);
             // Render output in console, easier to inspect results
             // Files.copy(testCase.expectedExcludeFeaturesAndRules, System.out);
         }

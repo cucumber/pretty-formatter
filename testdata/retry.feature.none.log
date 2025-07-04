@@ -1,3 +1,4 @@
+
 Feature: Retry
 
   Scenario: Test cases that pass aren't retried # samples/retry/retry.feature:8

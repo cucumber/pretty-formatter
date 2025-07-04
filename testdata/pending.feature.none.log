@@ -1,3 +1,4 @@
+
 Feature: Pending steps
 
   Scenario: Unimplemented step signals pending status # samples/pending/pending.feature:9

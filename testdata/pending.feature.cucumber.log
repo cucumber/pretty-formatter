@@ -1,12 +1,13 @@
-Feature: Pending steps
 
-  Scenario: Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[0m
-    [33mGiven an unimplemented pending step[0m               [90m# samples/pending/pending.feature.ts:11[0m
+[1mFeature:[22m Pending steps
 
-  Scenario: Steps before unimplemented steps are executed [90m# samples/pending/pending.feature:12[0m
-    [32mGiven an implemented non-pending step[0m                 [90m# samples/pending/pending.feature.ts:3[0m
-    [33mAnd an unimplemented pending step[0m                     [90m# samples/pending/pending.feature.ts:11[0m
+  [1mScenario:[22m Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[0m
+    [33m[1mGiven [22man unimplemented pending step[0m               [90m# samples/pending/pending.feature.ts:11[0m
 
-  Scenario: Steps after unimplemented steps are skipped [90m# samples/pending/pending.feature:16[0m
-    [33mGiven an unimplemented pending step[0m                 [90m# samples/pending/pending.feature.ts:11[0m
-    [36mAnd an implemented step that is skipped[0m             [90m# samples/pending/pending.feature.ts:7[0m
+  [1mScenario:[22m Steps before unimplemented steps are executed [90m# samples/pending/pending.feature:12[0m
+    [32m[1mGiven [22man implemented non-pending step[0m                 [90m# samples/pending/pending.feature.ts:3[0m
+    [33m[1mAnd [22man unimplemented pending step[0m                     [90m# samples/pending/pending.feature.ts:11[0m
+
+  [1mScenario:[22m Steps after unimplemented steps are skipped [90m# samples/pending/pending.feature:16[0m
+    [33m[1mGiven [22man unimplemented pending step[0m                 [90m# samples/pending/pending.feature.ts:11[0m
+    [36m[1mAnd [22man implemented step that is skipped[0m             [90m# samples/pending/pending.feature.ts:7[0m

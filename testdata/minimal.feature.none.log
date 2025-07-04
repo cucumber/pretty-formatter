@@ -1,3 +1,4 @@
+
 Feature: minimal
 
   Scenario: cukes                     # samples/minimal/minimal.feature:9

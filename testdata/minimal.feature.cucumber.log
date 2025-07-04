@@ -1,4 +1,5 @@
-Feature: minimal
 
-  Scenario: cukes                     [90m# samples/minimal/minimal.feature:9[0m
-    [32mGiven I have [1m42[22m cukes in my belly[0m [90m# samples/minimal/minimal.feature.ts:3[0m
+[1mFeature:[22m minimal
+
+  [1mScenario:[22m cukes                     [90m# samples/minimal/minimal.feature:9[0m
+    [32m[1mGiven [22mI have [1m42[22m cukes in my belly[0m [90m# samples/minimal/minimal.feature.ts:3[0m

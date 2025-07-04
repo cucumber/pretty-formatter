@@ -12,6 +12,12 @@ public final class Ansi {
     private static final String END_SEQUENCE = "m";
     private final String controlSequence;
 
+    /**
+     * Constructs an ANSI escape code with the given attributes.
+     * 
+     * @param attributes to include.
+     * @return an ANSI escape code with the given attributes
+     */
     public static Ansi with(Attributes... attributes) {
         return new Ansi(requireNonNull(attributes));
     }

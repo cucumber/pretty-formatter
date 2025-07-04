@@ -26,6 +26,7 @@ import static io.cucumber.prettyformatter.Theme.Element.DATA_TABLE_BORDER;
 import static io.cucumber.prettyformatter.Theme.Element.DATA_TABLE_CONTENT;
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING;
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_CONTENT;
+import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_MEDIA_TYPE;
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_DELIMITER;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
@@ -53,6 +54,7 @@ public class TestTheme {
                 .style(DOC_STRING, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
                 .style(DOC_STRING_CONTENT, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
                 .style(DOC_STRING_DELIMITER, Ansi.with(FAINT), Ansi.with(FAINT_OFF))
+                .style(DOC_STRING_MEDIA_TYPE, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(FEATURE, Ansi.with(FOREGROUND_DEFAULT), Ansi.with(RESET))
                 .style(FEATURE_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(FEATURE_NAME, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))

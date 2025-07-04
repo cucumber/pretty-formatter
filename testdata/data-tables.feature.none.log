@@ -1,3 +1,4 @@
+
 Feature: Data Tables
 
   Scenario: transposed table                # samples/data-tables/data-tables.feature:7

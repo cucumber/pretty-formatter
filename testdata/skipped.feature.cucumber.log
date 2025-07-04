@@ -1,13 +1,14 @@
-Feature: Skipping scenarios
+
+[1mFeature:[22m Skipping scenarios
 
   @skip
-  Scenario: Skipping from a Before hook [90m# samples/skipped/skipped.feature:10[0m
-    [36mGiven a step that is skipped[0m        [90m# samples/skipped/skipped.feature.ts:11[0m
+  [1mScenario:[22m Skipping from a Before hook [90m# samples/skipped/skipped.feature:10[0m
+    [36m[1mGiven [22ma step that is skipped[0m        [90m# samples/skipped/skipped.feature.ts:11[0m
 
-  Scenario: Skipping from a step doesn't affect the previous steps [90m# samples/skipped/skipped.feature:13[0m
-    [32mGiven a step that does not skip[0m                                [90m# samples/skipped/skipped.feature.ts:7[0m
-    [36mAnd I skip a step[0m                                              [90m# samples/skipped/skipped.feature.ts:15[0m
+  [1mScenario:[22m Skipping from a step doesn't affect the previous steps [90m# samples/skipped/skipped.feature:13[0m
+    [32m[1mGiven [22ma step that does not skip[0m                                [90m# samples/skipped/skipped.feature.ts:7[0m
+    [36m[1mAnd [22mI skip a step[0m                                              [90m# samples/skipped/skipped.feature.ts:15[0m
 
-  Scenario: Skipping from a step causes the rest of the scenario to be skipped [90m# samples/skipped/skipped.feature:17[0m
-    [36mGiven I skip a step[0m                                                        [90m# samples/skipped/skipped.feature.ts:15[0m
-    [36mAnd a step that is skipped[0m                                                 [90m# samples/skipped/skipped.feature.ts:11[0m
+  [1mScenario:[22m Skipping from a step causes the rest of the scenario to be skipped [90m# samples/skipped/skipped.feature:17[0m
+    [36m[1mGiven [22mI skip a step[0m                                                        [90m# samples/skipped/skipped.feature.ts:15[0m
+    [36m[1mAnd [22ma step that is skipped[0m                                                 [90m# samples/skipped/skipped.feature.ts:11[0m

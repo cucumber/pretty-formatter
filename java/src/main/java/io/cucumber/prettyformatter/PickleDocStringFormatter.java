@@ -4,12 +4,13 @@ import io.cucumber.messages.types.PickleDocString;
 
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING;
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_CONTENT;
-import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_CONTENT_TYPE;
+import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_MEDIA_TYPE;
+import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_DELIMITER;
 import static java.util.Objects.requireNonNull;
 
 final class PickleDocStringFormatter {
 
-    private static final String DOC_STRING_DELIMITER = "\"\"\"";
+    private static final String DOC_STRING_DELIMITER_STRING = "\"\"\"";
     private final String indentation;
 
     private PickleDocStringFormatter(String indentation) {
@@ -21,21 +22,28 @@ final class PickleDocStringFormatter {
     }
 
     void formatTo(PickleDocString pickleDocString, LineBuilder lineBuilder) {
-        String printableMediaType = pickleDocString.getMediaType().orElse("");
-        LineBuilder lineBuilder2 = lineBuilder.indent(indentation).begin(DOC_STRING);
-        LineBuilder lineBuilder3 = lineBuilder2.append(Theme.Element.DOC_STRING_DELIMITER, DOC_STRING_DELIMITER);
-        lineBuilder3.append(DOC_STRING_CONTENT_TYPE, printableMediaType).end(DOC_STRING)
+        lineBuilder
+                .indent(indentation)
+                .begin(DOC_STRING)
+                .append(DOC_STRING_DELIMITER, DOC_STRING_DELIMITER_STRING)
+                .accept(lb -> pickleDocString.getMediaType().ifPresent(mediaType -> lb.append(DOC_STRING_MEDIA_TYPE, mediaType)))
+                .end(DOC_STRING)
                 .newLine();
 
         // Doc strings are normalized to \n by Gherkin.
         String[] lines = pickleDocString.getContent().split("\\n");
         for (String line : lines) {
-            LineBuilder lineBuilder1 = lineBuilder.indent(indentation).begin(DOC_STRING);
-            lineBuilder1.append(DOC_STRING_CONTENT, line).end(DOC_STRING)
+            lineBuilder.indent(indentation).
+                    begin(DOC_STRING)
+                    .append(DOC_STRING_CONTENT, line)
+                    .end(DOC_STRING)
                     .newLine();
         }
-        LineBuilder lineBuilder1 = lineBuilder.indent(indentation).begin(DOC_STRING);
-        lineBuilder1.append(Theme.Element.DOC_STRING_DELIMITER, DOC_STRING_DELIMITER).end(DOC_STRING)
+        lineBuilder
+                .indent(indentation)
+                .begin(DOC_STRING).
+                append(DOC_STRING_DELIMITER, DOC_STRING_DELIMITER_STRING)
+                .end(DOC_STRING)
                 .newLine();
 
     }
