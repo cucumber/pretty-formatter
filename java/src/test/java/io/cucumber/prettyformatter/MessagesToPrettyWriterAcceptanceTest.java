@@ -83,7 +83,7 @@ class MessagesToPrettyWriterAcceptanceTest {
     void testExcludeFeaturesAndRules(TestCase testCase) throws IOException {
         Builder builder = builder().theme(none()).includeFeatureAndRuleLines(false);
         ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedExcludeFeaturesAndRules)));
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedExcludeFeatureAndRuleLines)));
     }
 
     @ParameterizedTest
@@ -108,7 +108,7 @@ class MessagesToPrettyWriterAcceptanceTest {
             // Render output in console, easier to inspect results
             // Files.copy(testCase.expectedNoTheme, System.out);
         }
-        try (OutputStream out = Files.newOutputStream(testCase.expectedExcludeFeaturesAndRules)) {
+        try (OutputStream out = Files.newOutputStream(testCase.expectedExcludeFeatureAndRuleLines)) {
             Builder builder = builder().theme(none()).includeFeatureAndRuleLines(false);
             writePrettyReport(testCase, out, builder);
             // Render output in console, easier to inspect results
@@ -121,7 +121,7 @@ class MessagesToPrettyWriterAcceptanceTest {
         private final Path expectedCumberTheme;
         private final Path expectedNoTheme;
         private final Path expectedDemoTheme;
-        private final Path expectedExcludeFeaturesAndRules;
+        private final Path expectedExcludeFeatureAndRuleLines;
 
         private final String name;
 
@@ -132,7 +132,7 @@ class MessagesToPrettyWriterAcceptanceTest {
             this.expectedCumberTheme = source.getParent().resolve(name + ".cucumber.log");
             this.expectedNoTheme = source.getParent().resolve(name + ".none.log");
             this.expectedDemoTheme = source.getParent().resolve(name + ".demo.log");
-            this.expectedExcludeFeaturesAndRules = source.getParent().resolve(name + ".exclude-features-and-rules.log");
+            this.expectedExcludeFeatureAndRuleLines = source.getParent().resolve(name + ".exclude-features-and-rules.log");
         }
 
         @Override

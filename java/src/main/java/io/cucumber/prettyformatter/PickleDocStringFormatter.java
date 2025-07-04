@@ -4,16 +4,15 @@ import io.cucumber.messages.types.PickleDocString;
 
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING;
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_CONTENT;
-import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_MEDIA_TYPE;
 import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_DELIMITER;
-import static java.util.Objects.requireNonNull;
+import static io.cucumber.prettyformatter.Theme.Element.DOC_STRING_MEDIA_TYPE;
 
 final class PickleDocStringFormatter {
 
     private static final String DOC_STRING_DELIMITER_STRING = "\"\"\"";
-    private final String indentation;
+    private final int indentation;
 
-    private PickleDocStringFormatter(String indentation) {
+    private PickleDocStringFormatter(int indentation) {
         this.indentation = indentation;
     }
 
@@ -41,8 +40,8 @@ final class PickleDocStringFormatter {
         }
         lineBuilder
                 .indent(indentation)
-                .begin(DOC_STRING).
-                append(DOC_STRING_DELIMITER, DOC_STRING_DELIMITER_STRING)
+                .begin(DOC_STRING)
+                .append(DOC_STRING_DELIMITER, DOC_STRING_DELIMITER_STRING)
                 .end(DOC_STRING)
                 .newLine();
 
@@ -50,14 +49,13 @@ final class PickleDocStringFormatter {
 
     static final class Builder {
 
-        private String indentation = "";
+        private int indentation = 0;
 
         private Builder() {
 
         }
 
-        Builder indentation(String indentation) {
-            requireNonNull(indentation, "indentation may not be null");
+        Builder indentation(int indentation) {
             this.indentation = indentation;
             return this;
         }

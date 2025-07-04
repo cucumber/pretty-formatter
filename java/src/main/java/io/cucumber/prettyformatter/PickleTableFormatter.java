@@ -13,9 +13,9 @@ import static java.util.stream.Collectors.toList;
 
 final class PickleTableFormatter {
 
-    private final String indentation;
+    private final int indentation;
 
-    private PickleTableFormatter(String indentation) {
+    private PickleTableFormatter(int indentation) {
         this.indentation = indentation;
     }
 
@@ -52,6 +52,17 @@ final class PickleTableFormatter {
         }
     }
 
+    private static void renderTableRowWithPaddingTo(String[] renderedCell, int[] longestCellLengthInColumn, LineBuilder lineBuilder) {
+        int width = renderedCell.length;
+        for (int colIndex = 0; colIndex < width; colIndex++) {
+            String cellText = renderedCell[colIndex];
+            int padding = longestCellLengthInColumn[colIndex] - cellText.length();
+            lineBuilder
+                    .append(DATA_TABLE_CONTENT, renderCellWithPadding(cellText, padding))
+                    .append(DATA_TABLE_BORDER, "|");
+        }
+    }
+
     void formatTo(PickleTable pickleTable, LineBuilder lineBuilder) {
         List<List<String>> cells = pickleTable.getRows().stream()
                 .map(pickleTableRow -> pickleTableRow.getCells().stream().map(PickleTableCell::getValue)
@@ -75,24 +86,13 @@ final class PickleTableFormatter {
     }
 
     private void renderTableWithPaddingTo(String[][] renderedCells, int[] longestCellLengthInColumn, LineBuilder lineBuilder) {
-        // datatables are always square and non-sparse.
-        int width = renderedCells[0].length;
         for (String[] renderedCell : renderedCells) {
-            LineBuilder lineBuilder1 = lineBuilder.indent(indentation).begin(DATA_TABLE);
-            lineBuilder1.append(DATA_TABLE_BORDER, "|")
+            lineBuilder.indent(indentation)
+                    .begin(DATA_TABLE)
+                    .append(DATA_TABLE_BORDER, "|")
                     .accept(innerLineBuilder -> renderTableRowWithPaddingTo(renderedCell, longestCellLengthInColumn, innerLineBuilder))
                     .end(DATA_TABLE)
                     .newLine();
-        }
-    }
-
-    private static void renderTableRowWithPaddingTo(String[] renderedCell, int[] longestCellLengthInColumn, LineBuilder lineBuilder) {
-        int width = renderedCell.length;
-        for (int colIndex = 0; colIndex < width; colIndex++) {
-            String cellText = renderedCell[colIndex];
-            int padding = longestCellLengthInColumn[colIndex] - cellText.length();
-            LineBuilder lineBuilder1 = lineBuilder.append(DATA_TABLE_CONTENT, renderCellWithPadding(cellText, padding));
-            lineBuilder1.append(DATA_TABLE_BORDER, "|");
         }
     }
 
@@ -117,10 +117,9 @@ final class PickleTableFormatter {
     }
 
     static final class Builder {
-        private String indentation = "";
+        private int indentation = 0;
 
-        Builder indentation(String indentation) {
-            requireNonNull(indentation, "indentation may not be null");
+        Builder indentation(int indentation) {
             this.indentation = indentation;
             return this;
         }

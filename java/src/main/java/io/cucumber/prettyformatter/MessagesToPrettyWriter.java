@@ -131,7 +131,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         data.ifNotSeenBefore(rule, () ->
                 writer.println(new LineBuilder(theme)
                         .newLine()
-                        .indent("  ")
+                        .indent(2)
                         .begin(RULE)
                         .title(RULE_KEYWORD, rule.getKeyword(), RULE_NAME, rule.getName())
                         .end(RULE)
@@ -216,9 +216,9 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
                 .accept(lineBuilder -> formatStepText(lineBuilder, testStep, pickleStep))
                 .end(STEP, status)
                 .accept(lineBuilder -> formatLocation(testStep)
-                        .ifPresent(location ->
-                                lineBuilder.addPaddingUpTo(data.getCommentStartAtIndexBy(event))
-                                        .append(LOCATION, "# " + location)
+                        .ifPresent(location -> lineBuilder
+                                .addPaddingUpTo(data.getCommentStartAtIndexBy(event))
+                                .append(LOCATION, "# " + location)
                         )
                 )
                 .build();
@@ -228,7 +228,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         formatStepText(line, pickleStep.getText(), getStepMatchArguments(testStep));
     }
 
-    private static List<StepMatchArgument> getStepMatchArguments(TestStep testStep) {
+    private List<StepMatchArgument> getStepMatchArguments(TestStep testStep) {
         List<StepMatchArgument> stepMatchArguments = new ArrayList<>();
         testStep.getStepMatchArgumentsLists()
                 .orElse(emptyList())
@@ -328,7 +328,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private String formatTextAttachment(Attachment event) {
-        String indent = data.getAttachmentIndentBy(event);
+        int indent = data.getAttachmentIndentBy(event);
         // Prevent interleaving when multiple threads write to System.out
         LineBuilder builder = new LineBuilder(theme);
         try (BufferedReader lines = new BufferedReader(new StringReader(event.getBody()))) {
@@ -351,16 +351,45 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
 
     private void printException(TestRunFinished event) {
         event.getException().ifPresent(exception ->
-                writer.println(formatError("", exception, FAILED)));
+                writer.println(formatError(0, exception, FAILED)));
     }
 
-    private String formatError(String scenarioIndent, Exception exception, TestStepResultStatus status) {
-        String text = exception.getStackTrace().orElseGet(() -> exception.getMessage().orElse(""));
-        // TODO: Java 12+ use String.indent
-        String indented = text.replaceAll("(\r\n|\r|\n)", "$1" + scenarioIndent).trim();
-        return new LineBuilder(theme)
-                .indent(scenarioIndent)
-                .error(status, indented)
+    private String formatError(int indent, Exception exception, TestStepResultStatus status) {
+        if (exception.getStackTrace().isPresent()) {
+            String stacktrace = exception.getStackTrace().get();
+            return formatError(indent, stacktrace, status);
+        }
+        if (exception.getMessage().isPresent()) {
+            String message = exception.getMessage().get();
+            return formatError(indent, message, status);
+        }
+        return "";
+    }
+
+    private String formatError(int indent, String message, TestStepResultStatus status) {
+        LineBuilder lineBuilder = new LineBuilder(theme);
+        // Read the lines in the message and add extra indentation
+        try (BufferedReader lines = new BufferedReader(new StringReader(message))) {
+            // Bit complicated, but ensures the style fits tightly around the error
+            boolean first = true;
+            String line;
+            while ((line = lines.readLine()) != null) {
+                if (!first) {
+                    lineBuilder.newLine();
+                }
+                lineBuilder.indent(indent);
+                if (first) {
+                    lineBuilder.begin(STEP, status);
+                    first = false;
+                }
+                lineBuilder.append(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return lineBuilder
+                .end(STEP, status)
+                .newLine()
                 .build();
     }
 

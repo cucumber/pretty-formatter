@@ -5,7 +5,6 @@ import io.cucumber.prettyformatter.Theme.Element;
 
 import java.util.function.Consumer;
 
-import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static java.lang.System.lineSeparator;
 
 final class LineBuilder {
@@ -18,8 +17,8 @@ final class LineBuilder {
         this.theme = theme;
     }
 
-    LineBuilder indent(String indent) {
-        return append(indent);
+    LineBuilder indent(int indent) {
+        return append(createPadding(indent));
     }
 
     LineBuilder title(Element keywordElement, String keyword, Element nameElement, String name) {
@@ -50,12 +49,6 @@ final class LineBuilder {
         unstyledLength = 0;
         builder.append(lineSeparator());
         return this;
-    }
-
-    LineBuilder error(TestStepResultStatus status, String text) {
-        LineBuilder lineBuilder = begin(STEP, status)
-                .append(text);
-        return lineBuilder.end(STEP, status);
     }
 
     LineBuilder append(String text) {
