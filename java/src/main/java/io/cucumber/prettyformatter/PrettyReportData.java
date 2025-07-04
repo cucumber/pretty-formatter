@@ -39,11 +39,11 @@ final class PrettyReportData {
     private final int afterRuleIndent;
 
     PrettyReportData(Set<MessagesToPrettyWriter.Feature> features) {
-        afterFeatureIndent = calculateFeatureIndent(features);
-        afterRuleIndent = calculateRuleIndent(features);
+        afterFeatureIndent = calculateAfterFeatureIndent(features);
+        afterRuleIndent = calculateAfterRuleIndent(features);
     }
 
-    private static int calculateRuleIndent(Set<MessagesToPrettyWriter.Feature> features) {
+    private static int calculateAfterRuleIndent(Set<MessagesToPrettyWriter.Feature> features) {
         int indent = 0;
         if (features.contains(INCLUDE_FEATURE_LINE)) {
             indent += 2;
@@ -54,7 +54,7 @@ final class PrettyReportData {
         return indent;
     }
 
-    private static int calculateFeatureIndent(Set<MessagesToPrettyWriter.Feature> features) {
+    private static int calculateAfterFeatureIndent(Set<MessagesToPrettyWriter.Feature> features) {
         int indent = 0;
         if (features.contains(INCLUDE_FEATURE_LINE)) {
             indent += 2;
