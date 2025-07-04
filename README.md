@@ -7,7 +7,7 @@ Pretty Formatter
 
 Writes a rich report of the scenario and example execution as it happens. Useful when running Cucumber from the terminal.
 
-![Example output of the pretty formatting, showing the different colors used](./example.png)
+![](./example.png)
 
 ## Features and Limitations
 
