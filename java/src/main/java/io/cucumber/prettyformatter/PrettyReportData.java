@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_FEATURE_LINE;
-import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_RULE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 
 final class PrettyReportData {
 
@@ -38,12 +38,12 @@ final class PrettyReportData {
     private final int afterFeatureIndent;
     private final int afterRuleIndent;
 
-    PrettyReportData(Set<MessagesToPrettyWriter.Feature> features) {
+    PrettyReportData(Set<MessagesToPrettyWriter.PrettyFeature> features) {
         afterFeatureIndent = calculateAfterFeatureIndent(features);
         afterRuleIndent = calculateAfterRuleIndent(features);
     }
 
-    private static int calculateAfterRuleIndent(Set<MessagesToPrettyWriter.Feature> features) {
+    private static int calculateAfterRuleIndent(Set<MessagesToPrettyWriter.PrettyFeature> features) {
         int indent = 0;
         if (features.contains(INCLUDE_FEATURE_LINE)) {
             indent += 2;
@@ -54,7 +54,7 @@ final class PrettyReportData {
         return indent;
     }
 
-    private static int calculateAfterFeatureIndent(Set<MessagesToPrettyWriter.Feature> features) {
+    private static int calculateAfterFeatureIndent(Set<MessagesToPrettyWriter.PrettyFeature> features) {
         int indent = 0;
         if (features.contains(INCLUDE_FEATURE_LINE)) {
             indent += 2;
@@ -98,7 +98,7 @@ final class PrettyReportData {
         stepDefinitionsById.put(stepDefinition.getId(), stepDefinition);
     }
 
-    private void preCalculateLocationIndent(io.cucumber.messages.types.TestCaseStarted event) {
+    private void preCalculateLocationIndent(TestCaseStarted event) {
         query.findLineageBy(event)
                 .ifPresent(lineage ->
                         lineage.scenario().ifPresent(scenario ->

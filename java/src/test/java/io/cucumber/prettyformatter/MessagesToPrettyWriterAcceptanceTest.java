@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
-import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_FEATURE_LINE;
-import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_RULE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.builder;
 import static io.cucumber.prettyformatter.TestTheme.demo;
 import static io.cucumber.prettyformatter.Theme.cucumber;

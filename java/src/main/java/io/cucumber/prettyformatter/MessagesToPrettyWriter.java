@@ -3,6 +3,7 @@ package io.cucumber.prettyformatter;
 import io.cucumber.messages.types.Attachment;
 import io.cucumber.messages.types.Envelope;
 import io.cucumber.messages.types.Exception;
+import io.cucumber.messages.types.Feature;
 import io.cucumber.messages.types.Group;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
@@ -34,8 +35,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
-import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_FEATURE_LINE;
-import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_RULE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
@@ -64,10 +65,10 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
     private final PrettyReportData data;
-    private final Set<Feature> features;
+    private final Set<PrettyFeature> features;
     private boolean streamClosed = false;
 
-    private MessagesToPrettyWriter(OutputStream out, Theme theme, Function<String, String> uriFormatter, Set<Feature> features) {
+    private MessagesToPrettyWriter(OutputStream out, Theme theme, Function<String, String> uriFormatter, Set<PrettyFeature> features) {
         this.theme = requireNonNull(theme);
         this.writer = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
@@ -121,7 +122,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         writer.flush();
     }
 
-    private void printFeature(io.cucumber.messages.types.Feature feature) {
+    private void printFeature(Feature feature) {
         data.ifNotSeenBefore(feature, () -> {
             writer.println();
             writer.println(new LineBuilder(theme)
@@ -416,7 +417,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         }
     }
 
-    public enum Feature {
+    public enum PrettyFeature {
         /**
          * Include feature lines.
          * <p>
@@ -436,7 +437,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
 
     public static final class Builder {
 
-        private final Set<Feature> features = EnumSet.of(INCLUDE_FEATURE_LINE, INCLUDE_RULE_LINE);
+        private final Set<PrettyFeature> features = EnumSet.of(INCLUDE_FEATURE_LINE, INCLUDE_RULE_LINE);
         private Theme theme = Theme.none();
         private Function<String, String> uriFormatter = Function.identity();
 
@@ -476,7 +477,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         /**
          * Toggles a given feature.
          */
-        public Builder feature(Feature feature, boolean enabled) {
+        public Builder feature(PrettyFeature feature, boolean enabled) {
             if (enabled) {
                 features.add(feature);
             } else {
