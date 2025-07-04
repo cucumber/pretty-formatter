@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_FEATURE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.builder;
 import static io.cucumber.prettyformatter.TestTheme.demo;
 import static io.cucumber.prettyformatter.Theme.cucumber;
@@ -81,7 +83,9 @@ class MessagesToPrettyWriterAcceptanceTest {
     @ParameterizedTest
     @MethodSource("acceptance")
     void testExcludeFeaturesAndRules(TestCase testCase) throws IOException {
-        Builder builder = builder().theme(none()).includeFeatureAndRuleLines(false);
+        Builder builder = builder().theme(none())
+                .feature(INCLUDE_FEATURE_LINE, false)
+                .feature(INCLUDE_RULE_LINE, false);
         ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
         assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedExcludeFeatureAndRuleLines)));
     }
@@ -109,7 +113,9 @@ class MessagesToPrettyWriterAcceptanceTest {
             // Files.copy(testCase.expectedNoTheme, System.out);
         }
         try (OutputStream out = Files.newOutputStream(testCase.expectedExcludeFeatureAndRuleLines)) {
-            Builder builder = builder().theme(none()).includeFeatureAndRuleLines(false);
+            Builder builder = builder().theme(none())
+                    .feature(INCLUDE_FEATURE_LINE, false)
+                    .feature(INCLUDE_RULE_LINE, false);
             writePrettyReport(testCase, out, builder);
             // Render output in console, easier to inspect results
             // Files.copy(testCase.expectedExcludeFeaturesAndRules, System.out);

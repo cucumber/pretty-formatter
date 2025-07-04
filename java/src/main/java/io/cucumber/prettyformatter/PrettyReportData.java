@@ -25,17 +25,41 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_FEATURE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_RULE_LINE;
+
 final class PrettyReportData {
 
     final Query query = new Query();
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
     private final Map<String, Integer> scenarioIndentByTestCaseStartedId = new HashMap<>();
     private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
-    private final boolean includeFeatureAndRuleLines;
     private final Set<Object> printedFeaturesAndRules = new HashSet<>();
+    private final int afterFeatureIndent;
+    private final int afterRuleIndent;
 
-    PrettyReportData(boolean includeFeatureAndRuleLines) {
-        this.includeFeatureAndRuleLines = includeFeatureAndRuleLines;
+    PrettyReportData(Set<MessagesToPrettyWriter.Feature> features) {
+        afterFeatureIndent = calculateFeatureIndent(features);
+        afterRuleIndent = calculateRuleIndent(features);
+    }
+
+    private static int calculateRuleIndent(Set<MessagesToPrettyWriter.Feature> features) {
+        int indent = 0;
+        if (features.contains(INCLUDE_FEATURE_LINE)) {
+            indent += 2;
+        }
+        if (features.contains(INCLUDE_RULE_LINE)) {
+            indent += 2;
+        }
+        return indent;
+    }
+
+    private static int calculateFeatureIndent(Set<MessagesToPrettyWriter.Feature> features) {
+        int indent = 0;
+        if (features.contains(INCLUDE_FEATURE_LINE)) {
+            indent += 2;
+        }
+        return indent;
     }
 
     private static int calculateStepLineLength(int scenarioIndent, Step step, PickleStep pickleStep) {
@@ -53,16 +77,17 @@ final class PrettyReportData {
     }
 
     private int calculateScenarioIndent(Lineage lineage) {
-        if (!includeFeatureAndRuleLines) {
-            return 0;
-        }
         if (lineage.rule().isPresent()) {
-            return 4;
+            return afterRuleIndent;
         }
         if (lineage.feature().isPresent()) {
-            return 2;
+            return afterFeatureIndent;
         }
         return 0;
+    }
+
+    int getAfterFeatureIndent() {
+        return afterFeatureIndent;
     }
 
     void collect(Envelope envelope) {
@@ -185,4 +210,5 @@ final class PrettyReportData {
             print.run();
         }
     }
+
 }

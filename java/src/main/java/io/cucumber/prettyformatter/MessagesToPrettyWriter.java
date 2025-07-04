@@ -3,7 +3,6 @@ package io.cucumber.prettyformatter;
 import io.cucumber.messages.types.Attachment;
 import io.cucumber.messages.types.Envelope;
 import io.cucumber.messages.types.Exception;
-import io.cucumber.messages.types.Feature;
 import io.cucumber.messages.types.Group;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
@@ -28,11 +27,15 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_FEATURE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.Feature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
@@ -61,15 +64,15 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
     private final PrettyReportData data;
-    private final boolean includeFeatureAndRuleLines;
+    private final Set<Feature> features;
     private boolean streamClosed = false;
 
-    private MessagesToPrettyWriter(OutputStream out, Theme theme, Function<String, String> uriFormatter, boolean includeFeatureAndRuleLines) {
+    private MessagesToPrettyWriter(OutputStream out, Theme theme, Function<String, String> uriFormatter, Set<Feature> features) {
         this.theme = requireNonNull(theme);
         this.writer = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
-        this.includeFeatureAndRuleLines = includeFeatureAndRuleLines;
-        this.data = new PrettyReportData(includeFeatureAndRuleLines);
+        this.features = features;
+        this.data = new PrettyReportData(features);
     }
 
     public static Builder builder() {
@@ -86,7 +89,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     /**
-     * Writes a cucumber message to the xml output.
+     * Writes a cucumber message to the pretty output.
      *
      * @param envelope the message
      * @throws IOException if an IO error occurs
@@ -103,12 +106,14 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
     }
 
     private void handleTestCaseStarted(TestCaseStarted event) {
-        if (includeFeatureAndRuleLines) {
-            data.findLineageBy(event, this).ifPresent(lineage -> {
+        data.findLineageBy(event, this).ifPresent(lineage -> {
+            if (features.contains(INCLUDE_FEATURE_LINE)) {
                 lineage.feature().ifPresent(this::printFeature);
+            }
+            if (features.contains(INCLUDE_RULE_LINE)) {
                 lineage.rule().ifPresent(this::printRule);
-            });
-        }
+            }
+        });
 
         writer.println();
         printTags(event);
@@ -116,7 +121,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         writer.flush();
     }
 
-    private void printFeature(Feature feature) {
+    private void printFeature(io.cucumber.messages.types.Feature feature) {
         data.ifNotSeenBefore(feature, () -> {
             writer.println();
             writer.println(new LineBuilder(theme)
@@ -131,7 +136,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         data.ifNotSeenBefore(rule, () ->
                 writer.println(new LineBuilder(theme)
                         .newLine()
-                        .indent(2)
+                        .indent(data.getAfterFeatureIndent())
                         .begin(RULE)
                         .title(RULE_KEYWORD, rule.getKeyword(), RULE_NAME, rule.getName())
                         .end(RULE)
@@ -411,11 +416,29 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         }
     }
 
+    public enum Feature {
+        /**
+         * Include feature lines.
+         * <p>
+         * When executing in parallel the feature and rules lines can make the
+         * output even harder to read as they would typically all be emitted at
+         * once. Excluding these can make the report more readable in these
+         * circumstances.
+         */
+        INCLUDE_FEATURE_LINE,
+        /**
+         * Include rule lines.
+         *
+         * @see #INCLUDE_FEATURE_LINE
+         */
+        INCLUDE_RULE_LINE,
+    }
+
     public static final class Builder {
 
+        private final Set<Feature> features = EnumSet.of(INCLUDE_FEATURE_LINE, INCLUDE_RULE_LINE);
         private Theme theme = Theme.none();
         private Function<String, String> uriFormatter = Function.identity();
-        private boolean includeFeatureAndRuleLines = true;
 
         private Builder() {
         }
@@ -451,21 +474,20 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         }
 
         /**
-         * Include feature and rule lines.
-         * <p>
-         * When executing in parallel the feature and rules lines can make the
-         * output even harder to read as they would typically all be emitted at
-         * once. Excluding these can make the report more readable in these
-         * circumstances.
+         * Toggles a given feature.
          */
-        public Builder includeFeatureAndRuleLines(boolean include) {
-            this.includeFeatureAndRuleLines = include;
+        public Builder feature(Feature feature, boolean enabled) {
+            if (enabled) {
+                features.add(feature);
+            } else {
+                features.remove(feature);
+            }
             return this;
         }
 
         public MessagesToPrettyWriter build(OutputStream out) {
             requireNonNull(out);
-            return new MessagesToPrettyWriter(out, theme, uriFormatter, includeFeatureAndRuleLines);
+            return new MessagesToPrettyWriter(out, theme, uriFormatter, features);
         }
     }
 
