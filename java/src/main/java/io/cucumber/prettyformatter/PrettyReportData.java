@@ -197,7 +197,7 @@ final class PrettyReportData {
         return query.findLocationOf(pickle).map(Location::getLine);
     }
 
-    Optional<Lineage> findLineageBy(TestCaseStarted event, MessagesToPrettyWriter messagesToPrettyWriter) {
+    Optional<Lineage> findLineageBy(TestCaseStarted event) {
         return query.findLineageBy(event);
     }
 
