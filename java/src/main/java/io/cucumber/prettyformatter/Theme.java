@@ -27,6 +27,7 @@ import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
 import static io.cucumber.prettyformatter.Theme.Element.RULE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_ARGUMENT;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
@@ -75,11 +76,17 @@ public final class Theme {
                 .style(STEP_ARGUMENT, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(STEP_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .statusIcon(AMBIGUOUS, "✘")
+                .style(STATUS_ICON, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
                 .statusIcon(FAILED, "✘")
+                .style(STATUS_ICON, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
                 .statusIcon(PASSED, "✔")
+                .style(STATUS_ICON, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(RESET))
                 .statusIcon(PENDING, "■")
+                .style(STATUS_ICON, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
                 .statusIcon(SKIPPED, "↷")
+                .style(STATUS_ICON, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
                 .statusIcon(UNDEFINED, "■")
+                .style(STATUS_ICON, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
                 .build();
     }
 
@@ -280,7 +287,6 @@ public final class Theme {
          * The status icon.
          * <p>
          * Always used in combination with a {@link TestStepResultStatus}.
-         * Styles applied to {@link #STEP} are also applied to this element.
          */
         STATUS_ICON,
 

@@ -198,8 +198,8 @@ class PrettyReportWriter implements AutoCloseable {
         TestStepResultStatus status = event.getTestStepResult().getStatus();
         return new LineBuilder(theme)
                 .indent(data.getStepIndentBy(event))
-                .begin(STEP, status)
                 .accept(lineBuilder -> formatStatusIcon(lineBuilder, status))
+                .begin(STEP, status)
                 .append(STEP_KEYWORD, step.getKeyword())
                 .accept(lineBuilder -> formatStepText(lineBuilder, testStep, pickleStep))
                 .end(STEP, status)
