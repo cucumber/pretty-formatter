@@ -99,7 +99,7 @@ public final class Theme {
     }
 
     /**
-     * A plain text theme. Does not use any ANSI
+     * A plain text theme. Does not use any ANSI.
      */
     public static Theme plain() {
         return Theme.builder()
