@@ -91,7 +91,6 @@ public final class Theme {
                 .build();
     }
 
-
     /**
      * A plain text theme. Does not use any ANSI
      */
@@ -278,7 +277,7 @@ public final class Theme {
         SCENARIO_NAME,
 
         /**
-         * The status icon. E.g:
+         * The status icon.
          * <p>
          * Always used in combination with a {@link TestStepResultStatus}.
          * Styles applied to {@link #STEP} are also applied to this element.
