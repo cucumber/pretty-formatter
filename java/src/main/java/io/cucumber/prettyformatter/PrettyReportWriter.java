@@ -4,13 +4,11 @@ import io.cucumber.messages.types.Attachment;
 import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Feature;
 import io.cucumber.messages.types.Group;
-import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.PickleStep;
 import io.cucumber.messages.types.PickleTag;
 import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
-import io.cucumber.messages.types.SourceReference;
 import io.cucumber.messages.types.Step;
 import io.cucumber.messages.types.StepMatchArgument;
 import io.cucumber.messages.types.TestCaseStarted;
@@ -57,6 +55,7 @@ import static java.util.stream.Collectors.joining;
 class PrettyReportWriter implements AutoCloseable {
 
     private final Theme theme;
+    private final SourceReferenceFormatter sourceReferenceFormatter;
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
     private final Set<MessagesToPrettyWriter.PrettyFeature> features;
@@ -74,6 +73,7 @@ class PrettyReportWriter implements AutoCloseable {
         this.uriFormatter = requireNonNull(uriFormatter);
         this.features = features;
         this.data = data;
+        this.sourceReferenceFormatter = new SourceReferenceFormatter(uriFormatter);
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -244,39 +244,9 @@ class PrettyReportWriter implements AutoCloseable {
 
     private Optional<String> formatLocation(TestStep testStep) {
         return data.findSourceReferenceBy(testStep)
-                .flatMap(this::formatSourceReference);
+                .flatMap(sourceReferenceFormatter::format);
     }
 
-    private Optional<String> formatSourceReference(SourceReference sourceReference) {
-        // TODO: Needs coverage
-        // TODO: can we do this lazy/functional?
-        if (sourceReference.getJavaMethod().isPresent()) {
-            return sourceReference.getJavaMethod()
-                    .map(javaMethod -> String.format(
-                            "%s.%s(%s)",
-                            javaMethod.getClassName(),
-                            javaMethod.getMethodName(),
-                            String.join(",", javaMethod.getMethodParameterTypes())
-                    ));
-        }
-        if (sourceReference.getJavaStackTraceElement().isPresent()) {
-            return sourceReference.getJavaStackTraceElement()
-                    .map(javaStackTraceElement -> String.format(
-                            "%s.%s(%s%s)",
-                            javaStackTraceElement.getClassName(),
-                            javaStackTraceElement.getMethodName(),
-                            javaStackTraceElement.getFileName(),
-                            sourceReference.getLocation().map(Location::getLine).map(line -> ":" + line).orElse("")
-                    ));
-        }
-        if (sourceReference.getUri().isPresent()) {
-            return sourceReference.getUri()
-                    .map(uri -> uriFormatter.apply(uri) + sourceReference.getLocation()
-                            .map(location -> ":" + location.getLine())
-                            .orElse(""));
-        }
-        return Optional.empty();
-    }
 
     private void printException(TestStepFinished event) {
         TestStepResultStatus status = event.getTestStepResult().getStatus();
