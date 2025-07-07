@@ -2,12 +2,12 @@
 [1mFeature:[22m Undefined steps
 
   [1mScenario:[22m An undefined step causes a failure [90m# samples/undefined/undefined.feature:7[0m
-    [33m[1mGiven [22ma step that is yet to be defined[0m
+    [33m■ [1mGiven [22ma step that is yet to be defined[0m
 
   [1mScenario:[22m Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:10[0m
-    [32m[1mGiven [22man implemented step[0m                         [90m# samples/undefined/undefined.feature.ts:3[0m
-    [33m[1mAnd [22ma step that is yet to be defined[0m
+    [32m✔ [1mGiven [22man implemented step[0m                       [90m# samples/undefined/undefined.feature.ts:3[0m
+    [33m■ [1mAnd [22ma step that is yet to be defined[0m
 
   [1mScenario:[22m Steps after undefined steps are skipped [90m# samples/undefined/undefined.feature:14[0m
-    [33m[1mGiven [22ma step that is yet to be defined[0m
-    [36m[1mAnd [22ma step that will be skipped[0m                 [90m# samples/undefined/undefined.feature.ts:7[0m
+    [33m■ [1mGiven [22ma step that is yet to be defined[0m
+    [36m↷ [1mAnd [22ma step that will be skipped[0m               [90m# samples/undefined/undefined.feature.ts:7[0m

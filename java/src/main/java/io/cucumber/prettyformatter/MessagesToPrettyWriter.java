@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -76,17 +77,23 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
          * circumstances.
          */
         INCLUDE_FEATURE_LINE,
+        
         /**
          * Include rule lines.
          *
          * @see #INCLUDE_FEATURE_LINE
          */
         INCLUDE_RULE_LINE,
+        
+        /**
+         * Adds a status icon next to each step line. 
+         */
+        USE_STATUS_ICON
     }
 
     public static final class Builder {
 
-        private final Set<PrettyFeature> features = EnumSet.of(INCLUDE_FEATURE_LINE, INCLUDE_RULE_LINE);
+        private final EnumSet<PrettyFeature> features = EnumSet.of(INCLUDE_FEATURE_LINE, INCLUDE_RULE_LINE, USE_STATUS_ICON);
         private Theme theme = Theme.none();
         private Function<String, String> uriFormatter = Function.identity();
 
@@ -137,6 +144,10 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
 
         public MessagesToPrettyWriter build(OutputStream out) {
             requireNonNull(out);
+            Set<PrettyFeature> features = EnumSet.copyOf(this.features);
+            if (!theme.hasStatusIcons()) {
+                features.remove(USE_STATUS_ICON);
+            }
             return new MessagesToPrettyWriter(out, theme, uriFormatter, features);
         }
     }

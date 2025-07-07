@@ -27,6 +27,13 @@ final class LineBuilder {
                 .append(nameElement, name);
     }
 
+    LineBuilder statusIcon(String statusIcon) {
+        // Visually the icon is assumed to have length 1
+        this.unstyledLength += 1;
+        builder.append(statusIcon);
+        return this;
+    }
+
     LineBuilder addPaddingUpTo(int index) {
         return append(createPadding(index));
     }

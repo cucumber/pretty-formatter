@@ -1,0 +1,59 @@
+
+Feature: Examples Tables
+
+  @passing
+  Scenario Outline: Eating cucumbers  # samples/examples-tables/examples-tables.feature:19
+    ✔ Given there are 12 cucumbers    # samples/examples-tables/examples-tables.feature.ts:4
+    ✔ When I eat 5 cucumbers          # samples/examples-tables/examples-tables.feature.ts:12
+    ✔ Then I should have 7 cucumbers  # samples/examples-tables/examples-tables.feature.ts:16
+
+  @passing
+  Scenario Outline: Eating cucumbers   # samples/examples-tables/examples-tables.feature:20
+    ✔ Given there are 20 cucumbers     # samples/examples-tables/examples-tables.feature.ts:4
+    ✔ When I eat 5 cucumbers           # samples/examples-tables/examples-tables.feature.ts:12
+    ✔ Then I should have 15 cucumbers  # samples/examples-tables/examples-tables.feature.ts:16
+
+  @failing
+  Scenario Outline: Eating cucumbers  # samples/examples-tables/examples-tables.feature:25
+    ✔ Given there are 12 cucumbers    # samples/examples-tables/examples-tables.feature.ts:4
+    ✔ When I eat 20 cucumbers         # samples/examples-tables/examples-tables.feature.ts:12
+    ✘ Then I should have 0 cucumbers  # samples/examples-tables/examples-tables.feature.ts:16
+           Expected values to be strictly equal:
+           
+           -8 !== 0
+
+  @failing
+  Scenario Outline: Eating cucumbers  # samples/examples-tables/examples-tables.feature:26
+    ✔ Given there are 0 cucumbers     # samples/examples-tables/examples-tables.feature.ts:4
+    ✔ When I eat 1 cucumbers          # samples/examples-tables/examples-tables.feature.ts:12
+    ✘ Then I should have 0 cucumbers  # samples/examples-tables/examples-tables.feature.ts:16
+           Expected values to be strictly equal:
+           
+           -1 !== 0
+
+  @undefined
+  Scenario Outline: Eating cucumbers   # samples/examples-tables/examples-tables.feature:31
+    ✔ Given there are 12 cucumbers     # samples/examples-tables/examples-tables.feature.ts:4
+    ■ When I eat banana cucumbers
+    ↷ Then I should have 12 cucumbers  # samples/examples-tables/examples-tables.feature.ts:16
+
+  @undefined
+  Scenario Outline: Eating cucumbers      # samples/examples-tables/examples-tables.feature:32
+    ✔ Given there are 0 cucumbers         # samples/examples-tables/examples-tables.feature.ts:4
+    ✔ When I eat 1 cucumbers              # samples/examples-tables/examples-tables.feature.ts:12
+    ■ Then I should have apple cucumbers
+
+  Scenario Outline: Eating cucumbers with 11 friends # samples/examples-tables/examples-tables.feature:41
+    ✔ Given there are 11 friends                     # samples/examples-tables/examples-tables.feature.ts:8
+    ✔ And there are 12 cucumbers                     # samples/examples-tables/examples-tables.feature.ts:4
+    ✔ Then each person can eat 1 cucumbers           # samples/examples-tables/examples-tables.feature.ts:20
+
+  Scenario Outline: Eating cucumbers with 1 friends # samples/examples-tables/examples-tables.feature:42
+    ✔ Given there are 1 friends                     # samples/examples-tables/examples-tables.feature.ts:8
+    ✔ And there are 4 cucumbers                     # samples/examples-tables/examples-tables.feature.ts:4
+    ✔ Then each person can eat 2 cucumbers          # samples/examples-tables/examples-tables.feature.ts:20
+
+  Scenario Outline: Eating cucumbers with 0 friends # samples/examples-tables/examples-tables.feature:43
+    ✔ Given there are 0 friends                     # samples/examples-tables/examples-tables.feature.ts:8
+    ✔ And there are 4 cucumbers                     # samples/examples-tables/examples-tables.feature.ts:4
+    ✔ Then each person can eat 4 cucumbers          # samples/examples-tables/examples-tables.feature.ts:20

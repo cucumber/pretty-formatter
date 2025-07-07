@@ -1,5 +1,5 @@
 
 [1mFeature:[22m Parameter Types
 
-  [1mScenario:[22m undefined parameter type        [90m# samples/unknown-parameter-type/unknown-parameter-type.feature:5[0m
-    [33m[1mGiven [22mCDG is closed because of a strike[0m
+  [1mScenario:[22m undefined parameter type           [90m# samples/unknown-parameter-type/unknown-parameter-type.feature:5[0m
+    [33m■ [1mGiven [22mCDG is closed because of a strike[0m

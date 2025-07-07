@@ -33,6 +33,7 @@ import java.util.function.Function;
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
 import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
@@ -43,6 +44,7 @@ import static io.cucumber.prettyformatter.Theme.Element.RULE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.RULE_NAME;
 import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_NAME;
+import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_ARGUMENT;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
@@ -197,6 +199,7 @@ class PrettyReportWriter implements AutoCloseable {
         return new LineBuilder(theme)
                 .indent(data.getStepIndentBy(event))
                 .begin(STEP, status)
+                .accept(lineBuilder -> formatStatusIcon(lineBuilder, status))
                 .append(STEP_KEYWORD, step.getKeyword())
                 .accept(lineBuilder -> formatStepText(lineBuilder, testStep, pickleStep))
                 .end(STEP, status)
@@ -207,6 +210,17 @@ class PrettyReportWriter implements AutoCloseable {
                         )
                 )
                 .build();
+    }
+
+    private void formatStatusIcon(LineBuilder lineBuilder, TestStepResultStatus status) {
+        if (!features.contains(USE_STATUS_ICON)) {
+            return;
+        }
+        lineBuilder
+                .begin(STATUS_ICON, status)
+                .statusIcon(theme.statusIcon(status))
+                .end(STATUS_ICON, status)
+                .append(" ");
     }
 
     private void formatStepText(LineBuilder line, TestStep testStep, PickleStep pickleStep) {
@@ -344,7 +358,6 @@ class PrettyReportWriter implements AutoCloseable {
         }
         return lineBuilder
                 .end(STEP, status)
-                .newLine()
                 .build();
     }
 

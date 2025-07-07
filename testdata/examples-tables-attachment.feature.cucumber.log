@@ -3,12 +3,12 @@
 
   [1mScenario Outline:[22m Attaching images in an examples table [90m# samples/examples-tables-attachment/examples-tables-attachment.feature:12[0m
 
-      [34mEmbedding [image/jpeg 1446 bytes][0m
+         [34mEmbedding [image/jpeg 1446 bytes][0m
 
-    [32m[1mWhen [22ma JPEG image is attached[0m                         [90m# samples/examples-tables-attachment/examples-tables-attachment.feature.ts:4[0m
+    [32m✔ [1mWhen [22ma JPEG image is attached[0m                       [90m# samples/examples-tables-attachment/examples-tables-attachment.feature.ts:4[0m
 
   [1mScenario Outline:[22m Attaching images in an examples table [90m# samples/examples-tables-attachment/examples-tables-attachment.feature:13[0m
 
-      [34mEmbedding [image/png 1740 bytes][0m
+         [34mEmbedding [image/png 1740 bytes][0m
 
-    [32m[1mWhen [22ma PNG image is attached[0m                          [90m# samples/examples-tables-attachment/examples-tables-attachment.feature.ts:8[0m
+    [32m✔ [1mWhen [22ma PNG image is attached[0m                        [90m# samples/examples-tables-attachment/examples-tables-attachment.feature.ts:8[0m

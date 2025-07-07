@@ -9,7 +9,6 @@ Writes a rich report of the scenario and example execution as it happens. Useful
 
 ![Example output of the pretty formatting, showing the different colors used](https://github.com/user-attachments/assets/fcecb5d4-37ad-4244-a74f-1c5bdc096bbb)
 
-
 ## Features and Limitations
 
 ### Test outcome coloring
@@ -17,15 +16,15 @@ Writes a rich report of the scenario and example execution as it happens. Useful
 Each step is colored according to the outcome. When the `cucumber` theme is in
 use the following colors are used.
 
-| Cucumber Outcome | Color  |
-|------------------|--------|
-| UNKNOWN          | n/a    |
-| PASSED           | Green  |
-| SKIPPED          | Cyan   |
-| PENDING          | Yellow |
-| UNDEFINED        | Yellow |
-| AMBIGUOUS        | Red    |
-| FAILED           | Red    |
+| Cucumber Outcome | Color  | Symbol |
+|------------------|--------|--------| 
+| UNKNOWN          | n/a    | n/a    | 
+| PASSED           | Green  | ✔      |
+| SKIPPED          | Cyan   | ↷      | 
+| PENDING          | Yellow | ■      | 
+| UNDEFINED        | Yellow | ■      |
+| AMBIGUOUS        | Red    | ✘      |
+| FAILED           | Red    | ✘      |
 
 ### Theming
 
@@ -60,11 +59,11 @@ var writer = MessagesToPrettyWriter.builder()
 ### Step and scenario locations
 
 The location of steps and scenarios is included comment (following the `#`).
-Typically, this is a fully qualified URL, which can clutter up the  output. This
+Typically, this is a fully qualified URL, which can clutter up the output. This
 url can be made shorter by removing the prefix from it. For example:
 
 ```java
-var cwdUri = new File("").toURI().toString();        
+var cwdUri = new File("").toURI().toString();
 var writer = MessagesToPrettyWriter.builder()
         .removeUriPrefix(cwdUri)
         .build(System.out);
