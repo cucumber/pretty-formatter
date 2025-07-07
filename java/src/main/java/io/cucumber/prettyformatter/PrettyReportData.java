@@ -1,0 +1,216 @@
+package io.cucumber.prettyformatter;
+
+import io.cucumber.messages.types.Attachment;
+import io.cucumber.messages.types.Envelope;
+import io.cucumber.messages.types.Feature;
+import io.cucumber.messages.types.Location;
+import io.cucumber.messages.types.Pickle;
+import io.cucumber.messages.types.PickleStep;
+import io.cucumber.messages.types.PickleTag;
+import io.cucumber.messages.types.Rule;
+import io.cucumber.messages.types.Scenario;
+import io.cucumber.messages.types.SourceReference;
+import io.cucumber.messages.types.Step;
+import io.cucumber.messages.types.StepDefinition;
+import io.cucumber.messages.types.TestCaseStarted;
+import io.cucumber.messages.types.TestStep;
+import io.cucumber.messages.types.TestStepFinished;
+import io.cucumber.query.Lineage;
+import io.cucumber.query.Query;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
+
+final class PrettyReportData {
+
+    private final Query query = new Query();
+    private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
+    private final Map<String, Integer> scenarioIndentByTestCaseStartedId = new HashMap<>();
+    private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
+    private final Set<Object> printedFeaturesAndRules = new HashSet<>();
+    private final int afterFeatureIndent;
+    private final int afterRuleIndent;
+
+    PrettyReportData(Set<MessagesToPrettyWriter.PrettyFeature> features) {
+        afterFeatureIndent = calculateAfterFeatureIndent(features);
+        afterRuleIndent = calculateAfterRuleIndent(features);
+    }
+
+    private static int calculateAfterRuleIndent(Set<MessagesToPrettyWriter.PrettyFeature> features) {
+        int indent = 0;
+        if (features.contains(INCLUDE_FEATURE_LINE)) {
+            indent += 2;
+        }
+        if (features.contains(INCLUDE_RULE_LINE)) {
+            indent += 2;
+        }
+        return indent;
+    }
+
+    private static int calculateAfterFeatureIndent(Set<MessagesToPrettyWriter.PrettyFeature> features) {
+        int indent = 0;
+        if (features.contains(INCLUDE_FEATURE_LINE)) {
+            indent += 2;
+        }
+        return indent;
+    }
+
+    private static int calculateStepLineLength(int scenarioIndent, Step step, PickleStep pickleStep) {
+        String keyword = step.getKeyword();
+        String text = pickleStep.getText();
+        // The step indentation adds 2
+        return scenarioIndent + 2 + keyword.length() + text.length();
+    }
+
+    private static int calculateScenarioLineLength(int scenarioIndent, Pickle pickle, Scenario scenario) {
+        String pickleName = pickle.getName();
+        String pickleKeyword = scenario.getKeyword();
+        // The ": " between keyword and name adds 2
+        return scenarioIndent + pickleKeyword.length() + 2 + pickleName.length();
+    }
+
+    private int calculateScenarioIndent(Lineage lineage) {
+        if (lineage.rule().isPresent()) {
+            return afterRuleIndent;
+        }
+        if (lineage.feature().isPresent()) {
+            return afterFeatureIndent;
+        }
+        return 0;
+    }
+
+
+
+    void collect(Envelope envelope) {
+        query.update(envelope);
+        envelope.getStepDefinition().ifPresent(this::updateStepDefinitionsById);
+        envelope.getTestCaseStarted().ifPresent(this::preCalculateLocationIndent);
+    }
+
+    private void updateStepDefinitionsById(StepDefinition stepDefinition) {
+        stepDefinitionsById.put(stepDefinition.getId(), stepDefinition);
+    }
+
+    private void preCalculateLocationIndent(TestCaseStarted event) {
+        query.findLineageBy(event)
+                .ifPresent(lineage ->
+                        lineage.scenario().ifPresent(scenario ->
+                                query.findPickleBy(event).ifPresent(pickle -> {
+                                    int scenarioIndent = calculateScenarioIndent(lineage);
+                                    int scenarioLineLength = calculateScenarioLineLength(scenarioIndent, pickle, scenario);
+                                    int longestLine = pickle.getSteps().stream()
+                                            .mapToInt(pickleStep -> preCalculatePickleStepLineLength(scenarioIndent, pickleStep))
+                                            .reduce(scenarioLineLength, Math::max);
+
+                                    scenarioIndentByTestCaseStartedId.put(event.getId(), scenarioIndent);
+                                    commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + 1);
+                                })));
+    }
+
+    private Integer preCalculatePickleStepLineLength(int indent, PickleStep pickleStep) {
+        return query.findStepBy(pickleStep)
+                .map(step -> calculateStepLineLength(indent, step, pickleStep))
+                .orElse(0);
+    }
+    
+    int getAfterFeatureIndent() {
+        return afterFeatureIndent;
+    }
+
+    int getAttachmentIndentBy(Attachment attachment) {
+        return attachment.getTestCaseStartedId()
+                .map(s -> scenarioIndentByTestCaseStartedId.getOrDefault(s, 0) + 4)
+                .orElse(4);
+    }
+
+    int getScenarioIndentBy(TestCaseStarted testCaseStarted) {
+        return scenarioIndentByTestCaseStartedId.getOrDefault(testCaseStarted.getId(), 0);
+    }
+
+    int getStepIndentBy(TestStepFinished testStepFinished) {
+        return scenarioIndentByTestCaseStartedId.getOrDefault(testStepFinished.getTestCaseStartedId(), 0) + 2;
+    }
+
+    int getStackTraceIndentBy(TestStepFinished testStepFinished) {
+        return getStepIndentBy(testStepFinished) + 4;
+    }
+
+    int getArgumentIndentBy(TestStepFinished testStepFinished) {
+        return getStepIndentBy(testStepFinished) + 2;
+    }
+
+    int getCommentStartAtIndexBy(TestCaseStarted testCaseStarted) {
+        return getCommentStartAtIndexBy(testCaseStarted.getId());
+    }
+
+    int getCommentStartAtIndexBy(TestStepFinished testStepFinished) {
+        return getCommentStartAtIndexBy(testStepFinished.getTestCaseStartedId());
+    }
+
+    private int getCommentStartAtIndexBy(String testCaseStartedId) {
+        return commentStartIndexByTestCaseStartedId.getOrDefault(testCaseStartedId, 0);
+
+    }
+
+    Optional<List<PickleTag>> findTagsBy(TestCaseStarted testCaseStarted) {
+        return query.findPickleBy(testCaseStarted)
+                .map(Pickle::getTags)
+                .filter(pickleTags -> !pickleTags.isEmpty());
+    }
+
+    Optional<Scenario> findScenarioBy(Pickle pickle) {
+        return query.findLineageBy(pickle)
+                .flatMap(Lineage::scenario);
+    }
+
+    Optional<TestStep> findTestStepBy(TestStepFinished event) {
+        return query.findTestStepBy(event);
+    }
+
+    Optional<PickleStep> findPickleStepBy(TestStep testStep) {
+        return query.findPickleStepBy(testStep);
+    }
+
+    Optional<Step> findStepBy(PickleStep pickleStep) {
+        return query.findStepBy(pickleStep);
+    }
+
+    Optional<SourceReference> findSourceReferenceBy(TestStep testStep) {
+        return testStep.getStepDefinitionIds()
+                .filter(ids -> ids.size() == 1)
+                .map(ids -> stepDefinitionsById.get(ids.get(0)))
+                .map(StepDefinition::getSourceReference);
+    }
+
+    Optional<Pickle> findPickleBy(TestCaseStarted testCaseStarted) {
+        return query.findPickleBy(testCaseStarted);
+    }
+
+    Optional<Long> findLineOf(Pickle pickle) {
+        return query.findLocationOf(pickle).map(Location::getLine);
+    }
+
+    Optional<Lineage> findLineageBy(TestCaseStarted event) {
+        return query.findLineageBy(event);
+    }
+
+    void ifNotSeenBefore(Feature feature, Runnable print) {
+        if (printedFeaturesAndRules.add(feature)) {
+            print.run();
+        }
+    }
+
+    void ifNotSeenBefore(Rule rule, Runnable print) {
+        if (printedFeaturesAndRules.add(rule)) {
+            print.run();
+        }
+    }
+
+}

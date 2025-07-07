@@ -1,0 +1,19 @@
+
+Example: Not enough money                                 # samples/rules/rules.feature:9
+  Given the customer has 100 cents                        # samples/rules/rules.feature.ts:4
+  And there are chocolate bars in stock                   # samples/rules/rules.feature.ts:8
+  When the customer tries to buy a 125 cent chocolate bar # samples/rules/rules.feature.ts:16
+  Then the sale should not happen                         # samples/rules/rules.feature.ts:22
+
+Example: Enough money                                    # samples/rules/rules.feature:16
+  Given the customer has 100 cents                       # samples/rules/rules.feature.ts:4
+  And there are chocolate bars in stock                  # samples/rules/rules.feature.ts:8
+  When the customer tries to buy a 75 cent chocolate bar # samples/rules/rules.feature.ts:16
+  Then the sale should happen                            # samples/rules/rules.feature.ts:26
+
+@some-tag
+Example: No chocolates left                             # samples/rules/rules.feature:25
+  Given the customer has 100 cents                      # samples/rules/rules.feature.ts:4
+  And there are no chocolate bars in stock              # samples/rules/rules.feature.ts:12
+  When the customer tries to buy a 1 cent chocolate bar # samples/rules/rules.feature.ts:16
+  Then the sale should not happen                       # samples/rules/rules.feature.ts:22

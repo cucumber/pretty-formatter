@@ -1,0 +1,16 @@
+
+[1mFeature:[22m Hooks - Conditional execution
+
+  @fail-before
+  [1mScenario:[22m A failure in the before hook and a skipped step [90m# samples/hooks-conditional/hooks-conditional.feature:7[0m
+        [31mException in conditional hook[0m
+    [36m[1mWhen [22ma step passes[0m                                      [90m# samples/hooks-conditional/hooks-conditional.feature.ts:11[0m
+
+  @fail-after
+  [1mScenario:[22m A failure in the after hook and a passed step [90m# samples/hooks-conditional/hooks-conditional.feature:11[0m
+    [32m[1mWhen [22ma step passes[0m                                    [90m# samples/hooks-conditional/hooks-conditional.feature.ts:11[0m
+        [31mException in conditional hook[0m
+
+  @passing-hook
+  [1mScenario:[22m With an tag, a passed step and hook [90m# samples/hooks-conditional/hooks-conditional.feature:15[0m
+    [32m[1mWhen [22ma step passes[0m                          [90m# samples/hooks-conditional/hooks-conditional.feature.ts:11[0m

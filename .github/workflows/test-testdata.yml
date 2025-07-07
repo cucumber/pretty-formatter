@@ -1,0 +1,36 @@
+name: test-testdata
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - testdata/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - testdata/**
+
+jobs:
+  test-testdata:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        cache: 'npm'
+        cache-dependency-path: testdata/package-lock.json
+
+    - run: npm ci
+      working-directory: testdata
+
+    - name: check repository is not dirty
+      run: "[[ -z $(git status --porcelain) ]]"
+
+    - name: show diff
+      if: ${{ failure() }}
+      run: git status --porcelain

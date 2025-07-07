@@ -1,0 +1,11 @@
+
+[1mFeature:[22m Hooks - Attachments
+
+  [1mScenario:[22m With an valid attachment in the hook and a passed step [90m# samples/hooks-attachment/hooks-attachment.feature:6[0m
+
+      [34mEmbedding [image/svg+xml 2199 bytes][0m
+
+    [32m[1mWhen [22ma step passes[0m                                             [90m# samples/hooks-attachment/hooks-attachment.feature.ts:9[0m
+
+      [34mEmbedding [image/svg+xml 2199 bytes][0m
+

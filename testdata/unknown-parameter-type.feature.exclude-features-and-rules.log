@@ -1,0 +1,3 @@
+
+Scenario: undefined parameter type        # samples/unknown-parameter-type/unknown-parameter-type.feature:5
+  Given CDG is closed because of a strike

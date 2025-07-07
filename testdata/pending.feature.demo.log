@@ -1,0 +1,13 @@
+
+[39m[1mFeature:[22m [3mPending steps[23m[0m
+
+  [1mScenario:[22m [3mUnimplemented step signals pending status[23m [90m# samples/pending/pending.feature:9[0m
+    [33m[1mGiven [22m[3man unimplemented pending step[23m[0m               [90m# samples/pending/pending.feature.ts:11[0m
+
+  [1mScenario:[22m [3mSteps before unimplemented steps are executed[23m [90m# samples/pending/pending.feature:12[0m
+    [32m[1mGiven [22m[3man implemented non-pending step[23m[0m                 [90m# samples/pending/pending.feature.ts:3[0m
+    [33m[1mAnd [22m[3man unimplemented pending step[23m[0m                     [90m# samples/pending/pending.feature.ts:11[0m
+
+  [1mScenario:[22m [3mSteps after unimplemented steps are skipped[23m [90m# samples/pending/pending.feature:16[0m
+    [33m[1mGiven [22m[3man unimplemented pending step[23m[0m                 [90m# samples/pending/pending.feature.ts:11[0m
+    [36m[1mAnd [22m[3man implemented step that is skipped[23m[0m             [90m# samples/pending/pending.feature.ts:7[0m
