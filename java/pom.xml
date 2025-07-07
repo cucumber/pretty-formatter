@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
     <name>Pretty Formatter</name>
     <description>Writes a pretty report of the scenario execution as it happens</description>
-    <url>https://github.com/cucumber/pretty-formatters</url>
+    <url>https://github.com/cucumber/pretty-formatter</url>
 
     <properties>
         <project.Automatic-Module-Name>io.cucumber.prettyformatter</project.Automatic-Module-Name>
