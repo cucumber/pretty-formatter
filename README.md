@@ -18,11 +18,11 @@ Each step is colored according to the outcome. When the `cucumber` theme is in
 use the following colors are used.
 
 | Cucumber Outcome | Color  | Symbol |
-|------------------|--------|--------| 
-| UNKNOWN          | n/a    | n/a    | 
+|------------------|--------|--------|
+| UNKNOWN          | n/a    | n/a    |
 | PASSED           | Green  | ✔      |
-| SKIPPED          | Cyan   | ↷      | 
-| PENDING          | Yellow | ■      | 
+| SKIPPED          | Cyan   | ↷      |
+| PENDING          | Yellow | ■      |
 | UNDEFINED        | Yellow | ■      |
 | AMBIGUOUS        | Red    | ✘      |
 | FAILED           | Red    | ✘      |
