@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Java status icons and plain text theme ([#3](https://github.com/cucumber/pretty-formatter/pull/3))
+- Add status icons and plain text theme ([#3](https://github.com/cucumber/pretty-formatter/pull/3))
 
 
 ## [0.2.0] - 2025-07-07
