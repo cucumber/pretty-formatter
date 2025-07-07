@@ -77,23 +77,27 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
          * circumstances.
          */
         INCLUDE_FEATURE_LINE,
-        
+
         /**
          * Include rule lines.
          *
          * @see #INCLUDE_FEATURE_LINE
          */
         INCLUDE_RULE_LINE,
-        
+
         /**
-         * Adds a status icon next to each step line. 
+         * Adds a status icon next to each step line.
          */
         USE_STATUS_ICON
     }
 
     public static final class Builder {
 
-        private final EnumSet<PrettyFeature> features = EnumSet.of(INCLUDE_FEATURE_LINE, INCLUDE_RULE_LINE, USE_STATUS_ICON);
+        private final EnumSet<PrettyFeature> features = EnumSet.of(
+                INCLUDE_FEATURE_LINE,
+                INCLUDE_RULE_LINE,
+                USE_STATUS_ICON
+        );
         private Theme theme = Theme.none();
         private Function<String, String> uriFormatter = Function.identity();
 
