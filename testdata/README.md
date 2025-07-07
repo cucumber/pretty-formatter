@@ -1,6 +1,6 @@
 # Acceptance test data
 
-The junit xml formatters uses the examples from the [cucumber compatibility kit](https://github.com/cucumber/compatibility-kit)
+The pretty formatter uses the examples from the [cucumber compatibility kit](https://github.com/cucumber/compatibility-kit)
 for acceptance testing. These examples consist of `.ndjson` files created by
 the [`fake-cucumber` reference implementation](https://github.com/cucumber/fake-cucumber).
 
