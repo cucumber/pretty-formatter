@@ -29,19 +29,19 @@ import java.util.Set;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
-import static io.cucumber.prettyformatter.Theme.ICON_LENGTH;
 
 final class PrettyReportData {
 
-    private static final int AFTER_STEP_ATTACHMENT_INDENT = 4;
+    private static final int AFTER_SCENARIO_ATTACHMENT_INDENT = 6;
     private static final int AFTER_STEP_STACKTRACE_INDENT = 4;
     private static final int AFTER_STEP_ARGUMENT_INDENT = 2;
     private static final int STEP_INDENT = 2;
+    // Visually the icon is assumed to have length 1
+    static final int VISUAL_STATUS_ICON_LENGTH = 1;
 
     private final Query query = new Query();
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
     private final Map<String, Integer> scenarioIndentByTestCaseStartedId = new HashMap<>();
-    private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
     private final Set<Object> printedFeaturesAndRules = new HashSet<>();
     private final int afterFeatureIndent;
     private final int afterRuleIndent;
@@ -81,7 +81,7 @@ final class PrettyReportData {
 
     private static int calculateIconLength(Set<PrettyFeature> features) {
         // The icon plus a space to create separation between the step
-        return features.contains(USE_STATUS_ICON) ? ICON_LENGTH + 1 : 0;
+        return features.contains(USE_STATUS_ICON) ? VISUAL_STATUS_ICON_LENGTH + 1 : 0;
     }
 
     private int calculateStepLineLength(int scenarioIndent, Step step, PickleStep pickleStep) {
@@ -103,12 +103,7 @@ final class PrettyReportData {
 
     void collect(Envelope envelope) {
         query.update(envelope);
-        envelope.getStepDefinition().ifPresent(this::updateStepDefinitionsById);
         envelope.getTestCaseStarted().ifPresent(this::preCalculateLocationIndent);
-    }
-
-    private void updateStepDefinitionsById(StepDefinition stepDefinition) {
-        stepDefinitionsById.put(stepDefinition.getId(), stepDefinition);
     }
 
     private void preCalculateLocationIndent(TestCaseStarted event) {
@@ -140,16 +135,20 @@ final class PrettyReportData {
 
     int getAttachmentIndentBy(Attachment attachment) {
         return attachment.getTestCaseStartedId()
-                .map(s -> scenarioIndentByTestCaseStartedId.getOrDefault(s, 0) + iconLength + AFTER_STEP_ATTACHMENT_INDENT)
-                .orElse(4);
+                .map(this::getScenarioIndentBy)
+                .orElse(0) + AFTER_SCENARIO_ATTACHMENT_INDENT + iconLength ;
     }
 
     int getScenarioIndentBy(TestCaseStarted testCaseStarted) {
-        return scenarioIndentByTestCaseStartedId.getOrDefault(testCaseStarted.getId(), 0);
+        return getScenarioIndentBy(testCaseStarted.getId());
     }
 
     int getStepIndentBy(TestStepFinished testStepFinished) {
-        return scenarioIndentByTestCaseStartedId.getOrDefault(testStepFinished.getTestCaseStartedId(), 0) + STEP_INDENT;
+        return getScenarioIndentBy(testStepFinished.getTestCaseStartedId()) + STEP_INDENT;
+    }
+
+    private Integer getScenarioIndentBy(String testCaseStartedId) {
+        return scenarioIndentByTestCaseStartedId.getOrDefault(testCaseStartedId, 0);
     }
 
     int getStackTraceIndentBy(TestStepFinished testStepFinished) {
@@ -197,10 +196,14 @@ final class PrettyReportData {
     }
 
     Optional<SourceReference> findSourceReferenceBy(TestStep testStep) {
-        return testStep.getStepDefinitionIds()
-                .filter(ids -> ids.size() == 1)
-                .map(ids -> stepDefinitionsById.get(ids.get(0)))
-                .map(StepDefinition::getSourceReference);
+        List<StepDefinition> stepDefinitions = query.findStepDefinitionBy(testStep);
+        // Ambiguous step definition
+        if (stepDefinitions.size() > 1) {
+            return Optional.empty();
+        }
+        return stepDefinitions.stream()
+                .map(StepDefinition::getSourceReference)
+                .findFirst();
     }
 
     Optional<Pickle> findPickleBy(TestCaseStarted testCaseStarted) {

@@ -43,7 +43,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Theme {
 
-    static final int ICON_LENGTH = 2;
     private final Map<Element, Entry<Ansi, Ansi>> styleByElement;
     private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement;
     private final Map<TestStepResultStatus, String> statusIconByStatus;
@@ -351,9 +350,9 @@ public final class Theme {
         }
 
         /**
-         * Adds an icon for the given status. 
+         * Adds a status icon for the given status. 
          * <p>
-         * The size of the icon must be 2 bytes but visually the icon must be 1-space wide.
+         * Visually the status icon must be 1-space wide.
          *
          * @param status the status for which the icon is used
          * @param icon   the icon
@@ -362,10 +361,6 @@ public final class Theme {
         public Builder statusIcon(TestStepResultStatus status, String icon) {
             requireNonNull(status);
             requireNonNull(icon);
-            if (icon.length() > ICON_LENGTH) {
-                throw new IllegalArgumentException("The " + icon +" must may not be more than two bytes long");
-            }
-            
             iconByStatus.put(status, icon);
             return this;
         }

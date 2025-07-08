@@ -5,6 +5,7 @@ import io.cucumber.prettyformatter.Theme.Element;
 
 import java.util.function.Consumer;
 
+import static io.cucumber.prettyformatter.PrettyReportData.VISUAL_STATUS_ICON_LENGTH;
 import static java.lang.System.lineSeparator;
 
 final class LineBuilder {
@@ -28,8 +29,7 @@ final class LineBuilder {
     }
 
     LineBuilder statusIcon(String statusIcon) {
-        // Visually the icon is assumed to have length 1
-        this.unstyledLength += 1;
+        this.unstyledLength += VISUAL_STATUS_ICON_LENGTH;
         builder.append(statusIcon);
         return this;
     }
