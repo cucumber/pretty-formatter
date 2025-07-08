@@ -38,6 +38,8 @@ final class PrettyReportData {
     private static final int STEP_INDENT = 2;
     // Visually the icon is assumed to have length 1
     static final int VISUAL_STATUS_ICON_LENGTH = 1;
+    private static final int ONE_SPACE_LENGTH = 1;
+    private static final int TWO_SPACE_LENGTH = 2;
 
     private final Query query = new Query();
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
@@ -82,7 +84,7 @@ final class PrettyReportData {
 
     private static int calculateIconLength(Set<PrettyFeature> features) {
         // The icon plus a space to create separation between the step
-        return features.contains(USE_STATUS_ICON) ? VISUAL_STATUS_ICON_LENGTH + 1 : 0;
+        return features.contains(USE_STATUS_ICON) ? VISUAL_STATUS_ICON_LENGTH + ONE_SPACE_LENGTH : 0;
     }
 
     private int calculateStepLineLength(int scenarioIndent, Step step, PickleStep pickleStep) {
@@ -126,7 +128,7 @@ final class PrettyReportData {
 
                                     scenarioIndentByTestCaseStartedId.put(event.getId(), scenarioIndent);
                                     // Adds Space between step and comment start
-                                    commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + 1);
+                                    commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + ONE_SPACE_LENGTH);
                                 })));
     }
 
