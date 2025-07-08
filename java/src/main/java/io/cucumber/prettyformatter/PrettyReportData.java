@@ -39,7 +39,6 @@ final class PrettyReportData {
     // Visually the icon is assumed to have length 1
     static final int VISUAL_STATUS_ICON_LENGTH = 1;
     private static final int ONE_SPACE_LENGTH = 1;
-    private static final int TWO_SPACE_LENGTH = 2;
 
     private final Query query = new Query();
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
