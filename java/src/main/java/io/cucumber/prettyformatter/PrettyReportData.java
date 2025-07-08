@@ -42,6 +42,7 @@ final class PrettyReportData {
     private final Query query = new Query();
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
     private final Map<String, Integer> scenarioIndentByTestCaseStartedId = new HashMap<>();
+    private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
     private final Set<Object> printedFeaturesAndRules = new HashSet<>();
     private final int afterFeatureIndent;
     private final int afterRuleIndent;
@@ -103,7 +104,13 @@ final class PrettyReportData {
 
     void collect(Envelope envelope) {
         query.update(envelope);
+        envelope.getStepDefinition().ifPresent(this::updateStepDefinitionsById);
         envelope.getTestCaseStarted().ifPresent(this::preCalculateLocationIndent);
+    }
+
+    private void updateStepDefinitionsById(StepDefinition stepDefinition) {
+        // TODO: Move to query
+        stepDefinitionsById.put(stepDefinition.getId(), stepDefinition);
     }
 
     private void preCalculateLocationIndent(TestCaseStarted event) {
@@ -196,14 +203,11 @@ final class PrettyReportData {
     }
 
     Optional<SourceReference> findSourceReferenceBy(TestStep testStep) {
-        List<StepDefinition> stepDefinitions = query.findStepDefinitionBy(testStep);
-        // Ambiguous step definition
-        if (stepDefinitions.size() > 1) {
-            return Optional.empty();
-        }
-        return stepDefinitions.stream()
-                .map(StepDefinition::getSourceReference)
-                .findFirst();
+        // TODO: Move to query
+        return testStep.getStepDefinitionIds()
+                .filter(ids -> ids.size() == 1)
+                .map(ids -> stepDefinitionsById.get(ids.get(0)))
+                .map(StepDefinition::getSourceReference);
     }
 
     Optional<Pickle> findPickleBy(TestCaseStarted testCaseStarted) {
