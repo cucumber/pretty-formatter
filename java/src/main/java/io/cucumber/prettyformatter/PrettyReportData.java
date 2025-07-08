@@ -15,6 +15,7 @@ import io.cucumber.messages.types.StepDefinition;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestStep;
 import io.cucumber.messages.types.TestStepFinished;
+import io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature;
 import io.cucumber.query.Lineage;
 import io.cucumber.query.Query;
 
@@ -27,8 +28,17 @@ import java.util.Set;
 
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
 
 final class PrettyReportData {
+
+    private static final int AFTER_SCENARIO_ATTACHMENT_INDENT = 6;
+    private static final int AFTER_STEP_STACKTRACE_INDENT = 4;
+    private static final int AFTER_STEP_ARGUMENT_INDENT = 2;
+    private static final int STEP_INDENT = 2;
+    // Visually the icon is assumed to have length 1
+    static final int VISUAL_STATUS_ICON_LENGTH = 1;
+    private static final int ONE_SPACE_LENGTH = 1;
 
     private final Query query = new Query();
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
@@ -37,13 +47,15 @@ final class PrettyReportData {
     private final Set<Object> printedFeaturesAndRules = new HashSet<>();
     private final int afterFeatureIndent;
     private final int afterRuleIndent;
+    private final int iconLength;
 
-    PrettyReportData(Set<MessagesToPrettyWriter.PrettyFeature> features) {
+    PrettyReportData(Set<PrettyFeature> features) {
         afterFeatureIndent = calculateAfterFeatureIndent(features);
         afterRuleIndent = calculateAfterRuleIndent(features);
+        iconLength = calculateIconLength(features);
     }
 
-    private static int calculateAfterRuleIndent(Set<MessagesToPrettyWriter.PrettyFeature> features) {
+    private static int calculateAfterRuleIndent(Set<PrettyFeature> features) {
         int indent = 0;
         if (features.contains(INCLUDE_FEATURE_LINE)) {
             indent += 2;
@@ -54,7 +66,7 @@ final class PrettyReportData {
         return indent;
     }
 
-    private static int calculateAfterFeatureIndent(Set<MessagesToPrettyWriter.PrettyFeature> features) {
+    private static int calculateAfterFeatureIndent(Set<PrettyFeature> features) {
         int indent = 0;
         if (features.contains(INCLUDE_FEATURE_LINE)) {
             indent += 2;
@@ -62,18 +74,23 @@ final class PrettyReportData {
         return indent;
     }
 
-    private static int calculateStepLineLength(int scenarioIndent, Step step, PickleStep pickleStep) {
-        String keyword = step.getKeyword();
-        String text = pickleStep.getText();
-        // The step indentation adds 2
-        return scenarioIndent + 2 + keyword.length() + text.length();
-    }
-
     private static int calculateScenarioLineLength(int scenarioIndent, Pickle pickle, Scenario scenario) {
         String pickleName = pickle.getName();
         String pickleKeyword = scenario.getKeyword();
         // The ": " between keyword and name adds 2
         return scenarioIndent + pickleKeyword.length() + 2 + pickleName.length();
+    }
+
+    private static int calculateIconLength(Set<PrettyFeature> features) {
+        // The icon plus a space to create separation between the step
+        return features.contains(USE_STATUS_ICON) ? VISUAL_STATUS_ICON_LENGTH + ONE_SPACE_LENGTH : 0;
+    }
+
+    private int calculateStepLineLength(int scenarioIndent, Step step, PickleStep pickleStep) {
+        String keyword = step.getKeyword();
+        String text = pickleStep.getText();
+        // The step indentation adds 2
+        return scenarioIndent + STEP_INDENT + iconLength + keyword.length() + text.length();
     }
 
     private int calculateScenarioIndent(Lineage lineage) {
@@ -86,8 +103,6 @@ final class PrettyReportData {
         return 0;
     }
 
-
-
     void collect(Envelope envelope) {
         query.update(envelope);
         envelope.getStepDefinition().ifPresent(this::updateStepDefinitionsById);
@@ -95,6 +110,7 @@ final class PrettyReportData {
     }
 
     private void updateStepDefinitionsById(StepDefinition stepDefinition) {
+        // TODO: Move to query
         stepDefinitionsById.put(stepDefinition.getId(), stepDefinition);
     }
 
@@ -110,7 +126,8 @@ final class PrettyReportData {
                                             .reduce(scenarioLineLength, Math::max);
 
                                     scenarioIndentByTestCaseStartedId.put(event.getId(), scenarioIndent);
-                                    commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + 1);
+                                    // Adds Space between step and comment start
+                                    commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + ONE_SPACE_LENGTH);
                                 })));
     }
 
@@ -119,31 +136,35 @@ final class PrettyReportData {
                 .map(step -> calculateStepLineLength(indent, step, pickleStep))
                 .orElse(0);
     }
-    
+
     int getAfterFeatureIndent() {
         return afterFeatureIndent;
     }
 
     int getAttachmentIndentBy(Attachment attachment) {
         return attachment.getTestCaseStartedId()
-                .map(s -> scenarioIndentByTestCaseStartedId.getOrDefault(s, 0) + 4)
-                .orElse(4);
+                .map(this::getScenarioIndentBy)
+                .orElse(0) + AFTER_SCENARIO_ATTACHMENT_INDENT + iconLength ;
     }
 
     int getScenarioIndentBy(TestCaseStarted testCaseStarted) {
-        return scenarioIndentByTestCaseStartedId.getOrDefault(testCaseStarted.getId(), 0);
+        return getScenarioIndentBy(testCaseStarted.getId());
     }
 
     int getStepIndentBy(TestStepFinished testStepFinished) {
-        return scenarioIndentByTestCaseStartedId.getOrDefault(testStepFinished.getTestCaseStartedId(), 0) + 2;
+        return getScenarioIndentBy(testStepFinished.getTestCaseStartedId()) + STEP_INDENT;
+    }
+
+    private Integer getScenarioIndentBy(String testCaseStartedId) {
+        return scenarioIndentByTestCaseStartedId.getOrDefault(testCaseStartedId, 0);
     }
 
     int getStackTraceIndentBy(TestStepFinished testStepFinished) {
-        return getStepIndentBy(testStepFinished) + 4;
+        return getStepIndentBy(testStepFinished) + iconLength + AFTER_STEP_STACKTRACE_INDENT;
     }
 
     int getArgumentIndentBy(TestStepFinished testStepFinished) {
-        return getStepIndentBy(testStepFinished) + 2;
+        return getStepIndentBy(testStepFinished) + iconLength + AFTER_STEP_ARGUMENT_INDENT;
     }
 
     int getCommentStartAtIndexBy(TestCaseStarted testCaseStarted) {
@@ -183,6 +204,7 @@ final class PrettyReportData {
     }
 
     Optional<SourceReference> findSourceReferenceBy(TestStep testStep) {
+        // TODO: Move to query
         return testStep.getStepDefinitionIds()
                 .filter(ids -> ids.size() == 1)
                 .map(ids -> stepDefinitionsById.get(ids.get(0)))

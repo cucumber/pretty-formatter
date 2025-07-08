@@ -27,6 +27,7 @@ import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
 import static io.cucumber.prettyformatter.Theme.Element.RULE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_ARGUMENT;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
@@ -44,13 +45,15 @@ public final class Theme {
 
     private final Map<Element, Entry<Ansi, Ansi>> styleByElement;
     private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement;
+    private final Map<TestStepResultStatus, String> statusIconByStatus;
 
     private Theme(
             Map<Element, Entry<Ansi, Ansi>> styleByElement,
-            Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement
-    ) {
+            Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement,
+            Map<TestStepResultStatus, String> statusIconByStatus) {
         this.styleByElement = requireNonNull(styleByElement);
         this.styleByStatusByElement = requireNonNull(styleByStatusByElement);
+        this.statusIconByStatus = statusIconByStatus;
     }
 
     /**
@@ -71,6 +74,18 @@ public final class Theme {
                 .style(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
                 .style(STEP_ARGUMENT, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(STEP_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
+                .statusIcon(AMBIGUOUS, "✘")
+                .style(STATUS_ICON, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .statusIcon(FAILED, "✘")
+                .style(STATUS_ICON, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .statusIcon(PASSED, "✔")
+                .style(STATUS_ICON, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(RESET))
+                .statusIcon(PENDING, "■")
+                .style(STATUS_ICON, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
+                .statusIcon(SKIPPED, "↷")
+                .style(STATUS_ICON, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
+                .statusIcon(UNDEFINED, "■")
+                .style(STATUS_ICON, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
                 .build();
     }
 
@@ -78,7 +93,22 @@ public final class Theme {
      * Empty theme that does not apply any styling to the output.
      */
     public static Theme none() {
-        return Theme.builder().build();
+        return Theme.builder()
+                .build();
+    }
+
+    /**
+     * A plain text theme. Does not use any ANSI.
+     */
+    public static Theme plain() {
+        return Theme.builder()
+                .statusIcon(AMBIGUOUS, "✘")
+                .statusIcon(FAILED, "✘")
+                .statusIcon(PASSED, "✔")
+                .statusIcon(PENDING, "■")
+                .statusIcon(SKIPPED, "↷")
+                .statusIcon(UNDEFINED, "■")
+                .build();
     }
 
     /**
@@ -113,6 +143,13 @@ public final class Theme {
         return style == null ? "" : style.getValue().toString();
     }
 
+    String statusIcon(TestStepResultStatus status) {
+        if (statusIconByStatus.isEmpty()) {
+            return "";
+        }
+        return statusIconByStatus.getOrDefault(status, " ");
+    }
+
     private Entry<Ansi, Ansi> findAnsiBy(Element element) {
         return styleByElement.get(element);
     }
@@ -122,149 +159,164 @@ public final class Theme {
         return styleByStatus == null ? null : styleByStatus.get(status);
     }
 
+    boolean hasStatusIcons() {
+        return !statusIconByStatus.isEmpty();
+    }
+
     /**
      * All style-able elements in a theme.
      */
     public enum Element {
-        
+
         /**
          * The output from {@code scenario.log} and {@code scenario.attach}.
          */
         ATTACHMENT,
-        
+
         /**
          * The data table, an optional argument for a step.
          */
         DATA_TABLE,
-        
+
         /**
          * The data table borders. I.e. the {code |} characters.
          * <p>
          * Styles applied to {@link #DATA_TABLE} are also applied to this element.
          */
         DATA_TABLE_BORDER,
-        
+
         /**
          * The data table contents. I.e. the individual cell.
          * <p>
          * Styles applied to {@link #DATA_TABLE} are also applied to this element.
          */
         DATA_TABLE_CONTENT,
-        
+
         /**
          * The doc string, an optional argument for a step.
          */
         DOC_STRING,
-        
+
         /**
          * The doc string contents.
          * <p>
          * Styles applied to {@link #DOC_STRING} are also applied to this element.
          */
         DOC_STRING_CONTENT,
-        
+
         /**
          * The doc string media type. E.g. {@code application/json} .
          * <p>
          * Styles applied to {@link #DOC_STRING} are also applied to this element.
          */
         DOC_STRING_MEDIA_TYPE,
-        
+
         /**
          * The doc string delimiter. I.e. {@code """"}.
          * <p>
          * Styles applied to {@link #DOC_STRING} are also applied to this element.
          */
         DOC_STRING_DELIMITER,
-        
+
         /**
          * The feature line.
          */
         FEATURE,
-        
+
         /**
          * The feature keyword.
          * <p>
          * Styles applied to {@link #FEATURE} are also applied to this element.
          */
         FEATURE_KEYWORD,
-        
+
         /**
          * The feature name.
          * <p>
          * Styles applied to {@link #FEATURE} are also applied to this element.
          */
         FEATURE_NAME,
-        
+
         /**
          * The location comment. E.g. {@code # samples/undefined/undefined.feature:10}.
          * <p>
          * Styles applied to {@link #FEATURE} are also applied to this element.
          */
         LOCATION,
-        
+
         /**
          * The rule line.
          */
         RULE,
-        
+
         /**
          * The rule keyword.
          * <p>
          * Styles applied to {@link #RULE} are also applied to this element.
          */
         RULE_KEYWORD,
-        
+
         /**
          * The rule name.
          * <p>
          * Styles applied to {@link #RULE} are also applied to this element.
          */
         RULE_NAME,
-        
+
         /**
          * The scenario line.
          */
         SCENARIO,
-        
+
         /**
          * The scenario keyword.
          * <p>
          * Styles applied to {@link #SCENARIO} are also applied to this element.
          */
         SCENARIO_KEYWORD,
-        
+
         /**
          * The scenario name.
          * <p>
          * Styles applied to {@link #SCENARIO} are also applied to this element.
          */
         SCENARIO_NAME,
-        
+
+        /**
+         * The status icon.
+         * <p>
+         * Always used in combination with a {@link TestStepResultStatus}.
+         */
+        STATUS_ICON,
+
         /**
          * The step line.
          * <p>
          * Always used in combination with a {@link TestStepResultStatus}.
          */
         STEP,
+
         /**
          * A matched argument in a step.
          * <p>
          * Styles applied to {@link #STEP} are also applied to this element.
          */
         STEP_ARGUMENT,
+
         /**
          * The step keyword.
          * <p>
          * Styles applied to {@link #STEP} are also applied to this element.
          */
         STEP_KEYWORD,
+
         /**
          * The step text.
          * <p>
          * Styles applied to {@link #STEP} are also applied to this element.
          */
         STEP_TEXT,
+
         /**
          * The tag line.
          */
@@ -272,6 +324,7 @@ public final class Theme {
     }
 
     public static class Builder {
+        private final Map<TestStepResultStatus, String> iconByStatus = new EnumMap<>(TestStepResultStatus.class);
         private final Map<Element, Entry<Ansi, Ansi>> styleByElement = new EnumMap<>(Element.class);
         private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement = new EnumMap<>(Element.class);
 
@@ -285,6 +338,7 @@ public final class Theme {
          * @param element    the element to style
          * @param style      the ansi style to apply
          * @param resetStyle the ansi style to reset the applied styling
+         * @return this builder
          */
         public Builder style(Element element, Ansi style, Ansi resetStyle) {
             requireNonNull(element);
@@ -296,12 +350,29 @@ public final class Theme {
         }
 
         /**
+         * Adds a status icon for the given status. 
+         * <p>
+         * Visually the status icon must be 1-space wide.
+         *
+         * @param status the status for which the icon is used
+         * @param icon   the icon
+         * @return this builder
+         */
+        public Builder statusIcon(TestStepResultStatus status, String icon) {
+            requireNonNull(status);
+            requireNonNull(icon);
+            iconByStatus.put(status, icon);
+            return this;
+        }
+
+        /**
          * Adds a style and reset style for an element.
          *
          * @param element    the element to style
          * @param status     the status of the element to style
          * @param style      the ansi style to apply
          * @param resetStyle the ansi style to reset the applied styling
+         * @return this builder
          */
         public Builder style(Element element, TestStepResultStatus status, Ansi style, Ansi resetStyle) {
             requireNonNull(element);
@@ -315,7 +386,7 @@ public final class Theme {
         }
 
         public Theme build() {
-            return new Theme(styleByElement, styleByStatusByElement);
+            return new Theme(styleByElement, styleByStatusByElement, iconByStatus);
         }
 
     }

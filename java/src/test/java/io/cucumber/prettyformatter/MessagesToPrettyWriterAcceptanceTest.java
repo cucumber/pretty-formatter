@@ -27,6 +27,7 @@ import static io.cucumber.prettyformatter.MessagesToPrettyWriter.builder;
 import static io.cucumber.prettyformatter.TestTheme.demo;
 import static io.cucumber.prettyformatter.Theme.cucumber;
 import static io.cucumber.prettyformatter.Theme.none;
+import static io.cucumber.prettyformatter.Theme.plain;
 import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -74,10 +75,18 @@ class MessagesToPrettyWriterAcceptanceTest {
 
     @ParameterizedTest
     @MethodSource("acceptance")
-    void testNoTheme(TestCase testCase) throws IOException {
+    void testNoneTheme(TestCase testCase) throws IOException {
         Builder builder = builder().theme(none());
         ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedNoTheme)));
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedNoneTheme)));
+    }
+    
+    @ParameterizedTest
+    @MethodSource("acceptance")
+    void testPlainTheme(TestCase testCase) throws IOException {
+        Builder builder = builder().theme(plain());
+        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedPlainTheme)));
     }
 
     @ParameterizedTest
@@ -106,11 +115,17 @@ class MessagesToPrettyWriterAcceptanceTest {
             // Render output in console, easier to inspect results
             // Files.copy(testCase.expectedDemoTheme, System.out);
         }
-        try (OutputStream out = Files.newOutputStream(testCase.expectedNoTheme)) {
+        try (OutputStream out = Files.newOutputStream(testCase.expectedNoneTheme)) {
             Builder builder = builder().theme(none());
             writePrettyReport(testCase, out, builder);
             // Render output in console, easier to inspect results
-            // Files.copy(testCase.expectedNoTheme, System.out);
+            // Files.copy(testCase.expectedNoneTheme, System.out);
+        }
+        try (OutputStream out = Files.newOutputStream(testCase.expectedPlainTheme)) {
+            Builder builder = builder().theme(plain());
+            writePrettyReport(testCase, out, builder);
+            // Render output in console, easier to inspect results
+            // Files.copy(testCase.expectedPlainTheme, System.out);
         }
         try (OutputStream out = Files.newOutputStream(testCase.expectedExcludeFeatureAndRuleLines)) {
             Builder builder = builder().theme(none())
@@ -125,8 +140,9 @@ class MessagesToPrettyWriterAcceptanceTest {
     static class TestCase {
         private final Path source;
         private final Path expectedCumberTheme;
-        private final Path expectedNoTheme;
+        private final Path expectedNoneTheme;
         private final Path expectedDemoTheme;
+        private final Path expectedPlainTheme;
         private final Path expectedExcludeFeatureAndRuleLines;
 
         private final String name;
@@ -136,8 +152,9 @@ class MessagesToPrettyWriterAcceptanceTest {
             String fileName = source.getFileName().toString();
             this.name = fileName.substring(0, fileName.lastIndexOf(".ndjson"));
             this.expectedCumberTheme = source.getParent().resolve(name + ".cucumber.log");
-            this.expectedNoTheme = source.getParent().resolve(name + ".none.log");
+            this.expectedNoneTheme = source.getParent().resolve(name + ".none.log");
             this.expectedDemoTheme = source.getParent().resolve(name + ".demo.log");
+            this.expectedPlainTheme = source.getParent().resolve(name + ".plain.log");
             this.expectedExcludeFeatureAndRuleLines = source.getParent().resolve(name + ".exclude-features-and-rules.log");
         }
 

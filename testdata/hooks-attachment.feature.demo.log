@@ -3,9 +3,9 @@
 
   [1mScenario:[22m [3mWith an valid attachment in the hook and a passed step[23m [90m# samples/hooks-attachment/hooks-attachment.feature:6[0m
 
-      [34mEmbedding [image/svg+xml 2199 bytes][0m
+        [34mEmbedding [image/svg+xml 2199 bytes][0m
 
     [32m[1mWhen [22m[3ma step passes[23m[0m                                             [90m# samples/hooks-attachment/hooks-attachment.feature.ts:9[0m
 
-      [34mEmbedding [image/svg+xml 2199 bytes][0m
+        [34mEmbedding [image/svg+xml 2199 bytes][0m
 

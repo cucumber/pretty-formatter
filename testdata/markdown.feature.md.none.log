@@ -13,7 +13,7 @@ Feature: Cheese
         Given there are 24 apples in Mary's basket
         """
 
-        We are logging some plain text (fail)
+          We are logging some plain text (fail)
 
       When we use a data table and attach something and then fail # samples/markdown/markdown.feature.md.ts:12
         | name | age |
@@ -33,7 +33,7 @@ Feature: Cheese
         Given there are 24 apples in Mary's basket
         """
 
-        We are logging some plain text (pass)
+          We are logging some plain text (pass)
 
       When we use a data table and attach something and then pass # samples/markdown/markdown.feature.md.ts:12
         | name | age |

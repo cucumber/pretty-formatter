@@ -3,41 +3,41 @@
 
   [1mRule:[22m Nom nom nom
 
-    [1mScenario Outline:[22m Ylajali!                                    [90m# samples/markdown/markdown.feature.md:38[0m
-      [32m[1mGiven [22msome TypeScript code:[0m                                 [90m# samples/markdown/markdown.feature.md.ts:4[0m
-        """typescript
-        type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
-        """
-      [32m[1mAnd [22msome classic Gherkin:[0m                                   [90m# samples/markdown/markdown.feature.md.ts:8[0m
-        """gherkin
-        Given there are 24 apples in Mary's basket
-        """
+    [1mScenario Outline:[22m Ylajali!                                      [90m# samples/markdown/markdown.feature.md:38[0m
+      [32m✔[0m [32m[1mGiven [22msome TypeScript code:[0m                                 [90m# samples/markdown/markdown.feature.md.ts:4[0m
+          """typescript
+          type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
+          """
+      [32m✔[0m [32m[1mAnd [22msome classic Gherkin:[0m                                   [90m# samples/markdown/markdown.feature.md.ts:8[0m
+          """gherkin
+          Given there are 24 apples in Mary's basket
+          """
 
-        [34mWe are logging some plain text (fail)[0m
+            [34mWe are logging some plain text (fail)[0m
 
-      [31m[1mWhen [22mwe use a data table and attach something and then [1mfail[22m[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
-        | name | age |
-        | Bill | 3   |
-        | Jane | 6   |
-        | Isla | 5   |
-          [31mYou asked me to fail[0m
-      [36m[1mThen [22mthis might or might not run[0m                            [90m# samples/markdown/markdown.feature.md.ts:23[0m
+      [31m✘[0m [31m[1mWhen [22mwe use a data table and attach something and then [1mfail[22m[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
+          | name | age |
+          | Bill | 3   |
+          | Jane | 6   |
+          | Isla | 5   |
+            [31mYou asked me to fail[0m
+      [36m↷[0m [36m[1mThen [22mthis might or might not run[0m                            [90m# samples/markdown/markdown.feature.md.ts:23[0m
 
-    [1mScenario Outline:[22m Ylajali!                                    [90m# samples/markdown/markdown.feature.md:39[0m
-      [32m[1mGiven [22msome TypeScript code:[0m                                 [90m# samples/markdown/markdown.feature.md.ts:4[0m
-        """typescript
-        type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
-        """
-      [32m[1mAnd [22msome classic Gherkin:[0m                                   [90m# samples/markdown/markdown.feature.md.ts:8[0m
-        """gherkin
-        Given there are 24 apples in Mary's basket
-        """
+    [1mScenario Outline:[22m Ylajali!                                      [90m# samples/markdown/markdown.feature.md:39[0m
+      [32m✔[0m [32m[1mGiven [22msome TypeScript code:[0m                                 [90m# samples/markdown/markdown.feature.md.ts:4[0m
+          """typescript
+          type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
+          """
+      [32m✔[0m [32m[1mAnd [22msome classic Gherkin:[0m                                   [90m# samples/markdown/markdown.feature.md.ts:8[0m
+          """gherkin
+          Given there are 24 apples in Mary's basket
+          """
 
-        [34mWe are logging some plain text (pass)[0m
+            [34mWe are logging some plain text (pass)[0m
 
-      [32m[1mWhen [22mwe use a data table and attach something and then [1mpass[22m[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
-        | name | age |
-        | Bill | 3   |
-        | Jane | 6   |
-        | Isla | 5   |
-      [32m[1mThen [22mthis might or might not run[0m                            [90m# samples/markdown/markdown.feature.md.ts:23[0m
+      [32m✔[0m [32m[1mWhen [22mwe use a data table and attach something and then [1mpass[22m[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
+          | name | age |
+          | Bill | 3   |
+          | Jane | 6   |
+          | Isla | 5   |
+      [32m✔[0m [32m[1mThen [22mthis might or might not run[0m                            [90m# samples/markdown/markdown.feature.md.ts:23[0m

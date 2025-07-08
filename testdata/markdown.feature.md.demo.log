@@ -13,7 +13,7 @@
         [90m[3mGiven there are 24 apples in Mary's basket[23m[0m
         [90m[2m"""[22m[0m
 
-        [34mWe are logging some plain text (fail)[0m
+          [34mWe are logging some plain text (fail)[0m
 
       [31m[1mWhen [22m[3mwe use a data table and attach something and then [23m[1mfail[22m[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
         [90m[2m|[22m[3m name [23m[2m|[22m[3m age [23m[2m|[22m[0m
@@ -33,7 +33,7 @@
         [90m[3mGiven there are 24 apples in Mary's basket[23m[0m
         [90m[2m"""[22m[0m
 
-        [34mWe are logging some plain text (pass)[0m
+          [34mWe are logging some plain text (pass)[0m
 
       [32m[1mWhen [22m[3mwe use a data table and attach something and then [23m[1mpass[22m[0m [90m# samples/markdown/markdown.feature.md.ts:12[0m
         [90m[2m|[22m[3m name [23m[2m|[22m[3m age [23m[2m|[22m[0m
