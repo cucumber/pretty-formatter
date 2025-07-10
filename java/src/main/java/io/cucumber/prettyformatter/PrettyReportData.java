@@ -32,18 +32,17 @@ import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.U
 
 final class PrettyReportData {
 
+    // Visually the icon is assumed to have length 1
+    static final int VISUAL_STATUS_ICON_LENGTH = 1;
     private static final int AFTER_SCENARIO_ATTACHMENT_INDENT = 6;
     private static final int AFTER_STEP_STACKTRACE_INDENT = 4;
     private static final int AFTER_STEP_ARGUMENT_INDENT = 2;
     private static final int STEP_INDENT = 2;
-    // Visually the icon is assumed to have length 1
-    static final int VISUAL_STATUS_ICON_LENGTH = 1;
     private static final int ONE_SPACE_LENGTH = 1;
 
     private final Query query = new Query();
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
     private final Map<String, Integer> scenarioIndentByTestCaseStartedId = new HashMap<>();
-    private final Map<String, StepDefinition> stepDefinitionsById = new HashMap<>();
     private final Set<Object> printedFeaturesAndRules = new HashSet<>();
     private final int afterFeatureIndent;
     private final int afterRuleIndent;
@@ -105,13 +104,7 @@ final class PrettyReportData {
 
     void collect(Envelope envelope) {
         query.update(envelope);
-        envelope.getStepDefinition().ifPresent(this::updateStepDefinitionsById);
         envelope.getTestCaseStarted().ifPresent(this::preCalculateLocationIndent);
-    }
-
-    private void updateStepDefinitionsById(StepDefinition stepDefinition) {
-        // TODO: Move to query
-        stepDefinitionsById.put(stepDefinition.getId(), stepDefinition);
     }
 
     private void preCalculateLocationIndent(TestCaseStarted event) {
@@ -144,7 +137,7 @@ final class PrettyReportData {
     int getAttachmentIndentBy(Attachment attachment) {
         return attachment.getTestCaseStartedId()
                 .map(this::getScenarioIndentBy)
-                .orElse(0) + AFTER_SCENARIO_ATTACHMENT_INDENT + iconLength ;
+                .orElse(0) + AFTER_SCENARIO_ATTACHMENT_INDENT + iconLength;
     }
 
     int getScenarioIndentBy(TestCaseStarted testCaseStarted) {
@@ -204,10 +197,7 @@ final class PrettyReportData {
     }
 
     Optional<SourceReference> findSourceReferenceBy(TestStep testStep) {
-        // TODO: Move to query
-        return testStep.getStepDefinitionIds()
-                .filter(ids -> ids.size() == 1)
-                .map(ids -> stepDefinitionsById.get(ids.get(0)))
+        return query.findUnambiguousStepDefinitionBy(testStep)
                 .map(StepDefinition::getSourceReference);
     }
 
