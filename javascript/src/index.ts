@@ -34,8 +34,11 @@ export default {
       if (message.testStepFinished) {
         const maxContentLength =
           maxContentLengthByTestCaseStartedId.get(message.testStepFinished.testCaseStartedId) ?? 0
-        write(formatTestStepFinished(message.testStepFinished, query, maxContentLength))
-        write('\n')
+        const output = formatTestStepFinished(message.testStepFinished, query, maxContentLength)
+        if (output) {
+          write(output)
+          write('\n')
+        }
       }
     })
   },
