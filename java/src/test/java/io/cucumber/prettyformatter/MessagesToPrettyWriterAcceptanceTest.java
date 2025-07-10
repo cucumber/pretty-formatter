@@ -14,15 +14,14 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
-import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
-import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.builder;
 import static io.cucumber.prettyformatter.TestTheme.demo;
 import static io.cucumber.prettyformatter.Theme.cucumber;
@@ -35,11 +34,26 @@ class MessagesToPrettyWriterAcceptanceTest {
     private static final NdjsonToMessageIterable.Deserializer deserializer = (json) -> OBJECT_MAPPER.readValue(json, Envelope.class);
 
     static List<TestCase> acceptance() throws IOException {
+        Map<String, Theme> themes = new LinkedHashMap<>();
+        themes.put("cucumber", cucumber());
+        themes.put("demo", demo());
+        themes.put("plain", plain());
+        themes.put("none", none());
+
+        List<Path> sources = getSources();
+
+        List<TestCase> testCases = new ArrayList<>();
+        sources.forEach(path ->
+                themes.forEach((strategyName, strategy) ->
+                        testCases.add(new TestCase(path, strategyName, strategy))));
+
+        return testCases;
+    }
+
+    private static List<Path> getSources() throws IOException {
         try (Stream<Path> paths = Files.list(Paths.get("../testdata"))) {
             return paths
                     .filter(path -> path.getFileName().toString().endsWith(".ndjson"))
-                    .map(TestCase::new)
-                    .sorted(Comparator.comparing(testCase -> testCase.source))
                     .collect(Collectors.toList());
         }
     }
@@ -59,122 +73,46 @@ class MessagesToPrettyWriterAcceptanceTest {
 
     @ParameterizedTest
     @MethodSource("acceptance")
-    void testCucumberTheme(TestCase testCase) throws IOException {
-        Builder builder = builder().theme(cucumber());
+    void test(TestCase testCase) throws IOException {
+        Builder builder = builder().theme(testCase.theme);
         ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedCumberTheme)));
-    }
-
-    @ParameterizedTest
-    @MethodSource("acceptance")
-    void testDemoTheme(TestCase testCase) throws IOException {
-        Builder theme = builder().theme(demo());
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), theme);
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedDemoTheme)));
-    }
-
-    @ParameterizedTest
-    @MethodSource("acceptance")
-    void testNoneTheme(TestCase testCase) throws IOException {
-        Builder builder = builder().theme(none());
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedNoneTheme)));
-    }
-    
-    @ParameterizedTest
-    @MethodSource("acceptance")
-    void testPlainTheme(TestCase testCase) throws IOException {
-        Builder builder = builder().theme(plain());
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedPlainTheme)));
-    }
-
-    @ParameterizedTest
-    @MethodSource("acceptance")
-    void testExcludeFeaturesAndRules(TestCase testCase) throws IOException {
-        Builder builder = builder().theme(none())
-                .feature(INCLUDE_FEATURE_LINE, false)
-                .feature(INCLUDE_RULE_LINE, false);
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expectedExcludeFeatureAndRuleLines)));
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
     }
 
     @ParameterizedTest
     @MethodSource("acceptance")
     @Disabled
     void updateExpectedPrettyFiles(TestCase testCase) throws IOException {
-        try (OutputStream out = Files.newOutputStream(testCase.expectedCumberTheme)) {
-            Builder builder = builder().theme(cucumber());
+        try (OutputStream out = Files.newOutputStream(testCase.expected)) {
+            Builder builder = builder().theme(testCase.theme);
             writePrettyReport(testCase, out, builder);
             // Render output in console, easier to inspect results
-            Files.copy(testCase.expectedCumberTheme, System.out);
-        }
-        try (OutputStream out = Files.newOutputStream(testCase.expectedDemoTheme)) {
-            Builder builder = builder().theme(demo());
-            writePrettyReport(testCase, out, builder);
-            // Render output in console, easier to inspect results
-            // Files.copy(testCase.expectedDemoTheme, System.out);
-        }
-        try (OutputStream out = Files.newOutputStream(testCase.expectedNoneTheme)) {
-            Builder builder = builder().theme(none());
-            writePrettyReport(testCase, out, builder);
-            // Render output in console, easier to inspect results
-            // Files.copy(testCase.expectedNoneTheme, System.out);
-        }
-        try (OutputStream out = Files.newOutputStream(testCase.expectedPlainTheme)) {
-            Builder builder = builder().theme(plain());
-            writePrettyReport(testCase, out, builder);
-            // Render output in console, easier to inspect results
-            // Files.copy(testCase.expectedPlainTheme, System.out);
-        }
-        try (OutputStream out = Files.newOutputStream(testCase.expectedExcludeFeatureAndRuleLines)) {
-            Builder builder = builder().theme(none())
-                    .feature(INCLUDE_FEATURE_LINE, false)
-                    .feature(INCLUDE_RULE_LINE, false);
-            writePrettyReport(testCase, out, builder);
-            // Render output in console, easier to inspect results
-            // Files.copy(testCase.expectedExcludeFeaturesAndRules, System.out);
+            Files.copy(testCase.expected, System.out);
         }
     }
 
     static class TestCase {
         private final Path source;
-        private final Path expectedCumberTheme;
-        private final Path expectedNoneTheme;
-        private final Path expectedDemoTheme;
-        private final Path expectedPlainTheme;
-        private final Path expectedExcludeFeatureAndRuleLines;
+        private final String themeName;
+        private final Theme theme;
+        private final Path expected;
 
         private final String name;
 
-        TestCase(Path source) {
+        TestCase(Path source, String themeName, Theme theme) {
             this.source = source;
+            this.themeName = themeName;
+            this.theme = theme;
             String fileName = source.getFileName().toString();
             this.name = fileName.substring(0, fileName.lastIndexOf(".ndjson"));
-            this.expectedCumberTheme = source.getParent().resolve(name + ".cucumber.log");
-            this.expectedNoneTheme = source.getParent().resolve(name + ".none.log");
-            this.expectedDemoTheme = source.getParent().resolve(name + ".demo.log");
-            this.expectedPlainTheme = source.getParent().resolve(name + ".plain.log");
-            this.expectedExcludeFeatureAndRuleLines = source.getParent().resolve(name + ".exclude-features-and-rules.log");
+            this.expected = source.getParent().resolve(name + "." + themeName + ".log");
         }
 
         @Override
         public String toString() {
-            return name;
+            return name + " -> " + themeName;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TestCase testCase = (TestCase) o;
-            return source.equals(testCase.source);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(source);
-        }
     }
 
 }
