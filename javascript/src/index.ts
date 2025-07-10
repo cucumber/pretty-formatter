@@ -81,8 +81,8 @@ function formatTestStepFinished(
 
       const stepDefinition = query.findUnambiguousStepDefinitionBy(testStep)
       if (stepDefinition) {
-        const location = `${stepDefinition.sourceReference.uri}:${stepDefinition.sourceReference.location?.line ?? 0}`
         const padding = maxContentLength - lineContent.length
+        const location = `${stepDefinition.sourceReference.uri}:${stepDefinition.sourceReference.location?.line ?? 0}`
         return `${lineContent}${' '.repeat(padding)} # ${location}`
       }
 
