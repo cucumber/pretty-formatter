@@ -61,7 +61,7 @@ function formatTestCaseStarted(
         outputs.push(pickle.tags.map((tag) => `${tag.name}`).join(' '))
       }
 
-      const lineContent = `${scenario.keyword}: ${scenario.name || ''}`
+      const lineContent = `${scenario.keyword}: ${pickle.name || ''}`
       const padding = maxContentLength - lineContent.length
       const location = formatPickleLocation(pickle, query)
       outputs.push(`${lineContent}${' '.repeat(padding)} # ${location}`)
