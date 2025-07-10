@@ -9,6 +9,10 @@ import {
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
+const NAME_DELIMITER_LENGTH = 2
+const STEP_INDENT_LENGTH = 2
+const ERROR_INDENT_LENGTH = 4
+
 export function preCalculateMaxContentLength(
   testCaseStarted: TestCaseStarted,
   query: Query
@@ -17,10 +21,10 @@ export function preCalculateMaxContentLength(
     testCaseStarted,
     query,
     ({ pickle, scenario }) => {
-      const scenarioLength = scenario.keyword.length + pickle.name.length + 2
+      const scenarioLength = scenario.keyword.length + NAME_DELIMITER_LENGTH + pickle.name.length
       const stepLengths = pickle.steps.map((pickleStep) => {
         const step = query.findStepBy(pickleStep)
-        return (step?.keyword.length ?? 0) + pickleStep.text.length + 2
+        return STEP_INDENT_LENGTH + (step?.keyword.length ?? 0) + pickleStep.text.length
       })
       return Math.max(scenarioLength, ...stepLengths)
     },
@@ -35,6 +39,13 @@ export function formatPickleLocation(pickle: Pickle, query: Query): string {
     result += `:${location.line}`
   }
   return result
+}
+
+export function formatError(content: string): string {
+  return content
+    .split('\n')
+    .map((line) => `${' '.repeat(STEP_INDENT_LENGTH + ERROR_INDENT_LENGTH)}${line}`)
+    .join('\n')
 }
 
 export function withScenario<T>(

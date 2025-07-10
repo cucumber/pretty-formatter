@@ -2,6 +2,7 @@ import { Envelope, TestCaseStarted, TestStepFinished } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
 import {
+  formatError,
   formatPickleLocation,
   preCalculateMaxContentLength,
   withScenario,
@@ -80,16 +81,27 @@ function formatTestStepFinished(
     testStepFinished,
     query,
     ({ testStep, pickleStep, step }) => {
-      const lineContent = `  ${step.keyword}${pickleStep.text}`
+      const outputs: string[] = []
 
+      const lineContent = `  ${step.keyword}${pickleStep.text}`
       const stepDefinition = query.findUnambiguousStepDefinitionBy(testStep)
       if (stepDefinition) {
         const padding = maxContentLength - lineContent.length
         const location = `${stepDefinition.sourceReference.uri}:${stepDefinition.sourceReference.location?.line ?? 0}`
-        return `${lineContent}${' '.repeat(padding)} # ${location}`
+        outputs.push(`${lineContent}${' '.repeat(padding)} # ${location}`)
+      } else {
+        outputs.push(lineContent)
       }
 
-      return lineContent
+      const exception = testStepFinished.testStepResult.exception
+      if (exception) {
+        const content = exception.stackTrace || exception.message
+        if (content) {
+          outputs.push(formatError(content))
+        }
+      }
+
+      return outputs.join('\n')
     },
     ''
   )
