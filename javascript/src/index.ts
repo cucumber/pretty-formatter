@@ -1,7 +1,8 @@
-import { Envelope, TestCaseStarted, TestStepFinished } from '@cucumber/messages'
+import { Attachment, Envelope, TestCaseStarted, TestStepFinished } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
 import {
+  formatAttachment,
   formatError,
   formatPickleLocation,
   formatStepLocation,
@@ -9,6 +10,9 @@ import {
   withScenario,
   withStep,
 } from './helpers.js'
+
+const STEP_INDENT_LENGTH = 2
+const ATTACHMENT_INDENT_LENGTH = 4
 
 export default {
   type: 'formatter',
@@ -31,6 +35,14 @@ export default {
         write('\n')
         write(printTestCaseStarted(message.testCaseStarted, query, maxContentLength))
         write('\n')
+      }
+
+      if (message.attachment) {
+        const output = printAttachment(message.attachment)
+        if (output) {
+          write(output)
+          write('\n')
+        }
       }
 
       if (message.testStepFinished) {
@@ -61,10 +73,10 @@ function printTestCaseStarted(
 }
 
 function printTags(testCaseStarted: TestCaseStarted, query: Query): string | undefined {
-    const pickle = query.findPickleBy(testCaseStarted)
-    if (pickle && pickle.tags.length > 0) {
-        return pickle.tags.map((tag) => `${tag.name}`).join(' ')
-    }
+  const pickle = query.findPickleBy(testCaseStarted)
+  if (pickle && pickle.tags.length > 0) {
+    return pickle.tags.map((tag) => `${tag.name}`).join(' ')
+  }
 }
 
 function printScenario(
@@ -120,4 +132,15 @@ function printError(testStepFinished: TestStepFinished) {
       return formatError(content)
     }
   }
+}
+
+function printAttachment(attachment: Attachment) {
+  const content = formatAttachment(attachment)
+  return [
+    '',
+    ...content
+      .split('\n')
+      .map((line) => ' '.repeat(STEP_INDENT_LENGTH + ATTACHMENT_INDENT_LENGTH) + line),
+    '',
+  ].join('\n')
 }

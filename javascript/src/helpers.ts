@@ -1,4 +1,6 @@
 import {
+  Attachment,
+  AttachmentContentEncoding,
   Pickle,
   PickleStep,
   Scenario,
@@ -57,6 +59,28 @@ export function formatError(content: string): string {
     .split('\n')
     .map((line) => `${' '.repeat(STEP_INDENT_LENGTH + ERROR_INDENT_LENGTH)}${line}`)
     .join('\n')
+}
+
+export function formatAttachment(attachment: Attachment) {
+  switch (attachment.contentEncoding) {
+    case AttachmentContentEncoding.BASE64:
+      return formatBase64Attachment(attachment.body, attachment.mediaType, attachment.fileName)
+    case AttachmentContentEncoding.IDENTITY:
+      return formatTextAttachment(attachment.body)
+  }
+}
+
+function formatBase64Attachment(data: string, mediaType: string, fileName?: string) {
+  const bytes = (data.length / 4) * 3
+  if (fileName) {
+    return `Embedding ${fileName} [${mediaType} ${bytes} bytes]`
+  } else {
+    return `Embedding [${mediaType} ${bytes} bytes]`
+  }
+}
+
+function formatTextAttachment(content: string) {
+  return content
 }
 
 export function withScenario<T>(
