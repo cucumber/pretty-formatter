@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add status icons and plain text theme ([#3](https://github.com/cucumber/pretty-formatter/pull/3))
 
+### Changed
+- Update dependency io.cucumber:query to v13.5.0
 
 ## [0.2.0] - 2025-07-07
 ### Changed
