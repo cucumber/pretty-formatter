@@ -41,6 +41,17 @@ export function formatPickleLocation(pickle: Pickle, query: Query): string {
   return result
 }
 
+export function formatStepLocation(testStep: TestStep, query: Query): string | undefined {
+  const stepDefinition = query.findUnambiguousStepDefinitionBy(testStep)
+  if (stepDefinition) {
+    let result = stepDefinition.sourceReference.uri
+    if (stepDefinition.sourceReference.location) {
+      result += `:${stepDefinition.sourceReference.location.line}`
+    }
+    return result
+  }
+}
+
 export function formatError(content: string): string {
   return content
     .split('\n')
