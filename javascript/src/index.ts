@@ -135,7 +135,7 @@ function printGherkinLine(title: string, location: string | undefined, maxConten
 function printError(testStepFinished: TestStepFinished): string | undefined {
   const content = formatError(testStepFinished.testStepResult)
   if (content) {
-    return content
+    return content.trim()
       .split('\n')
       .map((line) => ' '.repeat(STEP_INDENT_LENGTH + ERROR_INDENT_LENGTH) + line)
       .join('\n')
@@ -146,7 +146,7 @@ function printAttachment(attachment: Attachment) {
   const content = formatAttachment(attachment)
   return [
     '',
-    ...content
+    ...content.trim()
       .split('\n')
       .map((line) => ' '.repeat(STEP_INDENT_LENGTH + ATTACHMENT_INDENT_LENGTH) + line),
     '',
