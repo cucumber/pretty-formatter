@@ -4,6 +4,7 @@ import {
   Pickle,
   PickleDocString,
   PickleStep,
+  PickleTable,
   Scenario,
   Step,
   TestCaseStarted,
@@ -107,6 +108,9 @@ export function formatStepArgument(
       if (pickleStep.argument?.docString) {
         return formatDocString(pickleStep.argument.docString)
       }
+      if (pickleStep.argument?.dataTable) {
+        return formatDataTable(pickleStep.argument.dataTable)
+      }
     },
     undefined
   )
@@ -116,6 +120,27 @@ function formatDocString(docString: PickleDocString) {
   return `"""${docString.mediaType ?? ''}
 ${docString.content}
 """`
+}
+
+function formatDataTable(dataTable: PickleTable) {
+  const columnWidths: number[] = []
+
+  for (const row of dataTable.rows) {
+    for (let i = 0; i < row.cells.length; i++) {
+      const cellWidth = row.cells[i].value.length
+      if (columnWidths[i] === undefined || cellWidth > columnWidths[i]) {
+        columnWidths[i] = cellWidth
+      }
+    }
+  }
+
+  return dataTable.rows
+    .map((row) => {
+      return (
+        '| ' + row.cells.map((cell, i) => cell.value.padEnd(columnWidths[i])).join(' | ') + ' |'
+      )
+    })
+    .join('\n')
 }
 
 export function formatError(testStepResult: TestStepResult): string | undefined {
