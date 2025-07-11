@@ -2,17 +2,16 @@ import { Attachment, Envelope, TestCaseStarted, TestStepFinished } from '@cucumb
 import { Query } from '@cucumber/query'
 
 import {
+  ATTACHMENT_INDENT_LENGTH,
+  ERROR_INDENT_LENGTH,
   formatAttachment,
   formatError,
-  formatPickleLocation,
-  formatStepLocation,
+  formatScenarioLine,
+  formatStepLine,
+  formatTags,
   preCalculateMaxContentLength,
-  withScenario,
-  withStep,
+  STEP_INDENT_LENGTH,
 } from './helpers.js'
-
-const STEP_INDENT_LENGTH = 2
-const ATTACHMENT_INDENT_LENGTH = 4
 
 export default {
   type: 'formatter',
@@ -66,35 +65,27 @@ function printTestCaseStarted(
 ): string {
   return [
     printTags(testCaseStarted, query),
-    printScenario(testCaseStarted, query, maxContentLength),
+    printScenarioLine(testCaseStarted, query, maxContentLength),
   ]
     .filter((content) => !!content)
     .join('\n')
 }
 
 function printTags(testCaseStarted: TestCaseStarted, query: Query): string | undefined {
-  const pickle = query.findPickleBy(testCaseStarted)
-  if (pickle && pickle.tags.length > 0) {
-    return pickle.tags.map((tag) => `${tag.name}`).join(' ')
-  }
+  return formatTags(testCaseStarted, query)
 }
 
-function printScenario(
+function printScenarioLine(
   testCaseStarted: TestCaseStarted,
   query: Query,
   maxContentLength: number
 ): string | undefined {
-  return withScenario(
-    testCaseStarted,
-    query,
-    ({ pickle, scenario }) => {
-      const lineContent = `${scenario.keyword}: ${pickle.name || ''}`
-      const padding = maxContentLength - lineContent.length
-      const location = formatPickleLocation(pickle, query)
-      return `${lineContent}${' '.repeat(padding)} # ${location}`
-    },
-    ''
-  )
+  const formatted = formatScenarioLine(testCaseStarted, query)
+  if (!formatted) {
+    return undefined
+  }
+  const [title, location] = formatted
+  return printGherkinLine(title, location, maxContentLength)
 }
 
 function printTestStepFinished(
@@ -102,35 +93,36 @@ function printTestStepFinished(
   query: Query,
   maxContentLength: number
 ): string {
-  return [printStep(testStepFinished, query, maxContentLength), printError(testStepFinished)]
+  return [printStepLine(testStepFinished, query, maxContentLength), printError(testStepFinished)]
     .filter((content) => !!content)
     .join('\n')
 }
 
-function printStep(testStepFinished: TestStepFinished, query: Query, maxContentLength: number) {
-  return withStep(
-    testStepFinished,
-    query,
-    ({ testStep, pickleStep, step }) => {
-      const lineContent = `  ${step.keyword}${pickleStep.text}`
-      const padding = maxContentLength - lineContent.length
-      const location = formatStepLocation(testStep, query)
-      if (location) {
-        return `${lineContent}${' '.repeat(padding)} # ${location}`
-      }
-      return lineContent
-    },
-    ''
-  )
+function printStepLine(testStepFinished: TestStepFinished, query: Query, maxContentLength: number) {
+  const formatted = formatStepLine(testStepFinished, query)
+  if (!formatted) {
+    return undefined
+  }
+  const [title, location] = formatted
+  const paddedTitle = `${' '.repeat(STEP_INDENT_LENGTH)}${title}`
+  return printGherkinLine(paddedTitle, location, maxContentLength)
 }
 
-function printError(testStepFinished: TestStepFinished) {
-  const exception = testStepFinished.testStepResult.exception
-  if (exception) {
-    const content = exception.stackTrace || exception.message
-    if (content) {
-      return formatError(content)
-    }
+function printGherkinLine(title: string, location: string | undefined, maxContentLength: number) {
+  if (location) {
+    const padding = maxContentLength - title.length
+    return `${title}${' '.repeat(padding)} # ${location}`
+  }
+  return title
+}
+
+function printError(testStepFinished: TestStepFinished): string | undefined {
+  const content = formatError(testStepFinished.testStepResult)
+  if (content) {
+    return content
+      .split('\n')
+      .map((line) => ' '.repeat(STEP_INDENT_LENGTH + ERROR_INDENT_LENGTH) + line)
+      .join('\n')
   }
 }
 

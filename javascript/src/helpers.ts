@@ -8,12 +8,13 @@ import {
   TestCaseStarted,
   TestStep,
   TestStepFinished,
+  TestStepResult,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
-const NAME_DELIMITER_LENGTH = 2
-const STEP_INDENT_LENGTH = 2
-const ERROR_INDENT_LENGTH = 4
+export const STEP_INDENT_LENGTH = 2
+export const ATTACHMENT_INDENT_LENGTH = 4
+export const ERROR_INDENT_LENGTH = 4
 
 export function preCalculateMaxContentLength(
   testCaseStarted: TestCaseStarted,
@@ -23,7 +24,7 @@ export function preCalculateMaxContentLength(
     testCaseStarted,
     query,
     ({ pickle, scenario }) => {
-      const scenarioLength = scenario.keyword.length + NAME_DELIMITER_LENGTH + pickle.name.length
+      const scenarioLength = scenario.keyword.length + ': '.length + pickle.name.length
       const stepLengths = pickle.steps.map((pickleStep) => {
         const step = query.findStepBy(pickleStep)
         return STEP_INDENT_LENGTH + (step?.keyword.length ?? 0) + pickleStep.text.length
@@ -34,7 +35,30 @@ export function preCalculateMaxContentLength(
   )
 }
 
-export function formatPickleLocation(pickle: Pickle, query: Query): string {
+export function formatTags(testCaseStarted: TestCaseStarted, query: Query): string | undefined {
+  const pickle = query.findPickleBy(testCaseStarted)
+  if (pickle && pickle.tags.length > 0) {
+    return pickle.tags.map((tag) => `${tag.name}`).join(' ')
+  }
+}
+
+export function formatScenarioLine(
+  testCaseStarted: TestCaseStarted,
+  query: Query
+): [string, string | undefined] | undefined {
+  return withScenario(
+    testCaseStarted,
+    query,
+    ({ pickle, scenario }) => {
+      const title = `${scenario.keyword}: ${pickle.name || ''}`
+      const location = formatPickleLocation(pickle, query)
+      return [title, location]
+    },
+    undefined
+  )
+}
+
+function formatPickleLocation(pickle: Pickle, query: Query): string | undefined {
   let result = pickle.uri
   const location = query.findLocationOf(pickle)
   if (location) {
@@ -43,7 +67,23 @@ export function formatPickleLocation(pickle: Pickle, query: Query): string {
   return result
 }
 
-export function formatStepLocation(testStep: TestStep, query: Query): string | undefined {
+export function formatStepLine(
+  testStepFinished: TestStepFinished,
+  query: Query
+): [string, string | undefined] | undefined {
+  return withStep(
+    testStepFinished,
+    query,
+    ({ testStep, pickleStep, step }) => {
+      const title = `${step.keyword}${pickleStep.text}`
+      const location = formatStepLocation(testStep, query)
+      return [title, location]
+    },
+    undefined
+  )
+}
+
+function formatStepLocation(testStep: TestStep, query: Query): string | undefined {
   const stepDefinition = query.findUnambiguousStepDefinitionBy(testStep)
   if (stepDefinition) {
     let result = stepDefinition.sourceReference.uri
@@ -54,11 +94,8 @@ export function formatStepLocation(testStep: TestStep, query: Query): string | u
   }
 }
 
-export function formatError(content: string): string {
-  return content
-    .split('\n')
-    .map((line) => `${' '.repeat(STEP_INDENT_LENGTH + ERROR_INDENT_LENGTH)}${line}`)
-    .join('\n')
+export function formatError(testStepResult: TestStepResult): string | undefined {
+  return testStepResult.exception?.stackTrace || testStepResult.exception?.message
 }
 
 export function formatAttachment(attachment: Attachment) {
@@ -83,7 +120,7 @@ function formatTextAttachment(content: string) {
   return content
 }
 
-export function withScenario<T>(
+function withScenario<T>(
   testCaseStarted: TestCaseStarted,
   query: Query,
   fn: (found: { pickle: Pickle; scenario: Scenario }) => T,
@@ -107,7 +144,7 @@ export function withScenario<T>(
   })
 }
 
-export function withStep<T>(
+function withStep<T>(
   testStepFinished: TestStepFinished,
   query: Query,
   fn: (found: { testStep: TestStep; pickleStep: PickleStep; step: Step }) => T,
