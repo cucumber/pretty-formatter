@@ -18,40 +18,43 @@ describe('Acceptance Tests', async function () {
     absolute: true,
   })
 
-  for (const ndjsonFile of ndjsonFiles) {
-    const [suiteName] = path.basename(ndjsonFile).split('.')
+  const variants = ['exclude-features-and-rules']
 
-    it(suiteName, async () => {
-      let emit: (message: Envelope) => void
-      let content = ''
-      formatter.formatter({
-        on(type, handler) {
-          emit = handler
-        },
-        write: (chunk) => {
-          content += chunk
-        },
-      })
+  for (const variant of variants) {
+    describe(variant, () => {
+      for (const ndjsonFile of ndjsonFiles) {
+        const [suiteName] = path.basename(ndjsonFile).split('.')
 
-      await pipeline(
-        fs.createReadStream(ndjsonFile, { encoding: 'utf-8' }),
-        new NdjsonToMessageStream(),
-        new Writable({
-          objectMode: true,
-          write(envelope: Envelope, _: BufferEncoding, callback) {
-            emit(envelope)
-            callback()
-          },
+        it(suiteName, async () => {
+          let emit: (message: Envelope) => void
+          let content = ''
+          formatter.formatter({
+            on(type, handler) {
+              emit = handler
+            },
+            write: (chunk) => {
+              content += chunk
+            },
+          })
+
+          await pipeline(
+            fs.createReadStream(ndjsonFile, { encoding: 'utf-8' }),
+            new NdjsonToMessageStream(),
+            new Writable({
+              objectMode: true,
+              write(envelope: Envelope, _: BufferEncoding, callback) {
+                emit(envelope)
+                callback()
+              },
+            })
+          )
+
+          const expectedOutput = fs.readFileSync(ndjsonFile.replace('.ndjson', `.${variant}.log`), {
+            encoding: 'utf-8',
+          })
+          expect(content).to.eq(expectedOutput)
         })
-      )
-
-      const expectedOutput = fs.readFileSync(
-        ndjsonFile.replace('.ndjson', '.exclude-features-and-rules.log'),
-        {
-          encoding: 'utf-8',
-        }
-      )
-      expect(content).to.eq(expectedOutput)
+      }
     })
   }
 }).timeout('5s')
