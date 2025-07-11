@@ -7,9 +7,11 @@ import {
   formatAttachment,
   formatError,
   formatScenarioLine,
+  formatStepArgument,
   formatStepLine,
   formatTags,
   preCalculateMaxContentLength,
+  STEP_ARGUMENT_INDENT_LENGTH,
   STEP_INDENT_LENGTH,
 } from './helpers.js'
 
@@ -93,7 +95,11 @@ function printTestStepFinished(
   query: Query,
   maxContentLength: number
 ): string {
-  return [printStepLine(testStepFinished, query, maxContentLength), printError(testStepFinished)]
+  return [
+    printStepLine(testStepFinished, query, maxContentLength),
+    printStepArgument(testStepFinished, query),
+    printError(testStepFinished),
+  ]
     .filter((content) => !!content)
     .join('\n')
 }
@@ -106,6 +112,16 @@ function printStepLine(testStepFinished: TestStepFinished, query: Query, maxCont
   const [title, location] = formatted
   const paddedTitle = `${' '.repeat(STEP_INDENT_LENGTH)}${title}`
   return printGherkinLine(paddedTitle, location, maxContentLength)
+}
+
+function printStepArgument(testStepFinished: TestStepFinished, query: Query) {
+  const content = formatStepArgument(testStepFinished, query)
+  if (content) {
+    return content
+      .split('\n')
+      .map((line) => ' '.repeat(STEP_INDENT_LENGTH + STEP_ARGUMENT_INDENT_LENGTH) + line)
+      .join('\n')
+  }
 }
 
 function printGherkinLine(title: string, location: string | undefined, maxContentLength: number) {

@@ -2,6 +2,7 @@ import {
   Attachment,
   AttachmentContentEncoding,
   Pickle,
+  PickleDocString,
   PickleStep,
   Scenario,
   Step,
@@ -13,6 +14,7 @@ import {
 import { Query } from '@cucumber/query'
 
 export const STEP_INDENT_LENGTH = 2
+export const STEP_ARGUMENT_INDENT_LENGTH = 2
 export const ATTACHMENT_INDENT_LENGTH = 4
 export const ERROR_INDENT_LENGTH = 4
 
@@ -92,6 +94,28 @@ function formatStepLocation(testStep: TestStep, query: Query): string | undefine
     }
     return result
   }
+}
+
+export function formatStepArgument(
+  testStepFinished: TestStepFinished,
+  query: Query
+): string | undefined {
+  return withStep(
+    testStepFinished,
+    query,
+    ({ pickleStep }) => {
+      if (pickleStep.argument?.docString) {
+        return formatDocString(pickleStep.argument.docString)
+      }
+    },
+    undefined
+  )
+}
+
+function formatDocString(docString: PickleDocString) {
+  return `"""${docString.mediaType ?? ''}
+${docString.content}
+"""`
 }
 
 export function formatError(testStepResult: TestStepResult): string | undefined {
