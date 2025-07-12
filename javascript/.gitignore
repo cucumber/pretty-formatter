@@ -1,0 +1,22 @@
+dist/
+.idea/
+.nyc_output/
+coverage/
+node_modules/
+yarn.lock
+*.log
+.deps
+.tested*
+.linted
+.built*
+.compared
+.codegen
+acceptance/
+storybook-static
+*-go
+*.iml
+.vscode-test
+
+# stryker temp files
+.stryker-tmp
+reports
