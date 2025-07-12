@@ -3,23 +3,23 @@
 
   [39m[1mRule:[22m [3mA sale cannot happen if the customer does not have enough money[23m[0m
 
-    [1mExample:[22m [3mNot enough money[23m                                 [90m# samples/rules/rules.feature:9[0m
-      [32m[1mGiven [22m[3mthe customer has [23m[1m100[22m[3m cents[23m[0m                        [90m# samples/rules/rules.feature.ts:4[0m
-      [32m[1mAnd [22m[3mthere are chocolate bars in stock[23m[0m                   [90m# samples/rules/rules.feature.ts:8[0m
-      [32m[1mWhen [22m[3mthe customer tries to buy a [23m[1m125[22m[3m cent chocolate bar[23m[0m [90m# samples/rules/rules.feature.ts:16[0m
-      [32m[1mThen [22m[3mthe sale should not happen[23m[0m                         [90m# samples/rules/rules.feature.ts:22[0m
+    [39m[1mExample:[22m [3mNot enough money[23m[0m                                 [90m# samples/rules/rules.feature:9[39m
+      [32m[1mGiven [22m[3mthe customer has [23m[1m100[22m[3m cents[23m[39m                        [90m# samples/rules/rules.feature.ts:4[39m
+      [32m[1mAnd [22m[3mthere are chocolate bars in stock[23m[39m                   [90m# samples/rules/rules.feature.ts:8[39m
+      [32m[1mWhen [22m[3mthe customer tries to buy a [23m[1m125[22m[3m cent chocolate bar[23m[39m [90m# samples/rules/rules.feature.ts:16[39m
+      [32m[1mThen [22m[3mthe sale should not happen[23m[39m                         [90m# samples/rules/rules.feature.ts:22[39m
 
-    [1mExample:[22m [3mEnough money[23m                                    [90m# samples/rules/rules.feature:16[0m
-      [32m[1mGiven [22m[3mthe customer has [23m[1m100[22m[3m cents[23m[0m                       [90m# samples/rules/rules.feature.ts:4[0m
-      [32m[1mAnd [22m[3mthere are chocolate bars in stock[23m[0m                  [90m# samples/rules/rules.feature.ts:8[0m
-      [32m[1mWhen [22m[3mthe customer tries to buy a [23m[1m75[22m[3m cent chocolate bar[23m[0m [90m# samples/rules/rules.feature.ts:16[0m
-      [32m[1mThen [22m[3mthe sale should happen[23m[0m                            [90m# samples/rules/rules.feature.ts:26[0m
+    [39m[1mExample:[22m [3mEnough money[23m[0m                                    [90m# samples/rules/rules.feature:16[39m
+      [32m[1mGiven [22m[3mthe customer has [23m[1m100[22m[3m cents[23m[39m                       [90m# samples/rules/rules.feature.ts:4[39m
+      [32m[1mAnd [22m[3mthere are chocolate bars in stock[23m[39m                  [90m# samples/rules/rules.feature.ts:8[39m
+      [32m[1mWhen [22m[3mthe customer tries to buy a [23m[1m75[22m[3m cent chocolate bar[23m[39m [90m# samples/rules/rules.feature.ts:16[39m
+      [32m[1mThen [22m[3mthe sale should happen[23m[39m                            [90m# samples/rules/rules.feature.ts:26[39m
 
   [39m[1mRule:[22m [3ma sale cannot happen if there is no stock[23m[0m
 
-    [33;1m@some-tag[0m
-    [1mExample:[22m [3mNo chocolates left[23m                             [90m# samples/rules/rules.feature:25[0m
-      [32m[1mGiven [22m[3mthe customer has [23m[1m100[22m[3m cents[23m[0m                      [90m# samples/rules/rules.feature.ts:4[0m
-      [32m[1mAnd [22m[3mthere are no chocolate bars in stock[23m[0m              [90m# samples/rules/rules.feature.ts:12[0m
-      [32m[1mWhen [22m[3mthe customer tries to buy a [23m[1m1[22m[3m cent chocolate bar[23m[0m [90m# samples/rules/rules.feature.ts:16[0m
-      [32m[1mThen [22m[3mthe sale should not happen[23m[0m                       [90m# samples/rules/rules.feature.ts:22[0m
+    [33m[1m@some-tag[22m[39m
+    [39m[1mExample:[22m [3mNo chocolates left[23m[0m                             [90m# samples/rules/rules.feature:25[39m
+      [32m[1mGiven [22m[3mthe customer has [23m[1m100[22m[3m cents[23m[39m                      [90m# samples/rules/rules.feature.ts:4[39m
+      [32m[1mAnd [22m[3mthere are no chocolate bars in stock[23m[39m              [90m# samples/rules/rules.feature.ts:12[39m
+      [32m[1mWhen [22m[3mthe customer tries to buy a [23m[1m1[22m[3m cent chocolate bar[23m[39m [90m# samples/rules/rules.feature.ts:16[39m
+      [32m[1mThen [22m[3mthe sale should not happen[23m[39m                       [90m# samples/rules/rules.feature.ts:22[39m

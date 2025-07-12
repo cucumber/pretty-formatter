@@ -1,5 +1,5 @@
 
 [39m[1mFeature:[22m [3mminimal[23m[0m
 
-  [1mScenario:[22m [3mcukes[23m                     [90m# samples/minimal/minimal.feature:9[0m
-    [32m[1mGiven [22m[3mI have [23m[1m42[22m[3m cukes in my belly[23m[0m [90m# samples/minimal/minimal.feature.ts:3[0m
+  [39m[1mScenario:[22m [3mcukes[23m[0m                     [90m# samples/minimal/minimal.feature:9[39m
+    [32m[1mGiven [22m[3mI have [23m[1m42[22m[3m cukes in my belly[23m[39m [90m# samples/minimal/minimal.feature.ts:3[39m

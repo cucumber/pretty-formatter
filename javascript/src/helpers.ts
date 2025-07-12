@@ -1,3 +1,5 @@
+import { stripVTControlCharacters } from 'node:util'
+
 import {
   Attachment,
   AttachmentContentEncoding,
@@ -11,9 +13,13 @@ import {
   Scenario,
   Step,
   StepDefinition,
+  TestStep,
   TestStepResult,
   TestStepResultStatus,
 } from '@cucumber/messages'
+
+import { TextBuilder } from './TextBuilder.js'
+import { Theme } from './types.js'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
@@ -48,66 +54,152 @@ export function pad(original: string) {
   return `\n` + original + '\n'
 }
 
-export function formatFeatureTitle(feature: Feature) {
-  return `Feature: ${feature.name}`
+export function unstyled(text: string) {
+  return stripVTControlCharacters(text)
 }
 
-export function formatRuleTitle(rule: Rule) {
-  return `Rule: ${rule.name}`
+export function formatFeatureTitle(feature: Feature, theme: Theme) {
+  return new TextBuilder()
+    .append(feature.keyword + ':', theme.feature?.keyword)
+    .space()
+    .append(feature.name, theme.feature?.name)
+    .build(theme.feature?.all)
 }
 
-export function formatPickleTags(pickle: Pickle) {
+export function formatRuleTitle(rule: Rule, theme: Theme) {
+  return new TextBuilder()
+    .append(rule.keyword + ':', theme.rule?.keyword)
+    .space()
+    .append(rule.name, theme.rule?.name)
+    .build(theme.rule?.all)
+}
+
+export function formatPickleTags(pickle: Pickle, theme: Theme) {
   if (pickle && pickle.tags.length > 0) {
-    return pickle.tags.map((tag) => `${tag.name}`).join(' ')
+    return new TextBuilder()
+      .append(pickle.tags.map((tag) => `${tag.name}`).join(' '))
+      .build(theme.tag)
   }
 }
-export function formatPickleTitle(pickle: Pickle, scenario: Scenario) {
-  return `${scenario.keyword}: ${pickle.name || ''}`
+export function formatPickleTitle(pickle: Pickle, scenario: Scenario, theme: Theme) {
+  return new TextBuilder()
+    .append(scenario.keyword + ':', theme.scenario?.keyword)
+    .space()
+    .append(pickle.name || '', theme.scenario?.name)
+    .build(theme.scenario?.all)
 }
 
-export function formatPickleLocation(pickle: Pickle, location: Location | undefined) {
+export function formatPickleLocation(pickle: Pickle, location: Location | undefined, theme: Theme) {
+  const builder = new TextBuilder().append('#').space().append(pickle.uri)
   if (location) {
-    return `${pickle.uri}:${location.line}`
+    builder.append(':').append(location.line)
   }
-  return pickle.uri
+  return builder.build(theme.location)
 }
 
 export function formatStepTitle(
+  testStep: TestStep,
   pickleStep: PickleStep,
   step: Step,
   status: TestStepResultStatus,
-  statusIcon?: boolean
+  statusIcon: boolean = false,
+  theme: Theme
 ) {
-  // step keyword includes a trailing space
-  return `${statusIcon ? ICON_BY_STATUS[status] + ' ' : ''}${step.keyword}${pickleStep.text}`
+  const builder = new TextBuilder()
+  if (statusIcon) {
+    builder.append(ICON_BY_STATUS[status], theme.status?.[status]).space()
+  }
+  return builder
+    .append(
+      new TextBuilder()
+        .append(step.keyword, theme.step?.keyword)
+        // step keyword includes a trailing space
+        .append(formatStepText(testStep, pickleStep, theme))
+        .build(theme.status?.[status])
+    )
+    .build()
 }
 
-export function formatStepLocation(stepDefinition: StepDefinition | undefined) {
-  if (stepDefinition) {
-    let output = stepDefinition.sourceReference.uri
-    if (stepDefinition.sourceReference.location) {
-      output += `:${stepDefinition.sourceReference.location.line}`
+function formatStepText(testStep: TestStep, pickleStep: PickleStep, theme: Theme) {
+  const builder = new TextBuilder()
+  const stepMatchArgumentsLists = testStep.stepMatchArgumentsLists
+  if (stepMatchArgumentsLists && stepMatchArgumentsLists.length === 1) {
+    const stepMatchArguments = stepMatchArgumentsLists[0].stepMatchArguments
+    let offset = 0
+    let plain: string
+    stepMatchArguments.forEach((argument) => {
+      plain = pickleStep.text.slice(offset, argument.group.start)
+      builder.append(plain, theme.step?.text)
+      const arg = argument.group.value
+      if (arg) {
+        if (arg.length > 0) {
+          builder.append(arg, theme.step?.argument)
+        }
+        offset += plain.length + arg.length
+      }
+    })
+    plain = pickleStep.text.slice(offset)
+    if (plain.length > 0) {
+      builder.append(plain, theme.step?.text)
     }
-    return output
+  } else {
+    builder.append(pickleStep.text, theme.step?.text)
+  }
+  return builder.build()
+}
+
+export function formatStepLocation(stepDefinition: StepDefinition | undefined, theme: Theme) {
+  if (stepDefinition?.sourceReference.uri) {
+    const builder = new TextBuilder().append('#').space().append(stepDefinition.sourceReference.uri)
+    if (stepDefinition.sourceReference.location) {
+      builder.append(':').append(stepDefinition.sourceReference.location.line)
+    }
+    return builder.build(theme.location)
   }
 }
 
-export function formatStepArgument(pickleStep: PickleStep) {
+export function formatStepArgument(pickleStep: PickleStep, theme: Theme) {
   if (pickleStep.argument?.docString) {
-    return formatDocString(pickleStep.argument.docString)
+    return formatDocString(pickleStep.argument.docString, theme)
   }
   if (pickleStep.argument?.dataTable) {
-    return formatDataTable(pickleStep.argument.dataTable)
+    return formatDataTable(pickleStep.argument.dataTable, theme)
   }
 }
 
-function formatDocString(docString: PickleDocString) {
-  return `"""${docString.mediaType ?? ''}
-${docString.content}
-"""`
+function formatDocString(docString: PickleDocString, theme: Theme) {
+  const builder = new TextBuilder().append('"""', theme.docString?.delimiter)
+  if (docString.mediaType) {
+    builder.append(docString.mediaType, theme.docString?.mediaType)
+  }
+  builder
+    .line()
+    .append(docString.content, theme.docString?.content)
+    .line()
+    .append('"""', theme.docString?.delimiter)
+  return builder.build(theme.docString?.all, true)
 }
 
-function formatDataTable(dataTable: PickleTable) {
+function formatDataTable(dataTable: PickleTable, theme: Theme) {
+  const columnWidths = calculateColumnWidths(dataTable)
+  const builder = new TextBuilder()
+
+  dataTable.rows.forEach((row, rowIndex) => {
+    if (rowIndex > 0) {
+      builder.line()
+    }
+    builder.append('|', theme.dataTable?.border)
+    row.cells.forEach((cell, cellIndex) => {
+      builder
+        .append(' ' + cell.value.padEnd(columnWidths[cellIndex]) + ' ', theme.dataTable?.content)
+        .append('|', theme.dataTable?.border)
+    })
+  })
+
+  return builder.build(theme.dataTable?.all, true)
+}
+
+function calculateColumnWidths(dataTable: PickleTable) {
   const columnWidths: number[] = []
 
   for (const row of dataTable.rows) {
@@ -119,37 +211,46 @@ function formatDataTable(dataTable: PickleTable) {
     }
   }
 
-  return dataTable.rows
-    .map((row) => {
-      return (
-        '| ' + row.cells.map((cell, i) => cell.value.padEnd(columnWidths[i])).join(' | ') + ' |'
-      )
-    })
-    .join('\n')
+  return columnWidths
 }
 
-export function formatError(testStepResult: TestStepResult): string | undefined {
-  return (testStepResult.exception?.stackTrace || testStepResult.exception?.message)?.trim()
+export function formatError(testStepResult: TestStepResult, theme: Theme): string | undefined {
+  const error = (testStepResult.exception?.stackTrace || testStepResult.exception?.message)?.trim()
+  if (error) {
+    return new TextBuilder().append(error.trim()).build(theme.status?.[testStepResult.status])
+  }
 }
 
-export function formatAttachment(attachment: Attachment) {
+export function formatAttachment(attachment: Attachment, theme: Theme) {
   switch (attachment.contentEncoding) {
     case AttachmentContentEncoding.BASE64:
-      return formatBase64Attachment(attachment.body, attachment.mediaType, attachment.fileName)
+      return formatBase64Attachment(
+        attachment.body,
+        attachment.mediaType,
+        attachment.fileName,
+        theme
+      )
     case AttachmentContentEncoding.IDENTITY:
-      return formatTextAttachment(attachment.body)
+      return formatTextAttachment(attachment.body, theme)
   }
 }
 
-function formatBase64Attachment(data: string, mediaType: string, fileName?: string) {
+function formatBase64Attachment(
+  data: string,
+  mediaType: string,
+  fileName: string | undefined,
+  theme: Theme
+) {
+  const builder = new TextBuilder()
   const bytes = (data.length / 4) * 3
   if (fileName) {
-    return `Embedding ${fileName} [${mediaType} ${bytes} bytes]`
+    builder.append(`Embedding ${fileName} [${mediaType} ${bytes} bytes]`)
   } else {
-    return `Embedding [${mediaType} ${bytes} bytes]`
+    builder.append(`Embedding [${mediaType} ${bytes} bytes]`)
   }
+  return builder.build(theme.attachment)
 }
 
-function formatTextAttachment(content: string) {
-  return content
+function formatTextAttachment(content: string, theme: Theme) {
+  return new TextBuilder().append(content).build(theme.attachment)
 }

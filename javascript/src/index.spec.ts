@@ -9,6 +9,7 @@ import { expect } from 'chai'
 import { globbySync } from 'globby'
 
 import formatter from './index.js'
+import { CUCUMBER_THEME, DEMO_THEME } from './themes.js'
 import type { Options } from './types.js'
 
 describe('Acceptance Tests', async function () {
@@ -21,10 +22,27 @@ describe('Acceptance Tests', async function () {
 
   const variants: ReadonlyArray<{ name: string; options: Options }> = [
     {
+      name: 'cucumber',
+      options: {
+        includeFeaturesAndRules: true,
+        statusIcons: true,
+        theme: CUCUMBER_THEME,
+      },
+    },
+    {
+      name: 'demo',
+      options: {
+        includeFeaturesAndRules: true,
+        statusIcons: false,
+        theme: DEMO_THEME,
+      },
+    },
+    {
       name: 'exclude-features-and-rules',
       options: {
         includeFeaturesAndRules: false,
         statusIcons: false,
+        theme: {},
       },
     },
     {
@@ -32,6 +50,7 @@ describe('Acceptance Tests', async function () {
       options: {
         includeFeaturesAndRules: true,
         statusIcons: false,
+        theme: {},
       },
     },
     {
@@ -39,6 +58,7 @@ describe('Acceptance Tests', async function () {
       options: {
         includeFeaturesAndRules: true,
         statusIcons: true,
+        theme: {},
       },
     },
   ]
@@ -76,6 +96,7 @@ describe('Acceptance Tests', async function () {
           const expectedOutput = fs.readFileSync(ndjsonFile.replace('.ndjson', `.${name}.log`), {
             encoding: 'utf-8',
           })
+
           expect(content).to.eq(expectedOutput)
         })
       }

@@ -10,6 +10,7 @@ import {
   Step,
   StepDefinition,
   TestCaseStarted,
+  TestStep,
   TestStepFinished,
   TestStepResultStatus,
 } from '@cucumber/messages'
@@ -33,7 +34,9 @@ import {
   indent,
   pad,
   STEP_ARGUMENT_INDENT_LENGTH,
+  unstyled,
 } from './helpers.js'
+import { CUCUMBER_THEME } from './themes.js'
 import type { Options } from './types.js'
 
 export class PrettyPrinter {
@@ -58,6 +61,7 @@ export class PrettyPrinter {
     this.options = {
       includeFeaturesAndRules: false,
       statusIcons: false,
+      theme: CUCUMBER_THEME,
       ...options,
     }
   }
@@ -124,14 +128,33 @@ export class PrettyPrinter {
     )
     const lineage = ensure(this.query.findLineageBy(pickle), 'Lineage must exist for Pickle')
     const scenario = ensure(lineage.scenario, 'Scenario must exist for Lineage')
-    const scenarioLength = formatPickleTitle(pickle, scenario).length
-    const stepLengths = pickle.steps.map((pickleStep) => {
-      const step = ensure(this.query.findStepBy(pickleStep), 'Step must exist for PickleStep')
-      return indent(
-        formatStepTitle(pickleStep, step, TestStepResultStatus.UNKNOWN, this.options.statusIcons),
-        GHERKIN_INDENT_LENGTH
-      ).length
-    })
+    const scenarioLength = unstyled(formatPickleTitle(pickle, scenario, this.options.theme)).length
+    const testCase = ensure(
+      this.query.findTestCaseBy(testCaseStarted),
+      'TestCase must exist for TestCaseStarted'
+    )
+    const stepLengths = testCase.testSteps
+      .filter((testStep) => !!testStep.pickleStepId)
+      .map((testStep) => {
+        const pickleStep = ensure(
+          this.query.findPickleStepBy(testStep),
+          'PickleStep must exist for TestStep'
+        )
+        const step = ensure(this.query.findStepBy(pickleStep), 'Step must exist for PickleStep')
+        return indent(
+          unstyled(
+            formatStepTitle(
+              testStep,
+              pickleStep,
+              step,
+              TestStepResultStatus.UNKNOWN,
+              this.options.statusIcons,
+              this.options.theme
+            )
+          ),
+          GHERKIN_INDENT_LENGTH
+        ).length
+      })
     this.maxContentLengthByTestCaseStartedId.set(
       testCaseStarted.id,
       Math.max(scenarioLength, ...stepLengths)
@@ -178,7 +201,7 @@ export class PrettyPrinter {
   private printFeatureLine(feature: Feature) {
     if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(feature)) {
       this.writeln()
-      this.writeln(formatFeatureTitle(feature))
+      this.writeln(formatFeatureTitle(feature, this.options.theme))
     }
     this.encounteredFeaturesAndRules.add(feature)
   }
@@ -187,14 +210,14 @@ export class PrettyPrinter {
     if (rule) {
       if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(rule)) {
         this.writeln()
-        this.writeln(indent(formatRuleTitle(rule), GHERKIN_INDENT_LENGTH))
+        this.writeln(indent(formatRuleTitle(rule, this.options.theme), GHERKIN_INDENT_LENGTH))
       }
       this.encounteredFeaturesAndRules.add(rule)
     }
   }
 
   private printTags(pickle: Pickle, scenarioIndent: number) {
-    const output = formatPickleTags(pickle)
+    const output = formatPickleTags(pickle, this.options.theme)
     if (output) {
       this.writeln(indent(output, scenarioIndent))
     }
@@ -208,8 +231,8 @@ export class PrettyPrinter {
     maxContentLength: number
   ) {
     this.printGherkinLine(
-      formatPickleTitle(pickle, scenario),
-      formatPickleLocation(pickle, location),
+      formatPickleTitle(pickle, scenario, this.options.theme),
+      formatPickleLocation(pickle, location, this.options.theme),
       scenarioIndent,
       maxContentLength
     )
@@ -220,9 +243,10 @@ export class PrettyPrinter {
     const maxContentLength = this.getMaxContentLengthBy(testStepFinished)
     const resolved = this.resolveStep(testStepFinished)
     if (resolved) {
-      const { pickleStep, step, stepDefinition } = resolved
+      const { testStep, pickleStep, step, stepDefinition } = resolved
       this.printStepLine(
         testStepFinished,
+        testStep,
         pickleStep,
         step,
         stepDefinition,
@@ -236,6 +260,7 @@ export class PrettyPrinter {
 
   private printStepLine(
     testStepFinished: TestStepFinished,
+    testStep: TestStep,
     pickleStep: PickleStep,
     step: Step,
     stepDefinition: StepDefinition | undefined,
@@ -245,21 +270,23 @@ export class PrettyPrinter {
     this.printGherkinLine(
       indent(
         formatStepTitle(
+          testStep,
           pickleStep,
           step,
           testStepFinished.testStepResult.status,
-          this.options.statusIcons
+          this.options.statusIcons,
+          this.options.theme
         ),
         GHERKIN_INDENT_LENGTH
       ),
-      formatStepLocation(stepDefinition),
+      formatStepLocation(stepDefinition, this.options.theme),
       scenarioIndent,
       maxContentLength
     )
   }
 
   private printStepArgument(pickleStep: PickleStep, scenarioIndent: number) {
-    const content = formatStepArgument(pickleStep)
+    const content = formatStepArgument(pickleStep, this.options.theme)
     if (content) {
       this.writeln(
         indent(
@@ -281,14 +308,14 @@ export class PrettyPrinter {
   ) {
     let output = title
     if (location) {
-      const padding = maxContentLength - output.length
-      output += `${' '.repeat(padding)} # ${location}`
+      const padding = maxContentLength - unstyled(title).length
+      output += indent(location, padding + 1)
     }
     this.writeln(indent(output, indentBy))
   }
 
   private printError(testStepFinished: TestStepFinished, scenarioIndent: number) {
-    const content = formatError(testStepFinished.testStepResult)
+    const content = formatError(testStepFinished.testStepResult, this.options.theme)
     if (content) {
       this.writeln(
         indent(
@@ -304,7 +331,7 @@ export class PrettyPrinter {
 
   private handleAttachment(attachment: Attachment) {
     const scenarioIndent = this.getScenarioIndentBy(attachment)
-    const content = formatAttachment(attachment)
+    const content = formatAttachment(attachment, this.options.theme)
     this.writeln(
       pad(
         indent(
