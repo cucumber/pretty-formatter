@@ -11,6 +11,7 @@ import {
   StepDefinition,
   TestCaseStarted,
   TestStepFinished,
+  TestStepResultStatus,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
@@ -34,6 +35,7 @@ import {
   STEP_ARGUMENT_INDENT_LENGTH,
 } from './helpers.js'
 import type { Options } from './types.js'
+
 export class PrettyPrinter {
   private readonly query: Query = new Query()
   private readonly scenarioIndentByTestCaseStartedId: Map<string, number> = new Map<
@@ -55,6 +57,7 @@ export class PrettyPrinter {
     this.writeln = (content: string = '') => this.write(`${content}\n`)
     this.options = {
       includeFeaturesAndRules: false,
+      statusIcons: false,
       ...options,
     }
   }
@@ -124,7 +127,10 @@ export class PrettyPrinter {
     const scenarioLength = formatPickleTitle(pickle, scenario).length
     const stepLengths = pickle.steps.map((pickleStep) => {
       const step = ensure(this.query.findStepBy(pickleStep), 'Step must exist for PickleStep')
-      return GHERKIN_INDENT_LENGTH + formatStepTitle(pickleStep, step).length
+      return indent(
+        formatStepTitle(pickleStep, step, TestStepResultStatus.UNKNOWN, this.options.statusIcons),
+        GHERKIN_INDENT_LENGTH
+      ).length
     })
     this.maxContentLengthByTestCaseStartedId.set(
       testCaseStarted.id,
@@ -215,13 +221,21 @@ export class PrettyPrinter {
     const resolved = this.resolveStep(testStepFinished)
     if (resolved) {
       const { pickleStep, step, stepDefinition } = resolved
-      this.printStepLine(pickleStep, step, stepDefinition, scenarioIndent, maxContentLength)
+      this.printStepLine(
+        testStepFinished,
+        pickleStep,
+        step,
+        stepDefinition,
+        scenarioIndent,
+        maxContentLength
+      )
       this.printStepArgument(pickleStep, scenarioIndent)
     }
     this.printError(testStepFinished, scenarioIndent)
   }
 
   private printStepLine(
+    testStepFinished: TestStepFinished,
     pickleStep: PickleStep,
     step: Step,
     stepDefinition: StepDefinition | undefined,
@@ -229,7 +243,15 @@ export class PrettyPrinter {
     maxContentLength: number
   ) {
     this.printGherkinLine(
-      indent(formatStepTitle(pickleStep, step), GHERKIN_INDENT_LENGTH),
+      indent(
+        formatStepTitle(
+          pickleStep,
+          step,
+          testStepFinished.testStepResult.status,
+          this.options.statusIcons
+        ),
+        GHERKIN_INDENT_LENGTH
+      ),
       formatStepLocation(stepDefinition),
       scenarioIndent,
       maxContentLength
@@ -240,7 +262,13 @@ export class PrettyPrinter {
     const content = formatStepArgument(pickleStep)
     if (content) {
       this.writeln(
-        indent(content, scenarioIndent + GHERKIN_INDENT_LENGTH + STEP_ARGUMENT_INDENT_LENGTH)
+        indent(
+          content,
+          scenarioIndent +
+            (this.options.statusIcons ? GHERKIN_INDENT_LENGTH : 0) +
+            GHERKIN_INDENT_LENGTH +
+            STEP_ARGUMENT_INDENT_LENGTH
+        )
       )
     }
   }
@@ -262,7 +290,15 @@ export class PrettyPrinter {
   private printError(testStepFinished: TestStepFinished, scenarioIndent: number) {
     const content = formatError(testStepFinished.testStepResult)
     if (content) {
-      this.writeln(indent(content, scenarioIndent + GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH))
+      this.writeln(
+        indent(
+          content,
+          scenarioIndent +
+            (this.options.statusIcons ? GHERKIN_INDENT_LENGTH : 0) +
+            GHERKIN_INDENT_LENGTH +
+            ERROR_INDENT_LENGTH
+        )
+      )
     }
   }
 
@@ -270,7 +306,15 @@ export class PrettyPrinter {
     const scenarioIndent = this.getScenarioIndentBy(attachment)
     const content = formatAttachment(attachment)
     this.writeln(
-      pad(indent(content, scenarioIndent + GHERKIN_INDENT_LENGTH + ATTACHMENT_INDENT_LENGTH))
+      pad(
+        indent(
+          content,
+          scenarioIndent +
+            (this.options.statusIcons ? GHERKIN_INDENT_LENGTH : 0) +
+            GHERKIN_INDENT_LENGTH +
+            ATTACHMENT_INDENT_LENGTH
+        )
+      )
     )
   }
 }

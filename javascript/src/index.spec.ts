@@ -24,12 +24,21 @@ describe('Acceptance Tests', async function () {
       name: 'exclude-features-and-rules',
       options: {
         includeFeaturesAndRules: false,
+        statusIcons: false,
       },
     },
     {
       name: 'none',
       options: {
         includeFeaturesAndRules: true,
+        statusIcons: false,
+      },
+    },
+    {
+      name: 'plain',
+      options: {
+        includeFeaturesAndRules: true,
+        statusIcons: true,
       },
     },
   ]

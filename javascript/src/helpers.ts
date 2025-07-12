@@ -12,12 +12,23 @@ import {
   Step,
   StepDefinition,
   TestStepResult,
+  TestStepResultStatus,
 } from '@cucumber/messages'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
 export const ATTACHMENT_INDENT_LENGTH = 4
 export const ERROR_INDENT_LENGTH = 4
+
+const ICON_BY_STATUS: Record<TestStepResultStatus, string> = {
+  [TestStepResultStatus.AMBIGUOUS]: '✘',
+  [TestStepResultStatus.FAILED]: '✘',
+  [TestStepResultStatus.PASSED]: '✔',
+  [TestStepResultStatus.PENDING]: '■',
+  [TestStepResultStatus.SKIPPED]: '↷',
+  [TestStepResultStatus.UNDEFINED]: '■',
+  [TestStepResultStatus.UNKNOWN]: ' ',
+}
 
 export function ensure<T>(value: T | undefined, message: string): T {
   if (!value) {
@@ -61,9 +72,14 @@ export function formatPickleLocation(pickle: Pickle, location: Location | undefi
   return pickle.uri
 }
 
-export function formatStepTitle(pickleStep: PickleStep, step: Step) {
+export function formatStepTitle(
+  pickleStep: PickleStep,
+  step: Step,
+  status: TestStepResultStatus,
+  statusIcon?: boolean
+) {
   // step keyword includes a trailing space
-  return `${step.keyword}${pickleStep.text}`
+  return `${statusIcon ? ICON_BY_STATUS[status] + ' ' : ''}${step.keyword}${pickleStep.text}`
 }
 
 export function formatStepLocation(stepDefinition: StepDefinition | undefined) {
