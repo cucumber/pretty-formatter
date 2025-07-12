@@ -1,9 +1,11 @@
 import {
   Attachment,
   Envelope,
+  Feature,
   Location,
   Pickle,
   PickleStep,
+  Rule,
   Scenario,
   Step,
   StepDefinition,
@@ -18,36 +20,39 @@ import {
   ERROR_INDENT_LENGTH,
   formatAttachment,
   formatError,
+  formatFeatureTitle,
   formatPickleLocation,
   formatPickleTags,
   formatPickleTitle,
+  formatRuleTitle,
   formatStepArgument,
   formatStepLocation,
   formatStepTitle,
+  GHERKIN_INDENT_LENGTH,
   indent,
   pad,
   STEP_ARGUMENT_INDENT_LENGTH,
-  STEP_INDENT_LENGTH,
 } from './helpers.js'
-
-interface Options {
-  includeFeaturesAndRules?: boolean
-}
-
+import type { Options } from './types.js'
 export class PrettyPrinter {
   private readonly query: Query = new Query()
+  private readonly scenarioIndentByTestCaseStartedId: Map<string, number> = new Map<
+    string,
+    number
+  >()
   private readonly maxContentLengthByTestCaseStartedId: Map<string, number> = new Map<
     string,
     number
   >()
-  private readonly writeln: (content: string) => void
-  private options: Required<Options>
+  private readonly encounteredFeaturesAndRules: Set<Feature | Rule> = new Set()
+  private readonly writeln: (content?: string) => void
+  private readonly options: Required<Options>
 
   constructor(
     private readonly write: (content: string) => void,
     options: Options = {}
   ) {
-    this.writeln = (content: string) => this.write(`${content}\n`)
+    this.writeln = (content: string = '') => this.write(`${content}\n`)
     this.options = {
       includeFeaturesAndRules: false,
       ...options,
@@ -58,8 +63,7 @@ export class PrettyPrinter {
     this.query.update(message)
 
     if (message.testCaseStarted) {
-      this.write('\n')
-      this.preCalculateMaxContentLength(message.testCaseStarted)
+      this.preCalculateIndentAndMaxContentLength(message.testCaseStarted)
       this.handleTestCaseStarted(message.testCaseStarted)
     }
 
@@ -77,13 +81,17 @@ export class PrettyPrinter {
       this.query.findPickleBy(testCaseStarted),
       'Pickle must exist for TestCaseStarted'
     )
+    const location = this.query.findLocationOf(pickle)
     const lineage = ensure(this.query.findLineageBy(pickle), 'Lineage must exist for Pickle')
     const scenario = ensure(lineage.scenario, 'Scenario must exist for Lineage')
-    const location = this.query.findLocationOf(pickle)
+    const rule = lineage.rule
+    const feature = ensure(lineage.feature, 'Feature must exist for Lineage')
     return {
       pickle,
-      scenario,
       location,
+      scenario,
+      rule,
+      feature,
     }
   }
 
@@ -106,7 +114,7 @@ export class PrettyPrinter {
     }
   }
 
-  private preCalculateMaxContentLength(testCaseStarted: TestCaseStarted) {
+  private preCalculateIndentAndMaxContentLength(testCaseStarted: TestCaseStarted) {
     const pickle = ensure(
       this.query.findPickleBy(testCaseStarted),
       'Pickle must exist for TestCaseStarted'
@@ -116,12 +124,30 @@ export class PrettyPrinter {
     const scenarioLength = formatPickleTitle(pickle, scenario).length
     const stepLengths = pickle.steps.map((pickleStep) => {
       const step = ensure(this.query.findStepBy(pickleStep), 'Step must exist for PickleStep')
-      return STEP_INDENT_LENGTH + formatStepTitle(pickleStep, step).length
+      return GHERKIN_INDENT_LENGTH + formatStepTitle(pickleStep, step).length
     })
     this.maxContentLengthByTestCaseStartedId.set(
       testCaseStarted.id,
       Math.max(scenarioLength, ...stepLengths)
     )
+
+    let scenarioIndent = 0
+    if (this.options.includeFeaturesAndRules) {
+      scenarioIndent += GHERKIN_INDENT_LENGTH
+      if (lineage.rule) {
+        scenarioIndent += GHERKIN_INDENT_LENGTH
+      }
+    }
+    this.scenarioIndentByTestCaseStartedId.set(testCaseStarted.id, scenarioIndent)
+  }
+
+  private getScenarioIndentBy(by: TestCaseStarted | TestStepFinished | Attachment) {
+    if ('testCaseStartedId' in by && by.testCaseStartedId) {
+      return this.scenarioIndentByTestCaseStartedId.get(by.testCaseStartedId) ?? 0
+    } else if ('testCaseId' in by) {
+      return this.scenarioIndentByTestCaseStartedId.get(by.id) ?? 0
+    }
+    return 0
   }
 
   private getMaxContentLengthBy(by: TestCaseStarted | TestStepFinished) {
@@ -132,17 +158,39 @@ export class PrettyPrinter {
   }
 
   private handleTestCaseStarted(testCaseStarted: TestCaseStarted) {
-    const { pickle, scenario, location } = this.resolveScenario(testCaseStarted)
+    const { pickle, location, scenario, rule, feature } = this.resolveScenario(testCaseStarted)
+    const scenarioIndent = this.getScenarioIndentBy(testCaseStarted)
     const maxContentLength = this.getMaxContentLengthBy(testCaseStarted)
 
-    this.printTags(pickle)
-    this.printScenarioLine(pickle, scenario, location, maxContentLength)
+    this.printFeatureLine(feature)
+    this.printRuleLine(rule)
+    this.writeln()
+    this.printTags(pickle, scenarioIndent)
+    this.printScenarioLine(pickle, scenario, location, scenarioIndent, maxContentLength)
   }
 
-  private printTags(pickle: Pickle) {
+  private printFeatureLine(feature: Feature) {
+    if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(feature)) {
+      this.writeln()
+      this.writeln(formatFeatureTitle(feature))
+    }
+    this.encounteredFeaturesAndRules.add(feature)
+  }
+
+  private printRuleLine(rule: Rule | undefined) {
+    if (rule) {
+      if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(rule)) {
+        this.writeln()
+        this.writeln(indent(formatRuleTitle(rule), GHERKIN_INDENT_LENGTH))
+      }
+      this.encounteredFeaturesAndRules.add(rule)
+    }
+  }
+
+  private printTags(pickle: Pickle, scenarioIndent: number) {
     const output = formatPickleTags(pickle)
     if (output) {
-      this.writeln(output)
+      this.writeln(indent(output, scenarioIndent))
     }
   }
 
@@ -150,45 +198,50 @@ export class PrettyPrinter {
     pickle: Pickle,
     scenario: Scenario,
     location: Location | undefined,
+    scenarioIndent: number,
     maxContentLength: number
   ) {
     this.printGherkinLine(
       formatPickleTitle(pickle, scenario),
       formatPickleLocation(pickle, location),
-      0,
+      scenarioIndent,
       maxContentLength
     )
   }
 
   private handleTestStepFinished(testStepFinished: TestStepFinished) {
+    const scenarioIndent = this.getScenarioIndentBy(testStepFinished)
+    const maxContentLength = this.getMaxContentLengthBy(testStepFinished)
     const resolved = this.resolveStep(testStepFinished)
     if (resolved) {
       const { pickleStep, step, stepDefinition } = resolved
-      const maxContentLength = this.getMaxContentLengthBy(testStepFinished)
-      this.printStepLine(pickleStep, step, stepDefinition, maxContentLength)
-      this.printStepArgument(pickleStep)
+      this.printStepLine(pickleStep, step, stepDefinition, scenarioIndent, maxContentLength)
+      this.printStepArgument(pickleStep, scenarioIndent)
     }
-    this.printError(testStepFinished)
+    this.printError(testStepFinished, scenarioIndent)
   }
 
   private printStepLine(
     pickleStep: PickleStep,
     step: Step,
     stepDefinition: StepDefinition | undefined,
+    scenarioIndent: number,
     maxContentLength: number
   ) {
     this.printGherkinLine(
-      formatStepTitle(pickleStep, step),
+      indent(formatStepTitle(pickleStep, step), GHERKIN_INDENT_LENGTH),
       formatStepLocation(stepDefinition),
-      STEP_INDENT_LENGTH,
+      scenarioIndent,
       maxContentLength
     )
   }
 
-  private printStepArgument(pickleStep: PickleStep) {
+  private printStepArgument(pickleStep: PickleStep, scenarioIndent: number) {
     const content = formatStepArgument(pickleStep)
     if (content) {
-      this.writeln(indent(content, STEP_INDENT_LENGTH + STEP_ARGUMENT_INDENT_LENGTH))
+      this.writeln(
+        indent(content, scenarioIndent + GHERKIN_INDENT_LENGTH + STEP_ARGUMENT_INDENT_LENGTH)
+      )
     }
   }
 
@@ -198,23 +251,26 @@ export class PrettyPrinter {
     indentBy: number,
     maxContentLength: number
   ) {
-    let output = indent(title, indentBy)
+    let output = title
     if (location) {
       const padding = maxContentLength - output.length
       output += `${' '.repeat(padding)} # ${location}`
     }
-    this.writeln(output)
+    this.writeln(indent(output, indentBy))
   }
 
-  private printError(testStepFinished: TestStepFinished) {
+  private printError(testStepFinished: TestStepFinished, scenarioIndent: number) {
     const content = formatError(testStepFinished.testStepResult)
     if (content) {
-      this.writeln(indent(content, STEP_INDENT_LENGTH + ERROR_INDENT_LENGTH))
+      this.writeln(indent(content, scenarioIndent + GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH))
     }
   }
 
   private handleAttachment(attachment: Attachment) {
+    const scenarioIndent = this.getScenarioIndentBy(attachment)
     const content = formatAttachment(attachment)
-    this.writeln(pad(indent(content, STEP_INDENT_LENGTH + ATTACHMENT_INDENT_LENGTH)))
+    this.writeln(
+      pad(indent(content, scenarioIndent + GHERKIN_INDENT_LENGTH + ATTACHMENT_INDENT_LENGTH))
+    )
   }
 }

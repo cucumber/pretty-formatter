@@ -9,6 +9,7 @@ import { expect } from 'chai'
 import { globbySync } from 'globby'
 
 import formatter from './index.js'
+import type { Options } from './types.js'
 
 describe('Acceptance Tests', async function () {
   this.timeout(10_000)
@@ -18,10 +19,23 @@ describe('Acceptance Tests', async function () {
     absolute: true,
   })
 
-  const variants = ['exclude-features-and-rules']
+  const variants: ReadonlyArray<{ name: string; options: Options }> = [
+    {
+      name: 'exclude-features-and-rules',
+      options: {
+        includeFeaturesAndRules: false,
+      },
+    },
+    {
+      name: 'none',
+      options: {
+        includeFeaturesAndRules: true,
+      },
+    },
+  ]
 
-  for (const variant of variants) {
-    describe(variant, () => {
+  for (const { name, options } of variants) {
+    describe(name, () => {
       for (const ndjsonFile of ndjsonFiles) {
         const [suiteName] = path.basename(ndjsonFile).split('.')
 
@@ -29,6 +43,7 @@ describe('Acceptance Tests', async function () {
           let emit: (message: Envelope) => void
           let content = ''
           formatter.formatter({
+            options,
             on(type, handler) {
               emit = handler
             },
@@ -49,7 +64,7 @@ describe('Acceptance Tests', async function () {
             })
           )
 
-          const expectedOutput = fs.readFileSync(ndjsonFile.replace('.ndjson', `.${variant}.log`), {
+          const expectedOutput = fs.readFileSync(ndjsonFile.replace('.ndjson', `.${name}.log`), {
             encoding: 'utf-8',
           })
           expect(content).to.eq(expectedOutput)

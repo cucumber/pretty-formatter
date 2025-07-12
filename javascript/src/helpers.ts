@@ -1,18 +1,20 @@
 import {
   Attachment,
   AttachmentContentEncoding,
+  Feature,
   Location,
   Pickle,
   PickleDocString,
   PickleStep,
   PickleTable,
+  Rule,
   Scenario,
   Step,
   StepDefinition,
   TestStepResult,
 } from '@cucumber/messages'
 
-export const STEP_INDENT_LENGTH = 2
+export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
 export const ATTACHMENT_INDENT_LENGTH = 4
 export const ERROR_INDENT_LENGTH = 4
@@ -26,7 +28,6 @@ export function ensure<T>(value: T | undefined, message: string): T {
 
 export function indent(original: string, by: number) {
   return original
-    .trim()
     .split('\n')
     .map((line) => ' '.repeat(by) + line)
     .join('\n')
@@ -34,6 +35,14 @@ export function indent(original: string, by: number) {
 
 export function pad(original: string) {
   return `\n` + original + '\n'
+}
+
+export function formatFeatureTitle(feature: Feature) {
+  return `Feature: ${feature.name}`
+}
+
+export function formatRuleTitle(rule: Rule) {
+  return `Rule: ${rule.name}`
 }
 
 export function formatPickleTags(pickle: Pickle) {
@@ -104,7 +113,7 @@ function formatDataTable(dataTable: PickleTable) {
 }
 
 export function formatError(testStepResult: TestStepResult): string | undefined {
-  return testStepResult.exception?.stackTrace || testStepResult.exception?.message
+  return (testStepResult.exception?.stackTrace || testStepResult.exception?.message)?.trim()
 }
 
 export function formatAttachment(attachment: Attachment) {
