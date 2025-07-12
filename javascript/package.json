@@ -18,7 +18,7 @@
     "clean": "rm -rf dist",
     "fix": "eslint --ext ts --max-warnings 0 --fix src && prettier --write src",
     "lint": "eslint --ext ts --max-warnings 0 && prettier --check src",
-    "test": "mocha 'src/**/*.spec.*'",
+    "test": "mocha",
     "prepublishOnly": "tsc --build tsconfig.build.json"
   },
   "dependencies": {
