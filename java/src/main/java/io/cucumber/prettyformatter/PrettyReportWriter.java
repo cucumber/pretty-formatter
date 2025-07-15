@@ -34,22 +34,7 @@ import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
-import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
-import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
-import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
-import static io.cucumber.prettyformatter.Theme.Element.FEATURE_NAME;
-import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
-import static io.cucumber.prettyformatter.Theme.Element.RULE;
-import static io.cucumber.prettyformatter.Theme.Element.RULE_KEYWORD;
-import static io.cucumber.prettyformatter.Theme.Element.RULE_NAME;
-import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
-import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_NAME;
-import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
-import static io.cucumber.prettyformatter.Theme.Element.STEP;
-import static io.cucumber.prettyformatter.Theme.Element.STEP_ARGUMENT;
-import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
-import static io.cucumber.prettyformatter.Theme.Element.STEP_TEXT;
-import static io.cucumber.prettyformatter.Theme.Element.TAG;
+import static io.cucumber.prettyformatter.Theme.Element.*;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -149,7 +134,9 @@ class PrettyReportWriter implements AutoCloseable {
     private String formatScenarioLine(TestCaseStarted event, Pickle pickle, Scenario scenario) {
         return new LineBuilder(theme)
                 .indent(data.getScenarioIndentBy(event))
+                .begin(SCENARIO)
                 .title(SCENARIO_KEYWORD, scenario.getKeyword(), SCENARIO_NAME, pickle.getName())
+                .end(SCENARIO)
                 .addPaddingUpTo(data.getCommentStartAtIndexBy(event))
                 .append(LOCATION, "# " + formatLocation(pickle))
                 .build();
