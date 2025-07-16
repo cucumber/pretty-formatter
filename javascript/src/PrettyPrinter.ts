@@ -50,14 +50,14 @@ export class PrettyPrinter {
     number
   >()
   private readonly encounteredFeaturesAndRules: Set<Feature | Rule> = new Set()
-  private readonly writeln: (content?: string) => void
+  private readonly println: (content?: string) => void
   private readonly options: Required<Options>
 
   constructor(
-    private readonly write: (content: string) => void,
+    private readonly print: (content: string) => void,
     options: Options = {}
   ) {
-    this.writeln = (content: string = '') => this.write(`${content}\n`)
+    this.println = (content: string = '') => this.print(`${content}\n`)
     this.options = {
       includeFeaturesAndRules: true,
       statusIcons: true,
@@ -193,15 +193,15 @@ export class PrettyPrinter {
 
     this.printFeatureLine(feature)
     this.printRuleLine(rule)
-    this.writeln()
+    this.println()
     this.printTags(pickle, scenarioIndent)
     this.printScenarioLine(pickle, scenario, location, scenarioIndent, maxContentLength)
   }
 
   private printFeatureLine(feature: Feature) {
     if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(feature)) {
-      this.writeln()
-      this.writeln(formatFeatureTitle(feature, this.options.theme))
+      this.println()
+      this.println(formatFeatureTitle(feature, this.options.theme))
     }
     this.encounteredFeaturesAndRules.add(feature)
   }
@@ -209,8 +209,8 @@ export class PrettyPrinter {
   private printRuleLine(rule: Rule | undefined) {
     if (rule) {
       if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(rule)) {
-        this.writeln()
-        this.writeln(indent(formatRuleTitle(rule, this.options.theme), GHERKIN_INDENT_LENGTH))
+        this.println()
+        this.println(indent(formatRuleTitle(rule, this.options.theme), GHERKIN_INDENT_LENGTH))
       }
       this.encounteredFeaturesAndRules.add(rule)
     }
@@ -219,7 +219,7 @@ export class PrettyPrinter {
   private printTags(pickle: Pickle, scenarioIndent: number) {
     const output = formatPickleTags(pickle, this.options.theme)
     if (output) {
-      this.writeln(indent(output, scenarioIndent))
+      this.println(indent(output, scenarioIndent))
     }
   }
 
@@ -288,7 +288,7 @@ export class PrettyPrinter {
   private printStepArgument(pickleStep: PickleStep, scenarioIndent: number) {
     const content = formatStepArgument(pickleStep, this.options.theme)
     if (content) {
-      this.writeln(
+      this.println(
         indent(
           content,
           scenarioIndent +
@@ -311,13 +311,13 @@ export class PrettyPrinter {
       const padding = maxContentLength - unstyled(title).length
       output += indent(location, padding + 1)
     }
-    this.writeln(indent(output, indentBy))
+    this.println(indent(output, indentBy))
   }
 
   private printError(testStepFinished: TestStepFinished, scenarioIndent: number) {
     const content = formatError(testStepFinished.testStepResult, this.options.theme)
     if (content) {
-      this.writeln(
+      this.println(
         indent(
           content,
           scenarioIndent +
@@ -332,7 +332,7 @@ export class PrettyPrinter {
   private handleAttachment(attachment: Attachment) {
     const scenarioIndent = this.getScenarioIndentBy(attachment)
     const content = formatAttachment(attachment, this.options.theme)
-    this.writeln(
+    this.println(
       pad(
         indent(
           content,
