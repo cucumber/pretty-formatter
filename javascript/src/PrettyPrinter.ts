@@ -36,7 +36,7 @@ import {
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
 } from './helpers.js'
-import { CUCUMBER_THEME } from './themes.js'
+import { CUCUMBER_THEME } from './theme.js'
 import type { Options } from './types.js'
 
 export class PrettyPrinter {

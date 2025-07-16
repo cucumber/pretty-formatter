@@ -3,6 +3,9 @@ import { Envelope } from '@cucumber/messages'
 import { PrettyPrinter } from './PrettyPrinter.js'
 import type { Options } from './types.js'
 
+export * from './theme.js'
+export type * from './types.js'
+
 export default {
   type: 'formatter',
   formatter({

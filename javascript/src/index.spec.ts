@@ -4,13 +4,59 @@ import { Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 
 import { NdjsonToMessageStream } from '@cucumber/message-streams'
-import { Envelope } from '@cucumber/messages'
+import { Envelope, TestStepResultStatus } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
-import formatter from './index.js'
-import { CUCUMBER_THEME, DEMO_THEME } from './themes.js'
+import formatter, { Theme } from './index.js'
+import { CUCUMBER_THEME } from './theme.js'
 import type { Options } from './types.js'
+
+const DEMO_THEME: Theme = {
+  attachment: 'blue',
+  dataTable: {
+    all: 'blackBright',
+    border: 'dim',
+    content: 'italic',
+  },
+  docString: {
+    all: 'blackBright',
+    content: 'italic',
+    delimiter: 'dim',
+    mediaType: 'bold',
+  },
+  feature: {
+    all: 'default',
+    keyword: 'bold',
+    name: 'italic',
+  },
+  location: 'blackBright',
+  status: {
+    [TestStepResultStatus.AMBIGUOUS]: 'red',
+    [TestStepResultStatus.FAILED]: 'red',
+    [TestStepResultStatus.PASSED]: 'green',
+    [TestStepResultStatus.PENDING]: 'yellow',
+    [TestStepResultStatus.SKIPPED]: 'cyan',
+    [TestStepResultStatus.UNDEFINED]: 'yellow',
+    [TestStepResultStatus.UNKNOWN]: [],
+  },
+  rule: {
+    all: 'default',
+    keyword: 'bold',
+    name: 'italic',
+  },
+  scenario: {
+    all: 'default',
+    keyword: 'bold',
+    name: 'italic',
+  },
+  step: {
+    argument: 'bold',
+    keyword: 'bold',
+    text: 'italic',
+  },
+  tag: ['yellow', 'bold'],
+}
 
 describe('Acceptance Tests', async function () {
   this.timeout(10_000)
