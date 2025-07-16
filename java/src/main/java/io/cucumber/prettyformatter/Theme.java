@@ -114,6 +114,11 @@ public final class Theme {
         Entry<Ansi, Ansi> ansiStyle = findAnsiBy(element);
         return ansiStyle == null ? text : ansiStyle.getKey() + text + ansiStyle.getValue();
     }
+    
+    String style(Element element, TestStepResultStatus status, String text) {
+        Entry<Ansi, Ansi> ansiStyle = findAnsiBy(element, status);
+        return ansiStyle == null ? text : ansiStyle.getKey() + text + ansiStyle.getValue();
+    }
 
     String beginStyle(Element element) {
         Entry<Ansi, Ansi> style = findAnsiBy(element);

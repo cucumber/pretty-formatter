@@ -252,7 +252,7 @@ class PrettyReportWriter implements AutoCloseable {
     private void printException(TestStepFinished event) {
         TestStepResultStatus status = event.getTestStepResult().getStatus();
         event.getTestStepResult().getException().ifPresent(exception ->
-                writer.println(formatError(data.getStackTraceIndentBy(event), exception, status)));
+                writer.print(formatError(data.getStackTraceIndentBy(event), exception, status)));
     }
 
     void handleAttachment(Attachment attachment) {
@@ -307,7 +307,7 @@ class PrettyReportWriter implements AutoCloseable {
 
     private void printException(TestRunFinished event) {
         event.getException().ifPresent(exception ->
-                writer.println(formatError(0, exception, FAILED)));
+                writer.print(formatError(0, exception, FAILED)));
     }
 
     private String formatError(int indent, Exception exception, TestStepResultStatus status) {
@@ -326,25 +326,16 @@ class PrettyReportWriter implements AutoCloseable {
         LineBuilder lineBuilder = new LineBuilder(theme);
         // Read the lines in the message and add extra indentation
         try (BufferedReader lines = new BufferedReader(new StringReader(message))) {
-            // Bit complicated, but ensures the style fits tightly around the error
-            boolean first = true;
             String line;
             while ((line = lines.readLine()) != null) {
-                if (!first) {
-                    lineBuilder.newLine();
-                }
-                lineBuilder.indent(indent);
-                if (first) {
-                    lineBuilder.begin(STEP, status);
-                    first = false;
-                }
-                lineBuilder.append(line);
+                lineBuilder.indent(indent)
+                        .append(STEP, status, line)
+                        .newLine();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return lineBuilder
-                .end(STEP, status)
                 .build();
     }
 
