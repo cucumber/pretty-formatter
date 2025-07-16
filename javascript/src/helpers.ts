@@ -213,7 +213,7 @@ function calculateColumnWidths(dataTable: PickleTable) {
 export function formatError(testStepResult: TestStepResult, theme: Theme): string | undefined {
   const error = (testStepResult.exception?.stackTrace || testStepResult.exception?.message)?.trim()
   if (error) {
-    return new TextBuilder().append(error.trim()).build(theme.status?.[testStepResult.status])
+    return new TextBuilder().append(error.trim()).build(theme.status?.[testStepResult.status], true)
   }
 }
 
