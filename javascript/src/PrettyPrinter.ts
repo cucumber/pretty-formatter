@@ -59,8 +59,8 @@ export class PrettyPrinter {
   ) {
     this.writeln = (content: string = '') => this.write(`${content}\n`)
     this.options = {
-      includeFeaturesAndRules: false,
-      statusIcons: false,
+      includeFeaturesAndRules: true,
+      statusIcons: true,
       theme: CUCUMBER_THEME,
       ...options,
     }
