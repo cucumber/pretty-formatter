@@ -8,9 +8,8 @@ import { Envelope, TestStepResultStatus } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
-import formatter, { Theme } from './index.js'
-import { CUCUMBER_THEME } from './theme.js'
-import type { Options } from './types.js'
+import type { Options, Theme } from './index.js'
+import formatter, { CUCUMBER_THEME } from './index.js'
 
 const DEMO_THEME: Theme = {
   attachment: 'blue',
