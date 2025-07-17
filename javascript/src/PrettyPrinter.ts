@@ -61,7 +61,6 @@ export class PrettyPrinter {
     this.println = (content: string = '') => this.print(`${content}\n`)
     this.options = {
       includeFeaturesAndRules: true,
-      statusIcons: true,
       theme: CUCUMBER_THEME,
       ...options,
     }
@@ -151,7 +150,6 @@ export class PrettyPrinter {
               pickleStep,
               step,
               TestStepResultStatus.UNKNOWN,
-              this.options.statusIcons,
               this.options.theme,
               this.stream
             )
@@ -280,7 +278,6 @@ export class PrettyPrinter {
           pickleStep,
           step,
           testStepFinished.testStepResult.status,
-          this.options.statusIcons,
           this.options.theme,
           this.stream
         ),
@@ -299,7 +296,7 @@ export class PrettyPrinter {
         indent(
           content,
           scenarioIndent +
-            (this.options.statusIcons ? GHERKIN_INDENT_LENGTH : 0) +
+            (this.options.theme.status?.icon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
             STEP_ARGUMENT_INDENT_LENGTH
         )
@@ -328,7 +325,7 @@ export class PrettyPrinter {
         indent(
           content,
           scenarioIndent +
-            (this.options.statusIcons ? GHERKIN_INDENT_LENGTH : 0) +
+            (this.options.theme.status?.icon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
             ERROR_INDENT_LENGTH
         )
@@ -344,7 +341,7 @@ export class PrettyPrinter {
         indent(
           content,
           scenarioIndent +
-            (this.options.statusIcons ? GHERKIN_INDENT_LENGTH : 0) +
+            (this.options.theme.status?.icon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
             ATTACHMENT_INDENT_LENGTH
         )

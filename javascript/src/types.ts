@@ -33,7 +33,10 @@ export interface Theme {
     keyword?: Style
     name?: Style
   }
-  status?: Partial<Record<TestStepResultStatus, Style>>
+  status?: {
+    all?: Partial<Record<TestStepResultStatus, Style>>
+    icon?: Partial<Record<TestStepResultStatus, string>>
+  }
   step?: {
     argument?: Style
     keyword?: Style
@@ -44,6 +47,5 @@ export interface Theme {
 
 export interface Options {
   includeFeaturesAndRules?: boolean
-  statusIcons?: boolean
   theme?: Theme
 }

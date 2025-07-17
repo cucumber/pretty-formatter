@@ -31,13 +31,15 @@ const DEMO_THEME: Theme = {
   },
   location: 'blackBright',
   status: {
-    [TestStepResultStatus.AMBIGUOUS]: 'red',
-    [TestStepResultStatus.FAILED]: 'red',
-    [TestStepResultStatus.PASSED]: 'green',
-    [TestStepResultStatus.PENDING]: 'yellow',
-    [TestStepResultStatus.SKIPPED]: 'cyan',
-    [TestStepResultStatus.UNDEFINED]: 'yellow',
-    [TestStepResultStatus.UNKNOWN]: [],
+    all: {
+      [TestStepResultStatus.AMBIGUOUS]: 'red',
+      [TestStepResultStatus.FAILED]: 'red',
+      [TestStepResultStatus.PASSED]: 'green',
+      [TestStepResultStatus.PENDING]: 'yellow',
+      [TestStepResultStatus.SKIPPED]: 'cyan',
+      [TestStepResultStatus.UNDEFINED]: 'yellow',
+      [TestStepResultStatus.UNKNOWN]: [],
+    },
   },
   rule: {
     all: 'default',
@@ -70,7 +72,6 @@ describe('Acceptance Tests', async function () {
       name: 'cucumber',
       options: {
         includeFeaturesAndRules: true,
-        statusIcons: true,
         theme: CUCUMBER_THEME,
       },
     },
@@ -78,7 +79,6 @@ describe('Acceptance Tests', async function () {
       name: 'demo',
       options: {
         includeFeaturesAndRules: true,
-        statusIcons: false,
         theme: DEMO_THEME,
       },
     },
@@ -86,7 +86,6 @@ describe('Acceptance Tests', async function () {
       name: 'exclude-features-and-rules',
       options: {
         includeFeaturesAndRules: false,
-        statusIcons: false,
         theme: {},
       },
     },
@@ -94,7 +93,6 @@ describe('Acceptance Tests', async function () {
       name: 'none',
       options: {
         includeFeaturesAndRules: true,
-        statusIcons: false,
         theme: {},
       },
     },
@@ -102,8 +100,19 @@ describe('Acceptance Tests', async function () {
       name: 'plain',
       options: {
         includeFeaturesAndRules: true,
-        statusIcons: true,
-        theme: {},
+        theme: {
+          status: {
+            icon: {
+              [TestStepResultStatus.AMBIGUOUS]: '✘',
+              [TestStepResultStatus.FAILED]: '✘',
+              [TestStepResultStatus.PASSED]: '✔',
+              [TestStepResultStatus.PENDING]: '■',
+              [TestStepResultStatus.SKIPPED]: '↷',
+              [TestStepResultStatus.UNDEFINED]: '■',
+              [TestStepResultStatus.UNKNOWN]: ' ',
+            },
+          },
+        },
       },
     },
   ]

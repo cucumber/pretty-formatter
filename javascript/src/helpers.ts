@@ -26,16 +26,6 @@ export const STEP_ARGUMENT_INDENT_LENGTH = 2
 export const ATTACHMENT_INDENT_LENGTH = 4
 export const ERROR_INDENT_LENGTH = 4
 
-const ICON_BY_STATUS: Record<TestStepResultStatus, string> = {
-  [TestStepResultStatus.AMBIGUOUS]: '✘',
-  [TestStepResultStatus.FAILED]: '✘',
-  [TestStepResultStatus.PASSED]: '✔',
-  [TestStepResultStatus.PENDING]: '■',
-  [TestStepResultStatus.SKIPPED]: '↷',
-  [TestStepResultStatus.UNDEFINED]: '■',
-  [TestStepResultStatus.UNKNOWN]: ' ',
-}
-
 export function ensure<T>(value: T | undefined, message: string): T {
   if (!value) {
     throw new Error(message)
@@ -112,13 +102,12 @@ export function formatStepTitle(
   pickleStep: PickleStep,
   step: Step,
   status: TestStepResultStatus,
-  statusIcon: boolean = false,
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
   const builder = new TextBuilder(stream)
-  if (statusIcon) {
-    builder.append(ICON_BY_STATUS[status], theme.status?.[status]).space()
+  if (theme.status?.icon?.[status]) {
+    builder.append(theme.status.icon[status], theme.status?.all?.[status]).space()
   }
   return builder
     .append(
@@ -126,7 +115,7 @@ export function formatStepTitle(
         .append(step.keyword, theme.step?.keyword)
         // step keyword includes a trailing space
         .append(formatStepText(testStep, pickleStep, theme, stream))
-        .build(theme.status?.[status])
+        .build(theme.status?.all?.[status])
     )
     .build()
 }
@@ -246,7 +235,7 @@ export function formatError(
   if (error) {
     return new TextBuilder(stream)
       .append(error.trim())
-      .build(theme.status?.[testStepResult.status], true)
+      .build(theme.status?.all?.[testStepResult.status], true)
   }
 }
 
