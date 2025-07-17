@@ -54,8 +54,9 @@ export class PrettyPrinter {
   private readonly options: Required<Options>
 
   constructor(
+    private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
-    options: Options = {}
+    options: Options
   ) {
     this.println = (content: string = '') => this.print(`${content}\n`)
     this.options = {
@@ -128,7 +129,9 @@ export class PrettyPrinter {
     )
     const lineage = ensure(this.query.findLineageBy(pickle), 'Lineage must exist for Pickle')
     const scenario = ensure(lineage.scenario, 'Scenario must exist for Lineage')
-    const scenarioLength = unstyled(formatPickleTitle(pickle, scenario, this.options.theme)).length
+    const scenarioLength = unstyled(
+      formatPickleTitle(pickle, scenario, this.options.theme, this.stream)
+    ).length
     const testCase = ensure(
       this.query.findTestCaseBy(testCaseStarted),
       'TestCase must exist for TestCaseStarted'
@@ -149,7 +152,8 @@ export class PrettyPrinter {
               step,
               TestStepResultStatus.UNKNOWN,
               this.options.statusIcons,
-              this.options.theme
+              this.options.theme,
+              this.stream
             )
           ),
           GHERKIN_INDENT_LENGTH
@@ -201,7 +205,7 @@ export class PrettyPrinter {
   private printFeatureLine(feature: Feature) {
     if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(feature)) {
       this.println()
-      this.println(formatFeatureTitle(feature, this.options.theme))
+      this.println(formatFeatureTitle(feature, this.options.theme, this.stream))
     }
     this.encounteredFeaturesAndRules.add(feature)
   }
@@ -210,14 +214,16 @@ export class PrettyPrinter {
     if (rule) {
       if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(rule)) {
         this.println()
-        this.println(indent(formatRuleTitle(rule, this.options.theme), GHERKIN_INDENT_LENGTH))
+        this.println(
+          indent(formatRuleTitle(rule, this.options.theme, this.stream), GHERKIN_INDENT_LENGTH)
+        )
       }
       this.encounteredFeaturesAndRules.add(rule)
     }
   }
 
   private printTags(pickle: Pickle, scenarioIndent: number) {
-    const output = formatPickleTags(pickle, this.options.theme)
+    const output = formatPickleTags(pickle, this.options.theme, this.stream)
     if (output) {
       this.println(indent(output, scenarioIndent))
     }
@@ -231,8 +237,8 @@ export class PrettyPrinter {
     maxContentLength: number
   ) {
     this.printGherkinLine(
-      formatPickleTitle(pickle, scenario, this.options.theme),
-      formatPickleLocation(pickle, location, this.options.theme),
+      formatPickleTitle(pickle, scenario, this.options.theme, this.stream),
+      formatPickleLocation(pickle, location, this.options.theme, this.stream),
       scenarioIndent,
       maxContentLength
     )
@@ -275,18 +281,19 @@ export class PrettyPrinter {
           step,
           testStepFinished.testStepResult.status,
           this.options.statusIcons,
-          this.options.theme
+          this.options.theme,
+          this.stream
         ),
         GHERKIN_INDENT_LENGTH
       ),
-      formatStepLocation(stepDefinition, this.options.theme),
+      formatStepLocation(stepDefinition, this.options.theme, this.stream),
       scenarioIndent,
       maxContentLength
     )
   }
 
   private printStepArgument(pickleStep: PickleStep, scenarioIndent: number) {
-    const content = formatStepArgument(pickleStep, this.options.theme)
+    const content = formatStepArgument(pickleStep, this.options.theme, this.stream)
     if (content) {
       this.println(
         indent(
@@ -315,7 +322,7 @@ export class PrettyPrinter {
   }
 
   private printError(testStepFinished: TestStepFinished, scenarioIndent: number) {
-    const content = formatError(testStepFinished.testStepResult, this.options.theme)
+    const content = formatError(testStepFinished.testStepResult, this.options.theme, this.stream)
     if (content) {
       this.println(
         indent(
@@ -331,7 +338,7 @@ export class PrettyPrinter {
 
   private handleAttachment(attachment: Attachment) {
     const scenarioIndent = this.getScenarioIndentBy(attachment)
-    const content = formatAttachment(attachment, this.options.theme)
+    const content = formatAttachment(attachment, this.options.theme, this.stream)
     this.println(
       pad(
         indent(

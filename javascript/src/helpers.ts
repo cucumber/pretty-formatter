@@ -58,39 +58,49 @@ export function unstyled(text: string) {
   return stripVTControlCharacters(text)
 }
 
-export function formatFeatureTitle(feature: Feature, theme: Theme) {
-  return new TextBuilder()
+export function formatFeatureTitle(feature: Feature, theme: Theme, stream: NodeJS.WritableStream) {
+  return new TextBuilder(stream)
     .append(feature.keyword + ':', theme.feature?.keyword)
     .space()
     .append(feature.name, theme.feature?.name)
     .build(theme.feature?.all)
 }
 
-export function formatRuleTitle(rule: Rule, theme: Theme) {
-  return new TextBuilder()
+export function formatRuleTitle(rule: Rule, theme: Theme, stream: NodeJS.WritableStream) {
+  return new TextBuilder(stream)
     .append(rule.keyword + ':', theme.rule?.keyword)
     .space()
     .append(rule.name, theme.rule?.name)
     .build(theme.rule?.all)
 }
 
-export function formatPickleTags(pickle: Pickle, theme: Theme) {
+export function formatPickleTags(pickle: Pickle, theme: Theme, stream: NodeJS.WritableStream) {
   if (pickle && pickle.tags.length > 0) {
-    return new TextBuilder()
+    return new TextBuilder(stream)
       .append(pickle.tags.map((tag) => `${tag.name}`).join(' '))
       .build(theme.tag)
   }
 }
-export function formatPickleTitle(pickle: Pickle, scenario: Scenario, theme: Theme) {
-  return new TextBuilder()
+export function formatPickleTitle(
+  pickle: Pickle,
+  scenario: Scenario,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  return new TextBuilder(stream)
     .append(scenario.keyword + ':', theme.scenario?.keyword)
     .space()
     .append(pickle.name || '', theme.scenario?.name)
     .build(theme.scenario?.all)
 }
 
-export function formatPickleLocation(pickle: Pickle, location: Location | undefined, theme: Theme) {
-  const builder = new TextBuilder().append('#').space().append(pickle.uri)
+export function formatPickleLocation(
+  pickle: Pickle,
+  location: Location | undefined,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  const builder = new TextBuilder(stream).append('#').space().append(pickle.uri)
   if (location) {
     builder.append(':').append(location.line)
   }
@@ -103,25 +113,31 @@ export function formatStepTitle(
   step: Step,
   status: TestStepResultStatus,
   statusIcon: boolean = false,
-  theme: Theme
+  theme: Theme,
+  stream: NodeJS.WritableStream
 ) {
-  const builder = new TextBuilder()
+  const builder = new TextBuilder(stream)
   if (statusIcon) {
     builder.append(ICON_BY_STATUS[status], theme.status?.[status]).space()
   }
   return builder
     .append(
-      new TextBuilder()
+      new TextBuilder(stream)
         .append(step.keyword, theme.step?.keyword)
         // step keyword includes a trailing space
-        .append(formatStepText(testStep, pickleStep, theme))
+        .append(formatStepText(testStep, pickleStep, theme, stream))
         .build(theme.status?.[status])
     )
     .build()
 }
 
-function formatStepText(testStep: TestStep, pickleStep: PickleStep, theme: Theme) {
-  const builder = new TextBuilder()
+function formatStepText(
+  testStep: TestStep,
+  pickleStep: PickleStep,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  const builder = new TextBuilder(stream)
   const stepMatchArgumentsLists = testStep.stepMatchArgumentsLists
   if (stepMatchArgumentsLists && stepMatchArgumentsLists.length === 1) {
     const stepMatchArguments = stepMatchArgumentsLists[0].stepMatchArguments
@@ -148,9 +164,16 @@ function formatStepText(testStep: TestStep, pickleStep: PickleStep, theme: Theme
   return builder.build()
 }
 
-export function formatStepLocation(stepDefinition: StepDefinition | undefined, theme: Theme) {
+export function formatStepLocation(
+  stepDefinition: StepDefinition | undefined,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
   if (stepDefinition?.sourceReference.uri) {
-    const builder = new TextBuilder().append('#').space().append(stepDefinition.sourceReference.uri)
+    const builder = new TextBuilder(stream)
+      .append('#')
+      .space()
+      .append(stepDefinition.sourceReference.uri)
     if (stepDefinition.sourceReference.location) {
       builder.append(':').append(stepDefinition.sourceReference.location.line)
     }
@@ -158,17 +181,21 @@ export function formatStepLocation(stepDefinition: StepDefinition | undefined, t
   }
 }
 
-export function formatStepArgument(pickleStep: PickleStep, theme: Theme) {
+export function formatStepArgument(
+  pickleStep: PickleStep,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
   if (pickleStep.argument?.docString) {
-    return formatDocString(pickleStep.argument.docString, theme)
+    return formatDocString(pickleStep.argument.docString, theme, stream)
   }
   if (pickleStep.argument?.dataTable) {
-    return formatDataTable(pickleStep.argument.dataTable, theme)
+    return formatDataTable(pickleStep.argument.dataTable, theme, stream)
   }
 }
 
-function formatDocString(docString: PickleDocString, theme: Theme) {
-  const builder = new TextBuilder().append('"""', theme.docString?.delimiter)
+function formatDocString(docString: PickleDocString, theme: Theme, stream: NodeJS.WritableStream) {
+  const builder = new TextBuilder(stream).append('"""', theme.docString?.delimiter)
   if (docString.mediaType) {
     builder.append(docString.mediaType, theme.docString?.mediaType)
   }
@@ -180,9 +207,9 @@ function formatDocString(docString: PickleDocString, theme: Theme) {
   return builder.build(theme.docString?.all, true)
 }
 
-function formatDataTable(dataTable: PickleTable, theme: Theme) {
+function formatDataTable(dataTable: PickleTable, theme: Theme, stream: NodeJS.WritableStream) {
   const columnWidths = calculateColumnWidths(dataTable)
-  const builder = new TextBuilder()
+  const builder = new TextBuilder(stream)
   dataTable.rows.forEach((row, rowIndex) => {
     if (rowIndex > 0) {
       builder.line()
@@ -210,24 +237,35 @@ function calculateColumnWidths(dataTable: PickleTable) {
   return columnWidths
 }
 
-export function formatError(testStepResult: TestStepResult, theme: Theme): string | undefined {
+export function formatError(
+  testStepResult: TestStepResult,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+): string | undefined {
   const error = (testStepResult.exception?.stackTrace || testStepResult.exception?.message)?.trim()
   if (error) {
-    return new TextBuilder().append(error.trim()).build(theme.status?.[testStepResult.status], true)
+    return new TextBuilder(stream)
+      .append(error.trim())
+      .build(theme.status?.[testStepResult.status], true)
   }
 }
 
-export function formatAttachment(attachment: Attachment, theme: Theme) {
+export function formatAttachment(
+  attachment: Attachment,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
   switch (attachment.contentEncoding) {
     case AttachmentContentEncoding.BASE64:
       return formatBase64Attachment(
         attachment.body,
         attachment.mediaType,
         attachment.fileName,
-        theme
+        theme,
+        stream
       )
     case AttachmentContentEncoding.IDENTITY:
-      return formatTextAttachment(attachment.body, theme)
+      return formatTextAttachment(attachment.body, theme, stream)
   }
 }
 
@@ -235,9 +273,10 @@ function formatBase64Attachment(
   data: string,
   mediaType: string,
   fileName: string | undefined,
-  theme: Theme
+  theme: Theme,
+  stream: NodeJS.WritableStream
 ) {
-  const builder = new TextBuilder()
+  const builder = new TextBuilder(stream)
   const bytes = (data.length / 4) * 3
   if (fileName) {
     builder.append(`Embedding ${fileName} [${mediaType} ${bytes} bytes]`)
@@ -247,6 +286,6 @@ function formatBase64Attachment(
   return builder.build(theme.attachment)
 }
 
-function formatTextAttachment(content: string, theme: Theme) {
-  return new TextBuilder().append(content).build(theme.attachment)
+function formatTextAttachment(content: string, theme: Theme, stream: NodeJS.WritableStream) {
+  return new TextBuilder(stream).append(content).build(theme.attachment)
 }

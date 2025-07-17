@@ -11,13 +11,15 @@ export default {
   formatter({
     on,
     options = {},
+    stream = process.stdout,
     write,
   }: {
     on: (type: 'message', handler: (message: Envelope) => void) => void
     options?: Options
+    stream?: NodeJS.WritableStream
     write: (content: string) => void
   }) {
-    const printer = new PrettyPrinter(write, options)
+    const printer = new PrettyPrinter(stream, write, options)
     on('message', (message: Envelope) => printer.update(message))
   },
   optionsKey: 'pretty',

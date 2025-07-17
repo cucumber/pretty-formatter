@@ -5,6 +5,8 @@ import { Style } from './types.js'
 export class TextBuilder {
   private text = ''
 
+  constructor(private readonly stream: NodeJS.WritableStream) {}
+
   private applyStyle(value: string, style?: Style) {
     if (!style) {
       return value
@@ -13,7 +15,7 @@ export class TextBuilder {
       // util.styleText doesn't support 'default' style
       return `\u001b[39m${value}\u001b[0m`
     }
-    return styleText(style, value, { validateStream: false })
+    return styleText(style, value, { stream: this.stream })
   }
 
   space() {
