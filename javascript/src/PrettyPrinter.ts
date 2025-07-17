@@ -36,10 +36,10 @@ import {
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
 } from './helpers.js'
-import { CUCUMBER_THEME } from './theme.js'
 import type { Options } from './types.js'
 
 export class PrettyPrinter {
+  private readonly println: (content?: string) => void
   private readonly query: Query = new Query()
   private readonly scenarioIndentByTestCaseStartedId: Map<string, number> = new Map<
     string,
@@ -50,20 +50,13 @@ export class PrettyPrinter {
     number
   >()
   private readonly encounteredFeaturesAndRules: Set<Feature | Rule> = new Set()
-  private readonly println: (content?: string) => void
-  private readonly options: Required<Options>
 
   constructor(
     private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
-    options: Options
+    private readonly options: Required<Options>
   ) {
     this.println = (content: string = '') => this.print(`${content}\n`)
-    this.options = {
-      includeFeaturesAndRules: true,
-      theme: CUCUMBER_THEME,
-      ...options,
-    }
   }
 
   update(message: Envelope) {
