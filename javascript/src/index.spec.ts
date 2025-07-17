@@ -1,15 +1,15 @@
 import fs from 'node:fs'
 import * as path from 'node:path'
-import { Writable } from 'node:stream'
-import { pipeline } from 'node:stream/promises'
+import {Writable} from 'node:stream'
+import {pipeline} from 'node:stream/promises'
 
-import { NdjsonToMessageStream } from '@cucumber/message-streams'
-import { Envelope, TestStepResultStatus } from '@cucumber/messages'
-import { expect } from 'chai'
-import { globbySync } from 'globby'
+import {NdjsonToMessageStream} from '@cucumber/message-streams'
+import {Envelope, TestStepResultStatus} from '@cucumber/messages'
+import {expect} from 'chai'
+import {globbySync} from 'globby'
 
-import type { Options, Theme } from './index.js'
-import formatter, { CUCUMBER_THEME } from './index.js'
+import type {Options, Theme} from './index.js'
+import formatter, {CUCUMBER_THEME} from './index.js'
 
 const DEMO_THEME: Theme = {
   attachment: 'blue',
@@ -63,7 +63,7 @@ describe('Acceptance Tests', async function () {
   this.timeout(10_000)
 
   const ndjsonFiles = globbySync(`*.ndjson`, {
-    cwd: new URL(path.join(path.dirname(import.meta.url), '..', '..', 'testdata')),
+    cwd: path.join(import.meta.dirname, '..', '..', 'testdata'),
     absolute: true,
   })
 
