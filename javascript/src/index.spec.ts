@@ -63,7 +63,7 @@ describe('Acceptance Tests', async function () {
   this.timeout(10_000)
 
   const ndjsonFiles = globbySync(`*.ndjson`, {
-    cwd: new URL(path.join(path.dirname(import.meta.url), '../../testdata')),
+    cwd: new URL(path.join(path.dirname(import.meta.url), '..', '..', 'testdata')),
     absolute: true,
   })
 
