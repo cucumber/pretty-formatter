@@ -117,6 +117,13 @@ describe('Acceptance Tests', async function () {
     },
   ]
 
+  // just enough so Node.js internals consider it a color-supporting stream
+  const fakeStream = {
+    _writableState: {},
+    isTTY: true,
+    getColorDepth: () => 3,
+  } as unknown as NodeJS.WritableStream
+
   for (const { name, options } of variants) {
     describe(name, () => {
       for (const ndjsonFile of ndjsonFiles) {
@@ -127,6 +134,7 @@ describe('Acceptance Tests', async function () {
           let content = ''
           formatter.formatter({
             options,
+            stream: fakeStream,
             on(type, handler) {
               emit = handler
             },
@@ -156,4 +164,4 @@ describe('Acceptance Tests', async function () {
       }
     })
   }
-}).timeout('5s')
+})
