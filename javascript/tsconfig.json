@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "declaration": true,
+    "sourceMap": true,
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "module": "NodeNext",
+    "lib": [
+      "ES2022"
+    ],
+    "target": "ES2022",
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true
+  },
+  "ts-node": {
+    "files": true
+  }
+}

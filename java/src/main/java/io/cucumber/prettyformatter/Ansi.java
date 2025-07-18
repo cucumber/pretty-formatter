@@ -27,18 +27,14 @@ public final class Ansi {
     }
 
     private String createControlSequence(Attributes... attributes) {
-        int length = attributes.length;
-        int capacity = (length * 2 - 1) + 3;
-        StringBuilder a = new StringBuilder(capacity);
-        a.append(FIRST_ESCAPE).append(SECOND_ESCAPE);
-        for (int i = 0; i < length; i++) {
-            Attributes attribute = attributes[i];
-            if (i > 0) {
-                a.append(";");
-            }
+        StringBuilder a = new StringBuilder(attributes.length * 5);
+
+        for (Attributes attribute : attributes) {
+            a.append(FIRST_ESCAPE).append(SECOND_ESCAPE);
             a.append(attribute.value);
+            a.append(END_SEQUENCE);
         }
-        a.append(END_SEQUENCE);
+
         return a.toString();
     }
 

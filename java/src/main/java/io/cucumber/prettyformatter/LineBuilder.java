@@ -70,6 +70,12 @@ final class LineBuilder {
         return this;
     }
 
+    LineBuilder append(Element element, TestStepResultStatus status, String text) {
+        this.unstyledLength += text.length();
+        builder.append(theme.style(element, status, text));
+        return this;
+    }
+
     LineBuilder begin(Element element) {
         builder.append(theme.beginStyle(element));
         return this;

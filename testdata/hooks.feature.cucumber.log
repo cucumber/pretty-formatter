@@ -1,12 +1,12 @@
 
 [1mFeature:[22m Hooks
 
-  [1mScenario:[22m No tags and a passed step [90m# samples/hooks/hooks.feature:4[0m
-    [32m✔[0m [32m[1mWhen [22ma step passes[0m              [90m# samples/hooks/hooks.feature.ts:7[0m
+  [1mScenario:[22m No tags and a passed step [90m# samples/hooks/hooks.feature:4[39m
+    [32m✔[39m [32m[1mWhen [22ma step passes[39m              [90m# samples/hooks/hooks.feature.ts:7[39m
 
-  [1mScenario:[22m No tags and a failed step [90m# samples/hooks/hooks.feature:7[0m
-    [31m✘[0m [31m[1mWhen [22ma step fails[0m               [90m# samples/hooks/hooks.feature.ts:11[0m
-          [31mException in step[0m
+  [1mScenario:[22m No tags and a failed step [90m# samples/hooks/hooks.feature:7[39m
+    [31m✘[39m [31m[1mWhen [22ma step fails[39m               [90m# samples/hooks/hooks.feature.ts:11[39m
+          [31mException in step[39m
 
-  [1mScenario:[22m No tags and a undefined step [90m# samples/hooks/hooks.feature:10[0m
-    [33m■[0m [33m[1mWhen [22ma step does not exist[0m
+  [1mScenario:[22m No tags and a undefined step [90m# samples/hooks/hooks.feature:10[39m
+    [33m■[39m [33m[1mWhen [22ma step does not exist[39m

@@ -1,0 +1,56 @@
+name: test-javascript
+
+on:
+  push:
+    branches:
+      - main
+      - renovate/**
+    paths:
+      - javascript/**
+      - testdata/**
+      - .github/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - javascript/**
+      - testdata/**
+      - .github/**
+  workflow_call:
+
+jobs:
+  test-javascript:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+        node-version: ["20.x", "22.x", "24.x"]
+        include:
+          - os: windows-latest
+            node-version: "22.x"
+          - os: macos-latest
+            node-version: "22.x"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: with Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: javascript/package-lock.json
+
+      - run: npm ci
+        working-directory: javascript
+
+      - run: npm run build
+        working-directory: javascript
+
+      - run: npm run lint
+        working-directory: javascript
+
+      - run: npm test
+        working-directory: javascript

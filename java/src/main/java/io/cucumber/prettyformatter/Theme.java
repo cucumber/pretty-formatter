@@ -13,15 +13,7 @@ import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.PENDING;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
 import static io.cucumber.messages.types.TestStepResultStatus.UNDEFINED;
-import static io.cucumber.prettyformatter.Ansi.Attributes.BOLD;
-import static io.cucumber.prettyformatter.Ansi.Attributes.BOLD_OFF;
-import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_BLUE;
-import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_BRIGHT_BLACK;
-import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_CYAN;
-import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_GREEN;
-import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_RED;
-import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_YELLOW;
-import static io.cucumber.prettyformatter.Ansi.Attributes.RESET;
+import static io.cucumber.prettyformatter.Ansi.Attributes.*;
 import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
@@ -61,31 +53,31 @@ public final class Theme {
      */
     public static Theme cucumber() {
         return Theme.builder()
-                .style(ATTACHMENT, Ansi.with(FOREGROUND_BLUE), Ansi.with(RESET))
+                .style(ATTACHMENT, Ansi.with(FOREGROUND_BLUE), Ansi.with(FOREGROUND_DEFAULT))
                 .style(FEATURE_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
-                .style(LOCATION, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(RESET))
+                .style(LOCATION, Ansi.with(FOREGROUND_BRIGHT_BLACK), Ansi.with(FOREGROUND_DEFAULT))
                 .style(RULE_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(SCENARIO_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
-                .style(STEP, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
-                .style(STEP, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
-                .style(STEP, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(RESET))
-                .style(STEP, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
-                .style(STEP, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
-                .style(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
+                .style(STEP, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
+                .style(STEP, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
+                .style(STEP, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(FOREGROUND_DEFAULT))
+                .style(STEP, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
+                .style(STEP, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(FOREGROUND_DEFAULT))
+                .style(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
                 .style(STEP_ARGUMENT, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(STEP_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .statusIcon(AMBIGUOUS, "✘")
-                .style(STATUS_ICON, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .style(STATUS_ICON, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
                 .statusIcon(FAILED, "✘")
-                .style(STATUS_ICON, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(RESET))
+                .style(STATUS_ICON, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
                 .statusIcon(PASSED, "✔")
-                .style(STATUS_ICON, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(RESET))
+                .style(STATUS_ICON, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(FOREGROUND_DEFAULT))
                 .statusIcon(PENDING, "■")
-                .style(STATUS_ICON, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
+                .style(STATUS_ICON, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
                 .statusIcon(SKIPPED, "↷")
-                .style(STATUS_ICON, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(RESET))
+                .style(STATUS_ICON, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(FOREGROUND_DEFAULT))
                 .statusIcon(UNDEFINED, "■")
-                .style(STATUS_ICON, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(RESET))
+                .style(STATUS_ICON, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
                 .build();
     }
 
@@ -120,6 +112,11 @@ public final class Theme {
 
     String style(Element element, String text) {
         Entry<Ansi, Ansi> ansiStyle = findAnsiBy(element);
+        return ansiStyle == null ? text : ansiStyle.getKey() + text + ansiStyle.getValue();
+    }
+    
+    String style(Element element, TestStepResultStatus status, String text) {
+        Entry<Ansi, Ansi> ansiStyle = findAnsiBy(element, status);
         return ansiStyle == null ? text : ansiStyle.getKey() + text + ansiStyle.getValue();
     }
 

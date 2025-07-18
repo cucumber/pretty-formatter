@@ -34,22 +34,7 @@ import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
-import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
-import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
-import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
-import static io.cucumber.prettyformatter.Theme.Element.FEATURE_NAME;
-import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
-import static io.cucumber.prettyformatter.Theme.Element.RULE;
-import static io.cucumber.prettyformatter.Theme.Element.RULE_KEYWORD;
-import static io.cucumber.prettyformatter.Theme.Element.RULE_NAME;
-import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
-import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_NAME;
-import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
-import static io.cucumber.prettyformatter.Theme.Element.STEP;
-import static io.cucumber.prettyformatter.Theme.Element.STEP_ARGUMENT;
-import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
-import static io.cucumber.prettyformatter.Theme.Element.STEP_TEXT;
-import static io.cucumber.prettyformatter.Theme.Element.TAG;
+import static io.cucumber.prettyformatter.Theme.Element.*;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -149,7 +134,9 @@ class PrettyReportWriter implements AutoCloseable {
     private String formatScenarioLine(TestCaseStarted event, Pickle pickle, Scenario scenario) {
         return new LineBuilder(theme)
                 .indent(data.getScenarioIndentBy(event))
+                .begin(SCENARIO)
                 .title(SCENARIO_KEYWORD, scenario.getKeyword(), SCENARIO_NAME, pickle.getName())
+                .end(SCENARIO)
                 .addPaddingUpTo(data.getCommentStartAtIndexBy(event))
                 .append(LOCATION, "# " + formatLocation(pickle))
                 .build();
@@ -265,7 +252,7 @@ class PrettyReportWriter implements AutoCloseable {
     private void printException(TestStepFinished event) {
         TestStepResultStatus status = event.getTestStepResult().getStatus();
         event.getTestStepResult().getException().ifPresent(exception ->
-                writer.println(formatError(data.getStackTraceIndentBy(event), exception, status)));
+                writer.print(formatError(data.getStackTraceIndentBy(event), exception, status)));
     }
 
     void handleAttachment(Attachment attachment) {
@@ -320,7 +307,7 @@ class PrettyReportWriter implements AutoCloseable {
 
     private void printException(TestRunFinished event) {
         event.getException().ifPresent(exception ->
-                writer.println(formatError(0, exception, FAILED)));
+                writer.print(formatError(0, exception, FAILED)));
     }
 
     private String formatError(int indent, Exception exception, TestStepResultStatus status) {
@@ -339,25 +326,16 @@ class PrettyReportWriter implements AutoCloseable {
         LineBuilder lineBuilder = new LineBuilder(theme);
         // Read the lines in the message and add extra indentation
         try (BufferedReader lines = new BufferedReader(new StringReader(message))) {
-            // Bit complicated, but ensures the style fits tightly around the error
-            boolean first = true;
             String line;
             while ((line = lines.readLine()) != null) {
-                if (!first) {
-                    lineBuilder.newLine();
-                }
-                lineBuilder.indent(indent);
-                if (first) {
-                    lineBuilder.begin(STEP, status);
-                    first = false;
-                }
-                lineBuilder.append(line);
+                lineBuilder.indent(indent)
+                        .append(STEP, status, line)
+                        .newLine();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return lineBuilder
-                .end(STEP, status)
                 .build();
     }
 
