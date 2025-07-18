@@ -25,7 +25,7 @@ const DEMO_THEME: Theme = {
     mediaType: 'bold',
   },
   feature: {
-    all: 'default',
+    all: 'bgBlue',
     keyword: 'bold',
     name: 'italic',
   },
@@ -42,12 +42,12 @@ const DEMO_THEME: Theme = {
     },
   },
   rule: {
-    all: 'default',
+    all: 'bgBlue',
     keyword: 'bold',
     name: 'italic',
   },
   scenario: {
-    all: 'default',
+    all: 'bgBlue',
     keyword: 'bold',
     name: 'italic',
   },

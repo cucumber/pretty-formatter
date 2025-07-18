@@ -2,7 +2,7 @@ import { styleText } from 'node:util'
 
 import { TestStepResultStatus } from '@cucumber/messages'
 
-export type Style = Parameters<typeof styleText>[0] | 'default'
+export type Style = Parameters<typeof styleText>[0] | undefined
 export { TestStepResultStatus } from '@cucumber/messages'
 
 export interface Theme {
