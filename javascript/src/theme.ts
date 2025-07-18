@@ -1,6 +1,5 @@
-import { TestStepResultStatus } from '@cucumber/messages'
-
-import { Theme } from './types.js'
+import type { Theme } from './types.js'
+import { TestStepResultStatus } from './types.js'
 
 export const CUCUMBER_THEME: Theme = {
   attachment: 'blue',

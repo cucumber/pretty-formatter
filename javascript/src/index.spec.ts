@@ -71,35 +71,35 @@ describe('Acceptance Tests', async function () {
     {
       name: 'cucumber',
       options: {
-        includeFeaturesAndRules: true,
+        featuresAndRules: true,
         theme: CUCUMBER_THEME,
       },
     },
     {
       name: 'demo',
       options: {
-        includeFeaturesAndRules: true,
+        featuresAndRules: true,
         theme: DEMO_THEME,
       },
     },
     {
       name: 'exclude-features-and-rules',
       options: {
-        includeFeaturesAndRules: false,
+        featuresAndRules: false,
         theme: {},
       },
     },
     {
       name: 'none',
       options: {
-        includeFeaturesAndRules: true,
+        featuresAndRules: true,
         theme: {},
       },
     },
     {
       name: 'plain',
       options: {
-        includeFeaturesAndRules: true,
+        featuresAndRules: true,
         theme: {
           status: {
             icon: {

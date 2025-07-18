@@ -3,6 +3,7 @@ import { styleText } from 'node:util'
 import { TestStepResultStatus } from '@cucumber/messages'
 
 export type Style = Parameters<typeof styleText>[0] | 'default'
+export { TestStepResultStatus } from '@cucumber/messages'
 
 export interface Theme {
   attachment?: Style
@@ -46,6 +47,6 @@ export interface Theme {
 }
 
 export interface Options {
-  includeFeaturesAndRules?: boolean
+  featuresAndRules?: boolean
   theme?: Theme
 }
