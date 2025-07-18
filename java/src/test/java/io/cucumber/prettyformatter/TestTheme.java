@@ -21,7 +21,6 @@ import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_RED;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_YELLOW;
 import static io.cucumber.prettyformatter.Ansi.Attributes.ITALIC;
 import static io.cucumber.prettyformatter.Ansi.Attributes.ITALIC_OFF;
-import static io.cucumber.prettyformatter.Ansi.Attributes.RESET;
 import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.DATA_TABLE;
 import static io.cucumber.prettyformatter.Theme.Element.DATA_TABLE_BORDER;
