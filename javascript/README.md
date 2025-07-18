@@ -1,16 +1,5 @@
-<h1 align="center">
-  <img alt="" width="75" src="https://github.com/cucumber.png"/>
-  <br>
-  pretty-formatter
-</h1>
-<p align="center">
-  <b>Writes a rich report of the scenario and example execution as it happens</b>
-</p>
-
-<p align="center">
-  <a href="https://www.npmjs.com/package/@cucumber/pretty-formatter" style="text-decoration: none"><img src="https://img.shields.io/npm/v/@cucumber/pretty-formatter?style=flat&color=dark-green" alt="Latest version on npm"></a>
-  <a href="https://github.com/cucumber/pretty-formatter/actions" style="text-decoration: none"><img src="https://github.com/cucumber/pretty-formatter/actions/workflows/test-javascript.yaml/badge.svg" alt="Build status"></a>
-</p>
+Pretty Formatter Usage and Installation
+=======================================
 
 ## Usage in cucumber-js >= 11.1.0
 
