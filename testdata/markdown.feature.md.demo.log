@@ -1,9 +1,9 @@
 
-[39m[1mFeature:[22m [3mCheese[23m[0m
+[44m[1mFeature:[22m [3mCheese[23m[49m
 
-  [39m[1mRule:[22m [3mNom nom nom[23m[0m
+  [44m[1mRule:[22m [3mNom nom nom[23m[49m
 
-    [39m[1mScenario Outline:[22m [3mYlajali![23m[0m                                    [90m# samples/markdown/markdown.feature.md:38[39m
+    [44m[1mScenario Outline:[22m [3mYlajali![23m[49m                                    [90m# samples/markdown/markdown.feature.md:38[39m
       [32m[1mGiven [22m[3msome TypeScript code:[23m[39m                                 [90m# samples/markdown/markdown.feature.md.ts:4[39m
         [90m[2m"""[22m[1mtypescript[22m[39m
         [90m[3mtype Cheese = 'reblochon' | 'roquefort' | 'rocamadour'[23m[39m
@@ -23,7 +23,7 @@
           [31mYou asked me to fail[39m
       [36m[1mThen [22m[3mthis might or might not run[23m[39m                            [90m# samples/markdown/markdown.feature.md.ts:23[39m
 
-    [39m[1mScenario Outline:[22m [3mYlajali![23m[0m                                    [90m# samples/markdown/markdown.feature.md:39[39m
+    [44m[1mScenario Outline:[22m [3mYlajali![23m[49m                                    [90m# samples/markdown/markdown.feature.md:39[39m
       [32m[1mGiven [22m[3msome TypeScript code:[23m[39m                                 [90m# samples/markdown/markdown.feature.md.ts:4[39m
         [90m[2m"""[22m[1mtypescript[22m[39m
         [90m[3mtype Cheese = 'reblochon' | 'roquefort' | 'rocamadour'[23m[39m

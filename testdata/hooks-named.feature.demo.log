@@ -1,5 +1,5 @@
 
-[39m[1mFeature:[22m [3mHooks - Named[23m[0m
+[44m[1mFeature:[22m [3mHooks - Named[23m[49m
 
-  [39m[1mScenario:[22m [3mWith a named before and after hook[23m[0m [90m# samples/hooks-named/hooks-named.feature:7[39m
+  [44m[1mScenario:[22m [3mWith a named before and after hook[23m[49m [90m# samples/hooks-named/hooks-named.feature:7[39m
     [32m[1mWhen [22m[3ma step passes[23m[39m                         [90m# samples/hooks-named/hooks-named.feature.ts:7[39m

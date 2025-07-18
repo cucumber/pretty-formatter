@@ -3,20 +3,13 @@ import { styleText } from 'node:util'
 import { Style } from './types.js'
 
 export class TextBuilder {
-  private readonly supportsColor: boolean
   private text = ''
 
-  constructor(private readonly stream: NodeJS.WritableStream) {
-    this.supportsColor = styleText('green', '-', { stream }) !== '-'
-  }
+  constructor(private readonly stream: NodeJS.WritableStream) {}
 
   private applyStyle(value: string, style?: Style) {
     if (!style) {
       return value
-    }
-    if (style === 'default') {
-      // util.styleText doesn't support 'default' style
-      return this.supportsColor ? `\u001b[39m${value}\u001b[0m` : value
     }
     return styleText(style, value, { stream: this.stream })
   }
