@@ -5,8 +5,7 @@ import { Style } from './types.js'
 export class TextBuilder {
   private text = ''
 
-  constructor(private readonly stream: NodeJS.WritableStream) {
-  }
+  constructor(private readonly stream: NodeJS.WritableStream) {}
 
   private applyStyle(value: string, style?: Style) {
     if (!style) {
