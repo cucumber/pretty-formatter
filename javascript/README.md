@@ -14,36 +14,16 @@
 
 ![Example output of the pretty formatting, showing the different colors used](https://github.com/user-attachments/assets/feed2857-b8cb-4663-9a5a-57044cfa5356)
 
+## Usage
 
-## Usage in cucumber-js >= 11.1.0
+For usage in `@cucumber/cucumber`, see https://github.com/cucumber/cucumber-js/blob/main/docs/formatters.md#pretty
 
-Install the package:
+## Options
 
-```shell
-npm install --save-dev @cucumber/pretty-formatter
-```
+- `featuresAndRules` - whether to include headings for Features and Rules (defaults to `true`)
+- `theme` - control over the styling of various elements (see below)
 
-Specify the formatter to Cucumber:
-
-```shell
-cucumber-js --format @cucumber/pretty-formatter
-```
-
-### Options
-
-Options are under the `pretty` key.
-
-By default, headings are printed for features and rules. You can disable this:
-
-```shell
-cucumber-js --format @cucumber/pretty-formatter --format-options '{"pretty": {"featuresAndRules": false}}'
-```
-
-By default, a theme with colors and icons is used. You can provide your own:
-
-```shell
-cucumber-js --format @cucumber/pretty-formatter --format-options '{"pretty": {"theme": {...}}}'
-```
+## Themes
 
 Here's the schema for a theme:
 
@@ -103,7 +83,3 @@ enum TestStepResultStatus {
 `Style` is any [Node.js supported modifier](https://nodejs.org/api/util.html#modifiers) or an array of them.
 
 See the [default theme](./src/theme.ts) for a good example. It's exported as `CUCUMBER_THEME`, so you can clone and extend it if you'd like.
-
-## Usage in cucumber-js < 11.1.0
-
-Use the [1.x.x version](https://www.npmjs.com/package/@cucumber/pretty-formatter/v/1.0.1) of this package if you're running an older version of Cucumber.
