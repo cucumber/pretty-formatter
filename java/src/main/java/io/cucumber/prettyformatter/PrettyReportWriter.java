@@ -52,7 +52,8 @@ class PrettyReportWriter implements AutoCloseable {
             OutputStream out,
             Theme theme,
             Function<String, String> uriFormatter,
-            Set<MessagesToPrettyWriter.PrettyFeature> features, PrettyReportData data
+            Set<MessagesToPrettyWriter.PrettyFeature> features, 
+            PrettyReportData data
 
     ) {
         this.theme = requireNonNull(theme);
@@ -302,7 +303,6 @@ class PrettyReportWriter implements AutoCloseable {
 
     void handleTestRunFinished(TestRunFinished event) {
         printException(event);
-        writer.close();
     }
 
     private void printException(TestRunFinished event) {

@@ -39,4 +39,3 @@ jobs:
 
       - run: mvn verify
         working-directory: java
-

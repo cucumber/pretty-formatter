@@ -102,7 +102,7 @@ final class PrettyReportData {
         return 0;
     }
 
-    void collect(Envelope envelope) {
+    void update(Envelope envelope) {
         query.update(envelope);
         envelope.getTestCaseStarted().ifPresent(this::preCalculateLocationIndent);
     }

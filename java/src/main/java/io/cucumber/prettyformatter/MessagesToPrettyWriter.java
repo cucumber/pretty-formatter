@@ -41,7 +41,7 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         if (streamClosed) {
             throw new IOException("Stream closed");
         }
-        data.collect(envelope);
+        data.update(envelope);
         envelope.getTestCaseStarted().ifPresent(writer::handleTestCaseStarted);
         envelope.getTestStepFinished().ifPresent(writer::handleTestStepFinished);
         envelope.getTestRunFinished().ifPresent(writer::handleTestRunFinished);
