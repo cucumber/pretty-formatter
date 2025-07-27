@@ -18,18 +18,16 @@
     [32m✔[39m [32m[1mGiven [22mthere are [1m12[22m cucumbers[39m   [90m# samples/examples-tables/examples-tables.feature.ts:4[39m
     [32m✔[39m [32m[1mWhen [22mI eat [1m20[22m cucumbers[39m        [90m# samples/examples-tables/examples-tables.feature.ts:12[39m
     [31m✘[39m [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.feature.ts:16[39m
-          [31mExpected values to be strictly equal:[39m
-          [31m[39m
-          [31m-8 !== 0[39m
+          [31msamples/examples-tables/examples-tables.feature:14[39m
+          [31msamples/examples-tables/examples-tables.feature:25[39m
 
   @failing
   [1mScenario Outline:[22m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
     [32m✔[39m [32m[1mGiven [22mthere are [1m0[22m cucumbers[39m    [90m# samples/examples-tables/examples-tables.feature.ts:4[39m
     [32m✔[39m [32m[1mWhen [22mI eat [1m1[22m cucumbers[39m         [90m# samples/examples-tables/examples-tables.feature.ts:12[39m
     [31m✘[39m [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.feature.ts:16[39m
-          [31mExpected values to be strictly equal:[39m
-          [31m[39m
-          [31m-1 !== 0[39m
+          [31msamples/examples-tables/examples-tables.feature:14[39m
+          [31msamples/examples-tables/examples-tables.feature:26[39m
 
   @undefined
   [1mScenario Outline:[22m Eating cucumbers  [90m# samples/examples-tables/examples-tables.feature:31[39m

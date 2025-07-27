@@ -18,18 +18,16 @@ Feature: Examples Tables
     ✔ Given there are 12 cucumbers   # samples/examples-tables/examples-tables.feature.ts:4
     ✔ When I eat 20 cucumbers        # samples/examples-tables/examples-tables.feature.ts:12
     ✘ Then I should have 0 cucumbers # samples/examples-tables/examples-tables.feature.ts:16
-          Expected values to be strictly equal:
-          
-          -8 !== 0
+          samples/examples-tables/examples-tables.feature:14
+          samples/examples-tables/examples-tables.feature:25
 
   @failing
   Scenario Outline: Eating cucumbers # samples/examples-tables/examples-tables.feature:26
     ✔ Given there are 0 cucumbers    # samples/examples-tables/examples-tables.feature.ts:4
     ✔ When I eat 1 cucumbers         # samples/examples-tables/examples-tables.feature.ts:12
     ✘ Then I should have 0 cucumbers # samples/examples-tables/examples-tables.feature.ts:16
-          Expected values to be strictly equal:
-          
-          -1 !== 0
+          samples/examples-tables/examples-tables.feature:14
+          samples/examples-tables/examples-tables.feature:26
 
   @undefined
   Scenario Outline: Eating cucumbers  # samples/examples-tables/examples-tables.feature:31

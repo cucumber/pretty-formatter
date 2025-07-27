@@ -6,7 +6,7 @@ Feature: Hooks
 
   Scenario: No tags and a failed step # samples/hooks/hooks.feature:7
     ✘ When a step fails               # samples/hooks/hooks.feature.ts:11
-          Exception in step
+          samples/hooks/hooks.feature:8
 
   Scenario: No tags and a undefined step # samples/hooks/hooks.feature:10
     ■ When a step does not exist
