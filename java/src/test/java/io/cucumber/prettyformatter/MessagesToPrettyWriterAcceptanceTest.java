@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.builder;
 import static io.cucumber.prettyformatter.TestTheme.demo;
 import static io.cucumber.prettyformatter.Theme.cucumber;
@@ -34,11 +36,15 @@ class MessagesToPrettyWriterAcceptanceTest {
     private static final NdjsonToMessageIterable.Deserializer deserializer = (json) -> OBJECT_MAPPER.readValue(json, Envelope.class);
 
     static List<TestCase> acceptance() throws IOException {
-        Map<String, Theme> themes = new LinkedHashMap<>();
-        themes.put("cucumber", cucumber());
-        themes.put("demo", demo());
-        themes.put("plain", plain());
-        themes.put("none", none());
+        Map<String, MessagesToPrettyWriter.Builder> themes = new LinkedHashMap<>();
+        themes.put("cucumber", builder().theme(cucumber()));
+        themes.put("demo", builder().theme(demo()));
+        themes.put("plain", builder().theme(plain()));
+        themes.put("none", builder().theme(none()));
+        themes.put("exclude-features-and-rules", builder()
+                .theme(none())
+                .feature(INCLUDE_RULE_LINE, false)
+                .feature(INCLUDE_FEATURE_LINE, false));
 
         List<Path> sources = getSources();
 
@@ -74,8 +80,7 @@ class MessagesToPrettyWriterAcceptanceTest {
     @ParameterizedTest
     @MethodSource("acceptance")
     void test(TestCase testCase) throws IOException {
-        Builder builder = builder().theme(testCase.theme);
-        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), builder);
+        ByteArrayOutputStream bytes = writePrettyReport(testCase, new ByteArrayOutputStream(), testCase.builder);
         assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
     }
 
@@ -84,8 +89,7 @@ class MessagesToPrettyWriterAcceptanceTest {
     @Disabled
     void updateExpectedPrettyFiles(TestCase testCase) throws IOException {
         try (OutputStream out = Files.newOutputStream(testCase.expected)) {
-            Builder builder = builder().theme(testCase.theme);
-            writePrettyReport(testCase, out, builder);
+            writePrettyReport(testCase, out, testCase.builder);
             // Render output in console, easier to inspect results
             Files.copy(testCase.expected, System.out);
         }
@@ -94,15 +98,15 @@ class MessagesToPrettyWriterAcceptanceTest {
     static class TestCase {
         private final Path source;
         private final String themeName;
-        private final Theme theme;
+        private final Builder builder;
         private final Path expected;
 
         private final String name;
 
-        TestCase(Path source, String themeName, Theme theme) {
+        TestCase(Path source, String themeName, Builder builder) {
             this.source = source;
             this.themeName = themeName;
-            this.theme = theme;
+            this.builder = builder;
             String fileName = source.getFileName().toString();
             this.name = fileName.substring(0, fileName.lastIndexOf(".ndjson"));
             this.expected = source.getParent().resolve(name + "." + themeName + ".log");
