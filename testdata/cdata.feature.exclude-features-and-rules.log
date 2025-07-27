@@ -1,3 +1,0 @@
-
-Scenario: cdata                                 # samples/cdata/cdata.feature:4
-  Given I have 42 <![CDATA[cukes]]> in my belly # samples/cdata/cdata.feature.ts:3
