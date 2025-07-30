@@ -25,6 +25,7 @@ final class ExceptionFormatter {
             String stacktrace = exception.getStackTrace().get();
             
             LineBuilder builder = new LineBuilder(theme);
+            // In java the message overlaps with the stacktrace
             if (!stacktrace.startsWith(messageAndType)) {
                 formatMessage(builder, messageAndType, status);
             }
