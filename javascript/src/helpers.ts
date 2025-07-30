@@ -231,11 +231,21 @@ export function formatError(
   theme: Theme,
   stream: NodeJS.WritableStream
 ): string | undefined {
-  const error = (testStepResult.exception?.stackTrace || testStepResult.exception?.message)?.trim()
-  if (error) {
+  if (testStepResult.exception?.stackTrace) {
+    const messageAndType = testStepResult.exception.type + ": " + (testStepResult.exception.message || "")
+    const stackTrace = testStepResult.exception.stackTrace
+
+    const builder = new TextBuilder(stream);
+    if (!stackTrace.startsWith(messageAndType)) {
+      builder.append(messageAndType.trim()).line()
+    }
+    return builder.append(stackTrace.trim())
+        .build(theme.status?.all?.[testStepResult.status], true)
+  }
+  if (testStepResult.exception?.message) {
     return new TextBuilder(stream)
-      .append(error.trim())
-      .build(theme.status?.all?.[testStepResult.status], true)
+        .append(testStepResult.exception.message.trim())
+        .build(theme.status?.all?.[testStepResult.status], true)
   }
 }
 

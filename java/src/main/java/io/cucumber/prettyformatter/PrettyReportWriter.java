@@ -1,7 +1,6 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Attachment;
-import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Feature;
 import io.cucumber.messages.types.Group;
 import io.cucumber.messages.types.Pickle;
@@ -39,7 +38,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-class PrettyReportWriter implements AutoCloseable {
+final class PrettyReportWriter implements AutoCloseable {
 
     private final Theme theme;
     private final SourceReferenceFormatter sourceReferenceFormatter;
@@ -251,9 +250,11 @@ class PrettyReportWriter implements AutoCloseable {
 
 
     private void printException(TestStepFinished event) {
+        int indent = data.getStackTraceIndentBy(event);
+        ExceptionFormatter formatter = new ExceptionFormatter(indent, theme);
         TestStepResultStatus status = event.getTestStepResult().getStatus();
         event.getTestStepResult().getException().ifPresent(exception ->
-                writer.print(formatError(data.getStackTraceIndentBy(event), exception, status)));
+                writer.print(formatter.format(exception, status)));
     }
 
     void handleAttachment(Attachment attachment) {
@@ -302,42 +303,11 @@ class PrettyReportWriter implements AutoCloseable {
     }
 
     void handleTestRunFinished(TestRunFinished event) {
-        printException(event);
-    }
-
-    private void printException(TestRunFinished event) {
+        ExceptionFormatter formatter = new ExceptionFormatter(0, theme);
         event.getException().ifPresent(exception ->
-                writer.print(formatError(0, exception, FAILED)));
+                writer.print(formatter.format(exception, FAILED)));
     }
 
-    private String formatError(int indent, Exception exception, TestStepResultStatus status) {
-        if (exception.getStackTrace().isPresent()) {
-            String stacktrace = exception.getStackTrace().get();
-            return formatError(indent, stacktrace, status);
-        }
-        if (exception.getMessage().isPresent()) {
-            String message = exception.getMessage().get();
-            return formatError(indent, message, status);
-        }
-        return "";
-    }
-
-    private String formatError(int indent, String message, TestStepResultStatus status) {
-        LineBuilder lineBuilder = new LineBuilder(theme);
-        // Read the lines in the message and add extra indentation
-        try (BufferedReader lines = new BufferedReader(new StringReader(message))) {
-            String line;
-            while ((line = lines.readLine()) != null) {
-                lineBuilder.indent(indent)
-                        .append(STEP, status, line)
-                        .newLine();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return lineBuilder
-                .build();
-    }
 
     @Override
     public void close() {

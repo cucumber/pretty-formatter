@@ -20,6 +20,7 @@ Feature: Cheese
           | Bill | 3   |
           | Jane | 6   |
           | Isla | 5   |
+            Error: You asked me to fail
             samples/markdown/markdown.feature.md:24
       ↷ Then this might or might not run                            # samples/markdown/markdown.ts:23
 
