@@ -237,6 +237,7 @@ export function formatError(
     const stackTrace = testStepResult.exception.stackTrace
 
     const builder = new TextBuilder(stream)
+    // In java the message overlaps with the stacktrace
     if (!stackTrace.startsWith(messageAndType)) {
       builder.append(messageAndType.trim()).line()
     }
