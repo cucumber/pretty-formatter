@@ -1,0 +1,14 @@
+
+[1mFeature:[22m Skipping scenarios
+
+  @skip
+  [1mScenario:[22m Skipping from a Before hook [90m# samples/skipped/skipped.feature:10[39m
+    [36m↷[39m [36m[1mGiven [22ma step that is skipped[39m      [90m# samples/skipped/skipped.ts:11[39m
+
+  [1mScenario:[22m Skipping from a step doesn't affect the previous steps [90m# samples/skipped/skipped.feature:13[39m
+    [32m✔[39m [32m[1mGiven [22ma step that does not skip[39m                              [90m# samples/skipped/skipped.ts:7[39m
+    [36m↷[39m [36m[1mAnd [22mI skip a step[39m                                            [90m# samples/skipped/skipped.ts:15[39m
+
+  [1mScenario:[22m Skipping from a step causes the rest of the scenario to be skipped [90m# samples/skipped/skipped.feature:17[39m
+    [36m↷[39m [36m[1mGiven [22mI skip a step[39m                                                      [90m# samples/skipped/skipped.ts:15[39m
+    [36m↷[39m [36m[1mAnd [22ma step that is skipped[39m                                               [90m# samples/skipped/skipped.ts:11[39m

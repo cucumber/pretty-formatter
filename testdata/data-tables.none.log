@@ -1,0 +1,10 @@
+
+Feature: Data Tables
+
+  Scenario: transposed table                # samples/data-tables/data-tables.feature:7
+    When the following table is transposed: # samples/data-tables/data-tables.ts:4
+      | a | b |
+      | 1 | 2 |
+    Then it should be:                      # samples/data-tables/data-tables.ts:8
+      | a | 1 |
+      | b | 2 |

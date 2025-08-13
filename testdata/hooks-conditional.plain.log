@@ -1,0 +1,16 @@
+
+Feature: Hooks - Conditional execution
+
+  @fail-before
+  Scenario: A failure in the before hook and a skipped step # samples/hooks-conditional/hooks-conditional.feature:7
+          samples/hooks-conditional/hooks-conditional.feature:7
+    ↷ When a step passes                                    # samples/hooks-conditional/hooks-conditional.ts:11
+
+  @fail-after
+  Scenario: A failure in the after hook and a passed step # samples/hooks-conditional/hooks-conditional.feature:11
+    ✔ When a step passes                                  # samples/hooks-conditional/hooks-conditional.ts:11
+          samples/hooks-conditional/hooks-conditional.feature:11
+
+  @passing-hook
+  Scenario: With an tag, a passed step and hook # samples/hooks-conditional/hooks-conditional.feature:15
+    ✔ When a step passes                        # samples/hooks-conditional/hooks-conditional.ts:11

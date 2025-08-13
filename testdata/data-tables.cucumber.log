@@ -1,0 +1,10 @@
+
+[1mFeature:[22m Data Tables
+
+  [1mScenario:[22m transposed table                  [90m# samples/data-tables/data-tables.feature:7[39m
+    [32m✔[39m [32m[1mWhen [22mthe following table is transposed:[39m [90m# samples/data-tables/data-tables.ts:4[39m
+        | a | b |
+        | 1 | 2 |
+    [32m✔[39m [32m[1mThen [22mit should be:[39m                      [90m# samples/data-tables/data-tables.ts:8[39m
+        | a | 1 |
+        | b | 2 |

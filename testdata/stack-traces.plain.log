@@ -1,0 +1,6 @@
+
+Feature: Stack traces
+
+  Scenario: A failing step            # samples/stack-traces/stack-traces.feature:9
+    ✘ When a step throws an exception # samples/stack-traces/stack-traces.ts:3
+          samples/stack-traces/stack-traces.feature:10
