@@ -6,6 +6,7 @@ Feature: Retry
 
   Scenario: Test cases that fail are retried if within the --retry limit # samples/retry/retry.feature:11
     Given a step that passes the second time                             # samples/retry/retry.ts:8
+        Error: Exception in step
         samples/retry/retry.feature:12
 
   Scenario: Test cases that fail are retried if within the --retry limit # samples/retry/retry.feature:11
@@ -13,10 +14,12 @@ Feature: Retry
 
   Scenario: Test cases that fail will continue to retry up to the --retry limit # samples/retry/retry.feature:14
     Given a step that passes the third time                                     # samples/retry/retry.ts:16
+        Error: Exception in step
         samples/retry/retry.feature:15
 
   Scenario: Test cases that fail will continue to retry up to the --retry limit # samples/retry/retry.feature:14
     Given a step that passes the third time                                     # samples/retry/retry.ts:16
+        Error: Exception in step
         samples/retry/retry.feature:15
 
   Scenario: Test cases that fail will continue to retry up to the --retry limit # samples/retry/retry.feature:14
@@ -24,14 +27,17 @@ Feature: Retry
 
   Scenario: Test cases won't retry after failing more than the --retry limit # samples/retry/retry.feature:17
     Given a step that always fails                                           # samples/retry/retry.ts:23
+        Error: Exception in step
         samples/retry/retry.feature:18
 
   Scenario: Test cases won't retry after failing more than the --retry limit # samples/retry/retry.feature:17
     Given a step that always fails                                           # samples/retry/retry.ts:23
+        Error: Exception in step
         samples/retry/retry.feature:18
 
   Scenario: Test cases won't retry after failing more than the --retry limit # samples/retry/retry.feature:17
     Given a step that always fails                                           # samples/retry/retry.ts:23
+        Error: Exception in step
         samples/retry/retry.feature:18
 
   Scenario: Test cases won't retry when the status is UNDEFINED # samples/retry/retry.feature:20
