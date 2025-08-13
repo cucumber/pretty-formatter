@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Function;
 
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_ATTACHMENTS;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
@@ -101,7 +102,8 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         private final EnumSet<PrettyFeature> features = EnumSet.of(
                 INCLUDE_FEATURE_LINE,
                 INCLUDE_RULE_LINE,
-                USE_STATUS_ICON
+                USE_STATUS_ICON,
+                INCLUDE_ATTACHMENTS
         );
         private Theme theme = Theme.none();
         private Function<String, String> uriFormatter = Function.identity();
