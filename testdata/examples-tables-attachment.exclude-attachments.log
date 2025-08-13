@@ -1,0 +1,8 @@
+
+Feature: Examples Tables - With attachments
+
+  Scenario Outline: Attaching images in an examples table # samples/examples-tables-attachment/examples-tables-attachment.feature:9
+    When a JPEG image is attached                         # samples/examples-tables-attachment/examples-tables-attachment.ts:4
+
+  Scenario Outline: Attaching images in an examples table # samples/examples-tables-attachment/examples-tables-attachment.feature:10
+    When a PNG image is attached                          # samples/examples-tables-attachment/examples-tables-attachment.ts:8

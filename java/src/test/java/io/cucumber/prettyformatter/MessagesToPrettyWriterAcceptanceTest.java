@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_ATTACHMENTS;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.builder;
@@ -45,6 +46,9 @@ class MessagesToPrettyWriterAcceptanceTest {
                 .theme(none())
                 .feature(INCLUDE_RULE_LINE, false)
                 .feature(INCLUDE_FEATURE_LINE, false));
+        themes.put("exclude-attachments", builder()
+                .theme(none())
+                .feature(INCLUDE_ATTACHMENTS, false));
 
         List<Path> sources = getSources();
 

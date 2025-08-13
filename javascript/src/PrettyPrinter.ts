@@ -327,6 +327,9 @@ export class PrettyPrinter {
   }
 
   private handleAttachment(attachment: Attachment) {
+    if (!this.options.attachments) {
+      return
+    }
     const scenarioIndent = this.getScenarioIndentBy(attachment)
     const content = formatAttachment(attachment, this.options.theme, this.stream)
     this.println(
