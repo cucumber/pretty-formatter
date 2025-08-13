@@ -87,7 +87,7 @@ describe('Acceptance Tests', async function () {
     {
       name: 'exclude-features-and-rules',
       options: {
-        attachments: false,
+        attachments: true,
         featuresAndRules: false,
         theme: {},
       },
@@ -95,8 +95,8 @@ describe('Acceptance Tests', async function () {
     {
       name: 'exclude-attachments',
       options: {
-        attachments: true,
-        featuresAndRules: false,
+        attachments: false,
+        featuresAndRules: true,
         theme: {},
       },
     },
