@@ -14,6 +14,7 @@ import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStep;
 import io.cucumber.messages.types.TestStepFinished;
+import io.cucumber.messages.types.TestStepResult;
 import io.cucumber.messages.types.TestStepResultStatus;
 
 import java.io.BufferedReader;
@@ -251,10 +252,14 @@ final class PrettyReportWriter implements AutoCloseable {
 
     private void printException(TestStepFinished event) {
         int indent = data.getStackTraceIndentBy(event);
-        ExceptionFormatter formatter = new ExceptionFormatter(indent, theme);
-        TestStepResultStatus status = event.getTestStepResult().getStatus();
-        event.getTestStepResult().getException().ifPresent(exception ->
-                writer.print(formatter.format(exception, status)));
+        TestStepResult testStepResult = event.getTestStepResult();
+        TestStepResultStatus status = testStepResult.getStatus();
+        ExceptionFormatter formatter = new ExceptionFormatter(indent, theme, status);
+        testStepResult.getException()
+                .map(formatter::format)
+                // Fallback
+                .orElseGet(() -> testStepResult.getMessage().map(formatter::format))
+                .ifPresent(writer::print);
     }
 
     void handleAttachment(Attachment attachment) {
@@ -303,11 +308,11 @@ final class PrettyReportWriter implements AutoCloseable {
     }
 
     void handleTestRunFinished(TestRunFinished event) {
-        ExceptionFormatter formatter = new ExceptionFormatter(0, theme);
-        event.getException().ifPresent(exception ->
-                writer.print(formatter.format(exception, FAILED)));
+        event.getException().ifPresent(exception -> {
+            ExceptionFormatter formatter = new ExceptionFormatter(0, theme, FAILED);
+            writer.print(formatter.format(exception));
+        });
     }
-
 
     @Override
     public void close() {

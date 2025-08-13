@@ -1,4 +1,4 @@
-import { stripVTControlCharacters } from 'node:util'
+import {stripVTControlCharacters} from 'node:util'
 
 import {
   Attachment,
@@ -12,14 +12,14 @@ import {
   Rule,
   Scenario,
   Step,
-  StepDefinition,
+  StepDefinition, TestRunFinished,
   TestStep,
   TestStepResult,
   TestStepResultStatus,
 } from '@cucumber/messages'
 
-import { TextBuilder } from './TextBuilder.js'
-import { Theme } from './types.js'
+import {TextBuilder} from './TextBuilder.js'
+import {Theme} from './types.js'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
@@ -226,22 +226,48 @@ function calculateColumnWidths(dataTable: PickleTable) {
   return columnWidths
 }
 
-export function formatError(
+export function formatTestStepResultError(
   testStepResult: TestStepResult,
   theme: Theme,
   stream: NodeJS.WritableStream
 ): string | undefined {
   if (testStepResult.exception?.stackTrace) {
-    const stackTrace = testStepResult.exception.stackTrace
-    const builder = new TextBuilder(stream)
-    return builder.append(stackTrace.trim()).build(theme.status?.all?.[testStepResult.status], true)
+    return new TextBuilder(stream)
+        .append(testStepResult.exception.stackTrace.trim())
+        .build(theme.status?.all?.[testStepResult.status], true)
   }
+  // Fallback
+  if (testStepResult?.exception?.message) {
+    return new TextBuilder(stream)
+      .append(testStepResult.exception.message.trim())
+      .build(theme.status?.all?.[testStepResult.status], true)
+  }
+  // Fallback
   if (testStepResult?.message) {
     return new TextBuilder(stream)
       .append(testStepResult.message.trim())
       .build(theme.status?.all?.[testStepResult.status], true)
   }
 }
+
+export function formatTestRunFinishedError(
+    testRunFinished: TestRunFinished,
+    theme: Theme,
+    stream: NodeJS.WritableStream
+){
+  if (testRunFinished.exception?.stackTrace) {
+    return new TextBuilder(stream)
+        .append(testRunFinished.exception.stackTrace.trim())
+        .build(theme.status?.all?.["FAILED"], true)
+  }
+  // Fallback
+  if (testRunFinished?.exception?.message) {
+    return new TextBuilder(stream)
+        .append(testRunFinished.exception.message.trim())
+        .build(theme.status?.all?.["FAILED"], true)
+  }
+}
+
 
 export function formatAttachment(
   attachment: Attachment,
