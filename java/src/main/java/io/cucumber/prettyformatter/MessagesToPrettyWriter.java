@@ -88,7 +88,12 @@ public final class MessagesToPrettyWriter implements AutoCloseable {
         /**
          * Adds a status icon next to each step line.
          */
-        USE_STATUS_ICON
+        USE_STATUS_ICON,
+
+        /**
+         * Include attachment lines.
+         */
+        INCLUDE_ATTACHMENTS
     }
 
     public static final class Builder {
