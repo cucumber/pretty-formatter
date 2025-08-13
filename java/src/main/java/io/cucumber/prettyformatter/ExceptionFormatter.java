@@ -20,19 +20,12 @@ final class ExceptionFormatter {
     }
 
     String format(Exception exception, TestStepResultStatus status) {
+        LineBuilder lineBuilder = new LineBuilder(theme);
         if (exception.getStackTrace().isPresent()) {
-            String messageAndType = exception.getType() + ": " + exception.getMessage().orElse("");
             String stacktrace = exception.getStackTrace().get();
-            
-            LineBuilder builder = new LineBuilder(theme);
-            // In java the message overlaps with the stacktrace
-            if (!stacktrace.startsWith(messageAndType)) {
-                formatMessage(builder, messageAndType, status);
-            }
-            return formatMessage(builder, stacktrace, status);
+            return formatMessage(lineBuilder, stacktrace, status);
         }
         if (exception.getMessage().isPresent()) {
-            LineBuilder lineBuilder = new LineBuilder(theme);
             String message = exception.getMessage().get();
             return formatMessage(lineBuilder, message, status);
         }
