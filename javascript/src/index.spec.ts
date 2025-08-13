@@ -71,6 +71,7 @@ describe('Acceptance Tests', async function () {
     {
       name: 'cucumber',
       options: {
+        attachments: true,
         featuresAndRules: true,
         theme: CUCUMBER_THEME,
       },
@@ -78,6 +79,7 @@ describe('Acceptance Tests', async function () {
     {
       name: 'demo',
       options: {
+        attachments: true,
         featuresAndRules: true,
         theme: DEMO_THEME,
       },
@@ -85,6 +87,15 @@ describe('Acceptance Tests', async function () {
     {
       name: 'exclude-features-and-rules',
       options: {
+        attachments: false,
+        featuresAndRules: false,
+        theme: {},
+      },
+    },
+    {
+      name: 'exclude-attachments',
+      options: {
+        attachments: true,
         featuresAndRules: false,
         theme: {},
       },
@@ -92,6 +103,7 @@ describe('Acceptance Tests', async function () {
     {
       name: 'none',
       options: {
+        attachments: true,
         featuresAndRules: true,
         theme: {},
       },
@@ -99,6 +111,7 @@ describe('Acceptance Tests', async function () {
     {
       name: 'plain',
       options: {
+        attachments: true,
         featuresAndRules: true,
         theme: {
           status: {
