@@ -1,0 +1,5 @@
+
+Feature: Hooks - Named
+
+  Scenario: With a named before and after hook # samples/hooks-named/hooks-named.feature:7
+    ✔ When a step passes                       # samples/hooks-named/hooks-named.ts:7

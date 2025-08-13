@@ -1,5 +1,0 @@
-
-[1mFeature:[22m Parameter Types
-
-  [1mScenario:[22m Flight transformer       [90m# samples/parameter-types/parameter-types.feature:10[39m
-    [32m✔[39m [32m[1mGiven [22m[1mLHR-CDG[22m has been delayed[39m [90m# samples/parameter-types/parameter-types.feature.ts:16[39m

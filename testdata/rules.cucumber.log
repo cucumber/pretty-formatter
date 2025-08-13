@@ -1,0 +1,25 @@
+
+[1mFeature:[22m Usage of a `Rule`
+
+  [1mRule:[22m A sale cannot happen if the customer does not have enough money
+
+    [1mExample:[22m Not enough money                                   [90m# samples/rules/rules.feature:9[39m
+      [32m✔[39m [32m[1mGiven [22mthe customer has [1m100[22m cents[39m                        [90m# samples/rules/rules.ts:4[39m
+      [32m✔[39m [32m[1mAnd [22mthere are chocolate bars in stock[39m                   [90m# samples/rules/rules.ts:8[39m
+      [32m✔[39m [32m[1mWhen [22mthe customer tries to buy a [1m125[22m cent chocolate bar[39m [90m# samples/rules/rules.ts:16[39m
+      [32m✔[39m [32m[1mThen [22mthe sale should not happen[39m                         [90m# samples/rules/rules.ts:22[39m
+
+    [1mExample:[22m Enough money                                      [90m# samples/rules/rules.feature:16[39m
+      [32m✔[39m [32m[1mGiven [22mthe customer has [1m100[22m cents[39m                       [90m# samples/rules/rules.ts:4[39m
+      [32m✔[39m [32m[1mAnd [22mthere are chocolate bars in stock[39m                  [90m# samples/rules/rules.ts:8[39m
+      [32m✔[39m [32m[1mWhen [22mthe customer tries to buy a [1m75[22m cent chocolate bar[39m [90m# samples/rules/rules.ts:16[39m
+      [32m✔[39m [32m[1mThen [22mthe sale should happen[39m                            [90m# samples/rules/rules.ts:26[39m
+
+  [1mRule:[22m a sale cannot happen if there is no stock
+
+    @some-tag
+    [1mExample:[22m No chocolates left                               [90m# samples/rules/rules.feature:25[39m
+      [32m✔[39m [32m[1mGiven [22mthe customer has [1m100[22m cents[39m                      [90m# samples/rules/rules.ts:4[39m
+      [32m✔[39m [32m[1mAnd [22mthere are no chocolate bars in stock[39m              [90m# samples/rules/rules.ts:12[39m
+      [32m✔[39m [32m[1mWhen [22mthe customer tries to buy a [1m1[22m cent chocolate bar[39m [90m# samples/rules/rules.ts:16[39m
+      [32m✔[39m [32m[1mThen [22mthe sale should not happen[39m                       [90m# samples/rules/rules.ts:22[39m

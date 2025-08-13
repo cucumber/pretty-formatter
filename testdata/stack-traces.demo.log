@@ -1,0 +1,6 @@
+
+[44m[1mFeature:[22m [3mStack traces[23m[49m
+
+  [44m[1mScenario:[22m [3mA failing step[23m[49m          [90m# samples/stack-traces/stack-traces.feature:9[39m
+    [31m[1mWhen [22m[3ma step throws an exception[23m[39m [90m# samples/stack-traces/stack-traces.ts:3[39m
+        [31msamples/stack-traces/stack-traces.feature:10[39m

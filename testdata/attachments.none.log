@@ -1,0 +1,47 @@
+
+Feature: Attachments
+
+  Scenario: Strings can be attached with a media type                 # samples/attachments/attachments.feature:11
+
+        hello
+
+    When the string "hello" is attached as "application/octet-stream" # samples/attachments/attachments.ts:4
+
+  Scenario: Log text                  # samples/attachments/attachments.feature:17
+
+        hello
+
+    When the string "hello" is logged # samples/attachments/attachments.ts:8
+
+  Scenario: Log ANSI coloured text        # samples/attachments/attachments.feature:20
+
+        This displays a [31mr[0m[91ma[0m[33mi[0m[32mn[0m[34mb[0m[95mo[0m[35mw[0m
+
+    When text with ANSI escapes is logged # samples/attachments/attachments.ts:12
+
+  Scenario: Log JSON                                             # samples/attachments/attachments.feature:23
+
+        {"message": "The <b>big</b> question", "foo": "bar"}
+
+    When the following string is attached as "application/json": # samples/attachments/attachments.ts:18
+      """
+      {"message": "The <b>big</b> question", "foo": "bar"}
+      """
+
+  Scenario: Byte arrays are base64-encoded regardless of media type # samples/attachments/attachments.feature:29
+
+        Embedding [text/plain 12 bytes]
+
+    When an array with 10 bytes is attached as "text/plain"         # samples/attachments/attachments.ts:22
+
+  Scenario: Attaching PDFs with a different filename # samples/attachments/attachments.feature:32
+
+        Embedding renamed.pdf [application/pdf 10062 bytes]
+
+    When a PDF document is attached and renamed      # samples/attachments/attachments.ts:31
+
+  Scenario: Attaching URIs                           # samples/attachments/attachments.feature:35
+
+        https://cucumber.io
+
+    When a link to "https://cucumber.io" is attached # samples/attachments/attachments.ts:38

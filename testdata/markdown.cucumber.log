@@ -1,0 +1,43 @@
+
+[1mFeature:[22m Cheese
+
+  [1mRule:[22m Nom nom nom
+
+    [1mScenario Outline:[22m Ylajali!                                      [90m# samples/markdown/markdown.feature.md:38[39m
+      [32m✔[39m [32m[1mGiven [22msome TypeScript code:[39m                                 [90m# samples/markdown/markdown.ts:4[39m
+          """typescript
+          type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
+          """
+      [32m✔[39m [32m[1mAnd [22msome classic Gherkin:[39m                                   [90m# samples/markdown/markdown.ts:8[39m
+          """gherkin
+          Given there are 24 apples in Mary's basket
+          """
+
+            [34mWe are logging some plain text (fail)[39m
+
+      [31m✘[39m [31m[1mWhen [22mwe use a data table and attach something and then [1mfail[22m[39m [90m# samples/markdown/markdown.ts:12[39m
+          | name | age |
+          | Bill | 3   |
+          | Jane | 6   |
+          | Isla | 5   |
+            [31msamples/markdown/markdown.feature.md:24[39m
+      [36m↷[39m [36m[1mThen [22mthis might or might not run[39m                            [90m# samples/markdown/markdown.ts:23[39m
+
+    [1mScenario Outline:[22m Ylajali!                                      [90m# samples/markdown/markdown.feature.md:39[39m
+      [32m✔[39m [32m[1mGiven [22msome TypeScript code:[39m                                 [90m# samples/markdown/markdown.ts:4[39m
+          """typescript
+          type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
+          """
+      [32m✔[39m [32m[1mAnd [22msome classic Gherkin:[39m                                   [90m# samples/markdown/markdown.ts:8[39m
+          """gherkin
+          Given there are 24 apples in Mary's basket
+          """
+
+            [34mWe are logging some plain text (pass)[39m
+
+      [32m✔[39m [32m[1mWhen [22mwe use a data table and attach something and then [1mpass[22m[39m [90m# samples/markdown/markdown.ts:12[39m
+          | name | age |
+          | Bill | 3   |
+          | Jane | 6   |
+          | Isla | 5   |
+      [32m✔[39m [32m[1mThen [22mthis might or might not run[39m                            [90m# samples/markdown/markdown.ts:23[39m

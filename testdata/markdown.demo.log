@@ -1,0 +1,43 @@
+
+[44m[1mFeature:[22m [3mCheese[23m[49m
+
+  [44m[1mRule:[22m [3mNom nom nom[23m[49m
+
+    [44m[1mScenario Outline:[22m [3mYlajali![23m[49m                                    [90m# samples/markdown/markdown.feature.md:38[39m
+      [32m[1mGiven [22m[3msome TypeScript code:[23m[39m                                 [90m# samples/markdown/markdown.ts:4[39m
+        [90m[2m"""[22m[1mtypescript[22m[39m
+        [90m[3mtype Cheese = 'reblochon' | 'roquefort' | 'rocamadour'[23m[39m
+        [90m[2m"""[22m[39m
+      [32m[1mAnd [22m[3msome classic Gherkin:[23m[39m                                   [90m# samples/markdown/markdown.ts:8[39m
+        [90m[2m"""[22m[1mgherkin[22m[39m
+        [90m[3mGiven there are 24 apples in Mary's basket[23m[39m
+        [90m[2m"""[22m[39m
+
+          [34mWe are logging some plain text (fail)[39m
+
+      [31m[1mWhen [22m[3mwe use a data table and attach something and then [23m[1mfail[22m[39m [90m# samples/markdown/markdown.ts:12[39m
+        [90m[2m|[22m[3m name [23m[2m|[22m[3m age [23m[2m|[22m[39m
+        [90m[2m|[22m[3m Bill [23m[2m|[22m[3m 3   [23m[2m|[22m[39m
+        [90m[2m|[22m[3m Jane [23m[2m|[22m[3m 6   [23m[2m|[22m[39m
+        [90m[2m|[22m[3m Isla [23m[2m|[22m[3m 5   [23m[2m|[22m[39m
+          [31msamples/markdown/markdown.feature.md:24[39m
+      [36m[1mThen [22m[3mthis might or might not run[23m[39m                            [90m# samples/markdown/markdown.ts:23[39m
+
+    [44m[1mScenario Outline:[22m [3mYlajali![23m[49m                                    [90m# samples/markdown/markdown.feature.md:39[39m
+      [32m[1mGiven [22m[3msome TypeScript code:[23m[39m                                 [90m# samples/markdown/markdown.ts:4[39m
+        [90m[2m"""[22m[1mtypescript[22m[39m
+        [90m[3mtype Cheese = 'reblochon' | 'roquefort' | 'rocamadour'[23m[39m
+        [90m[2m"""[22m[39m
+      [32m[1mAnd [22m[3msome classic Gherkin:[23m[39m                                   [90m# samples/markdown/markdown.ts:8[39m
+        [90m[2m"""[22m[1mgherkin[22m[39m
+        [90m[3mGiven there are 24 apples in Mary's basket[23m[39m
+        [90m[2m"""[22m[39m
+
+          [34mWe are logging some plain text (pass)[39m
+
+      [32m[1mWhen [22m[3mwe use a data table and attach something and then [23m[1mpass[22m[39m [90m# samples/markdown/markdown.ts:12[39m
+        [90m[2m|[22m[3m name [23m[2m|[22m[3m age [23m[2m|[22m[39m
+        [90m[2m|[22m[3m Bill [23m[2m|[22m[3m 3   [23m[2m|[22m[39m
+        [90m[2m|[22m[3m Jane [23m[2m|[22m[3m 6   [23m[2m|[22m[39m
+        [90m[2m|[22m[3m Isla [23m[2m|[22m[3m 5   [23m[2m|[22m[39m
+      [32m[1mThen [22m[3mthis might or might not run[23m[39m                            [90m# samples/markdown/markdown.ts:23[39m

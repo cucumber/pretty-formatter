@@ -1,5 +1,0 @@
-
-[44m[1mFeature:[22m [3mcdata[23m[49m
-
-  [44m[1mScenario:[22m [3mcdata[23m[49m                                 [90m# samples/cdata/cdata.feature:4[39m
-    [32m[1mGiven [22m[3mI have [23m[1m42[22m[3m <![CDATA[cukes]]> in my belly[23m[39m [90m# samples/cdata/cdata.feature.ts:3[39m

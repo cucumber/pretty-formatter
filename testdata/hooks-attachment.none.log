@@ -1,0 +1,11 @@
+
+Feature: Hooks - Attachments
+
+  Scenario: With an valid attachment in the hook and a passed step # samples/hooks-attachment/hooks-attachment.feature:6
+
+        Embedding [image/svg+xml 2199 bytes]
+
+    When a step passes                                             # samples/hooks-attachment/hooks-attachment.ts:9
+
+        Embedding [image/svg+xml 2199 bytes]
+

@@ -1,0 +1,43 @@
+
+Feature: Cheese
+
+  Rule: Nom nom nom
+
+    Scenario Outline: Ylajali!                                      # samples/markdown/markdown.feature.md:38
+      ✔ Given some TypeScript code:                                 # samples/markdown/markdown.ts:4
+          """typescript
+          type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
+          """
+      ✔ And some classic Gherkin:                                   # samples/markdown/markdown.ts:8
+          """gherkin
+          Given there are 24 apples in Mary's basket
+          """
+
+            We are logging some plain text (fail)
+
+      ✘ When we use a data table and attach something and then fail # samples/markdown/markdown.ts:12
+          | name | age |
+          | Bill | 3   |
+          | Jane | 6   |
+          | Isla | 5   |
+            samples/markdown/markdown.feature.md:24
+      ↷ Then this might or might not run                            # samples/markdown/markdown.ts:23
+
+    Scenario Outline: Ylajali!                                      # samples/markdown/markdown.feature.md:39
+      ✔ Given some TypeScript code:                                 # samples/markdown/markdown.ts:4
+          """typescript
+          type Cheese = 'reblochon' | 'roquefort' | 'rocamadour'
+          """
+      ✔ And some classic Gherkin:                                   # samples/markdown/markdown.ts:8
+          """gherkin
+          Given there are 24 apples in Mary's basket
+          """
+
+            We are logging some plain text (pass)
+
+      ✔ When we use a data table and attach something and then pass # samples/markdown/markdown.ts:12
+          | name | age |
+          | Bill | 3   |
+          | Jane | 6   |
+          | Isla | 5   |
+      ✔ Then this might or might not run                            # samples/markdown/markdown.ts:23
