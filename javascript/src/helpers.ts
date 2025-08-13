@@ -233,13 +233,12 @@ export function formatError(
 ): string | undefined {
   if (testStepResult.exception?.stackTrace) {
     const stackTrace = testStepResult.exception.stackTrace
-
     const builder = new TextBuilder(stream)
     return builder.append(stackTrace.trim()).build(theme.status?.all?.[testStepResult.status], true)
   }
-  if (testStepResult.exception?.message) {
+  if (testStepResult?.message) {
     return new TextBuilder(stream)
-      .append(testStepResult.exception.message.trim())
+      .append(testStepResult.message.trim())
       .build(theme.status?.all?.[testStepResult.status], true)
   }
 }
