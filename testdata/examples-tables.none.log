@@ -21,6 +21,7 @@ Feature: Examples Tables
         AssertionError: Expected values to be strictly equal:
         
         -8 !== 0
+        
         samples/examples-tables/examples-tables.feature:14
 
   @failing
@@ -31,6 +32,7 @@ Feature: Examples Tables
         AssertionError: Expected values to be strictly equal:
         
         -1 !== 0
+        
         samples/examples-tables/examples-tables.feature:14
 
   @undefined

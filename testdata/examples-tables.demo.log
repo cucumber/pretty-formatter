@@ -21,6 +21,7 @@
         [31mAssertionError: Expected values to be strictly equal:[39m
         [31m[39m
         [31m-8 !== 0[39m
+        [31m[39m
         [31msamples/examples-tables/examples-tables.feature:14[39m
 
   [33m[1m@failing[22m[39m
@@ -31,6 +32,7 @@
         [31mAssertionError: Expected values to be strictly equal:[39m
         [31m[39m
         [31m-1 !== 0[39m
+        [31m[39m
         [31msamples/examples-tables/examples-tables.feature:14[39m
 
   [33m[1m@undefined[22m[39m

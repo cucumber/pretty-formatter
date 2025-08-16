@@ -19,6 +19,7 @@ Scenario Outline: Eating cucumbers # samples/examples-tables/examples-tables.fea
       AssertionError: Expected values to be strictly equal:
       
       -8 !== 0
+      
       samples/examples-tables/examples-tables.feature:14
 
 @failing
@@ -29,6 +30,7 @@ Scenario Outline: Eating cucumbers # samples/examples-tables/examples-tables.fea
       AssertionError: Expected values to be strictly equal:
       
       -1 !== 0
+      
       samples/examples-tables/examples-tables.feature:14
 
 @undefined
