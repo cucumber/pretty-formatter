@@ -1,4 +1,5 @@
 
 Scenario: A failing step          # samples/stack-traces/stack-traces.feature:9
   When a step throws an exception # samples/stack-traces/stack-traces.ts:3
+      Error: BOOM
       samples/stack-traces/stack-traces.feature:10

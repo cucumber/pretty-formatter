@@ -10,6 +10,7 @@ import {
   Step,
   StepDefinition,
   TestCaseStarted,
+  TestRunFinished,
   TestStep,
   TestStepFinished,
   TestStepResultStatus,
@@ -21,7 +22,6 @@ import {
   ensure,
   ERROR_INDENT_LENGTH,
   formatAttachment,
-  formatError,
   formatFeatureTitle,
   formatPickleLocation,
   formatPickleTags,
@@ -30,6 +30,8 @@ import {
   formatStepArgument,
   formatStepLocation,
   formatStepTitle,
+  formatTestRunFinishedError,
+  formatTestStepResultError,
   GHERKIN_INDENT_LENGTH,
   indent,
   pad,
@@ -73,6 +75,10 @@ export class PrettyPrinter {
 
     if (message.testStepFinished) {
       this.handleTestStepFinished(message.testStepFinished)
+    }
+
+    if (message.testRunFinished) {
+      this.handleTestRunFinished(message.testRunFinished)
     }
   }
 
@@ -312,7 +318,11 @@ export class PrettyPrinter {
   }
 
   private printError(testStepFinished: TestStepFinished, scenarioIndent: number) {
-    const content = formatError(testStepFinished.testStepResult, this.options.theme, this.stream)
+    const content = formatTestStepResultError(
+      testStepFinished.testStepResult,
+      this.options.theme,
+      this.stream
+    )
     if (content) {
       this.println(
         indent(
@@ -343,5 +353,12 @@ export class PrettyPrinter {
         )
       )
     )
+  }
+
+  private handleTestRunFinished(testRunFinished: TestRunFinished) {
+    const content = formatTestRunFinishedError(testRunFinished, this.options.theme, this.stream)
+    if (content) {
+      this.println(content)
+    }
   }
 }

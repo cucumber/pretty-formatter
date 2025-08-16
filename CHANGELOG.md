@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add attachments option ([#19](https://github.com/cucumber/pretty-formatter/pull/19))
 
+### Fixed
+- Print stacktrace with message and type ([#14](https://github.com/cucumber/pretty-formatter/pull/14))
+
 ## [2.0.1] - 2025-07-19
+### Fixed
+- Remove test only default style ([#7](https://github.com/cucumber/pretty-formatter/pull/7))
 
 ## [2.0.0] - 2025-07-18
 ### Changed

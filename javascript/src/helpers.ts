@@ -13,6 +13,7 @@ import {
   Scenario,
   Step,
   StepDefinition,
+  TestRunFinished,
   TestStep,
   TestStepResult,
   TestStepResultStatus,
@@ -226,16 +227,45 @@ function calculateColumnWidths(dataTable: PickleTable) {
   return columnWidths
 }
 
-export function formatError(
+export function formatTestStepResultError(
   testStepResult: TestStepResult,
   theme: Theme,
   stream: NodeJS.WritableStream
 ): string | undefined {
-  const error = (testStepResult.exception?.stackTrace || testStepResult.exception?.message)?.trim()
-  if (error) {
+  if (testStepResult.exception?.stackTrace) {
     return new TextBuilder(stream)
-      .append(error.trim())
+      .append(testStepResult.exception.stackTrace.trim())
       .build(theme.status?.all?.[testStepResult.status], true)
+  }
+  // Fallback
+  if (testStepResult?.exception?.message) {
+    return new TextBuilder(stream)
+      .append(testStepResult.exception.message.trim())
+      .build(theme.status?.all?.[testStepResult.status], true)
+  }
+  // Fallback
+  if (testStepResult?.message) {
+    return new TextBuilder(stream)
+      .append(testStepResult.message.trim())
+      .build(theme.status?.all?.[testStepResult.status], true)
+  }
+}
+
+export function formatTestRunFinishedError(
+  testRunFinished: TestRunFinished,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  if (testRunFinished.exception?.stackTrace) {
+    return new TextBuilder(stream)
+      .append(testRunFinished.exception.stackTrace.trim())
+      .build(theme.status?.all?.[TestStepResultStatus.FAILED], true)
+  }
+  // Fallback
+  if (testRunFinished?.exception?.message) {
+    return new TextBuilder(stream)
+      .append(testRunFinished.exception.message.trim())
+      .build(theme.status?.all?.[TestStepResultStatus.FAILED], true)
   }
 }
 

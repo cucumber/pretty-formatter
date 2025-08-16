@@ -6,6 +6,7 @@
 
   [1mScenario:[22m Test cases that fail are retried if within the --retry limit [90m# samples/retry/retry.feature:11[39m
     [31m✘[39m [31m[1mGiven [22ma step that passes the second time[39m                           [90m# samples/retry/retry.ts:8[39m
+          [31mError: Exception in step[39m
           [31msamples/retry/retry.feature:12[39m
 
   [1mScenario:[22m Test cases that fail are retried if within the --retry limit [90m# samples/retry/retry.feature:11[39m
@@ -13,10 +14,12 @@
 
   [1mScenario:[22m Test cases that fail will continue to retry up to the --retry limit [90m# samples/retry/retry.feature:14[39m
     [31m✘[39m [31m[1mGiven [22ma step that passes the third time[39m                                   [90m# samples/retry/retry.ts:16[39m
+          [31mError: Exception in step[39m
           [31msamples/retry/retry.feature:15[39m
 
   [1mScenario:[22m Test cases that fail will continue to retry up to the --retry limit [90m# samples/retry/retry.feature:14[39m
     [31m✘[39m [31m[1mGiven [22ma step that passes the third time[39m                                   [90m# samples/retry/retry.ts:16[39m
+          [31mError: Exception in step[39m
           [31msamples/retry/retry.feature:15[39m
 
   [1mScenario:[22m Test cases that fail will continue to retry up to the --retry limit [90m# samples/retry/retry.feature:14[39m
@@ -24,14 +27,17 @@
 
   [1mScenario:[22m Test cases won't retry after failing more than the --retry limit [90m# samples/retry/retry.feature:17[39m
     [31m✘[39m [31m[1mGiven [22ma step that always fails[39m                                         [90m# samples/retry/retry.ts:23[39m
+          [31mError: Exception in step[39m
           [31msamples/retry/retry.feature:18[39m
 
   [1mScenario:[22m Test cases won't retry after failing more than the --retry limit [90m# samples/retry/retry.feature:17[39m
     [31m✘[39m [31m[1mGiven [22ma step that always fails[39m                                         [90m# samples/retry/retry.ts:23[39m
+          [31mError: Exception in step[39m
           [31msamples/retry/retry.feature:18[39m
 
   [1mScenario:[22m Test cases won't retry after failing more than the --retry limit [90m# samples/retry/retry.feature:17[39m
     [31m✘[39m [31m[1mGiven [22ma step that always fails[39m                                         [90m# samples/retry/retry.ts:23[39m
+          [31mError: Exception in step[39m
           [31msamples/retry/retry.feature:18[39m
 
   [1mScenario:[22m Test cases won't retry when the status is UNDEFINED [90m# samples/retry/retry.feature:20[39m
