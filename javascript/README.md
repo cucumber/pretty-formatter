@@ -20,6 +20,7 @@ For usage in `@cucumber/cucumber`, see https://github.com/cucumber/cucumber-js/b
 
 ## Options
 
+- `attachments` - whether to include attachments (defaults to `true`)
 - `featuresAndRules` - whether to include headings for Features and Rules (defaults to `true`)
 - `theme` - control over the styling of various elements (see below)
 

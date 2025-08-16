@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
+import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_ATTACHMENTS;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
@@ -263,6 +264,9 @@ final class PrettyReportWriter implements AutoCloseable {
     }
 
     void handleAttachment(Attachment attachment) {
+        if (!features.contains(INCLUDE_ATTACHMENTS)) {
+            return;
+        }
         writer.println();
         switch (attachment.getContentEncoding()) {
             case BASE64:
