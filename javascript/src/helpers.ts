@@ -1,4 +1,4 @@
-import {stripVTControlCharacters} from 'node:util'
+import { stripVTControlCharacters } from 'node:util'
 
 import {
   Attachment,
@@ -12,14 +12,15 @@ import {
   Rule,
   Scenario,
   Step,
-  StepDefinition, TestRunFinished,
+  StepDefinition,
+  TestRunFinished,
   TestStep,
   TestStepResult,
   TestStepResultStatus,
 } from '@cucumber/messages'
 
-import {TextBuilder} from './TextBuilder.js'
-import {Theme} from './types.js'
+import { TextBuilder } from './TextBuilder.js'
+import { Theme } from './types.js'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
@@ -233,8 +234,8 @@ export function formatTestStepResultError(
 ): string | undefined {
   if (testStepResult.exception?.stackTrace) {
     return new TextBuilder(stream)
-        .append(testStepResult.exception.stackTrace.trim())
-        .build(theme.status?.all?.[testStepResult.status], true)
+      .append(testStepResult.exception.stackTrace.trim())
+      .build(theme.status?.all?.[testStepResult.status], true)
   }
   // Fallback
   if (testStepResult?.exception?.message) {
@@ -251,23 +252,22 @@ export function formatTestStepResultError(
 }
 
 export function formatTestRunFinishedError(
-    testRunFinished: TestRunFinished,
-    theme: Theme,
-    stream: NodeJS.WritableStream
-){
+  testRunFinished: TestRunFinished,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
   if (testRunFinished.exception?.stackTrace) {
     return new TextBuilder(stream)
-        .append(testRunFinished.exception.stackTrace.trim())
-        .build(theme.status?.all?.["FAILED"], true)
+      .append(testRunFinished.exception.stackTrace.trim())
+      .build(theme.status?.all?.[TestStepResultStatus.FAILED], true)
   }
   // Fallback
   if (testRunFinished?.exception?.message) {
     return new TextBuilder(stream)
-        .append(testRunFinished.exception.message.trim())
-        .build(theme.status?.all?.["FAILED"], true)
+      .append(testRunFinished.exception.message.trim())
+      .build(theme.status?.all?.[TestStepResultStatus.FAILED], true)
   }
 }
-
 
 export function formatAttachment(
   attachment: Attachment,

@@ -9,9 +9,10 @@ import {
   Scenario,
   Step,
   StepDefinition,
-  TestCaseStarted, TestRunFinished,
+  TestCaseStarted,
+  TestRunFinished,
   TestStep,
-  TestStepFinished, TestStepResult,
+  TestStepFinished,
   TestStepResultStatus,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
@@ -21,8 +22,6 @@ import {
   ensure,
   ERROR_INDENT_LENGTH,
   formatAttachment,
-  formatTestStepResultError, 
-  formatTestRunFinishedError,
   formatFeatureTitle,
   formatPickleLocation,
   formatPickleTags,
@@ -31,6 +30,8 @@ import {
   formatStepArgument,
   formatStepLocation,
   formatStepTitle,
+  formatTestRunFinishedError,
+  formatTestStepResultError,
   GHERKIN_INDENT_LENGTH,
   indent,
   pad,
@@ -317,7 +318,11 @@ export class PrettyPrinter {
   }
 
   private printError(testStepFinished: TestStepFinished, scenarioIndent: number) {
-    const content = formatTestStepResultError(testStepFinished.testStepResult, this.options.theme, this.stream)
+    const content = formatTestStepResultError(
+      testStepFinished.testStepResult,
+      this.options.theme,
+      this.stream
+    )
     if (content) {
       this.println(
         indent(
@@ -351,10 +356,9 @@ export class PrettyPrinter {
   }
 
   private handleTestRunFinished(testRunFinished: TestRunFinished) {
-    const content = formatTestRunFinishedError(testRunFinished, this.options.theme, this.stream);
+    const content = formatTestRunFinishedError(testRunFinished, this.options.theme, this.stream)
     if (content) {
       this.println(content)
     }
   }
- 
 }
