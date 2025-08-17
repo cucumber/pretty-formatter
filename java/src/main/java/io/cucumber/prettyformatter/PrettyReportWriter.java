@@ -1,7 +1,6 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Attachment;
-import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Feature;
 import io.cucumber.messages.types.Group;
 import io.cucumber.messages.types.Pickle;
@@ -15,6 +14,7 @@ import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStep;
 import io.cucumber.messages.types.TestStepFinished;
+import io.cucumber.messages.types.TestStepResult;
 import io.cucumber.messages.types.TestStepResultStatus;
 
 import java.io.BufferedReader;
@@ -40,7 +40,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-class PrettyReportWriter implements AutoCloseable {
+final class PrettyReportWriter implements AutoCloseable {
 
     private final Theme theme;
     private final SourceReferenceFormatter sourceReferenceFormatter;
@@ -252,9 +252,15 @@ class PrettyReportWriter implements AutoCloseable {
 
 
     private void printException(TestStepFinished event) {
-        TestStepResultStatus status = event.getTestStepResult().getStatus();
-        event.getTestStepResult().getException().ifPresent(exception ->
-                writer.print(formatError(data.getStackTraceIndentBy(event), exception, status)));
+        int indent = data.getStackTraceIndentBy(event);
+        TestStepResult testStepResult = event.getTestStepResult();
+        TestStepResultStatus status = testStepResult.getStatus();
+        ExceptionFormatter formatter = new ExceptionFormatter(indent, theme, status);
+        testStepResult.getException()
+                .map(formatter::format)
+                // Fallback
+                .orElseGet(() -> testStepResult.getMessage().map(formatter::format))
+                .ifPresent(writer::print);
     }
 
     void handleAttachment(Attachment attachment) {
@@ -306,41 +312,10 @@ class PrettyReportWriter implements AutoCloseable {
     }
 
     void handleTestRunFinished(TestRunFinished event) {
-        printException(event);
-    }
-
-    private void printException(TestRunFinished event) {
-        event.getException().ifPresent(exception ->
-                writer.print(formatError(0, exception, FAILED)));
-    }
-
-    private String formatError(int indent, Exception exception, TestStepResultStatus status) {
-        if (exception.getStackTrace().isPresent()) {
-            String stacktrace = exception.getStackTrace().get();
-            return formatError(indent, stacktrace, status);
-        }
-        if (exception.getMessage().isPresent()) {
-            String message = exception.getMessage().get();
-            return formatError(indent, message, status);
-        }
-        return "";
-    }
-
-    private String formatError(int indent, String message, TestStepResultStatus status) {
-        LineBuilder lineBuilder = new LineBuilder(theme);
-        // Read the lines in the message and add extra indentation
-        try (BufferedReader lines = new BufferedReader(new StringReader(message))) {
-            String line;
-            while ((line = lines.readLine()) != null) {
-                lineBuilder.indent(indent)
-                        .append(STEP, status, line)
-                        .newLine();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return lineBuilder
-                .build();
+        event.getException().ifPresent(exception -> {
+            ExceptionFormatter formatter = new ExceptionFormatter(0, theme, FAILED);
+            writer.print(formatter.format(exception));
+        });
     }
 
     @Override
