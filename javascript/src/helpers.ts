@@ -238,13 +238,13 @@ export function formatTestStepResultError(
       .build(theme.status?.all?.[testStepResult.status], true)
   }
   // Fallback
-  if (testStepResult?.exception?.message) {
+  if (testStepResult.exception?.message) {
     return new TextBuilder(stream)
       .append(testStepResult.exception.message.trim())
       .build(theme.status?.all?.[testStepResult.status], true)
   }
   // Fallback
-  if (testStepResult?.message) {
+  if (testStepResult.message) {
     return new TextBuilder(stream)
       .append(testStepResult.message.trim())
       .build(theme.status?.all?.[testStepResult.status], true)
@@ -262,7 +262,7 @@ export function formatTestRunFinishedError(
       .build(theme.status?.all?.[TestStepResultStatus.FAILED], true)
   }
   // Fallback
-  if (testRunFinished?.exception?.message) {
+  if (testRunFinished.exception?.message) {
     return new TextBuilder(stream)
       .append(testRunFinished.exception.message.trim())
       .build(theme.status?.all?.[TestStepResultStatus.FAILED], true)
