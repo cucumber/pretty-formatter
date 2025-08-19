@@ -131,22 +131,19 @@ function formatStepText(
   const stepMatchArgumentsLists = testStep.stepMatchArgumentsLists
   if (stepMatchArgumentsLists && stepMatchArgumentsLists.length === 1) {
     const stepMatchArguments = stepMatchArgumentsLists[0].stepMatchArguments
-    let offset = 0
-    let plain: string
+    let currentIndex = 0
     stepMatchArguments.forEach((argument) => {
-      plain = pickleStep.text.slice(offset, argument.group.start)
-      builder.append(plain, theme.step?.text)
-      const arg = argument.group.value
-      if (arg) {
-        if (arg.length > 0) {
-          builder.append(arg, theme.step?.argument)
-        }
-        offset += plain.length + arg.length
+      const group = argument.group
+      // Ignore absent values, or groups without a start
+      if (group.value !== undefined && group.start !== undefined) {
+        const text = pickleStep.text.slice(currentIndex, group.start)
+        currentIndex = group.start + group.value.length
+        builder.append(text, theme.step?.text).append(group.value, theme.step?.argument)
       }
     })
-    plain = pickleStep.text.slice(offset)
-    if (plain.length > 0) {
-      builder.append(plain, theme.step?.text)
+    if (currentIndex != pickleStep.text.length) {
+      const remainder = pickleStep.text.slice(currentIndex)
+      builder.append(remainder, theme.step?.text)
     }
   } else {
     builder.append(pickleStep.text, theme.step?.text)

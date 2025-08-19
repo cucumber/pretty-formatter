@@ -6,6 +6,8 @@ The formatter is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- [JavaScript] Fix repeated step arguments ([#21](https://github.com/cucumber/pretty-formatter/pull/21))
 
 ## [2.1.0] - 2025-08-17
 ### Added
