@@ -3,5 +3,5 @@
 
   [44m[1mScenario:[22m [3mregular expression[23m[49m                  [90m# samples/regular-expression/regular-expression.feature:6[39m
     [32m[1mGiven [22m[3ma [23m[1mcucumber[22m[39m                            [90m# samples/regular-expression/regular-expression.ts:3[39m
-    [32m[1mGiven [22m[3ma [23m[1mcucumber and a zucchini[22m[39m             [90m# samples/regular-expression/regular-expression.ts:3[39m
-    [32m[1mGiven [22m[3ma [23m[1mcucumber and a zucchini and a gourd[22m[39m [90m# samples/regular-expression/regular-expression.ts:3[39m
+    [32m[1mGiven [22m[3ma [23m[1mcucumber[22m[3m and a [23m[1mzucchini[22m[39m             [90m# samples/regular-expression/regular-expression.ts:3[39m
+    [32m[1mGiven [22m[3ma [23m[1mcucumber[22m[3m and a [23m[1mzucchini[22m[3m and a [23m[1mgourd[22m[39m [90m# samples/regular-expression/regular-expression.ts:3[39m
