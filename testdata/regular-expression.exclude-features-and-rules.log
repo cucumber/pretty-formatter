@@ -1,0 +1,5 @@
+
+Scenario: regular expression                  # samples/regular-expression/regular-expression.feature:6
+  Given a cucumber                            # samples/regular-expression/regular-expression.ts:3
+  Given a cucumber and a zucchini             # samples/regular-expression/regular-expression.ts:3
+  Given a cucumber and a zucchini and a gourd # samples/regular-expression/regular-expression.ts:3

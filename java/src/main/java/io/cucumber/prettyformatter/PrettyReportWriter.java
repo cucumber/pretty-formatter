@@ -225,23 +225,23 @@ final class PrettyReportWriter implements AutoCloseable {
     }
 
     void formatStepText(LineBuilder lineBuilder, String stepText, List<StepMatchArgument> arguments) {
-        int beginIndex = 0;
+        int currentIndex = 0;
         for (StepMatchArgument argument : arguments) {
-            // can be null if the argument is missing.
             Group group = argument.getGroup();
-            Optional<String> value = group.getValue();
-            if (value.isPresent()) {
+            // Ignore absent values, or groups without a start
+            if (group.getValue().isPresent() && group.getStart().isPresent()) {
+                String groupValue = group.getValue().get();
                 // TODO: Messages are silly
-                int argumentOffset = (int) (long) group.getStart().orElse(-1L);
-                String text = stepText.substring(beginIndex, argumentOffset);
-                int argumentEndIndex = argumentOffset + value.get().length();
-                beginIndex = argumentEndIndex;
+                int groupStart = (int) (long) group.getStart().get();
+                String text = stepText.substring(currentIndex, groupStart);
+                currentIndex = groupStart + groupValue.length();
                 lineBuilder.append(STEP_TEXT, text)
-                        .append(STEP_ARGUMENT, stepText.substring(argumentOffset, argumentEndIndex));
+                        .append(STEP_ARGUMENT, groupValue);
             }
         }
-        if (beginIndex != stepText.length()) {
-            lineBuilder.append(STEP_TEXT, stepText.substring(beginIndex));
+        if (currentIndex != stepText.length()) {
+            String remainder = stepText.substring(currentIndex);
+            lineBuilder.append(STEP_TEXT, remainder);
         }
     }
 
