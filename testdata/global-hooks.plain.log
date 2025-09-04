@@ -1,0 +1,10 @@
+
+Feature: Global hooks
+
+  Scenario: A passing scenario # samples/global-hooks/global-hooks.feature:6
+    ✔ When a step passes       # samples/global-hooks/global-hooks.ts:11
+
+  Scenario: A failing scenario # samples/global-hooks/global-hooks.feature:9
+    ✘ When a step fails        # samples/global-hooks/global-hooks.ts:15
+          Error: Exception in step
+          samples/global-hooks/global-hooks.feature:10
