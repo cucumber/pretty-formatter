@@ -1,0 +1,10 @@
+
+[1mFeature:[22m Global hooks
+
+  [1mScenario:[22m A passing scenario [90m# samples/global-hooks/global-hooks.feature:6[39m
+    [32m✔[39m [32m[1mWhen [22ma step passes[39m       [90m# samples/global-hooks/global-hooks.ts:11[39m
+
+  [1mScenario:[22m A failing scenario [90m# samples/global-hooks/global-hooks.feature:9[39m
+    [31m✘[39m [31m[1mWhen [22ma step fails[39m        [90m# samples/global-hooks/global-hooks.ts:15[39m
+          [31mError: Exception in step[39m
+          [31msamples/global-hooks/global-hooks.feature:10[39m

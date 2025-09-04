@@ -1,0 +1,5 @@
+
+[44m[1mFeature:[22m [3mGlobal hooks - AfterAll error[23m[49m
+
+  [44m[1mScenario:[22m [3mA passing scenario[23m[49m [90m# samples/global-hooks-afterall-error/global-hooks-afterall-error.feature:4[39m
+    [32m[1mWhen [22m[3ma step passes[23m[39m         [90m# samples/global-hooks-afterall-error/global-hooks-afterall-error.ts:11[39m

@@ -1,0 +1,5 @@
+
+Feature: Global hooks - AfterAll error
+
+  Scenario: A passing scenario # samples/global-hooks-afterall-error/global-hooks-afterall-error.feature:4
+    ✔ When a step passes       # samples/global-hooks-afterall-error/global-hooks-afterall-error.ts:11
