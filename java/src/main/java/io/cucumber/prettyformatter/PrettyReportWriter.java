@@ -10,6 +10,7 @@ import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.Step;
 import io.cucumber.messages.types.StepMatchArgument;
+import io.cucumber.messages.types.StepMatchArgumentsList;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStep;
@@ -219,6 +220,7 @@ final class PrettyReportWriter implements AutoCloseable {
     private List<StepMatchArgument> getStepMatchArguments(TestStep testStep) {
         List<StepMatchArgument> stepMatchArguments = new ArrayList<>();
         testStep.getStepMatchArgumentsLists()
+                .filter(stepMatchArgumentsList -> stepMatchArgumentsList.size() == 1)
                 .orElse(emptyList())
                 .forEach(list -> stepMatchArguments.addAll(list.getStepMatchArguments()));
         return stepMatchArguments;
