@@ -1,0 +1,5 @@
+
+Feature: Global hooks with attachments
+
+  Scenario: A scenario # samples/global-hooks-attachments/global-hooks-attachments.feature:4
+    When a step passes # samples/global-hooks-attachments/global-hooks-attachments.ts:7

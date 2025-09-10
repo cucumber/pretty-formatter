@@ -1,0 +1,11 @@
+
+        [34mAttachment from BeforeAll hook[39m
+
+
+[1mFeature:[22m Global hooks with attachments
+
+  [1mScenario:[22m A scenario   [90m# samples/global-hooks-attachments/global-hooks-attachments.feature:4[39m
+    [32m✔[39m [32m[1mWhen [22ma step passes[39m [90m# samples/global-hooks-attachments/global-hooks-attachments.ts:7[39m
+
+        [34mAttachment from AfterAll hook[39m
+

@@ -1,0 +1,22 @@
+
+[1mFeature:[22m Rules with Backgrounds
+
+  [1mRule:[22m 
+
+    [1mExample:[22m one scenario              [90m# samples/rules-backgrounds/rules-backgrounds.feature:17[39m
+      [32m✔[39m [32m[1mGiven [22man order for [1m"eggs"[22m[39m      [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mAnd [22man order for [1m"milk"[22m[39m        [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mAnd [22man order for [1m"bread"[22m[39m       [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mGiven [22man order for [1m"batteries"[22m[39m [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mAnd [22man order for [1m"light bulbs"[22m[39m [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mWhen [22man action[39m                 [90m# samples/rules-backgrounds/rules-backgrounds.ts:7[39m
+      [32m✔[39m [32m[1mThen [22man outcome[39m                [90m# samples/rules-backgrounds/rules-backgrounds.ts:11[39m
+
+    [1mExample:[22m another scenario          [90m# samples/rules-backgrounds/rules-backgrounds.feature:21[39m
+      [32m✔[39m [32m[1mGiven [22man order for [1m"eggs"[22m[39m      [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mAnd [22man order for [1m"milk"[22m[39m        [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mAnd [22man order for [1m"bread"[22m[39m       [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mGiven [22man order for [1m"batteries"[22m[39m [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mAnd [22man order for [1m"light bulbs"[22m[39m [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m✔[39m [32m[1mWhen [22man action[39m                 [90m# samples/rules-backgrounds/rules-backgrounds.ts:7[39m
+      [32m✔[39m [32m[1mThen [22man outcome[39m                [90m# samples/rules-backgrounds/rules-backgrounds.ts:11[39m

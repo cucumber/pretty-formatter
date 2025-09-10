@@ -1,0 +1,22 @@
+
+[44m[1mFeature:[22m [3mRules with Backgrounds[23m[49m
+
+  [44m[1mRule:[22m [3m[23m[49m
+
+    [44m[1mExample:[22m [3mone scenario[23m[49m            [90m# samples/rules-backgrounds/rules-backgrounds.feature:17[39m
+      [32m[1mGiven [22m[3man order for [23m[1m"eggs"[22m[39m      [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mAnd [22m[3man order for [23m[1m"milk"[22m[39m        [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mAnd [22m[3man order for [23m[1m"bread"[22m[39m       [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mGiven [22m[3man order for [23m[1m"batteries"[22m[39m [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mAnd [22m[3man order for [23m[1m"light bulbs"[22m[39m [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mWhen [22m[3man action[23m[39m                 [90m# samples/rules-backgrounds/rules-backgrounds.ts:7[39m
+      [32m[1mThen [22m[3man outcome[23m[39m                [90m# samples/rules-backgrounds/rules-backgrounds.ts:11[39m
+
+    [44m[1mExample:[22m [3manother scenario[23m[49m        [90m# samples/rules-backgrounds/rules-backgrounds.feature:21[39m
+      [32m[1mGiven [22m[3man order for [23m[1m"eggs"[22m[39m      [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mAnd [22m[3man order for [23m[1m"milk"[22m[39m        [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mAnd [22m[3man order for [23m[1m"bread"[22m[39m       [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mGiven [22m[3man order for [23m[1m"batteries"[22m[39m [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mAnd [22m[3man order for [23m[1m"light bulbs"[22m[39m [90m# samples/rules-backgrounds/rules-backgrounds.ts:3[39m
+      [32m[1mWhen [22m[3man action[23m[39m                 [90m# samples/rules-backgrounds/rules-backgrounds.ts:7[39m
+      [32m[1mThen [22m[3man outcome[23m[39m                [90m# samples/rules-backgrounds/rules-backgrounds.ts:11[39m

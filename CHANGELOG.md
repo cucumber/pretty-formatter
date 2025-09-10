@@ -6,8 +6,11 @@ The formatter is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- [Java] Fix step match arguments highlighting for ambiguous steps ([#28](https://github.com/cucumber/pretty-formatter/pull/28))
+
 ### Added
-- update dependency @cucumber/messages up to v29
+- Update dependency @cucumber/messages up to v29
 - Update dependency io.cucumber:messages up to v29
 
 ### Fixed

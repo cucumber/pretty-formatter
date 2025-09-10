@@ -1,0 +1,16 @@
+
+Feature: Backgrounds
+
+  Scenario: one scenario        # samples/backgrounds/backgrounds.feature:11
+    ✔ Given an order for "eggs" # samples/backgrounds/backgrounds.ts:3
+    ✔ And an order for "milk"   # samples/backgrounds/backgrounds.ts:3
+    ✔ And an order for "bread"  # samples/backgrounds/backgrounds.ts:3
+    ✔ When an action            # samples/backgrounds/backgrounds.ts:7
+    ✔ Then an outcome           # samples/backgrounds/backgrounds.ts:11
+
+  Scenario: another scenario    # samples/backgrounds/backgrounds.feature:15
+    ✔ Given an order for "eggs" # samples/backgrounds/backgrounds.ts:3
+    ✔ And an order for "milk"   # samples/backgrounds/backgrounds.ts:3
+    ✔ And an order for "bread"  # samples/backgrounds/backgrounds.ts:3
+    ✔ When an action            # samples/backgrounds/backgrounds.ts:7
+    ✔ Then an outcome           # samples/backgrounds/backgrounds.ts:11

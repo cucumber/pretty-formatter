@@ -40,5 +40,12 @@
           [31mError: Exception in step[39m
           [31msamples/retry/retry.feature:18[39m
 
-  [1mScenario:[22m Test cases won't retry when the status is UNDEFINED [90m# samples/retry/retry.feature:20[39m
+  [1mScenario:[22m Test cases won't retry when the status is AMBIGUOUS [90m# samples/retry/retry.feature:20[39m
+    [31m✘[39m [31m[1mGiven [22man ambiguous step[39m
+
+  [1mScenario:[22m Test cases won't retry when the status is PENDING [90m# samples/retry/retry.feature:23[39m
+    [33m■[39m [33m[1mGiven [22ma pending step[39m                                    [90m# samples/retry/retry.ts:35[39m
+          [33mTODO[39m
+
+  [1mScenario:[22m Test cases won't retry when the status is UNDEFINED [90m# samples/retry/retry.feature:26[39m
     [33m■[39m [33m[1mGiven [22ma non-existent step[39m

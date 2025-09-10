@@ -1,0 +1,33 @@
+
+[44m[1mFeature:[22m [3mThird feature[23m[49m
+
+  [44m[1mScenario:[22m [3mThird scenario[23m[49m          [90m# samples/multiple-features-reversed/multiple-features-reversed-3.feature:9[39m
+    [32m[1mGiven [22m[3man order for [23m[1m"paperclips"[22m[39m [90m# samples/multiple-features-reversed/multiple-features-reversed.ts:3[39m
+
+  [44m[1mScenario:[22m [3mSecond scenario[23m[49m     [90m# samples/multiple-features-reversed/multiple-features-reversed-3.feature:6[39m
+    [32m[1mGiven [22m[3man order for [23m[1m"rulers"[22m[39m [90m# samples/multiple-features-reversed/multiple-features-reversed.ts:3[39m
+
+  [44m[1mScenario:[22m [3mFirst scenario[23m[49m       [90m# samples/multiple-features-reversed/multiple-features-reversed-3.feature:3[39m
+    [32m[1mGiven [22m[3man order for [23m[1m"pencils"[22m[39m [90m# samples/multiple-features-reversed/multiple-features-reversed.ts:3[39m
+
+[44m[1mFeature:[22m [3mSecond feature[23m[49m
+
+  [44m[1mScenario:[22m [3mThird scenario[23m[49m     [90m# samples/multiple-features-reversed/multiple-features-reversed-2.feature:9[39m
+    [32m[1mGiven [22m[3man order for [23m[1m"fuses"[22m[39m [90m# samples/multiple-features-reversed/multiple-features-reversed.ts:3[39m
+
+  [44m[1mScenario:[22m [3mSecond scenario[23m[49m          [90m# samples/multiple-features-reversed/multiple-features-reversed-2.feature:6[39m
+    [32m[1mGiven [22m[3man order for [23m[1m"light bulbs"[22m[39m [90m# samples/multiple-features-reversed/multiple-features-reversed.ts:3[39m
+
+  [44m[1mScenario:[22m [3mFirst scenario[23m[49m         [90m# samples/multiple-features-reversed/multiple-features-reversed-2.feature:3[39m
+    [32m[1mGiven [22m[3man order for [23m[1m"batteries"[22m[39m [90m# samples/multiple-features-reversed/multiple-features-reversed.ts:3[39m
+
+[44m[1mFeature:[22m [3mFirst feature[23m[49m
+
+  [44m[1mScenario:[22m [3mThird scenario[23m[49m     [90m# samples/multiple-features-reversed/multiple-features-reversed-1.feature:9[39m
+    [32m[1mGiven [22m[3man order for [23m[1m"bread"[22m[39m [90m# samples/multiple-features-reversed/multiple-features-reversed.ts:3[39m
+
+  [44m[1mScenario:[22m [3mSecond scenario[23m[49m   [90m# samples/multiple-features-reversed/multiple-features-reversed-1.feature:6[39m
+    [32m[1mGiven [22m[3man order for [23m[1m"milk"[22m[39m [90m# samples/multiple-features-reversed/multiple-features-reversed.ts:3[39m
+
+  [44m[1mScenario:[22m [3mFirst scenario[23m[49m    [90m# samples/multiple-features-reversed/multiple-features-reversed-1.feature:3[39m
+    [32m[1mGiven [22m[3man order for [23m[1m"eggs"[22m[39m [90m# samples/multiple-features-reversed/multiple-features-reversed.ts:3[39m

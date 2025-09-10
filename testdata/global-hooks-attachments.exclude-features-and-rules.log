@@ -1,0 +1,9 @@
+
+      Attachment from BeforeAll hook
+
+
+Scenario: A scenario # samples/global-hooks-attachments/global-hooks-attachments.feature:4
+  When a step passes # samples/global-hooks-attachments/global-hooks-attachments.ts:7
+
+      Attachment from AfterAll hook
+
