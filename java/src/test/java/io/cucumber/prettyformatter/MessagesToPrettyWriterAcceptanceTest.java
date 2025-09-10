@@ -61,7 +61,7 @@ class MessagesToPrettyWriterAcceptanceTest {
     }
 
     private static List<Path> getSources() throws IOException {
-        try (Stream<Path> paths = Files.list(Paths.get("../testdata"))) {
+        try (Stream<Path> paths = Files.list(Paths.get("..", "testdata", "src"))) {
             return paths
                     .filter(path -> path.getFileName().toString().endsWith(".ndjson"))
                     .collect(Collectors.toList());
