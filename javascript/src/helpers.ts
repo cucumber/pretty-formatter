@@ -187,6 +187,7 @@ function formatDocString(docString: PickleDocString, theme: Theme, stream: NodeJ
     builder.append(docString.mediaType, theme.docString?.mediaType)
   }
   builder.line()
+  // Doc strings are normalized to \n by Gherkin.
   const lines = docString.content.split('\n')
   lines.forEach((line) => {
     builder.append(line, theme.docString?.content).line()
