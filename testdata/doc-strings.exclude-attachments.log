@@ -1,0 +1,24 @@
+
+Feature: Doc strings
+
+  Scenario: a doc string with standard delimiter # samples/doc-strings/doc-strings.feature:5
+    Given a doc string:                          # samples/doc-strings/doc-strings.ts:3
+      """
+      Here is some content
+      And some more on another line
+      """
+
+  Scenario: a doc string with backticks delimiter # samples/doc-strings/doc-strings.feature:14
+    Given a doc string:                           # samples/doc-strings/doc-strings.ts:3
+      """
+      Here is some content
+      And some more on another line
+      """
+
+  Scenario: a doc string with media type # samples/doc-strings/doc-strings.feature:23
+    Given a doc string:                  # samples/doc-strings/doc-strings.ts:3
+      """application/json
+      {
+        "foo": "bar"
+      }
+      """

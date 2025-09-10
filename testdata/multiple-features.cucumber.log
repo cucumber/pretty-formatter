@@ -1,0 +1,33 @@
+
+[1mFeature:[22m First feature
+
+  [1mScenario:[22m First scenario      [90m# samples/multiple-features/multiple-features-1.feature:3[39m
+    [32m✔[39m [32m[1mGiven [22man order for [1m"eggs"[22m[39m [90m# samples/multiple-features/multiple-features.ts:3[39m
+
+  [1mScenario:[22m Second scenario     [90m# samples/multiple-features/multiple-features-1.feature:6[39m
+    [32m✔[39m [32m[1mGiven [22man order for [1m"milk"[22m[39m [90m# samples/multiple-features/multiple-features.ts:3[39m
+
+  [1mScenario:[22m Third scenario       [90m# samples/multiple-features/multiple-features-1.feature:9[39m
+    [32m✔[39m [32m[1mGiven [22man order for [1m"bread"[22m[39m [90m# samples/multiple-features/multiple-features.ts:3[39m
+
+[1mFeature:[22m Second feature
+
+  [1mScenario:[22m First scenario           [90m# samples/multiple-features/multiple-features-2.feature:3[39m
+    [32m✔[39m [32m[1mGiven [22man order for [1m"batteries"[22m[39m [90m# samples/multiple-features/multiple-features.ts:3[39m
+
+  [1mScenario:[22m Second scenario            [90m# samples/multiple-features/multiple-features-2.feature:6[39m
+    [32m✔[39m [32m[1mGiven [22man order for [1m"light bulbs"[22m[39m [90m# samples/multiple-features/multiple-features.ts:3[39m
+
+  [1mScenario:[22m Third scenario       [90m# samples/multiple-features/multiple-features-2.feature:9[39m
+    [32m✔[39m [32m[1mGiven [22man order for [1m"fuses"[22m[39m [90m# samples/multiple-features/multiple-features.ts:3[39m
+
+[1mFeature:[22m Third feature
+
+  [1mScenario:[22m First scenario         [90m# samples/multiple-features/multiple-features-3.feature:3[39m
+    [32m✔[39m [32m[1mGiven [22man order for [1m"pencils"[22m[39m [90m# samples/multiple-features/multiple-features.ts:3[39m
+
+  [1mScenario:[22m Second scenario       [90m# samples/multiple-features/multiple-features-3.feature:6[39m
+    [32m✔[39m [32m[1mGiven [22man order for [1m"rulers"[22m[39m [90m# samples/multiple-features/multiple-features.ts:3[39m
+
+  [1mScenario:[22m Third scenario            [90m# samples/multiple-features/multiple-features-3.feature:9[39m
+    [32m✔[39m [32m[1mGiven [22man order for [1m"paperclips"[22m[39m [90m# samples/multiple-features/multiple-features.ts:3[39m

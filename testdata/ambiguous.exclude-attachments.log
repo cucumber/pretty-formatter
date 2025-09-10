@@ -1,0 +1,5 @@
+
+Feature: Ambiguous steps
+
+  Scenario: Multiple step definitions for a step # samples/ambiguous/ambiguous.feature:5
+    Given a step with multiple definitions

@@ -1,0 +1,5 @@
+
+[1mFeature:[22m Unused steps
+
+  [1mScenario:[22m a scenario          [90m# samples/unused-steps/unused-steps.feature:5[39m
+    [32m✔[39m [32m[1mGiven [22ma step that is used[39m [90m# samples/unused-steps/unused-steps.ts:3[39m

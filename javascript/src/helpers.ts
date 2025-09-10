@@ -186,11 +186,12 @@ function formatDocString(docString: PickleDocString, theme: Theme, stream: NodeJ
   if (docString.mediaType) {
     builder.append(docString.mediaType, theme.docString?.mediaType)
   }
-  builder
-    .line()
-    .append(docString.content, theme.docString?.content)
-    .line()
-    .append('"""', theme.docString?.delimiter)
+  builder.line()
+  const lines = docString.content.split('\n')
+  lines.forEach((line) => {
+    builder.append(line, theme.docString?.content).line()
+  })
+  builder.append('"""', theme.docString?.delimiter)
   return builder.build(theme.docString?.all, true)
 }
 

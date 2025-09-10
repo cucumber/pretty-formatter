@@ -1,0 +1,24 @@
+
+[44m[1mFeature:[22m [3mDoc strings[23m[49m
+
+  [44m[1mScenario:[22m [3ma doc string with standard delimiter[23m[49m [90m# samples/doc-strings/doc-strings.feature:5[39m
+    [32m[1mGiven [22m[3ma doc string:[23m[39m                          [90m# samples/doc-strings/doc-strings.ts:3[39m
+      [90m[2m"""[22m[39m
+      [90m[3mHere is some content[23m[39m
+      [90m[3mAnd some more on another line[23m[39m
+      [90m[2m"""[22m[39m
+
+  [44m[1mScenario:[22m [3ma doc string with backticks delimiter[23m[49m [90m# samples/doc-strings/doc-strings.feature:14[39m
+    [32m[1mGiven [22m[3ma doc string:[23m[39m                           [90m# samples/doc-strings/doc-strings.ts:3[39m
+      [90m[2m"""[22m[39m
+      [90m[3mHere is some content[23m[39m
+      [90m[3mAnd some more on another line[23m[39m
+      [90m[2m"""[22m[39m
+
+  [44m[1mScenario:[22m [3ma doc string with media type[23m[49m [90m# samples/doc-strings/doc-strings.feature:23[39m
+    [32m[1mGiven [22m[3ma doc string:[23m[39m                  [90m# samples/doc-strings/doc-strings.ts:3[39m
+      [90m[2m"""[22m[1mapplication/json[22m[39m
+      [90m[3m{[23m[39m
+      [90m[3m  "foo": "bar"[23m[39m
+      [90m[3m}[23m[39m
+      [90m[2m"""[22m[39m

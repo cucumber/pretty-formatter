@@ -1,0 +1,18 @@
+
+Example: one scenario            # samples/rules-backgrounds/rules-backgrounds.feature:17
+  Given an order for "eggs"      # samples/rules-backgrounds/rules-backgrounds.ts:3
+  And an order for "milk"        # samples/rules-backgrounds/rules-backgrounds.ts:3
+  And an order for "bread"       # samples/rules-backgrounds/rules-backgrounds.ts:3
+  Given an order for "batteries" # samples/rules-backgrounds/rules-backgrounds.ts:3
+  And an order for "light bulbs" # samples/rules-backgrounds/rules-backgrounds.ts:3
+  When an action                 # samples/rules-backgrounds/rules-backgrounds.ts:7
+  Then an outcome                # samples/rules-backgrounds/rules-backgrounds.ts:11
+
+Example: another scenario        # samples/rules-backgrounds/rules-backgrounds.feature:21
+  Given an order for "eggs"      # samples/rules-backgrounds/rules-backgrounds.ts:3
+  And an order for "milk"        # samples/rules-backgrounds/rules-backgrounds.ts:3
+  And an order for "bread"       # samples/rules-backgrounds/rules-backgrounds.ts:3
+  Given an order for "batteries" # samples/rules-backgrounds/rules-backgrounds.ts:3
+  And an order for "light bulbs" # samples/rules-backgrounds/rules-backgrounds.ts:3
+  When an action                 # samples/rules-backgrounds/rules-backgrounds.ts:7
+  Then an outcome                # samples/rules-backgrounds/rules-backgrounds.ts:11

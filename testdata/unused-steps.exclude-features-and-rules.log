@@ -1,0 +1,3 @@
+
+Scenario: a scenario        # samples/unused-steps/unused-steps.feature:5
+  Given a step that is used # samples/unused-steps/unused-steps.ts:3

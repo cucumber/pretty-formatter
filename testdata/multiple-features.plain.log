@@ -1,0 +1,33 @@
+
+Feature: First feature
+
+  Scenario: First scenario      # samples/multiple-features/multiple-features-1.feature:3
+    ✔ Given an order for "eggs" # samples/multiple-features/multiple-features.ts:3
+
+  Scenario: Second scenario     # samples/multiple-features/multiple-features-1.feature:6
+    ✔ Given an order for "milk" # samples/multiple-features/multiple-features.ts:3
+
+  Scenario: Third scenario       # samples/multiple-features/multiple-features-1.feature:9
+    ✔ Given an order for "bread" # samples/multiple-features/multiple-features.ts:3
+
+Feature: Second feature
+
+  Scenario: First scenario           # samples/multiple-features/multiple-features-2.feature:3
+    ✔ Given an order for "batteries" # samples/multiple-features/multiple-features.ts:3
+
+  Scenario: Second scenario            # samples/multiple-features/multiple-features-2.feature:6
+    ✔ Given an order for "light bulbs" # samples/multiple-features/multiple-features.ts:3
+
+  Scenario: Third scenario       # samples/multiple-features/multiple-features-2.feature:9
+    ✔ Given an order for "fuses" # samples/multiple-features/multiple-features.ts:3
+
+Feature: Third feature
+
+  Scenario: First scenario         # samples/multiple-features/multiple-features-3.feature:3
+    ✔ Given an order for "pencils" # samples/multiple-features/multiple-features.ts:3
+
+  Scenario: Second scenario       # samples/multiple-features/multiple-features-3.feature:6
+    ✔ Given an order for "rulers" # samples/multiple-features/multiple-features.ts:3
+
+  Scenario: Third scenario            # samples/multiple-features/multiple-features-3.feature:9
+    ✔ Given an order for "paperclips" # samples/multiple-features/multiple-features.ts:3
