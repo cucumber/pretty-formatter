@@ -18,6 +18,7 @@ import io.cucumber.messages.types.TestStepFinished;
 import io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature;
 import io.cucumber.query.Lineage;
 import io.cucumber.query.Query;
+import io.cucumber.query.Repository;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +30,8 @@ import java.util.Set;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
+import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_GHERKIN_DOCUMENTS;
+import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_STEP_DEFINITIONS;
 
 final class PrettyReportData {
 
@@ -40,7 +43,11 @@ final class PrettyReportData {
     private static final int STEP_INDENT = 2;
     private static final int ONE_SPACE_LENGTH = 1;
 
-    private final Query query = new Query();
+    private final Repository repository = Repository.builder()
+            .feature(INCLUDE_GHERKIN_DOCUMENTS, true)
+            .feature(INCLUDE_STEP_DEFINITIONS, true)
+            .build();
+    private final Query query = new Query(repository);
     private final Map<String, Integer> commentStartIndexByTestCaseStartedId = new HashMap<>();
     private final Map<String, Integer> scenarioIndentByTestCaseStartedId = new HashMap<>();
     private final Set<Object> printedFeaturesAndRules = new HashSet<>();
@@ -103,7 +110,7 @@ final class PrettyReportData {
     }
 
     void update(Envelope envelope) {
-        query.update(envelope);
+        repository.update(envelope);
         envelope.getTestCaseStarted().ifPresent(this::preCalculateLocationIndent);
     }
 

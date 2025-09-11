@@ -22,7 +22,7 @@
     "prepublishOnly": "tsc --build tsconfig.build.json"
   },
   "dependencies": {
-    "@cucumber/query": "^13.5.0"
+    "@cucumber/query": "^14.0.0"
   },
   "peerDependencies": {
     "@cucumber/messages": "*"

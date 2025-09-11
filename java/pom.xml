@@ -59,12 +59,12 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>messages</artifactId>
-            <version>[27.2.0,30.0.0)</version>
+            <version>[29.0.1,30.0.0)</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>query</artifactId>
-            <version>[13.5.0,14.0.0)</version>
+            <version>[14.0.1,15.0.0)</version>
         </dependency>
 
         <dependency>
