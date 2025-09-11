@@ -6,15 +6,17 @@ The formatter is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Fixed
-- [Java] Fix step match arguments highlighting for ambiguous steps ([#28](https://github.com/cucumber/pretty-formatter/pull/28))
-- [JavaScript] Fix repeated step arguments ([#21](https://github.com/cucumber/pretty-formatter/pull/21))
 
+## [2.2.0] - 2025-09-11
 ### Changed
 - Update dependency @cucumber/query to v14
 - Update dependency @cucumber/messages to v29
 - Update dependency io.cucumber:query to v14
 - Update dependency io.cucumber:messages to v29
+
+### Fixed
+- [Java] Fix step match arguments highlighting for ambiguous steps ([#28](https://github.com/cucumber/pretty-formatter/pull/28))
+- [JavaScript] Fix repeated step arguments ([#21](https://github.com/cucumber/pretty-formatter/pull/21))
 
 ## [2.1.0] - 2025-08-17
 ### Added
@@ -46,7 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Java implementation ([#1](https://github.com/cucumber/pretty-formatter/pull/1) M.P. Korstanje)
 
-[Unreleased]: https://github.com/cucumber/pretty-formatter/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/cucumber/pretty-formatter/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/cucumber/pretty-formatter/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/cucumber/pretty-formatter/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/cucumber/pretty-formatter/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/cucumber/pretty-formatter/compare/v0.3.0...v2.0.0
