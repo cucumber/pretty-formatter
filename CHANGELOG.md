@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Java] Fix step match arguments highlighting for ambiguous steps ([#28](https://github.com/cucumber/pretty-formatter/pull/28))
 - [JavaScript] Fix repeated step arguments ([#21](https://github.com/cucumber/pretty-formatter/pull/21))
 
-### Added
+### Changed
 - Update dependency @cucumber/query to v14
 - Update dependency @cucumber/messages to v29
 - Update dependency io.cucumber:query to v14
