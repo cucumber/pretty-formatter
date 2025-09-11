@@ -30,7 +30,7 @@ import java.util.Set;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
-import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_GHERKIN_DOCUMENT;
+import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_GHERKIN_DOCUMENTS;
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_STEP_DEFINITIONS;
 
 final class PrettyReportData {
@@ -44,7 +44,7 @@ final class PrettyReportData {
     private static final int ONE_SPACE_LENGTH = 1;
 
     private final Repository repository = Repository.builder()
-            .feature(INCLUDE_GHERKIN_DOCUMENT, true)
+            .feature(INCLUDE_GHERKIN_DOCUMENTS, true)
             .feature(INCLUDE_STEP_DEFINITIONS, true)
             .build();
     private final Query query = new Query(repository);
