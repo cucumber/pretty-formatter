@@ -1,0 +1,121 @@
+package io.cucumber.prettyformatter;
+
+import io.cucumber.messages.NdjsonToMessageIterable;
+import io.cucumber.messages.types.Envelope;
+import io.cucumber.prettyformatter.MessagesToSummaryWriter.Builder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
+import static io.cucumber.prettyformatter.MessagesToSummaryWriter.builder;
+import static io.cucumber.prettyformatter.Theme.cucumber;
+import static io.cucumber.prettyformatter.Theme.plain;
+import static java.nio.file.Files.readAllBytes;
+import static org.assertj.core.api.Assertions.assertThat;
+
+class SummaryToPrettyWriterAcceptanceTest {
+    private static final NdjsonToMessageIterable.Deserializer deserializer = (json) -> OBJECT_MAPPER.readValue(json, Envelope.class);
+
+    static List<TestCase> acceptance() throws IOException {
+        Map<String, Builder> themes = new LinkedHashMap<>();
+        themes.put("cucumber", builder().theme(cucumber()));
+        themes.put("plain", builder().theme(plain()));
+
+        List<Path> sources = getSources();
+
+        List<TestCase> testCases = new ArrayList<>();
+        sources.forEach(path ->
+                themes.forEach((strategyName, strategy) ->
+                        testCases.add(new TestCase(path, strategyName, strategy))));
+
+        return testCases;
+    }
+
+    private static List<Path> getSources() {
+        return Arrays.asList(
+                Paths.get("../testdata/src/ambiguous.ndjson"),
+                Paths.get("../testdata/src/empty.ndjson"),
+                Paths.get("../testdata/src/examples-tables.ndjson"),
+                Paths.get("../testdata/src/hooks.ndjson"),
+                Paths.get("../testdata/src/minimal.ndjson"),
+                Paths.get("../testdata/src/multiple-features.ndjson"),
+                Paths.get("../testdata/src/pending.ndjson"),
+                Paths.get("../testdata/src/retry.ndjson"),
+                Paths.get("../testdata/src/skipped.ndjson"),
+                Paths.get("../testdata/src/stack-traces.ndjson"),
+                Paths.get("../testdata/src/undefined.ndjson")
+                
+        );
+    }
+
+    private static <T extends OutputStream> T writeSummaryReport(TestCase testCase, T out, MessagesToSummaryWriter.Builder builder) throws IOException {
+        try (InputStream in = Files.newInputStream(testCase.source)) {
+            try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, deserializer)) {
+                try (MessagesToSummaryWriter writer = builder.build(out)) {
+                    for (Envelope envelope : envelopes) {
+                        writer.write(envelope);
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
+    @ParameterizedTest
+    @MethodSource("acceptance")
+    void test(TestCase testCase) throws IOException {
+        ByteArrayOutputStream bytes = writeSummaryReport(testCase, new ByteArrayOutputStream(), testCase.builder);
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("acceptance")
+    @Disabled
+    void updateExpectedSummaryFiles(TestCase testCase) throws IOException {
+        try (OutputStream out = Files.newOutputStream(testCase.expected)) {
+            writeSummaryReport(testCase, out, testCase.builder);
+            // Render output in console, easier to inspect results
+            Files.copy(testCase.expected, System.out);
+        }
+    }
+
+    static class TestCase {
+        private final Path source;
+        private final String themeName;
+        private final Builder builder;
+        private final Path expected;
+
+        private final String name;
+
+        TestCase(Path source, String themeName, Builder builder) {
+            this.source = source;
+            this.themeName = themeName;
+            this.builder = builder;
+            String fileName = source.getFileName().toString();
+            this.name = fileName.substring(0, fileName.lastIndexOf(".ndjson"));
+            this.expected = source.getParent().resolve(name + "." + themeName + ".summary.log");
+        }
+
+        @Override
+        public String toString() {
+            return name + " -> " + themeName;
+        }
+
+    }
+
+}
+

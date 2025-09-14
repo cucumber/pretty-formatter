@@ -1,0 +1,11 @@
+
+[31mFailed scenarios:[39m
+samples/stack-traces/stack-traces.feature:9 # A failing step
+
+1 Scenarios ([31m1 failed[39m)
+1 Steps ([31m1 failed[39m)
+0m 0.5s
+
+Error: BOOM
+samples/stack-traces/stack-traces.feature:10
+

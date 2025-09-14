@@ -1,0 +1,7 @@
+
+[31mAmbiguous scenarios:[39m
+samples/ambiguous/ambiguous.feature:5 # Multiple step definitions for a step
+
+1 Scenarios ([31m1 ambiguous[39m)
+1 Steps ([31m1 ambiguous[39m)
+0m 0.5s

@@ -1,0 +1,25 @@
+
+[31mFailed scenarios:[39m
+samples/examples-tables/examples-tables.feature:25 # Eating cucumbers
+samples/examples-tables/examples-tables.feature:26 # Eating cucumbers
+
+[33mUndefined scenarios:[39m
+samples/examples-tables/examples-tables.feature:31 # Eating cucumbers
+samples/examples-tables/examples-tables.feature:32 # Eating cucumbers
+
+9 Scenarios ([32m5 passed[39m, [33m2 undefined[39m, [31m2 failed[39m)
+27 Steps ([32m22 passed[39m, [36m1 skipped[39m, [33m2 undefined[39m, [31m2 failed[39m)
+0m 0.73s
+
+AssertionError: Expected values to be strictly equal:
+
+-8 !== 0
+
+samples/examples-tables/examples-tables.feature:14
+
+AssertionError: Expected values to be strictly equal:
+
+-1 !== 0
+
+samples/examples-tables/examples-tables.feature:14
+

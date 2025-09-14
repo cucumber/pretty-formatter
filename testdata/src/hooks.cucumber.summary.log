@@ -1,0 +1,14 @@
+
+[31mFailed scenarios:[39m
+samples/hooks/hooks.feature:7 # No tags and a failed step
+
+[33mUndefined scenarios:[39m
+samples/hooks/hooks.feature:10 # No tags and a undefined step
+
+3 Scenarios ([32m1 passed[39m, [33m1 undefined[39m, [31m1 failed[39m)
+9 Steps ([32m7 passed[39m, [33m1 undefined[39m, [31m1 failed[39m)
+0m 0.25s
+
+Error: Exception in step
+samples/hooks/hooks.feature:8
+

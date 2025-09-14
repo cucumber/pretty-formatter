@@ -1,0 +1,9 @@
+
+Undefined scenarios:
+samples/undefined/undefined.feature:8 # An undefined step causes a failure
+samples/undefined/undefined.feature:11 # Steps before undefined steps are executed
+samples/undefined/undefined.feature:15 # Steps after undefined steps are skipped
+
+3 Scenarios (3 undefined)
+5 Steps (1 passed, 1 skipped, 3 undefined)
+0m 0.17s

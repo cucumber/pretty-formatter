@@ -1,0 +1,35 @@
+
+Failed scenarios:
+samples/retry/retry.feature:17 # Test cases won't retry after failing more than the --retry limit
+
+Ambiguous scenarios:
+samples/retry/retry.feature:20 # Test cases won't retry when the status is AMBIGUOUS
+
+Pending scenarios:
+samples/retry/retry.feature:23 # Test cases won't retry when the status is PENDING
+
+Undefined scenarios:
+samples/retry/retry.feature:26 # Test cases won't retry when the status is UNDEFINED
+
+7 Scenarios (3 passed, 1 pending, 1 undefined, 1 ambiguous, 1 failed)
+12 Steps (3 passed, 1 pending, 1 undefined, 1 ambiguous, 6 failed)
+0m 0.49s
+
+Error: Exception in step
+samples/retry/retry.feature:12
+
+Error: Exception in step
+samples/retry/retry.feature:15
+
+Error: Exception in step
+samples/retry/retry.feature:15
+
+Error: Exception in step
+samples/retry/retry.feature:18
+
+Error: Exception in step
+samples/retry/retry.feature:18
+
+Error: Exception in step
+samples/retry/retry.feature:18
+
