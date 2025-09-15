@@ -37,6 +37,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 final class SummaryReportWriter implements AutoCloseable {
 
@@ -162,12 +163,12 @@ final class SummaryReportWriter implements AutoCloseable {
                 query.findAllTestCaseFinished().stream()
                         .map(query::findTestStepsFinishedBy)
                         .flatMap(Collection::stream)
-                        .collect(Collectors.toList()), 
+                        .collect(toList()),
                 countTestStepResultStatusByTestStepFinished()));
     }
 
     private <T> String formatSubCounts(
-            String itemName, 
+            String itemName,
             Collection<T> finishedItems,
             Collector<T, ?, Map<TestStepResultStatus, Long>> countTestStepResultStatusByItem
     ) {
