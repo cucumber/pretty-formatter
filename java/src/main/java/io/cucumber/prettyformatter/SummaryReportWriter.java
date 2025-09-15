@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,8 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
+import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
 import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
 import static java.util.Collections.emptyList;
@@ -92,10 +95,10 @@ final class SummaryReportWriter implements AutoCloseable {
                 .stream()
                 .collect(groupingBy(this::getTestStepResultStatusBy));
 
-        printScenarios(testCaseFinishedByStatus, TestStepResultStatus.PENDING);
-        printScenarios(testCaseFinishedByStatus, TestStepResultStatus.UNDEFINED);
-        printScenarios(testCaseFinishedByStatus, TestStepResultStatus.AMBIGUOUS);
-        printScenarios(testCaseFinishedByStatus, TestStepResultStatus.FAILED);
+        EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
+        for (TestStepResultStatus status : EnumSet.complementOf(excluded)) {
+            printScenarios(testCaseFinishedByStatus, status);
+        }
     }
 
     private void printScenarios(
@@ -231,7 +234,7 @@ final class SummaryReportWriter implements AutoCloseable {
         return query.findMostSevereTestStepResultBy(testCaseFinished)
                 .map(TestStepResult::getStatus)
                 // By definition
-                .orElse(TestStepResultStatus.PASSED);
+                .orElse(PASSED);
     }
 
     private static Collector<TestStepFinished, ?, Map<TestStepResultStatus, Long>> countTestStepResultStatusByTestStepFinished() {
