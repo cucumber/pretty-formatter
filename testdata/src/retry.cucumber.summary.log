@@ -1,35 +1,19 @@
 
-[31mFailed scenarios:[39m
-samples/retry/retry.feature:17 # Test cases won't retry after failing more than the --retry limit
-
-[31mAmbiguous scenarios:[39m
-samples/retry/retry.feature:20 # Test cases won't retry when the status is AMBIGUOUS
-
 [33mPending scenarios:[39m
-samples/retry/retry.feature:23 # Test cases won't retry when the status is PENDING
+  1) Test cases won't retry when the status is PENDING[90m # samples/retry/retry.feature:23[39m
 
 [33mUndefined scenarios:[39m
-samples/retry/retry.feature:26 # Test cases won't retry when the status is UNDEFINED
+  1) Test cases won't retry when the status is UNDEFINED[90m # samples/retry/retry.feature:26[39m
+
+[31mAmbiguous scenarios:[39m
+  1) Test cases won't retry when the status is AMBIGUOUS[90m # samples/retry/retry.feature:20[39m
+
+[31mFailed scenarios:[39m
+  1) Test cases won't retry after failing more than the --retry limit[90m # samples/retry/retry.feature:17[39m
+       [31mError: Exception in step[39m
+       [31msamples/retry/retry.feature:18[39m
+
 
 7 Scenarios ([32m3 passed[39m, [33m1 pending[39m, [33m1 undefined[39m, [31m1 ambiguous[39m, [31m1 failed[39m)
 12 Steps ([32m3 passed[39m, [33m1 pending[39m, [33m1 undefined[39m, [31m1 ambiguous[39m, [31m6 failed[39m)
 0m 0.49s
-
-Error: Exception in step
-samples/retry/retry.feature:12
-
-Error: Exception in step
-samples/retry/retry.feature:15
-
-Error: Exception in step
-samples/retry/retry.feature:15
-
-Error: Exception in step
-samples/retry/retry.feature:18
-
-Error: Exception in step
-samples/retry/retry.feature:18
-
-Error: Exception in step
-samples/retry/retry.feature:18
-

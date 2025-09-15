@@ -1,11 +1,10 @@
 
 Failed scenarios:
-samples/stack-traces/stack-traces.feature:9 # A failing step
+  1) A failing step # samples/stack-traces/stack-traces.feature:9
+       Error: BOOM
+       samples/stack-traces/stack-traces.feature:10
+
 
 1 Scenarios (1 failed)
 1 Steps (1 failed)
 0m 0.5s
-
-Error: BOOM
-samples/stack-traces/stack-traces.feature:10
-

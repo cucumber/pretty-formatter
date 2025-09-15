@@ -1,8 +1,8 @@
 
 Undefined scenarios:
-samples/undefined/undefined.feature:8 # An undefined step causes a failure
-samples/undefined/undefined.feature:11 # Steps before undefined steps are executed
-samples/undefined/undefined.feature:15 # Steps after undefined steps are skipped
+  1) An undefined step causes a failure # samples/undefined/undefined.feature:8
+  2) Steps before undefined steps are executed # samples/undefined/undefined.feature:11
+  3) Steps after undefined steps are skipped # samples/undefined/undefined.feature:15
 
 3 Scenarios (3 undefined)
 5 Steps (1 passed, 1 skipped, 3 undefined)

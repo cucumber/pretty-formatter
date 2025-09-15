@@ -1,6 +1,6 @@
 
 Ambiguous scenarios:
-samples/ambiguous/ambiguous.feature:5 # Multiple step definitions for a step
+  1) Multiple step definitions for a step # samples/ambiguous/ambiguous.feature:5
 
 1 Scenarios (1 ambiguous)
 1 Steps (1 ambiguous)

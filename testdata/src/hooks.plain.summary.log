@@ -1,14 +1,13 @@
 
-Failed scenarios:
-samples/hooks/hooks.feature:7 # No tags and a failed step
-
 Undefined scenarios:
-samples/hooks/hooks.feature:10 # No tags and a undefined step
+  1) No tags and a undefined step # samples/hooks/hooks.feature:10
+
+Failed scenarios:
+  1) No tags and a failed step # samples/hooks/hooks.feature:7
+       Error: Exception in step
+       samples/hooks/hooks.feature:8
+
 
 3 Scenarios (1 passed, 1 undefined, 1 failed)
 9 Steps (7 passed, 1 undefined, 1 failed)
 0m 0.25s
-
-Error: Exception in step
-samples/hooks/hooks.feature:8
-

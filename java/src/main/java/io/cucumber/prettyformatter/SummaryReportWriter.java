@@ -1,6 +1,5 @@
 package io.cucumber.prettyformatter;
 
-import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.Snippet;
@@ -24,18 +23,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
 import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
 import static java.util.Collections.emptyList;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
 
 final class SummaryReportWriter implements AutoCloseable {
 
@@ -73,28 +73,27 @@ final class SummaryReportWriter implements AutoCloseable {
 
     public void printSummary() {
         out.println();
+        printNonPassingScenarios();
         printStats();
-        printErrors();
         printSnippets();
     }
 
     private void printStats() {
-        printNonPassingScenarios();
         printScenarioCounts();
         printStepCounts();
         printDuration();
     }
 
     private void printNonPassingScenarios() {
-        Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus = query
-                .findAllTestCaseFinished()
+        // TODO: Print in canonical order?
+        Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus = query.findAllTestCaseFinished()
                 .stream()
                 .collect(groupingBy(this::getTestStepResultStatusBy));
 
-        printScenarios(testCaseFinishedByStatus, TestStepResultStatus.FAILED);
-        printScenarios(testCaseFinishedByStatus, TestStepResultStatus.AMBIGUOUS);
         printScenarios(testCaseFinishedByStatus, TestStepResultStatus.PENDING);
         printScenarios(testCaseFinishedByStatus, TestStepResultStatus.UNDEFINED);
+        printScenarios(testCaseFinishedByStatus, TestStepResultStatus.AMBIGUOUS);
+        printScenarios(testCaseFinishedByStatus, TestStepResultStatus.FAILED);
     }
 
     private void printScenarios(
@@ -105,9 +104,15 @@ final class SummaryReportWriter implements AutoCloseable {
         if (!testCasesFinished.isEmpty()) {
             out.println(theme.style(STATUS_ICON, status, firstLetterCapitalizedName(status) + " scenarios:"));
         }
+        ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
+        AtomicInteger index = new AtomicInteger(0);
         for (TestCaseFinished testCaseFinished : testCasesFinished) {
             query.findPickleBy(testCaseFinished)
-                    .map(pickle -> formatLocation(pickle) + " # " + pickle.getName())
+                    .map(pickle -> formatScenarioLine(index, pickle))
+                    .ifPresent(out::println);
+            query.findMostSevereTestStepResultBy(testCaseFinished)
+                    .flatMap(TestStepResult::getException)
+                    .flatMap(formatter::format)
                     .ifPresent(out::println);
         }
         if (!testCasesFinished.isEmpty()) {
@@ -115,9 +120,15 @@ final class SummaryReportWriter implements AutoCloseable {
         }
     }
 
-    private String formatLocation(Pickle pickle) {
+    private String formatScenarioLine(AtomicInteger index, Pickle pickle) {
+        // TODO: Use long name?
+        return "  " + index.incrementAndGet() + ") " + pickle.getName() + formatLocationComment(pickle);
+    }
+
+    private String formatLocationComment(Pickle pickle) {
         String formattedUri = uriFormatter.apply(pickle.getUri());
-        return formattedUri + query.findLocationOf(pickle).map(Location::getLine).map(line -> ":" + line).orElse("");
+        String comment = " # " + formattedUri + query.findLocationOf(pickle).map(Location::getLine).map(line -> ":" + line).orElse("");
+        return theme.style(LOCATION, comment);
     }
 
     private void printScenarioCounts() {
@@ -162,30 +173,8 @@ final class SummaryReportWriter implements AutoCloseable {
     private static String formatDuration(Duration duration) {
         long minutes = duration.toMinutes();
         long seconds = duration.minusMinutes(minutes).getSeconds();
-        long milliseconds = TimeUnit.NANOSECONDS.toMillis(duration.getNano());
+        long milliseconds = NANOSECONDS.toMillis(duration.getNano());
         return String.format("%sm %s.%ss", minutes, seconds, milliseconds);
-    }
-
-    private void printErrors() {
-        List<String> errors = query.findAllTestStepFinished()
-                .stream()
-                .map(TestStepFinished::getTestStepResult)
-                .map(TestStepResult::getException)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(Exception::getStackTrace)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(toList());
-
-        if (errors.isEmpty()) {
-            return;
-        }
-        out.println();
-        for (String stacktrace : errors) {
-            out.println(stacktrace);
-            out.println();
-        }
     }
 
     private void printSnippets() {
