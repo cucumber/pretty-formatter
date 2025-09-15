@@ -1,0 +1,7 @@
+
+[33mPending scenarios:[39m
+  1) Test cases won't retry when the status is PENDING [90m# samples/retry-pending/retry-pending.feature:2[39m
+
+1 Scenarios ([33m1 pending[39m)
+1 Steps ([33m1 pending[39m)
+0m 0.5s

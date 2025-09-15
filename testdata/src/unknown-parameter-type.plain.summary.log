@@ -1,6 +1,6 @@
 
 Undefined scenarios:
-  1) undefined parameter type # samples/unknown-parameter-type/unknown-parameter-type.feature:5
+  1) undefined parameter type # samples/unknown-parameter-type/unknown-parameter-type.feature:6
 
 These parameters are missing a parameter type definition:
   1) 'airport' in '{airport} is closed because of a strike'
@@ -8,3 +8,10 @@ These parameters are missing a parameter type definition:
 1 Scenarios (1 undefined)
 1 Steps (1 undefined)
 0m 0.5s
+
+You can implement missing steps with the snippets below:
+
+Given("CDG is closed because of a strike", () => {
+  return "pending"
+})
+

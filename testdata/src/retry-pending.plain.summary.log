@@ -1,0 +1,7 @@
+
+Pending scenarios:
+  1) Test cases won't retry when the status is PENDING # samples/retry-pending/retry-pending.feature:2
+
+1 Scenarios (1 pending)
+1 Steps (1 pending)
+0m 0.5s

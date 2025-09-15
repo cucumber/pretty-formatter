@@ -1,8 +1,4 @@
 
-Undefined scenarios:
-  1) Eating cucumbers # samples/examples-tables/examples-tables.feature:31
-  2) Eating cucumbers # samples/examples-tables/examples-tables.feature:32
-
 Failed scenarios:
   1) Eating cucumbers # samples/examples-tables/examples-tables.feature:25
        AssertionError: Expected values to be strictly equal:
@@ -19,6 +15,6 @@ Failed scenarios:
        samples/examples-tables/examples-tables.feature:14
 
 
-9 Scenarios (5 passed, 2 undefined, 2 failed)
-27 Steps (22 passed, 1 skipped, 2 undefined, 2 failed)
-0m 0.73s
+7 Scenarios (5 passed, 2 failed)
+21 Steps (19 passed, 2 failed)
+0m 0.57s

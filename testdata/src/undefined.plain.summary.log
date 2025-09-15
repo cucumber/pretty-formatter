@@ -3,7 +3,23 @@ Undefined scenarios:
   1) An undefined step causes a failure # samples/undefined/undefined.feature:8
   2) Steps before undefined steps are executed # samples/undefined/undefined.feature:11
   3) Steps after undefined steps are skipped # samples/undefined/undefined.feature:15
+  4) Snippets reflect parameter types # samples/undefined/undefined.feature:19
 
-3 Scenarios (3 undefined)
-5 Steps (1 passed, 1 skipped, 3 undefined)
-0m 0.17s
+4 Scenarios (4 undefined)
+6 Steps (1 passed, 1 skipped, 4 undefined)
+0m 0.21s
+
+You can implement missing steps with the snippets below:
+
+Given("a step that is yet to be defined", () => {
+  return "pending"
+})
+
+Given("a list of {int} things", (int: number) => {
+  return "pending"
+})
+
+Given("a list of {float} things", (float: number) => {
+  return "pending"
+})
+

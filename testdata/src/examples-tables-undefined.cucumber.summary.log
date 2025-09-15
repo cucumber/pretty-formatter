@@ -1,0 +1,24 @@
+
+[33mUndefined scenarios:[39m
+  1) Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+  2) Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+  3) Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:17[39m
+
+3 Scenarios ([33m3 undefined[39m)
+9 Steps ([32m3 passed[39m, [36m3 skipped[39m, [33m3 undefined[39m)
+0m 0.25s
+
+You can implement missing steps with the snippets below:
+
+Given("there are pear cucumbers", () => {
+  return "pending"
+})
+
+When("I eat banana cucumbers", () => {
+  return "pending"
+})
+
+Then("I should have apple cucumbers", () => {
+  return "pending"
+})
+
