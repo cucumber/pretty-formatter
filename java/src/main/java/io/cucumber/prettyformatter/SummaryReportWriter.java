@@ -1,11 +1,13 @@
 package io.cucumber.prettyformatter;
 
+import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.Snippet;
 import io.cucumber.messages.types.Suggestion;
 import io.cucumber.messages.types.TestCaseFinished;
 import io.cucumber.messages.types.TestCaseStarted;
+import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStepFinished;
 import io.cucumber.messages.types.TestStepResult;
 import io.cucumber.messages.types.TestStepResultStatus;
@@ -31,6 +33,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
 import static io.cucumber.messages.types.TestStepResultStatus.UNDEFINED;
@@ -82,6 +85,8 @@ final class SummaryReportWriter implements AutoCloseable {
 
     public void printSummary() {
         printNonPassingScenarios();
+        printNonPassingHooks();
+        printNonPassingTestRun();
         printUnknownParameterTypes();
         printStats();
         printSnippets();
@@ -89,6 +94,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private void printStats() {
         out.println();
+        printTestRunCount();
         printScenarioCounts();
         printStepCounts();
         printDuration();
@@ -154,12 +160,41 @@ final class SummaryReportWriter implements AutoCloseable {
         return theme.style(LOCATION, comment);
     }
 
+    private void printNonPassingTestRun() {
+        findTestRunWithException()
+                .ifPresent(exception -> {
+                    out.println(theme.style(STEP, FAILED, firstLetterCapitalizedName(FAILED) + " test run:"));
+                    ExceptionFormatter formatter = new ExceptionFormatter(7, theme, FAILED);
+                    out.println(formatter.format(exception));
+                });
+    }
+
+    private Optional<Exception> findTestRunWithException() {
+        return query.findTestRunFinished()
+                .filter(testRunFinished -> !testRunFinished.getSuccess())
+                .flatMap(TestRunFinished::getException);
+    }
+
+    private void printNonPassingHooks() {
+        // TODO:
+    }
+
+    private void printTestRunCount() {
+        // TODO: No coverage?
+        findTestRunWithException()
+                // Only print stats if the test run failed with exception, avoid clutter
+                .map(exception -> {
+                    String subCounts = theme.style(STEP, FAILED, "1 failed");
+                    return "1 Test run (" + subCounts + ")";
+                })
+                .ifPresent(out::println);
+    }
+
     private void printScenarioCounts() {
         out.println(formatSubCounts(
                 "Scenarios",
                 query.findAllTestCaseFinished(),
                 countTestStepResultStatusByTestCaseFinished()));
-
     }
 
     private void printStepCounts() {
