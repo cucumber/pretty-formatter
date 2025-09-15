@@ -91,7 +91,7 @@ class MessagesToPrettyWriterAcceptanceTest {
     @ParameterizedTest
     @MethodSource("acceptance")
     @Disabled
-    void updateExpectedPrettyFiles(TestCase testCase) throws IOException {
+    void updateExpected(TestCase testCase) throws IOException {
         try (OutputStream out = Files.newOutputStream(testCase.expected)) {
             writePrettyReport(testCase, out, testCase.builder);
             // Render output in console, easier to inspect results

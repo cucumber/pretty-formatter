@@ -85,7 +85,7 @@ class SummaryToPrettyWriterAcceptanceTest {
     @ParameterizedTest
     @MethodSource("acceptance")
     @Disabled
-    void updateExpectedSummaryFiles(TestCase testCase) throws IOException {
+    void updateExpectedFiles(TestCase testCase) throws IOException {
         try (OutputStream out = Files.newOutputStream(testCase.expected)) {
             writeSummaryReport(testCase, out, testCase.builder);
             // Render output in console, easier to inspect results
