@@ -85,9 +85,9 @@ final class SummaryReportWriter implements AutoCloseable {
 
     public void printSummary() {
         printNonPassingScenarios();
-        printNonPassingHooks();
-        printNonPassingTestRun();
         printUnknownParameterTypes();
+        printNonPassingGlobalHooks();
+        printNonPassingTestRun();
         printStats();
         printSnippets();
     }
@@ -95,6 +95,7 @@ final class SummaryReportWriter implements AutoCloseable {
     private void printStats() {
         out.println();
         printTestRunCount();
+        printGlobalHookCount();
         printScenarioCounts();
         printStepCounts();
         printDuration();
@@ -175,7 +176,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 .flatMap(TestRunFinished::getException);
     }
 
-    private void printNonPassingHooks() {
+    private void printNonPassingGlobalHooks() {
         // TODO:
     }
 
@@ -188,6 +189,10 @@ final class SummaryReportWriter implements AutoCloseable {
                     return "1 Test run (" + subCounts + ")";
                 })
                 .ifPresent(out::println);
+    }
+
+    private void printGlobalHookCount() {
+        // TODO:
     }
 
     private void printScenarioCounts() {
