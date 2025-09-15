@@ -1,0 +1,10 @@
+
+Failed scenarios:
+  1) Ylajali! # samples/markdown/markdown.feature.md:38
+       Error: You asked me to fail
+       samples/markdown/markdown.feature.md:24
+
+
+2 Scenarios (1 passed, 1 failed)
+8 Steps (6 passed, 1 skipped, 1 failed)
+0m 0.23s

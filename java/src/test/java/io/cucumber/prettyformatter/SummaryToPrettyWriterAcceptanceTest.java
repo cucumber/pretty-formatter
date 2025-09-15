@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
 import static io.cucumber.prettyformatter.MessagesToSummaryWriter.builder;
@@ -45,22 +47,12 @@ class SummaryToPrettyWriterAcceptanceTest {
         return testCases;
     }
 
-    private static List<Path> getSources() {
-        return Arrays.asList(
-                Paths.get("../testdata/src/ambiguous.ndjson"),
-                Paths.get("../testdata/src/empty.ndjson"),
-                Paths.get("../testdata/src/examples-tables.ndjson"),
-                Paths.get("../testdata/src/hooks.ndjson"),
-                Paths.get("../testdata/src/minimal.ndjson"),
-                Paths.get("../testdata/src/multiple-features.ndjson"),
-                Paths.get("../testdata/src/pending.ndjson"),
-                Paths.get("../testdata/src/retry.ndjson"),
-                Paths.get("../testdata/src/skipped.ndjson"),
-                Paths.get("../testdata/src/stack-traces.ndjson"),
-                Paths.get("../testdata/src/undefined.ndjson"),
-                Paths.get("../testdata/src/unknown-parameter-type.ndjson")
-                
-        );
+    private static List<Path> getSources() throws IOException {
+        try (Stream<Path> paths = Files.list(Paths.get("..", "testdata", "src"))) {
+            return paths
+                    .filter(path -> path.getFileName().toString().endsWith(".ndjson"))
+                    .collect(Collectors.toList());
+        }
     }
 
     private static <T extends OutputStream> T writeSummaryReport(TestCase testCase, T out, MessagesToSummaryWriter.Builder builder) throws IOException {
