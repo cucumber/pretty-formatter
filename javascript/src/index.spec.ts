@@ -168,9 +168,12 @@ describe('Acceptance Tests', async function () {
             })
           )
 
-          const expectedOutput = fs.readFileSync(ndjsonFile.replace('.ndjson', `.${name}.log`), {
-            encoding: 'utf-8',
-          })
+          const expectedOutput = fs.readFileSync(
+            ndjsonFile.replace('.ndjson', `.${name}.pretty.log`),
+            {
+              encoding: 'utf-8',
+            }
+          )
 
           expect(content).to.eq(expectedOutput)
         })
