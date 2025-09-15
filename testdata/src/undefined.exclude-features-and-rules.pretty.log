@@ -9,3 +9,6 @@ Scenario: Steps before undefined steps are executed # samples/undefined/undefine
 Scenario: Steps after undefined steps are skipped # samples/undefined/undefined.feature:15
   Given a step that is yet to be defined
   And a step that will be skipped                 # samples/undefined/undefined.ts:7
+
+Scenario: Snippets reflect parameter types # samples/undefined/undefined.feature:19
+  Given a list of 8 things

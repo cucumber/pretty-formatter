@@ -1,0 +1,18 @@
+
+@undefined
+Scenario Outline: Eating cucumbers # samples/examples-tables-undefined/examples-undefined.feature:15
+  Given there are pear cucumbers
+  When I eat 1 cucumbers           # samples/examples-tables-undefined/examples-tables-undefined.ts:8
+  Then I should have 12 cucumbers  # samples/examples-tables-undefined/examples-tables-undefined.ts:12
+
+@undefined
+Scenario Outline: Eating cucumbers # samples/examples-tables-undefined/examples-undefined.feature:16
+  Given there are 12 cucumbers     # samples/examples-tables-undefined/examples-tables-undefined.ts:4
+  When I eat banana cucumbers
+  Then I should have 12 cucumbers  # samples/examples-tables-undefined/examples-tables-undefined.ts:12
+
+@undefined
+Scenario Outline: Eating cucumbers   # samples/examples-tables-undefined/examples-undefined.feature:17
+  Given there are 0 cucumbers        # samples/examples-tables-undefined/examples-tables-undefined.ts:4
+  When I eat 1 cucumbers             # samples/examples-tables-undefined/examples-tables-undefined.ts:8
+  Then I should have apple cucumbers

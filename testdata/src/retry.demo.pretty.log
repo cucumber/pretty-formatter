@@ -39,13 +39,3 @@
     [31m[1mGiven [22m[3ma step that always fails[23m[39m                                           [90m# samples/retry/retry.ts:23[39m
         [31mError: Exception in step[39m
         [31msamples/retry/retry.feature:18[39m
-
-  [44m[1mScenario:[22m [3mTest cases won't retry when the status is AMBIGUOUS[23m[49m [90m# samples/retry/retry.feature:20[39m
-    [31m[1mGiven [22m[3man ambiguous step[23m[39m
-
-  [44m[1mScenario:[22m [3mTest cases won't retry when the status is PENDING[23m[49m [90m# samples/retry/retry.feature:23[39m
-    [33m[1mGiven [22m[3ma pending step[23m[39m                                      [90m# samples/retry/retry.ts:35[39m
-        [33mTODO[39m
-
-  [44m[1mScenario:[22m [3mTest cases won't retry when the status is UNDEFINED[23m[49m [90m# samples/retry/retry.feature:26[39m
-    [33m[1mGiven [22m[3ma non-existent step[23m[39m

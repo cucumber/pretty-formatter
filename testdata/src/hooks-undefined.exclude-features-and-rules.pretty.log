@@ -1,0 +1,3 @@
+
+Scenario: No tags and a undefined step # samples/hooks-undefined/hooks-undefined.feature:4
+  When a step does not exist

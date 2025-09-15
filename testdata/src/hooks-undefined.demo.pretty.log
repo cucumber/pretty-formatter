@@ -1,0 +1,5 @@
+
+[44m[1mFeature:[22m [3mHooks - With Undefined Steps[23m[49m
+
+  [44m[1mScenario:[22m [3mNo tags and a undefined step[23m[49m [90m# samples/hooks-undefined/hooks-undefined.feature:4[39m
+    [33m[1mWhen [22m[3ma step does not exist[23m[39m

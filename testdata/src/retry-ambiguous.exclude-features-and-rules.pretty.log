@@ -1,0 +1,3 @@
+
+Scenario: Test cases won't retry when the status is AMBIGUOUS # samples/retry-ambiguous/retry-ambiguous.feature:2
+  Given an ambiguous step
