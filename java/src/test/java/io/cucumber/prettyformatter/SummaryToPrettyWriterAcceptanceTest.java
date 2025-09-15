@@ -57,7 +57,8 @@ class SummaryToPrettyWriterAcceptanceTest {
                 Paths.get("../testdata/src/retry.ndjson"),
                 Paths.get("../testdata/src/skipped.ndjson"),
                 Paths.get("../testdata/src/stack-traces.ndjson"),
-                Paths.get("../testdata/src/undefined.ndjson")
+                Paths.get("../testdata/src/undefined.ndjson"),
+                Paths.get("../testdata/src/unknown-parameter-type.ndjson")
                 
         );
     }

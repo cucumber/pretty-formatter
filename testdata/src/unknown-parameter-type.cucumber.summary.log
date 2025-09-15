@@ -1,0 +1,10 @@
+
+[33mUndefined scenarios:[39m
+  1) undefined parameter type [90m# samples/unknown-parameter-type/unknown-parameter-type.feature:5[39m
+
+[33mThese parameters are missing a parameter type definition:[39m
+  1) 'airport' in '{airport} is closed because of a strike'
+
+1 Scenarios ([33m1 undefined[39m)
+1 Steps ([33m1 undefined[39m)
+0m 0.5s

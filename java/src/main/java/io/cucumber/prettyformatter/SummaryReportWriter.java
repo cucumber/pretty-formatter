@@ -9,6 +9,7 @@ import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestStepFinished;
 import io.cucumber.messages.types.TestStepResult;
 import io.cucumber.messages.types.TestStepResultStatus;
+import io.cucumber.messages.types.UndefinedParameterType;
 import io.cucumber.query.Query;
 import io.cucumber.query.Repository;
 
@@ -32,8 +33,8 @@ import java.util.stream.Collectors;
 
 import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
+import static io.cucumber.messages.types.TestStepResultStatus.UNDEFINED;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
-import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static java.util.Collections.emptyList;
 import static java.util.Locale.ROOT;
@@ -49,18 +50,20 @@ final class SummaryReportWriter implements AutoCloseable {
     private final Function<String, String> uriFormatter;
     private final Query query;
     private final PrintWriter out;
+    private final List<UndefinedParameterType> undefinedParameterTypes;
 
     SummaryReportWriter(
             OutputStream out,
             Theme theme,
             Function<String, String> uriFormatter,
-            Repository data
-
+            Repository data,
+            List<UndefinedParameterType> undefinedParameterTypes
     ) {
         this.theme = requireNonNull(theme);
         this.out = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
         this.query = new Query(requireNonNull(data));
+        this.undefinedParameterTypes = requireNonNull(undefinedParameterTypes);
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -78,13 +81,14 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     public void printSummary() {
-        out.println();
         printNonPassingScenarios();
+        printUnknownParameterTypes();
         printStats();
         printSnippets();
     }
 
     private void printStats() {
+        out.println();
         printScenarioCounts();
         printStepCounts();
         printDuration();
@@ -107,9 +111,11 @@ final class SummaryReportWriter implements AutoCloseable {
             TestStepResultStatus status
     ) {
         List<TestCaseFinished> testCasesFinished = testCaseFinishedByStatus.getOrDefault(status, emptyList());
-        if (!testCasesFinished.isEmpty()) {
-            out.println(theme.style(STEP, status, firstLetterCapitalizedName(status) + " scenarios:"));
+        if (testCasesFinished.isEmpty()) {
+            return;
         }
+        out.println();
+        out.println(theme.style(STEP, status, firstLetterCapitalizedName(status) + " scenarios:"));
         ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
         AtomicInteger index = new AtomicInteger(0);
         for (TestCaseFinished testCaseFinished : testCasesFinished) {
@@ -122,9 +128,6 @@ final class SummaryReportWriter implements AutoCloseable {
                     .flatMap(TestStepResult::getException)
                     .flatMap(formatter::format)
                     .ifPresent(out::println);
-        }
-        if (!testCasesFinished.isEmpty()) {
-            out.println();
         }
     }
 
@@ -203,6 +206,20 @@ final class SummaryReportWriter implements AutoCloseable {
         return String.format("%sm %s.%ss", minutes, seconds, milliseconds);
     }
 
+    private void printUnknownParameterTypes() {
+        if (undefinedParameterTypes.isEmpty()) {
+            return;
+        }
+        out.println();
+        out.println(theme.style(STEP, UNDEFINED, "These parameters are missing a parameter type definition:"));
+        int index = 0;
+        for (UndefinedParameterType undefinedParameterType : undefinedParameterTypes) {
+            String name = undefinedParameterType.getName();
+            String expression = undefinedParameterType.getExpression();
+            out.println(String.format("  %s) '%s' in '%s'", ++index, name, expression));
+        }
+    }
+
     private void printSnippets() {
         Set<Snippet> snippets = query.findAllTestCaseFinished().stream()
                 .map(query::findPickleBy)
@@ -226,6 +243,8 @@ final class SummaryReportWriter implements AutoCloseable {
             out.println();
         }
     }
+
+
 
     private Collector<TestCaseFinished, ?, Map<TestStepResultStatus, Long>> countTestStepResultStatusByTestCaseFinished() {
         return groupingBy(this::getTestStepResultStatusBy, counting());
