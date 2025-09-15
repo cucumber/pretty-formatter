@@ -34,6 +34,7 @@ import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
 import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
+import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static java.util.Collections.emptyList;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
@@ -107,7 +108,7 @@ final class SummaryReportWriter implements AutoCloseable {
     ) {
         List<TestCaseFinished> testCasesFinished = testCaseFinishedByStatus.getOrDefault(status, emptyList());
         if (!testCasesFinished.isEmpty()) {
-            out.println(theme.style(STATUS_ICON, status, firstLetterCapitalizedName(status) + " scenarios:"));
+            out.println(theme.style(STEP, status, firstLetterCapitalizedName(status) + " scenarios:"));
         }
         ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
         AtomicInteger index = new AtomicInteger(0);
@@ -183,7 +184,7 @@ final class SummaryReportWriter implements AutoCloseable {
         for (TestStepResultStatus status : TestStepResultStatus.values()) {
             long count = subCounts.getOrDefault(status, 0L);
             if (count != 0) {
-                joiner.add(theme.style(STATUS_ICON, status, count + " " + status.name().toLowerCase(ROOT)));
+                joiner.add(theme.style(STEP, status, count + " " + status.name().toLowerCase(ROOT)));
             }
         }
         return joiner.toString();
