@@ -113,7 +113,7 @@ class MessagesToPrettyWriterAcceptanceTest {
             this.builder = builder;
             String fileName = source.getFileName().toString();
             this.name = fileName.substring(0, fileName.lastIndexOf(".ndjson"));
-            this.expected = source.getParent().resolve(name + "." + themeName + ".log");
+            this.expected = source.getParent().resolve(name + "." + themeName + ".pretty.log");
         }
 
         @Override
