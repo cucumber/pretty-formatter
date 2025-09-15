@@ -244,8 +244,6 @@ final class SummaryReportWriter implements AutoCloseable {
         }
     }
 
-
-
     private Collector<TestCaseFinished, ?, Map<TestStepResultStatus, Long>> countTestStepResultStatusByTestCaseFinished() {
         return groupingBy(this::getTestStepResultStatusBy, counting());
     }
