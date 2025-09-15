@@ -111,7 +111,7 @@ final class SummaryReportWriter implements AutoCloseable {
             query.findTestCaseStartedBy(testCaseFinished)
                     .flatMap(testCaseStarted ->
                             query.findPickleBy(testCaseStarted)
-                                    .map(pickle -> formatScenarioLine(index, pickle, testCaseStarted)))
+                                    .map(pickle -> formatScenarioLine(index, testCaseStarted, pickle)))
                     .ifPresent(out::println);
             query.findMostSevereTestStepResultBy(testCaseFinished)
                     .flatMap(TestStepResult::getException)
@@ -123,11 +123,11 @@ final class SummaryReportWriter implements AutoCloseable {
         }
     }
 
-    private String formatScenarioLine(AtomicInteger counter, Pickle pickle, TestCaseStarted testCaseStarted) {
-        String attempt = formatAttempt(testCaseStarted);
+    private String formatScenarioLine(AtomicInteger counter, TestCaseStarted testCaseStarted, Pickle pickle) {
         int index = counter.incrementAndGet();
         // TODO: Use long name?
         String name = pickle.getName();
+        String attempt = formatAttempt(testCaseStarted);
         String location = formatLocationComment(pickle);
         return String.format("  %d) %s%s %s", index, name, attempt, location);
     }
@@ -157,12 +157,18 @@ final class SummaryReportWriter implements AutoCloseable {
     private void printStepCounts() {
         out.println(formatSubCounts(
                 "Steps",
-                query.findAllTestStepFinished(),
+                // findAllTestCaseFinished excludes non-final test cases
+                // This ensures findTestStepsFinishedBy does not include retried steps
+                query.findAllTestCaseFinished().stream()
+                        .map(query::findTestStepsFinishedBy)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList()), 
                 countTestStepResultStatusByTestStepFinished()));
     }
 
     private <T> String formatSubCounts(
-            String itemName, List<T> finishedItems,
+            String itemName, 
+            Collection<T> finishedItems,
             Collector<T, ?, Map<TestStepResultStatus, Long>> countTestStepResultStatusByItem
     ) {
         String countAndName = finishedItems.size() + " " + itemName;
