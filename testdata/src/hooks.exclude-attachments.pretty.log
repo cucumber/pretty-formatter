@@ -8,6 +8,3 @@ Feature: Hooks
     When a step fails                 # samples/hooks/hooks.ts:11
         Error: Exception in step
         samples/hooks/hooks.feature:8
-
-  Scenario: No tags and a undefined step # samples/hooks/hooks.feature:10
-    When a step does not exist

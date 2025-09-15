@@ -1,0 +1,3 @@
+
+Scenario: Test cases won't retry when the status is UNDEFINED # samples/retry-undefined/retry-undefined.feature:2
+  Given a non-existent step

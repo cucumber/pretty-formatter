@@ -1,0 +1,5 @@
+
+[1mFeature:[22m Retry - With Undefined Steps
+
+  [1mScenario:[22m Test cases won't retry when the status is UNDEFINED [90m# samples/retry-undefined/retry-undefined.feature:2[39m
+    [33m■[39m [33m[1mGiven [22ma non-existent step[39m

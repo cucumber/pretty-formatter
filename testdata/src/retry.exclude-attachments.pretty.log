@@ -39,13 +39,3 @@ Feature: Retry
     Given a step that always fails                                           # samples/retry/retry.ts:23
         Error: Exception in step
         samples/retry/retry.feature:18
-
-  Scenario: Test cases won't retry when the status is AMBIGUOUS # samples/retry/retry.feature:20
-    Given an ambiguous step
-
-  Scenario: Test cases won't retry when the status is PENDING # samples/retry/retry.feature:23
-    Given a pending step                                      # samples/retry/retry.ts:35
-        TODO
-
-  Scenario: Test cases won't retry when the status is UNDEFINED # samples/retry/retry.feature:26
-    Given a non-existent step

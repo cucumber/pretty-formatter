@@ -8,6 +8,3 @@
     [31m[1mWhen [22m[3ma step fails[23m[39m                 [90m# samples/hooks/hooks.ts:11[39m
         [31mError: Exception in step[39m
         [31msamples/hooks/hooks.feature:8[39m
-
-  [44m[1mScenario:[22m [3mNo tags and a undefined step[23m[49m [90m# samples/hooks/hooks.feature:10[39m
-    [33m[1mWhen [22m[3ma step does not exist[23m[39m

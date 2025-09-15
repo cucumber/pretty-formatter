@@ -1,0 +1,5 @@
+
+[1mFeature:[22m Retry - With Ambiguous Steps
+
+  [1mScenario:[22m Test cases won't retry when the status is AMBIGUOUS [90m# samples/retry-ambiguous/retry-ambiguous.feature:2[39m
+    [31m✘[39m [31m[1mGiven [22man ambiguous step[39m
