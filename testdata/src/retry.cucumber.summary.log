@@ -1,15 +1,15 @@
 
 [33mPending scenarios:[39m
-  1) Test cases won't retry when the status is PENDING[90m # samples/retry/retry.feature:23[39m
+  1) Test cases won't retry when the status is PENDING [90m# samples/retry/retry.feature:23[39m
 
 [33mUndefined scenarios:[39m
-  1) Test cases won't retry when the status is UNDEFINED[90m # samples/retry/retry.feature:26[39m
+  1) Test cases won't retry when the status is UNDEFINED [90m# samples/retry/retry.feature:26[39m
 
 [31mAmbiguous scenarios:[39m
-  1) Test cases won't retry when the status is AMBIGUOUS[90m # samples/retry/retry.feature:20[39m
+  1) Test cases won't retry when the status is AMBIGUOUS [90m# samples/retry/retry.feature:20[39m
 
 [31mFailed scenarios:[39m
-  1) Test cases won't retry after failing more than the --retry limit[90m # samples/retry/retry.feature:17[39m
+  1) Test cases won't retry after failing more than the --retry limit, after 2 attempts [90m# samples/retry/retry.feature:17[39m
        [31mError: Exception in step[39m
        [31msamples/retry/retry.feature:18[39m
 

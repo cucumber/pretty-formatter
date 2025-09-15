@@ -1,9 +1,9 @@
 
 [33mUndefined scenarios:[39m
-  1) No tags and a undefined step[90m # samples/hooks/hooks.feature:10[39m
+  1) No tags and a undefined step [90m# samples/hooks/hooks.feature:10[39m
 
 [31mFailed scenarios:[39m
-  1) No tags and a failed step[90m # samples/hooks/hooks.feature:7[39m
+  1) No tags and a failed step [90m# samples/hooks/hooks.feature:7[39m
        [31mError: Exception in step[39m
        [31msamples/hooks/hooks.feature:8[39m
 

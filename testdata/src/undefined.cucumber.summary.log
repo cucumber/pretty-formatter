@@ -1,8 +1,8 @@
 
 [33mUndefined scenarios:[39m
-  1) An undefined step causes a failure[90m # samples/undefined/undefined.feature:8[39m
-  2) Steps before undefined steps are executed[90m # samples/undefined/undefined.feature:11[39m
-  3) Steps after undefined steps are skipped[90m # samples/undefined/undefined.feature:15[39m
+  1) An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+  2) Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:11[39m
+  3) Steps after undefined steps are skipped [90m# samples/undefined/undefined.feature:15[39m
 
 3 Scenarios ([33m3 undefined[39m)
 5 Steps ([32m1 passed[39m, [36m1 skipped[39m, [33m3 undefined[39m)

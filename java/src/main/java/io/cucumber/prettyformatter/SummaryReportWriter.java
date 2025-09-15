@@ -5,6 +5,7 @@ import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.Snippet;
 import io.cucumber.messages.types.Suggestion;
 import io.cucumber.messages.types.TestCaseFinished;
+import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestStepFinished;
 import io.cucumber.messages.types.TestStepResult;
 import io.cucumber.messages.types.TestStepResultStatus;
@@ -107,8 +108,10 @@ final class SummaryReportWriter implements AutoCloseable {
         ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
         AtomicInteger index = new AtomicInteger(0);
         for (TestCaseFinished testCaseFinished : testCasesFinished) {
-            query.findPickleBy(testCaseFinished)
-                    .map(pickle -> formatScenarioLine(index, pickle))
+            query.findTestCaseStartedBy(testCaseFinished)
+                    .flatMap(testCaseStarted ->
+                            query.findPickleBy(testCaseStarted)
+                                    .map(pickle -> formatScenarioLine(index, pickle, testCaseStarted)))
                     .ifPresent(out::println);
             query.findMostSevereTestStepResultBy(testCaseFinished)
                     .flatMap(TestStepResult::getException)
@@ -120,14 +123,26 @@ final class SummaryReportWriter implements AutoCloseable {
         }
     }
 
-    private String formatScenarioLine(AtomicInteger index, Pickle pickle) {
+    private String formatScenarioLine(AtomicInteger counter, Pickle pickle, TestCaseStarted testCaseStarted) {
+        String attempt = formatAttempt(testCaseStarted);
+        int index = counter.incrementAndGet();
         // TODO: Use long name?
-        return "  " + index.incrementAndGet() + ") " + pickle.getName() + formatLocationComment(pickle);
+        String name = pickle.getName();
+        String location = formatLocationComment(pickle);
+        return String.format("  %d) %s%s %s", index, name, attempt, location);
+    }
+
+    private static String formatAttempt(TestCaseStarted testCaseStarted) {
+        Long attempt = testCaseStarted.getAttempt();
+        if (attempt == 0) {
+            return "";
+        }
+        return ", after " + attempt + " attempts";
     }
 
     private String formatLocationComment(Pickle pickle) {
         String formattedUri = uriFormatter.apply(pickle.getUri());
-        String comment = " # " + formattedUri + query.findLocationOf(pickle).map(Location::getLine).map(line -> ":" + line).orElse("");
+        String comment = "# " + formattedUri + query.findLocationOf(pickle).map(Location::getLine).map(line -> ":" + line).orElse("");
         return theme.style(LOCATION, comment);
     }
 
