@@ -8,6 +8,7 @@ import io.cucumber.messages.types.Suggestion;
 import io.cucumber.messages.types.TestCaseFinished;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
+import io.cucumber.messages.types.TestRunHookFinished;
 import io.cucumber.messages.types.TestStepFinished;
 import io.cucumber.messages.types.TestStepResult;
 import io.cucumber.messages.types.TestStepResultStatus;
@@ -101,6 +102,17 @@ final class SummaryReportWriter implements AutoCloseable {
         printDuration();
     }
 
+    private void printNonPassingGlobalHooks() {
+        Map<TestStepResultStatus, List<TestRunHookFinished>> testRunHookFinishedByStatus = query.findAllTestRunHookFinished()
+                .stream()
+                .collect(groupingBy(SummaryReportWriter::getTestStepResultStatusBy));
+
+        EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
+        for (TestStepResultStatus status : EnumSet.complementOf(excluded)) {
+            printGlobalHooks(testRunHookFinishedByStatus, status);
+        }
+    }
+
     private void printNonPassingScenarios() {
         // TODO: Print in canonical order?
         Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus = query.findAllTestCaseFinished()
@@ -138,6 +150,27 @@ final class SummaryReportWriter implements AutoCloseable {
         }
     }
 
+    private void printGlobalHooks(
+            Map<TestStepResultStatus, List<TestRunHookFinished>> testRunHookFinishedByStatus, 
+            TestStepResultStatus status
+    ) {
+        List<TestRunHookFinished> testRunHooksFinished = testRunHookFinishedByStatus.getOrDefault(status, emptyList());
+        if (testRunHooksFinished.isEmpty()) {
+            return;
+        }
+        out.println();
+        out.println(theme.style(STEP, status, firstLetterCapitalizedName(status) + " hooks:"));
+        ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
+        AtomicInteger index = new AtomicInteger(0);
+        for (TestRunHookFinished testRunHookFinished : testRunHooksFinished) {
+            // TODO: Print problem number + Hook name or method
+            testRunHookFinished.getResult()
+                    .getException()
+                    .flatMap(formatter::format)
+                    .ifPresent(out::println);
+        }
+    }
+    
     private String formatScenarioLine(AtomicInteger counter, TestCaseStarted testCaseStarted, Pickle pickle) {
         int index = counter.incrementAndGet();
         // TODO: Use long name?
@@ -176,9 +209,6 @@ final class SummaryReportWriter implements AutoCloseable {
                 .flatMap(TestRunFinished::getException);
     }
 
-    private void printNonPassingGlobalHooks() {
-        // TODO:
-    }
 
     private void printTestRunCount() {
         // TODO: No coverage?
@@ -192,7 +222,16 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printGlobalHookCount() {
-        // TODO:
+        List<TestRunHookFinished> testRunHooksFinished = query.findAllTestRunHookFinished();
+        if (testRunHooksFinished.isEmpty()) {
+            return;
+        }
+
+        out.println(formatSubCounts(
+                "Hooks",
+                testRunHooksFinished,
+                countTestStepResultStatusByTestRunHookFinished()));
+        
     }
 
     private void printScenarioCounts() {
@@ -282,6 +321,14 @@ final class SummaryReportWriter implements AutoCloseable {
             out.println(snippet.getCode());
             out.println();
         }
+    }
+
+    private Collector<TestRunHookFinished, ?, Map<TestStepResultStatus, Long>> countTestStepResultStatusByTestRunHookFinished() {
+        return groupingBy(SummaryReportWriter::getTestStepResultStatusBy, counting());
+    }
+
+    private static TestStepResultStatus getTestStepResultStatusBy(TestRunHookFinished testRunHookFinished) {
+        return testRunHookFinished.getResult().getStatus();
     }
 
     private Collector<TestCaseFinished, ?, Map<TestStepResultStatus, Long>> countTestStepResultStatusByTestCaseFinished() {

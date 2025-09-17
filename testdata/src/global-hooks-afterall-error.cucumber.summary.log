@@ -1,4 +1,10 @@
 
+[31mFailed hooks:[39m
+       [31mError: AfterAll hook went wrong[39m
+       [31msamples/global-hooks-afterall-error/global-hooks-afterall-error.ts:19[39m
+
+
+5 Hooks ([32m4 passed[39m, [31m1 failed[39m)
 1 Scenarios ([32m1 passed[39m)
 1 Steps ([32m1 passed[39m)
 0m 0.15s
