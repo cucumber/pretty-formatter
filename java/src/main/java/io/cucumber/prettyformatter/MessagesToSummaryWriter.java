@@ -26,7 +26,6 @@ public final class MessagesToSummaryWriter implements AutoCloseable {
 
     private final Repository repository = Repository.builder()
             .feature(INCLUDE_HOOKS, true)
-            .feature(INCLUDE_STEP_DEFINITIONS, true)
             .feature(INCLUDE_GHERKIN_DOCUMENTS, true)
             .feature(INCLUDE_SUGGESTIONS, true)
             .build();

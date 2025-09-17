@@ -9,7 +9,7 @@ Pretty Formatter Usage and Installation
 
 ## Theming
 
-The messages to pretty writer can be configured with a custom theme. For example to remove all colors.
+The messages to pretty and summary writers can be configured with a custom theme. For example to remove all colors.
 
 ```java
 var writer = MessagesToPrettyWriter.builder()
