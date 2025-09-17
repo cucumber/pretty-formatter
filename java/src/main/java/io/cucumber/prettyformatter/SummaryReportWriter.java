@@ -127,7 +127,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printNonPassingScenarios() {
-        Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus = findTestCasesFinishedInCanonicalOrder()
+        Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus = findAllTestCasesFinishedInCanonicalOrder()
                 .collect(groupingBy(this::getTestStepResultStatusBy));
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
@@ -142,7 +142,7 @@ final class SummaryReportWriter implements AutoCloseable {
         }
     }
 
-    private Stream<TestCaseFinished> findTestCasesFinishedInCanonicalOrder() {
+    private Stream<TestCaseFinished> findAllTestCasesFinishedInCanonicalOrder() {
         return query.findAllTestCaseFinished().stream()
                 .map(testCaseStarted -> {
                     Optional<Pickle> pickle = query.findPickleBy(testCaseStarted);
@@ -350,7 +350,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printSnippets() {
-        Set<Snippet> snippets = findTestCasesFinishedInCanonicalOrder()
+        Set<Snippet> snippets = findAllTestCasesFinishedInCanonicalOrder()
                 .map(query::findPickleBy)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
