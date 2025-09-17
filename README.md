@@ -21,9 +21,10 @@
 Pretty Formatter
 ================
 
-Writes a rich report of the scenario and example execution as it happens. Useful when running Cucumber from the terminal.
+The pretty formatter writes a rich report of the scenario and example execution as it happens. Useful when running Cucumber from the terminal.
+The summary formatter writes a rich summary at the end of the test run.
 
-![Example output of the pretty formatting, showing the different colors used](https://github.com/user-attachments/assets/feed2857-b8cb-4663-9a5a-57044cfa5356)
+![Example output of the pretty formatting, showing the different colors used](https://github.com/user-attachments/assets/f7270e9d-e434-490f-ad96-c178f165a8eb)
 
 ## Test outcome coloring
 
