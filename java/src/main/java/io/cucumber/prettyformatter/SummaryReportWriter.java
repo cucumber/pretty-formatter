@@ -109,7 +109,15 @@ final class SummaryReportWriter implements AutoCloseable {
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
         for (TestStepResultStatus status : EnumSet.complementOf(excluded)) {
-            printGlobalHooks(testRunHookFinishedByStatus, status);
+            printFinishedItemByStatus(
+                    "hooks",
+                    testRunHookFinishedByStatus, 
+                    status,
+                    // TODO: Print hook name or method
+                    testRunHookFinished -> Optional.empty(),
+                    testRunHookFinished -> Optional.of(testRunHookFinished.getResult())
+                    
+            );
         }
     }
 
@@ -121,64 +129,56 @@ final class SummaryReportWriter implements AutoCloseable {
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
         for (TestStepResultStatus status : EnumSet.complementOf(excluded)) {
-            printScenarios(testCaseFinishedByStatus, status);
+            printFinishedItemByStatus(
+                    "scenarios",
+                    testCaseFinishedByStatus,
+                    status,
+                    this::formatScenarioName,
+                    query::findMostSevereTestStepResultBy
+            );
         }
     }
 
-    private void printScenarios(
-            Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus,
-            TestStepResultStatus status
+    private Optional<String> formatScenarioName(TestCaseFinished testCaseFinished) {
+        return query.findTestCaseStartedBy(testCaseFinished)
+                .flatMap(testCaseStarted -> query.findPickleBy(testCaseStarted)
+                        .map(pickle -> {
+                            String name = pickle.getName();
+                            String attempt = formatAttempt(testCaseStarted);
+                            String location = formatLocationComment(pickle);
+                            return String.format("%s%s %s", name, attempt, location);
+                        }));
+    }
+    
+    private <T> void printFinishedItemByStatus(
+            String finishedItemName,
+            Map<TestStepResultStatus, List<T>> finishedItemByStatus,
+            TestStepResultStatus status,
+            Function<T, Optional<String>> formatFinishedItem,
+            Function<T, Optional<TestStepResult>> getTestStepResult
+
     ) {
-        List<TestCaseFinished> testCasesFinished = testCaseFinishedByStatus.getOrDefault(status, emptyList());
-        if (testCasesFinished.isEmpty()) {
+        List<T> items = finishedItemByStatus.getOrDefault(status, emptyList());
+        if (items.isEmpty()) {
             return;
         }
         out.println();
-        out.println(theme.style(STEP, status, firstLetterCapitalizedName(status) + " scenarios:"));
+        String finishItemByStatusTitle = String.format("%s %s:", firstLetterCapitalizedName(status), finishedItemName);
+        out.println(theme.style(STEP, status, finishItemByStatusTitle));
         ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
         AtomicInteger index = new AtomicInteger(0);
-        for (TestCaseFinished testCaseFinished : testCasesFinished) {
-            query.findTestCaseStartedBy(testCaseFinished)
-                    .flatMap(testCaseStarted ->
-                            query.findPickleBy(testCaseStarted)
-                                    .map(pickle -> formatScenarioLine(index, testCaseStarted, pickle)))
+        for (T testCaseFinished : items) {
+            formatFinishedItem.apply(testCaseFinished)
+                    .map(line -> String.format("  %d) %s", index.incrementAndGet(), line))
                     .ifPresent(out::println);
-            query.findMostSevereTestStepResultBy(testCaseFinished)
+            getTestStepResult.apply(testCaseFinished)
                     .flatMap(TestStepResult::getException)
                     .flatMap(formatter::format)
                     .ifPresent(out::println);
         }
     }
 
-    private void printGlobalHooks(
-            Map<TestStepResultStatus, List<TestRunHookFinished>> testRunHookFinishedByStatus, 
-            TestStepResultStatus status
-    ) {
-        List<TestRunHookFinished> testRunHooksFinished = testRunHookFinishedByStatus.getOrDefault(status, emptyList());
-        if (testRunHooksFinished.isEmpty()) {
-            return;
-        }
-        out.println();
-        out.println(theme.style(STEP, status, firstLetterCapitalizedName(status) + " hooks:"));
-        ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
-        AtomicInteger index = new AtomicInteger(0);
-        for (TestRunHookFinished testRunHookFinished : testRunHooksFinished) {
-            // TODO: Print problem number + Hook name or method
-            testRunHookFinished.getResult()
-                    .getException()
-                    .flatMap(formatter::format)
-                    .ifPresent(out::println);
-        }
-    }
-    
-    private String formatScenarioLine(AtomicInteger counter, TestCaseStarted testCaseStarted, Pickle pickle) {
-        int index = counter.incrementAndGet();
-        // TODO: Use long name?
-        String name = pickle.getName();
-        String attempt = formatAttempt(testCaseStarted);
-        String location = formatLocationComment(pickle);
-        return String.format("  %d) %s%s %s", index, name, attempt, location);
-    }
+
 
     private static String formatAttempt(TestCaseStarted testCaseStarted) {
         Long attempt = testCaseStarted.getAttempt();
@@ -231,7 +231,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 "Hooks",
                 testRunHooksFinished,
                 countTestStepResultStatusByTestRunHookFinished()));
-        
+
     }
 
     private void printScenarioCounts() {
