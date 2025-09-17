@@ -148,12 +148,11 @@ final class SummaryReportWriter implements AutoCloseable {
                     Optional<Pickle> pickle = query.findPickleBy(testCaseStarted);
                     String uri = pickle.map(Pickle::getUri).orElse(null);
                     Long line = pickle.flatMap(query::findLocationOf).map(Location::getLine).orElse(null);
-                    return new OrderableEvent<>(testCaseStarted, uri, line);
+                    return new OrderableMessage<>(testCaseStarted, uri, line);
                 })
                 .sorted()
-                .map(OrderableEvent::getEvent);
+                .map(OrderableMessage::getMessage);
     }
-
 
     private Optional<String> formatScenarioLine(TestCaseFinished testCaseFinished) {
         return query.findTestCaseStartedBy(testCaseFinished)
