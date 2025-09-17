@@ -1,6 +1,8 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Exception;
+import io.cucumber.messages.types.Hook;
+import io.cucumber.messages.types.HookType;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.Snippet;
@@ -52,6 +54,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private final Theme theme;
     private final Function<String, String> uriFormatter;
+    private final SourceReferenceFormatter sourceReferenceFormatter;
     private final Query query;
     private final PrintWriter out;
     private final List<UndefinedParameterType> undefinedParameterTypes;
@@ -66,6 +69,7 @@ final class SummaryReportWriter implements AutoCloseable {
         this.theme = requireNonNull(theme);
         this.out = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
+        this.sourceReferenceFormatter = new SourceReferenceFormatter(uriFormatter);
         this.query = new Query(requireNonNull(data));
         this.undefinedParameterTypes = requireNonNull(undefinedParameterTypes);
     }
@@ -108,15 +112,15 @@ final class SummaryReportWriter implements AutoCloseable {
                 .collect(groupingBy(SummaryReportWriter::getTestStepResultStatusBy));
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
+
         for (TestStepResultStatus status : EnumSet.complementOf(excluded)) {
             printFinishedItemByStatus(
                     "hooks",
-                    testRunHookFinishedByStatus, 
+                    testRunHookFinishedByStatus,
                     status,
-                    // TODO: Print hook name or method
-                    testRunHookFinished -> Optional.empty(),
+                    this::formatHookLine,
                     testRunHookFinished -> Optional.of(testRunHookFinished.getResult())
-                    
+
             );
         }
     }
@@ -133,23 +137,48 @@ final class SummaryReportWriter implements AutoCloseable {
                     "scenarios",
                     testCaseFinishedByStatus,
                     status,
-                    this::formatScenarioName,
+                    this::formatScenarioLine,
                     query::findMostSevereTestStepResultBy
             );
         }
     }
 
-    private Optional<String> formatScenarioName(TestCaseFinished testCaseFinished) {
+    private Optional<String> formatScenarioLine(TestCaseFinished testCaseFinished) {
         return query.findTestCaseStartedBy(testCaseFinished)
                 .flatMap(testCaseStarted -> query.findPickleBy(testCaseStarted)
                         .map(pickle -> {
                             String name = pickle.getName();
                             String attempt = formatAttempt(testCaseStarted);
                             String location = formatLocationComment(pickle);
-                            return String.format("%s%s %s", name, attempt, location);
+                            return String.format("%s%s%s", name, attempt, location);
                         }));
     }
-    
+
+    private Optional<String> formatHookLine(TestRunHookFinished testRunHookFinished) {
+        return query.findHookBy(testRunHookFinished)
+                .map(hook -> {
+                    String hookTypeName = hook.getType()
+                            .map(SummaryReportWriter::formatGlobalHookName)
+                            .orElse("Unknown");
+                    String hookName = hook.getName()
+                            .map(name -> "(" + name + ")")
+                            .orElse("");
+                    String location = formatLocationComment(hook);
+                    return String.format("%s%s%s", hookTypeName, hookName, location);
+                });
+    }
+
+    private static String formatGlobalHookName(HookType hookType) {
+        switch (hookType) {
+            case BEFORE_TEST_RUN:
+                return "BeforeTestRun";
+            case AFTER_TEST_RUN:
+                return "AfterTestRun";
+            default:
+                return "Unknown";
+        }
+    }
+
     private <T> void printFinishedItemByStatus(
             String finishedItemName,
             Map<TestStepResultStatus, List<T>> finishedItemByStatus,
@@ -179,7 +208,6 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
 
-
     private static String formatAttempt(TestCaseStarted testCaseStarted) {
         Long attempt = testCaseStarted.getAttempt();
         if (attempt == 0) {
@@ -190,8 +218,18 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private String formatLocationComment(Pickle pickle) {
         String formattedUri = uriFormatter.apply(pickle.getUri());
-        String comment = "# " + formattedUri + query.findLocationOf(pickle).map(Location::getLine).map(line -> ":" + line).orElse("");
-        return theme.style(LOCATION, comment);
+        String comment = "# " + formattedUri + query.findLocationOf(pickle)
+                .map(Location::getLine)
+                .map(line -> ":" + line)
+                .orElse("");
+        return " " + theme.style(LOCATION, comment);
+    }
+
+    private String formatLocationComment(Hook hook) {
+        return sourceReferenceFormatter.format(hook.getSourceReference())
+                .map(comment -> theme.style(LOCATION, "#" + comment))
+                .map(comment -> " " + comment)
+                .orElse("");
     }
 
     private void printNonPassingTestRun() {

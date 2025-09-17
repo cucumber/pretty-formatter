@@ -1,5 +1,6 @@
 
 Failed hooks:
+  1) BeforeTestRun #samples/global-hooks-beforeall-error/global-hooks-beforeall-error.ts:7
        Error: BeforeAll hook went wrong
        samples/global-hooks-beforeall-error/global-hooks-beforeall-error.ts:7
 
