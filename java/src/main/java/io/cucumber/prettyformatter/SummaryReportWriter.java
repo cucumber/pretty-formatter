@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
@@ -94,6 +95,7 @@ final class SummaryReportWriter implements AutoCloseable {
         printNonPassingGlobalHooks();
         printNonPassingTestRun();
         printStats();
+        // Print snippets at the end to make copy-pasting easier
         printSnippets();
     }
 
@@ -112,7 +114,6 @@ final class SummaryReportWriter implements AutoCloseable {
                 .collect(groupingBy(SummaryReportWriter::getTestStepResultStatusBy));
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
-
         for (TestStepResultStatus status : EnumSet.complementOf(excluded)) {
             printFinishedItemByStatus(
                     "hooks",
@@ -126,9 +127,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printNonPassingScenarios() {
-        // TODO: Print in canonical order?
-        Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus = query.findAllTestCaseFinished()
-                .stream()
+        Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus = findTestCasesFinishedInCanonicalOrder()
                 .collect(groupingBy(this::getTestStepResultStatusBy));
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
@@ -142,6 +141,19 @@ final class SummaryReportWriter implements AutoCloseable {
             );
         }
     }
+
+    private Stream<TestCaseFinished> findTestCasesFinishedInCanonicalOrder() {
+        return query.findAllTestCaseFinished().stream()
+                .map(testCaseStarted -> {
+                    Optional<Pickle> pickle = query.findPickleBy(testCaseStarted);
+                    String uri = pickle.map(Pickle::getUri).orElse(null);
+                    Long line = pickle.flatMap(query::findLocationOf).map(Location::getLine).orElse(null);
+                    return new OrderableEvent<>(testCaseStarted, uri, line);
+                })
+                .sorted()
+                .map(OrderableEvent::getEvent);
+    }
+
 
     private Optional<String> formatScenarioLine(TestCaseFinished testCaseFinished) {
         return query.findTestCaseStartedBy(testCaseFinished)
@@ -338,7 +350,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printSnippets() {
-        Set<Snippet> snippets = query.findAllTestCaseFinished().stream()
+        Set<Snippet> snippets = findTestCasesFinishedInCanonicalOrder()
                 .map(query::findPickleBy)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -355,6 +367,7 @@ final class SummaryReportWriter implements AutoCloseable {
         out.println();
         out.println("You can implement missing steps with the snippets below:");
         out.println();
+        // Don't include any other formatting to make copy-pasting easier.
         for (Snippet snippet : snippets) {
             out.println(snippet.getCode());
             out.println();

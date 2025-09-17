@@ -18,10 +18,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
+import static io.cucumber.prettyformatter.MessageOrderer.originalOrder;
+import static io.cucumber.prettyformatter.MessageOrderer.simulateParallelExecution;
 import static io.cucumber.prettyformatter.MessagesToSummaryWriter.builder;
 import static io.cucumber.prettyformatter.Theme.cucumber;
 import static io.cucumber.prettyformatter.Theme.plain;
@@ -54,14 +57,18 @@ class SummaryToPrettyWriterAcceptanceTest {
         }
     }
 
-    private static <T extends OutputStream> T writeSummaryReport(TestCase testCase, T out, MessagesToSummaryWriter.Builder builder) throws IOException {
+    private static <T extends OutputStream> T writeSummaryReport(TestCase testCase, T out, Builder builder, Consumer<List<Envelope>> orderer) throws IOException {
+        List<Envelope> messages = new ArrayList<>();
         try (InputStream in = Files.newInputStream(testCase.source)) {
             try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, deserializer)) {
-                try (MessagesToSummaryWriter writer = builder.build(out)) {
-                    for (Envelope envelope : envelopes) {
-                        writer.write(envelope);
-                    }
-                }
+                envelopes.forEach(messages::add);
+            }
+        }
+        orderer.accept(messages);
+
+        try (MessagesToSummaryWriter writer = builder.build(out)) {
+            for (Envelope envelope : messages) {
+                writer.write(envelope);
             }
         }
         return out;
@@ -70,16 +77,23 @@ class SummaryToPrettyWriterAcceptanceTest {
     @ParameterizedTest
     @MethodSource("acceptance")
     void test(TestCase testCase) throws IOException {
-        ByteArrayOutputStream bytes = writeSummaryReport(testCase, new ByteArrayOutputStream(), testCase.builder);
+        ByteArrayOutputStream bytes = writeSummaryReport(testCase, new ByteArrayOutputStream(), testCase.builder, originalOrder());
         assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
     }
 
     @ParameterizedTest
     @MethodSource("acceptance")
+    void testWithSimulatedParallelExecution(TestCase testCase) throws IOException {
+        ByteArrayOutputStream bytes = writeSummaryReport(testCase, new ByteArrayOutputStream(), testCase.builder, simulateParallelExecution());
+        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
+    }
+    
+    @ParameterizedTest
+    @MethodSource("acceptance")
     @Disabled
     void updateExpectedFiles(TestCase testCase) throws IOException {
         try (OutputStream out = Files.newOutputStream(testCase.expected)) {
-            writeSummaryReport(testCase, out, testCase.builder);
+            writeSummaryReport(testCase, out, testCase.builder, originalOrder());
             // Render output in console, easier to inspect results
             Files.copy(testCase.expected, System.out);
         }
