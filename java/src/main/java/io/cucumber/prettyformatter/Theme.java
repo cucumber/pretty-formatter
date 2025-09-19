@@ -44,7 +44,7 @@ public final class Theme {
     private Theme(
             Map<Element, Entry<Ansi, Ansi>> styleByElement,
             Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement,
-            Map<TestStepResultStatus, String> statusIconByStatus, 
+            Map<TestStepResultStatus, String> statusIconByStatus,
             Map<TestStepResultStatus, String> progressIconByStatus
     ) {
         this.styleByElement = requireNonNull(styleByElement);
@@ -125,7 +125,7 @@ public final class Theme {
         Entry<Ansi, Ansi> ansiStyle = findAnsiBy(element);
         return ansiStyle == null ? text : ansiStyle.getKey() + text + ansiStyle.getValue();
     }
-    
+
     String style(Element element, TestStepResultStatus status, String text) {
         Entry<Ansi, Ansi> ansiStyle = findAnsiBy(element, status);
         return ansiStyle == null ? text : ansiStyle.getKey() + text + ansiStyle.getValue();
@@ -150,7 +150,7 @@ public final class Theme {
         Entry<Ansi, Ansi> style = findAnsiBy(element, status);
         return style == null ? "" : style.getValue().toString();
     }
-    
+
     String progressIcon(TestStepResultStatus status) {
         return progressIconByStatus.getOrDefault(status, " ");
     }
@@ -339,7 +339,7 @@ public final class Theme {
         TAG
     }
 
-    public static class Builder {
+    public final static class Builder {
         private final Map<TestStepResultStatus, String> statusIconByStatus = new EnumMap<>(TestStepResultStatus.class);
         private final Map<TestStepResultStatus, String> progressIconByStatus = new EnumMap<>(TestStepResultStatus.class);
         private final Map<Element, Entry<Ansi, Ansi>> styleByElement = new EnumMap<>(Element.class);
@@ -347,12 +347,12 @@ public final class Theme {
 
         private Builder() {
             // Set defaults, without progress icons there is no output at all. 
-            progressIconByStatus.put(AMBIGUOUS, "A");
-            progressIconByStatus.put(FAILED, "F");
-            progressIconByStatus.put(PASSED, ".");
-            progressIconByStatus.put(PENDING, "P");
-            progressIconByStatus.put(SKIPPED, "-");
-            progressIconByStatus.put(UNDEFINED, "U");
+            progressIcon(AMBIGUOUS, "A").
+                    progressIcon(FAILED, "F").
+                    progressIcon(PASSED, ".").
+                    progressIcon(PENDING, "P").
+                    progressIcon(SKIPPED, "-").
+                    progressIcon(UNDEFINED, "U");
         }
 
         /**
