@@ -5,7 +5,7 @@ Failed hooks:
        samples/global-hooks-afterall-error/global-hooks-afterall-error.ts:19
 
 
-5 Hooks (4 passed, 1 failed)
-1 Scenarios (1 passed)
-1 Steps (1 passed)
+5 hooks (4 passed, 1 failed)
+1 scenarios (1 passed)
+1 steps (1 passed)
 0m 0.15s

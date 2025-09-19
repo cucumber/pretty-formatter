@@ -9,6 +9,6 @@ Failed scenarios:
        samples/hooks-conditional/hooks-conditional.feature:11
 
 
-3 Scenarios (1 passed, 2 failed)
-7 Steps (4 passed, 1 skipped, 2 failed)
+3 scenarios (1 passed, 2 failed)
+7 steps (4 passed, 1 skipped, 2 failed)
 0m 0.21s

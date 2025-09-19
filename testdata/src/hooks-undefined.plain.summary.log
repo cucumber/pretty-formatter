@@ -2,8 +2,8 @@
 Undefined scenarios:
   1) No tags and a undefined step # samples/hooks-undefined/hooks-undefined.feature:4
 
-1 Scenarios (1 undefined)
-3 Steps (2 passed, 1 undefined)
+1 scenarios (1 undefined)
+3 steps (2 passed, 1 undefined)
 0m 0.9s
 
 You can implement missing steps with the snippets below:

@@ -5,8 +5,8 @@
   3) Steps after undefined steps are skipped [90m# samples/undefined/undefined.feature:15[39m
   4) Snippets reflect parameter types [90m# samples/undefined/undefined.feature:19[39m
 
-4 Scenarios ([33m4 undefined[39m)
-6 Steps ([32m1 passed[39m, [36m1 skipped[39m, [33m4 undefined[39m)
+4 scenarios ([33m4 undefined[39m)
+6 steps ([32m1 passed[39m, [36m1 skipped[39m, [33m4 undefined[39m)
 0m 0.21s
 
 You can implement missing steps with the snippets below:

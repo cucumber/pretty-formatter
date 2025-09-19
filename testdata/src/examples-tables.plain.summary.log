@@ -15,6 +15,6 @@ Failed scenarios:
        samples/examples-tables/examples-tables.feature:14
 
 
-7 Scenarios (5 passed, 2 failed)
-21 Steps (19 passed, 2 failed)
+7 scenarios (5 passed, 2 failed)
+21 steps (19 passed, 2 failed)
 0m 0.57s

@@ -5,6 +5,6 @@ Failed scenarios:
        samples/retry/retry.feature:18
 
 
-4 Scenarios (3 passed, 1 failed)
-4 Steps (3 passed, 1 failed)
+4 scenarios (3 passed, 1 failed)
+4 steps (3 passed, 1 failed)
 0m 0.37s

@@ -4,8 +4,8 @@ Undefined scenarios:
   2) Eating cucumbers # samples/examples-tables-undefined/examples-undefined.feature:16
   3) Eating cucumbers # samples/examples-tables-undefined/examples-undefined.feature:17
 
-3 Scenarios (3 undefined)
-9 Steps (3 passed, 3 skipped, 3 undefined)
+3 scenarios (3 undefined)
+9 steps (3 passed, 3 skipped, 3 undefined)
 0m 0.25s
 
 You can implement missing steps with the snippets below:

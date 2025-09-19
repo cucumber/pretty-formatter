@@ -265,7 +265,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 // Only print stats if the test run failed with exception, avoid clutter
                 .map(exception -> {
                     String subCounts = theme.style(STEP, FAILED, "1 failed");
-                    return "1 Test run (" + subCounts + ")";
+                    return "1 test run (" + subCounts + ")";
                 })
                 .ifPresent(out::println);
     }
@@ -277,7 +277,7 @@ final class SummaryReportWriter implements AutoCloseable {
         }
 
         out.println(formatSubCounts(
-                "Hooks",
+                "hooks",
                 testRunHooksFinished,
                 countTestStepResultStatusByTestRunHookFinished()));
 
@@ -285,14 +285,14 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private void printScenarioCounts() {
         out.println(formatSubCounts(
-                "Scenarios",
+                "scenarios",
                 query.findAllTestCaseFinished(),
                 countTestStepResultStatusByTestCaseFinished()));
     }
 
     private void printStepCounts() {
         out.println(formatSubCounts(
-                "Steps",
+                "steps",
                 // findAllTestCaseFinished excludes non-final test cases
                 // This ensures findTestStepsFinishedBy does not include retried steps
                 query.findAllTestCaseFinished().stream()

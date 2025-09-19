@@ -5,6 +5,6 @@
        [31msamples/markdown/markdown.feature.md:24[39m
 
 
-2 Scenarios ([32m1 passed[39m, [31m1 failed[39m)
-8 Steps ([32m6 passed[39m, [36m1 skipped[39m, [31m1 failed[39m)
+2 scenarios ([32m1 passed[39m, [31m1 failed[39m)
+8 steps ([32m6 passed[39m, [36m1 skipped[39m, [31m1 failed[39m)
 0m 0.23s
