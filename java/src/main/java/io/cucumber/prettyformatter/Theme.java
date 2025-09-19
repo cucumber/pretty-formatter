@@ -354,10 +354,10 @@ public final class Theme {
     }
 
     public final static class Builder {
-        private final Map<TestStepResultStatus, String> statusIconByStatus = new EnumMap<>(TestStepResultStatus.class);
-        private final Map<TestStepResultStatus, String> progressIconByStatus = new EnumMap<>(TestStepResultStatus.class);
-        private final Map<Element, Entry<Ansi, Ansi>> styleByElement = new EnumMap<>(Element.class);
-        private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement = new EnumMap<>(Element.class);
+        private final EnumMap<TestStepResultStatus, String> statusIconByStatus = new EnumMap<>(TestStepResultStatus.class);
+        private final EnumMap<TestStepResultStatus, String> progressIconByStatus = new EnumMap<>(TestStepResultStatus.class);
+        private final EnumMap<Element, Entry<Ansi, Ansi>> styleByElement = new EnumMap<>(Element.class);
+        private final EnumMap<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement = new EnumMap<>(Element.class);
 
         private Builder() {
 
@@ -433,7 +433,12 @@ public final class Theme {
         }
 
         public Theme build() {
-            return new Theme(styleByElement, styleByStatusByElement, statusIconByStatus, progressIconByStatus);
+            return new Theme(
+                    new EnumMap<>(styleByElement),
+                    new EnumMap<>(styleByStatusByElement),
+                    new EnumMap<>(statusIconByStatus),
+                    new EnumMap<>(progressIconByStatus)
+            );
         }
 
     }

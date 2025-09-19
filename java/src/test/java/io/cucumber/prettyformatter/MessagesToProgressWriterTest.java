@@ -95,12 +95,12 @@ class MessagesToProgressWriterTest {
         Envelope[] messages = new Envelope[128];
         Arrays.fill(messages, envelope);
 
-        String progress = renderAsProgress(MessagesToProgressWriter.builder().maxWidth(75), messages);
+        String progress = renderAsProgress(builder().maxWidth(75), messages);
         assertThat(progress).containsPattern("^\\.{75}\n\\.{53}$");
     }
-    
+
     private static String renderAsProgress(Envelope... messages) throws IOException {
-        return renderAsProgress(MessagesToProgressWriter.builder(), messages);
+        return renderAsProgress(builder(), messages);
     }
 
     private static String renderAsProgress(MessagesToProgressWriter.Builder builder, Envelope... messages) throws IOException {
@@ -114,5 +114,8 @@ class MessagesToProgressWriterTest {
         return new String(bytes.toByteArray(), UTF_8);
     }
 
+    private static MessagesToProgressWriter.Builder builder() {
+        return MessagesToProgressWriter.builder();
+    }
 
 }

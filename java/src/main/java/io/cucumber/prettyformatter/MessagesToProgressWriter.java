@@ -57,7 +57,8 @@ public final class MessagesToProgressWriter implements AutoCloseable {
     public static final class Builder {
 
         private static final int DEFAULT_MAX_WIDTH = 80;
-        private Theme theme = Theme.none();
+        // Without any progress icons, there is no output
+        private Theme theme = Theme.plain();
         private int maxWidth = DEFAULT_MAX_WIDTH;
 
         private Builder() {

@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class MessagesToSummarWriterTest {
+class MessagesToSummaryWriterTest {
 
     @Test
     void it_writes_two_messages_to_summary() throws IOException {
