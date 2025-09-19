@@ -12,4 +12,5 @@ and verifying nothing changed.
 
 Should there be changes, these tests can be used to update the expected data:
  * Java: `MessagesToPrettyWriterAcceptanceTest#updateExpectedFiles`
+ * Java: `MessagesToSummaryWriterAcceptanceTest#updateExpectedFiles`
  * Java: `MessagesToProgressWriterAcceptanceTest#updateExpectedFiles`
