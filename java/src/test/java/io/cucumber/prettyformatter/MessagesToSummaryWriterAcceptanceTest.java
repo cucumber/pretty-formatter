@@ -31,7 +31,7 @@ import static io.cucumber.prettyformatter.Theme.plain;
 import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SummaryToPrettyWriterAcceptanceTest {
+class MessagesToSummaryWriterAcceptanceTest {
     private static final NdjsonToMessageIterable.Deserializer deserializer = (json) -> OBJECT_MAPPER.readValue(json, Envelope.class);
 
     static List<TestCase> acceptance() throws IOException {
