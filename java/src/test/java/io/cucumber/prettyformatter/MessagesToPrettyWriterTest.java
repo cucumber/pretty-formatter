@@ -38,9 +38,9 @@ class MessagesToPrettyWriterTest {
     @Test
     void it_throws_when_writing_after_close() {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        MessagesToPrettyWriter messagesToHtmlWriter = create(bytes);
-        messagesToHtmlWriter.close();
-        assertThrows(IOException.class, () -> messagesToHtmlWriter.write(null));
+        MessagesToPrettyWriter writer = create(bytes);
+        writer.close();
+        assertThrows(IOException.class, () -> writer.write(null));
     }
 
     @Test
