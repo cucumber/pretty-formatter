@@ -25,20 +25,24 @@ Writes a rich report of the scenario and example execution as it happens. Useful
 
 ![Example output of the pretty formatting, showing the different colors used](https://github.com/user-attachments/assets/feed2857-b8cb-4663-9a5a-57044cfa5356)
 
+## Progress formatter
+
+The progress formatter is minimalist progress indicator that writes a single character status for each test. Useful the test suite gets large. Pairs well with the summary formatter.
+
 ## Test outcome coloring
 
 Each step is colored according to the outcome. When the `cucumber` theme is in
-use the following colors are used.
+use the following colors and symbols are used.
 
-| Cucumber Outcome | Color  | Symbol |
-|------------------|--------|--------|
-| UNKNOWN          | n/a    | n/a    |
-| PASSED           | Green  | ✔      |
-| SKIPPED          | Cyan   | ↷      |
-| PENDING          | Yellow | ■      |
-| UNDEFINED        | Yellow | ■      |
-| AMBIGUOUS        | Red    | ✘      |
-| FAILED           | Red    | ✘      |
+| Cucumber Outcome | Color  | Status Symbol | Progress Symbol |
+|------------------|--------|---------------|-----------------|
+| UNKNOWN          | n/a    | n/a           | n/a             |
+| PASSED           | Green  | ✔             | .               |
+| SKIPPED          | Cyan   | ↷             | -               |
+| PENDING          | Yellow | ■             | P               |
+| UNDEFINED        | Yellow | ■             | U               |
+| AMBIGUOUS        | Red    | ✘             | A               |
+| FAILED           | Red    | ✘             | F               |
 
 ## Usage and installation
 
