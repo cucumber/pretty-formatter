@@ -6,10 +6,10 @@ the [`fake-cucumber` reference implementation](https://github.com/cucumber/fake-
 
 * The `.njdon` files are copied in by running `npm install`.
 * The expected `.log` files are created by running the
-  `MessagesToPrettyWriterAcceptanceTest#updateExpectedPrettyFiles` test.
+  `MessagesToPrettyWriterAcceptanceTest#updateExpectedFiles` test.
 
 We ensure the `.ndjson` files stay up to date by running `npm install` in CI
 and verifying nothing changed.
 
 Should there be changes, these tests can be used to update the expected data:
- * Java: `MessagesToPrettyWriterAcceptanceTest#updateExpectedPrettyFiles`
+ * Java: `MessagesToPrettyWriterAcceptanceTest#updateExpectedFiles`
