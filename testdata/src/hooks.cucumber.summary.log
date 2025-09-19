@@ -1,0 +1,10 @@
+
+[31mFailed scenarios:[39m
+  1) No tags and a failed step [90m# samples/hooks/hooks.feature:7[39m
+       [31mError: Exception in step[39m
+       [31msamples/hooks/hooks.feature:8[39m
+
+
+2 scenarios ([32m1 passed[39m, [31m1 failed[39m)
+6 steps ([32m5 passed[39m, [31m1 failed[39m)
+0m 0.17s
