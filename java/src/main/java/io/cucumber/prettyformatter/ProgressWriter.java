@@ -16,15 +16,15 @@ import static java.util.Objects.requireNonNull;
 
 final class ProgressWriter implements AutoCloseable {
 
-    private static final int MAX_WIDTH = 80;
-
     private final PrintWriter writer;
     private final Theme theme;
+    private final int maxWidth;
     private int width = 0;
 
-    ProgressWriter(OutputStream out, Theme theme) {
+    ProgressWriter(OutputStream out, Theme theme, int maxWidth) {
         this.writer = createPrintWriter(out);
         this.theme = requireNonNull(theme);
+        this.maxWidth = maxWidth;
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -56,7 +56,7 @@ final class ProgressWriter implements AutoCloseable {
         StringBuilder buffer = new StringBuilder();
         buffer.append(theme.style(PROGRESS_ICON, status, theme.progressIcon(status)));
         // Start a new line if at the end of this one
-        if (++width % MAX_WIDTH == 0) {
+        if (++width % maxWidth == 0) {
             width = 0;
             buffer.append(lineSeparator());
         }

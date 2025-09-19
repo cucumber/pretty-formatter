@@ -12,8 +12,8 @@ public final class MessagesToProgressWriter implements AutoCloseable {
     private final ProgressWriter writer;
     private boolean streamClosed = false;
 
-    private MessagesToProgressWriter(OutputStream out, Theme theme) {
-        this.writer = new ProgressWriter(out, theme);
+    private MessagesToProgressWriter(OutputStream out, Theme theme, int maxWidth) {
+        this.writer = new ProgressWriter(out, theme, maxWidth);
     }
 
     public static MessagesToProgressWriter.Builder builder() {
@@ -56,7 +56,9 @@ public final class MessagesToProgressWriter implements AutoCloseable {
 
     public static final class Builder {
 
+        private static final int DEFAULT_MAX_WIDTH = 80;
         private Theme theme = Theme.none();
+        private int maxWidth = DEFAULT_MAX_WIDTH;
 
         private Builder() {
         }
@@ -69,9 +71,22 @@ public final class MessagesToProgressWriter implements AutoCloseable {
             return this;
         }
 
+        /**
+         * Sets the max width in characters of a progress line.
+         * <p>
+         * Defaults to {@value DEFAULT_MAX_WIDTH}
+         */
+        public Builder maxWidth(int maxWidth) {
+            if (maxWidth <= 0) {
+                throw new IllegalArgumentException("maxWidth must be a positive non-zero value");
+            }
+            this.maxWidth = maxWidth;
+            return this;
+        }
+
         public MessagesToProgressWriter build(OutputStream out) {
             requireNonNull(out);
-            return new MessagesToProgressWriter(out, theme);
+            return new MessagesToProgressWriter(out, theme, maxWidth);
         }
     }
 }
