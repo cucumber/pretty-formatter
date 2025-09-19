@@ -17,6 +17,7 @@ import static io.cucumber.prettyformatter.Ansi.Attributes.*;
 import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
+import static io.cucumber.prettyformatter.Theme.Element.PROGRESS_ICON;
 import static io.cucumber.prettyformatter.Theme.Element.RULE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
@@ -38,14 +39,18 @@ public final class Theme {
     private final Map<Element, Entry<Ansi, Ansi>> styleByElement;
     private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement;
     private final Map<TestStepResultStatus, String> statusIconByStatus;
+    private final Map<TestStepResultStatus, String> progressIconByStatus;
 
     private Theme(
             Map<Element, Entry<Ansi, Ansi>> styleByElement,
             Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement,
-            Map<TestStepResultStatus, String> statusIconByStatus) {
+            Map<TestStepResultStatus, String> statusIconByStatus,
+            Map<TestStepResultStatus, String> progressIconByStatus
+    ) {
         this.styleByElement = requireNonNull(styleByElement);
         this.styleByStatusByElement = requireNonNull(styleByStatusByElement);
         this.statusIconByStatus = statusIconByStatus;
+        this.progressIconByStatus = progressIconByStatus;
     }
 
     /**
@@ -78,6 +83,18 @@ public final class Theme {
                 .style(STATUS_ICON, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(FOREGROUND_DEFAULT))
                 .statusIcon(UNDEFINED, "■")
                 .style(STATUS_ICON, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(AMBIGUOUS, "A")
+                .style(PROGRESS_ICON, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(FAILED, "F")
+                .style(PROGRESS_ICON, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(PASSED, ".")
+                .style(PROGRESS_ICON, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(PENDING, "P")
+                .style(PROGRESS_ICON, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(SKIPPED, "-")
+                .style(PROGRESS_ICON, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(UNDEFINED, "U")
+                .style(PROGRESS_ICON, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
                 .build();
     }
 
@@ -100,6 +117,12 @@ public final class Theme {
                 .statusIcon(PENDING, "■")
                 .statusIcon(SKIPPED, "↷")
                 .statusIcon(UNDEFINED, "■")
+                .progressIcon(AMBIGUOUS, "A")
+                .progressIcon(FAILED, "F")
+                .progressIcon(PASSED, ".")
+                .progressIcon(PENDING, "P")
+                .progressIcon(SKIPPED, "-")
+                .progressIcon(UNDEFINED, "U")
                 .build();
     }
 
@@ -114,7 +137,7 @@ public final class Theme {
         Entry<Ansi, Ansi> ansiStyle = findAnsiBy(element);
         return ansiStyle == null ? text : ansiStyle.getKey() + text + ansiStyle.getValue();
     }
-    
+
     String style(Element element, TestStepResultStatus status, String text) {
         Entry<Ansi, Ansi> ansiStyle = findAnsiBy(element, status);
         return ansiStyle == null ? text : ansiStyle.getKey() + text + ansiStyle.getValue();
@@ -140,10 +163,13 @@ public final class Theme {
         return style == null ? "" : style.getValue().toString();
     }
 
+    String progressIcon(TestStepResultStatus status) {
+        // Progress icons are assumed to be 1 character wide by default.
+        return progressIconByStatus.getOrDefault(status, " ");
+    }
+
     String statusIcon(TestStepResultStatus status) {
-        if (statusIconByStatus.isEmpty()) {
-            return "";
-        }
+        // Status icons are assumed to be 1 character wide by default.
         return statusIconByStatus.getOrDefault(status, " ");
     }
 
@@ -242,6 +268,13 @@ public final class Theme {
         LOCATION,
 
         /**
+         * The progress icon.
+         * <p>
+         * Always used in combination with a {@link TestStepResultStatus}.
+         */
+        PROGRESS_ICON,
+
+        /**
          * The rule line.
          */
         RULE,
@@ -320,10 +353,11 @@ public final class Theme {
         TAG
     }
 
-    public static class Builder {
-        private final Map<TestStepResultStatus, String> iconByStatus = new EnumMap<>(TestStepResultStatus.class);
-        private final Map<Element, Entry<Ansi, Ansi>> styleByElement = new EnumMap<>(Element.class);
-        private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement = new EnumMap<>(Element.class);
+    public final static class Builder {
+        private final EnumMap<TestStepResultStatus, String> statusIconByStatus = new EnumMap<>(TestStepResultStatus.class);
+        private final EnumMap<TestStepResultStatus, String> progressIconByStatus = new EnumMap<>(TestStepResultStatus.class);
+        private final EnumMap<Element, Entry<Ansi, Ansi>> styleByElement = new EnumMap<>(Element.class);
+        private final EnumMap<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement = new EnumMap<>(Element.class);
 
         private Builder() {
 
@@ -347,7 +381,7 @@ public final class Theme {
         }
 
         /**
-         * Adds a status icon for the given status. 
+         * Adds a status icon for the given status.
          * <p>
          * Visually the status icon must be 1-space wide.
          *
@@ -358,7 +392,23 @@ public final class Theme {
         public Builder statusIcon(TestStepResultStatus status, String icon) {
             requireNonNull(status);
             requireNonNull(icon);
-            iconByStatus.put(status, icon);
+            statusIconByStatus.put(status, icon);
+            return this;
+        }
+
+        /**
+         * Adds a progress icon for the given status.
+         * <p>
+         * Visually the status icon must be 1-space wide.
+         *
+         * @param status the status for which the icon is used
+         * @param icon   the icon
+         * @return this builder
+         */
+        public Builder progressIcon(TestStepResultStatus status, String icon) {
+            requireNonNull(status);
+            requireNonNull(icon);
+            progressIconByStatus.put(status, icon);
             return this;
         }
 
@@ -383,7 +433,12 @@ public final class Theme {
         }
 
         public Theme build() {
-            return new Theme(styleByElement, styleByStatusByElement, iconByStatus);
+            return new Theme(
+                    new EnumMap<>(styleByElement),
+                    new EnumMap<>(styleByStatusByElement),
+                    new EnumMap<>(statusIconByStatus),
+                    new EnumMap<>(progressIconByStatus)
+            );
         }
 
     }

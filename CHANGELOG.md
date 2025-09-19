@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - [Java] Message based summary printer ([#35](https://github.com/cucumber/pretty-formatter/pull/35))
+- [Java] Message based progress printer ([#37](https://github.com/cucumber/pretty-formatter/pull/37))
 
 ## [2.2.0] - 2025-09-11
 ### Changed
