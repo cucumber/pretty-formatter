@@ -83,11 +83,17 @@ public final class Theme {
                 .style(STATUS_ICON, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(FOREGROUND_DEFAULT))
                 .statusIcon(UNDEFINED, "■")
                 .style(STATUS_ICON, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(AMBIGUOUS, "A")
                 .style(PROGRESS_ICON, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(FAILED, "F")
                 .style(PROGRESS_ICON, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(PASSED, ".")
                 .style(PROGRESS_ICON, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(PENDING, "P")
                 .style(PROGRESS_ICON, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(SKIPPED, "-")
                 .style(PROGRESS_ICON, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(FOREGROUND_DEFAULT))
+                .progressIcon(UNDEFINED, "U")
                 .style(PROGRESS_ICON, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
                 .build();
     }
@@ -111,6 +117,12 @@ public final class Theme {
                 .statusIcon(PENDING, "■")
                 .statusIcon(SKIPPED, "↷")
                 .statusIcon(UNDEFINED, "■")
+                .progressIcon(AMBIGUOUS, "A")
+                .progressIcon(FAILED, "F")
+                .progressIcon(PASSED, ".")
+                .progressIcon(PENDING, "P")
+                .progressIcon(SKIPPED, "-")
+                .progressIcon(UNDEFINED, "U")
                 .build();
     }
 
@@ -152,10 +164,12 @@ public final class Theme {
     }
 
     String progressIcon(TestStepResultStatus status) {
+        // Progress icons are assumed to be 1 character wide by default.
         return progressIconByStatus.getOrDefault(status, " ");
     }
 
     String statusIcon(TestStepResultStatus status) {
+        // Status icons are assumed to be 1 character wide by default.
         return statusIconByStatus.getOrDefault(status, " ");
     }
 
@@ -346,13 +360,7 @@ public final class Theme {
         private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement = new EnumMap<>(Element.class);
 
         private Builder() {
-            // Set defaults, without progress icons there is no output at all. 
-            progressIcon(AMBIGUOUS, "A").
-                    progressIcon(FAILED, "F").
-                    progressIcon(PASSED, ".").
-                    progressIcon(PENDING, "P").
-                    progressIcon(SKIPPED, "-").
-                    progressIcon(UNDEFINED, "U");
+
         }
 
         /**

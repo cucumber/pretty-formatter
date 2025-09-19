@@ -54,7 +54,8 @@ final class ProgressWriter implements AutoCloseable {
     private void printStatus(TestStepResultStatus status) {
         // Prevent tearing in output when multiple threads write to System.out
         StringBuilder buffer = new StringBuilder();
-        buffer.append(theme.style(PROGRESS_ICON, status, theme.progressIcon(status)));
+        String icon = theme.progressIcon(status);
+        buffer.append(theme.style(PROGRESS_ICON, status, icon));
         // Start a new line if at the end of this one
         if (++width % maxWidth == 0) {
             width = 0;
