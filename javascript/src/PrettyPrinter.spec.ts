@@ -8,8 +8,9 @@ import { Envelope, TestStepResultStatus } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
-import type { Options, Theme } from './index.js'
-import formatter, { CUCUMBER_THEME } from './index.js'
+import { PrettyPrinter } from './PrettyPrinter.js'
+import { CUCUMBER_THEME } from './theme.js'
+import type { Options, Theme } from './types.js'
 
 const DEMO_THEME: Theme = {
   attachment: 'blue',
@@ -59,9 +60,7 @@ const DEMO_THEME: Theme = {
   tag: ['yellow', 'bold'],
 }
 
-describe('Acceptance Tests', async function () {
-  this.timeout(10_000)
-
+describe('PrettyPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
     cwd: path.join(import.meta.dirname, '..', '..', 'testdata', 'src'),
     absolute: true,
@@ -143,18 +142,19 @@ describe('Acceptance Tests', async function () {
         const [suiteName] = path.basename(ndjsonFile).split('.')
 
         it(suiteName, async () => {
-          let emit: (message: Envelope) => void
           let content = ''
-          formatter.formatter({
-            options,
-            stream: fakeStream,
-            on(type, handler) {
-              emit = handler
-            },
-            write: (chunk) => {
+          const printer = new PrettyPrinter(
+            fakeStream,
+            (chunk) => {
               content += chunk
             },
-          })
+            {
+              attachments: true,
+              featuresAndRules: true,
+              theme: CUCUMBER_THEME,
+              ...options,
+            }
+          )
 
           await pipeline(
             fs.createReadStream(ndjsonFile, { encoding: 'utf-8' }),
@@ -162,7 +162,7 @@ describe('Acceptance Tests', async function () {
             new Writable({
               objectMode: true,
               write(envelope: Envelope, _: BufferEncoding, callback) {
-                emit(envelope)
+                printer.update(envelope)
                 callback()
               },
             })
