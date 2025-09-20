@@ -26,6 +26,15 @@ export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
 export const ATTACHMENT_INDENT_LENGTH = 4
 export const ERROR_INDENT_LENGTH = 4
+const STATUS_CHARACTERS: Record<TestStepResultStatus, string> = {
+  [TestStepResultStatus.AMBIGUOUS]: 'A',
+  [TestStepResultStatus.FAILED]: 'F',
+  [TestStepResultStatus.PASSED]: '.',
+  [TestStepResultStatus.PENDING]: 'P',
+  [TestStepResultStatus.SKIPPED]: '-',
+  [TestStepResultStatus.UNDEFINED]: 'U',
+  [TestStepResultStatus.UNKNOWN]: '?',
+} as const
 
 export function ensure<T>(value: T | undefined, message: string): T {
   if (!value) {
@@ -306,4 +315,13 @@ function formatBase64Attachment(
 
 function formatTextAttachment(content: string, theme: Theme, stream: NodeJS.WritableStream) {
   return new TextBuilder(stream).append(content).build(theme.attachment)
+}
+
+export function formatStatusCharacter(
+  status: TestStepResultStatus,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  const character = STATUS_CHARACTERS[status]
+  return new TextBuilder(stream).append(character).build(theme.status?.all?.[status])
 }
