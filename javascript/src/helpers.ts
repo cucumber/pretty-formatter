@@ -17,7 +17,10 @@ import {
   TestStep,
   TestStepResult,
   TestStepResultStatus,
+  TimeConversion,
+  Timestamp,
 } from '@cucumber/messages'
+import { Interval } from 'luxon'
 
 import { TextBuilder } from './TextBuilder.js'
 import { Theme } from './types.js'
@@ -26,6 +29,16 @@ export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
 export const ATTACHMENT_INDENT_LENGTH = 4
 export const ERROR_INDENT_LENGTH = 4
+
+const STATUS_ORDER: TestStepResultStatus[] = [
+  TestStepResultStatus.UNKNOWN,
+  TestStepResultStatus.PASSED,
+  TestStepResultStatus.SKIPPED,
+  TestStepResultStatus.PENDING,
+  TestStepResultStatus.UNDEFINED,
+  TestStepResultStatus.AMBIGUOUS,
+  TestStepResultStatus.FAILED,
+]
 const STATUS_CHARACTERS: Record<TestStepResultStatus, string> = {
   [TestStepResultStatus.AMBIGUOUS]: 'A',
   [TestStepResultStatus.FAILED]: 'F',
@@ -35,6 +48,7 @@ const STATUS_CHARACTERS: Record<TestStepResultStatus, string> = {
   [TestStepResultStatus.UNDEFINED]: 'U',
   [TestStepResultStatus.UNKNOWN]: '?',
 } as const
+const DURATION_FORMAT = "m'm' s.S's'"
 
 export function ensure<T>(value: T | undefined, message: string): T {
   if (!value) {
@@ -81,6 +95,7 @@ export function formatPickleTags(pickle: Pickle, theme: Theme, stream: NodeJS.Wr
       .build(theme.tag)
   }
 }
+
 export function formatPickleTitle(
   pickle: Pickle,
   scenario: Scenario,
@@ -324,4 +339,53 @@ export function formatStatusCharacter(
 ) {
   const character = STATUS_CHARACTERS[status]
   return new TextBuilder(stream).append(character).build(theme.status?.all?.[status])
+}
+
+export function formatNonPassingTitle(
+  status: TestStepResultStatus,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  return new TextBuilder(stream)
+    .append(status.charAt(0).toUpperCase() + status.slice(1).toLowerCase())
+    .append(' scenarios:')
+    .build(theme.status?.all?.[status])
+}
+
+export function formatCounts(
+  suffix: string,
+  counts: Partial<Record<TestStepResultStatus, number>>,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  const builder = new TextBuilder(stream)
+  const total = Object.values(counts).reduce((prev, curr) => prev + curr, 0)
+  builder.append(`${total} ${suffix}`)
+  if (total > 0) {
+    let first = true
+    builder.append(' (')
+    for (const status of STATUS_ORDER) {
+      const count = counts[status]
+      if (count) {
+        if (!first) {
+          builder.append(', ')
+        }
+        builder.append(`${count} ${status.toLowerCase()}`, theme.status?.all?.[status])
+        first = false
+      }
+    }
+    builder.append(')')
+  }
+  return builder.build()
+}
+
+export function formatDuration(start: Timestamp, finish: Timestamp) {
+  const startMillis = new Date(TimeConversion.timestampToMillisecondsSinceEpoch(start))
+  const finishMillis = new Date(TimeConversion.timestampToMillisecondsSinceEpoch(finish))
+  const duration = Interval.fromDateTimes(startMillis, finishMillis).toDuration([
+    'minutes',
+    'seconds',
+    'milliseconds',
+  ])
+  return duration.toFormat(DURATION_FORMAT)
 }

@@ -22,7 +22,8 @@
     "prepublishOnly": "tsc --build tsconfig.build.json"
   },
   "dependencies": {
-    "@cucumber/query": "14.3.0"
+    "@cucumber/query": "14.3.0",
+    "luxon": "^3.7.2"
   },
   "peerDependencies": {
     "@cucumber/messages": "*"
@@ -34,6 +35,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.30.1",
     "@types/chai": "^5.0.0",
+    "@types/luxon": "^3.7.1",
     "@types/mocha": "^10.0.6",
     "@types/node": "22.18.6",
     "@typescript-eslint/eslint-plugin": "8.44.0",
