@@ -29,8 +29,7 @@ export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
 export const ATTACHMENT_INDENT_LENGTH = 4
 export const ERROR_INDENT_LENGTH = 4
-
-const STATUS_ORDER: TestStepResultStatus[] = [
+export const ORDERED_STATUSES: TestStepResultStatus[] = [
   TestStepResultStatus.UNKNOWN,
   TestStepResultStatus.PASSED,
   TestStepResultStatus.SKIPPED,
@@ -364,7 +363,7 @@ export function formatCounts(
   if (total > 0) {
     let first = true
     builder.append(' (')
-    for (const status of STATUS_ORDER) {
+    for (const status of ORDERED_STATUSES) {
       const count = counts[status]
       if (count) {
         if (!first) {
