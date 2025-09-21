@@ -224,7 +224,7 @@ final class SummaryReportWriter implements AutoCloseable {
         if (attempt == 0) {
             return "";
         }
-        return ", after " + attempt + " attempts";
+        return ", after " + (attempt + 1) + " attempts";
     }
 
     private String formatLocationComment(Pickle pickle) {
