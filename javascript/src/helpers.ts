@@ -4,6 +4,8 @@ import {
   Attachment,
   AttachmentContentEncoding,
   Feature,
+  Hook,
+  HookType,
   Location,
   Pickle,
   PickleDocString,
@@ -47,6 +49,14 @@ const STATUS_CHARACTERS: Record<TestStepResultStatus, string> = {
   [TestStepResultStatus.UNDEFINED]: 'U',
   [TestStepResultStatus.UNKNOWN]: '?',
 } as const
+const HOOK_TYPE_LABELS: Record<HookType, string> = {
+  [HookType.BEFORE_TEST_RUN]: 'BeforeTestRun',
+  [HookType.AFTER_TEST_RUN]: 'AfterTestRun',
+  [HookType.BEFORE_TEST_CASE]: 'Before',
+  [HookType.AFTER_TEST_CASE]: 'After',
+  [HookType.BEFORE_TEST_STEP]: 'BeforeStep',
+  [HookType.AFTER_TEST_STEP]: 'AfterStep',
+}
 const DURATION_FORMAT = "m'm' s.S's'"
 
 export function ensure<T>(value: T | undefined, message: string): T {
@@ -119,6 +129,33 @@ export function formatPickleLocation(
     builder.append(':').append(location.line)
   }
   return builder.build(theme.location)
+}
+
+export function formatHookTitle(hook: Hook | undefined) {
+  let title = ''
+  if (hook?.type) {
+    title += HOOK_TYPE_LABELS[hook.type]
+  } else {
+    title += 'Hook'
+  }
+  if (hook?.name) {
+    title += ` (${hook.name})`
+  }
+  return title
+}
+
+export function formatHookLocation(
+  hook: Hook | undefined,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  if (hook?.sourceReference.uri) {
+    const builder = new TextBuilder(stream).append('#').space().append(hook.sourceReference.uri)
+    if (hook.sourceReference.location) {
+      builder.append(':').append(hook.sourceReference.location.line)
+    }
+    return builder.build(theme.location)
+  }
 }
 
 export function formatStepTitle(
@@ -342,12 +379,13 @@ export function formatStatusCharacter(
 
 export function formatNonPassingTitle(
   status: TestStepResultStatus,
+  suffix: string,
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
   return new TextBuilder(stream)
     .append(status.charAt(0).toUpperCase() + status.slice(1).toLowerCase())
-    .append(' scenarios:')
+    .append(` ${suffix}:`)
     .build(theme.status?.all?.[status])
 }
 

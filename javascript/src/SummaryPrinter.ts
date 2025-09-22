@@ -16,6 +16,7 @@ import {
   formatCounts,
   formatDuration,
   formatHookLocation,
+  formatHookTitle,
   formatNonPassingTitle,
   formatPickleLocation,
   formatTestStepResultError,
@@ -147,7 +148,12 @@ export class SummaryPrinter {
       failedHooks.forEach((testRunHookFinished, index) => {
         const hook = this.query.findHookBy(testRunHookFinished)
         const formattedLocation = formatHookLocation(hook, this.options.theme, this.stream)
-        this.println(indent(`${index + 1}) Hook ${formattedLocation}`, GHERKIN_INDENT_LENGTH))
+        this.println(
+          indent(
+            `${index + 1}) ${formatHookTitle(hook)} ${formattedLocation}`,
+            GHERKIN_INDENT_LENGTH
+          )
+        )
         const content = formatTestStepResultError(
           testRunHookFinished.result,
           this.options.theme,
