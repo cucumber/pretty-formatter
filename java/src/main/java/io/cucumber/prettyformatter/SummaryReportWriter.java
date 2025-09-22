@@ -238,7 +238,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private String formatLocationComment(Hook hook) {
         return sourceReferenceFormatter.format(hook.getSourceReference())
-                .map(comment -> theme.style(LOCATION, "#" + comment))
+                .map(comment -> theme.style(LOCATION, "# " + comment))
                 .map(comment -> " " + comment)
                 .orElse("");
     }
