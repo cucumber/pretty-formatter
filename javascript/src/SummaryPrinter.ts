@@ -70,8 +70,7 @@ export class SummaryPrinter {
       }>
     >()
 
-    for (const testCaseFinished of this.query.findAllTestCaseFinished()) {
-      // TODO canonical order
+    for (const testCaseFinished of this.findAllTestCaseFinishedInCanonicalOrder()) {
       const testCaseStarted = ensure(
         this.query.findTestCaseStartedBy(testCaseFinished),
         'TestCaseStarted must exist for TestCaseFinished'
@@ -194,8 +193,7 @@ export class SummaryPrinter {
   }
 
   private printSnippets() {
-    const snippets = this.query
-      .findAllTestCaseFinished() // TODO canonical order
+    const snippets = this.findAllTestCaseFinishedInCanonicalOrder()
       .map((testCaseFinished) => this.query.findPickleBy(testCaseFinished))
       .filter((pickle) => !!pickle)
       .flatMap((pickle) => this.query.findSuggestionsBy(pickle))
@@ -211,5 +209,10 @@ export class SummaryPrinter {
         this.println()
       }
     }
+  }
+
+  private findAllTestCaseFinishedInCanonicalOrder() {
+    // TODO implement canonical order via query?
+    return this.query.findAllTestCaseFinished()
   }
 }
