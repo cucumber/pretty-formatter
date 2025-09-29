@@ -248,7 +248,7 @@ export class SummaryPrinter {
   }
 
   private findAllTestCaseFinishedInCanonicalOrder() {
-    // TODO implement canonical order via query?
+    // TODO https://github.com/cucumber/query/pull/114
     return this.query.findAllTestCaseFinished()
   }
 }
