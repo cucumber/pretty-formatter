@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>pretty-formatter</artifactId>
-    <version>2.4.1-SNAPSHOT</version>
+    <version>2.4.1</version>
     <packaging>jar</packaging>
     <name>Pretty Formatter</name>
     <description>Writes a pretty report of the scenario execution as it happens</description>
@@ -17,14 +17,14 @@
 
     <properties>
         <project.Automatic-Module-Name>io.cucumber.prettyformatter</project.Automatic-Module-Name>
-        <project.build.outputTimestamp>1761582137</project.build.outputTimestamp>
+        <project.build.outputTimestamp>1762044949</project.build.outputTimestamp>
     </properties>
 
     <scm>
         <connection>scm:git:git://github.com/cucumber/pretty-formatter.git</connection>
         <developerConnection>scm:git:git@github.com:cucumber/pretty-formatter.git</developerConnection>
         <url>git://github.com/cucumber/pretty-formatter.git</url>
-        <tag>HEAD</tag>
+        <tag>v2.4.1</tag>
     </scm>
 
     <dependencyManagement>
