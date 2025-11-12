@@ -1,6 +1,6 @@
 
 [31mFailed scenarios:[39m
-  1) Test cases won't retry after failing more than the --retry limit, after 2 attempts [90m# samples/retry/retry.feature:17[39m
+  1) Test cases won't retry after failing more than the --retry limit, after 3 attempts [90m# samples/retry/retry.feature:17[39m
        [31mError: Exception in step[39m
        [31msamples/retry/retry.feature:18[39m
 
