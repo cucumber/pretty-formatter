@@ -1,6 +1,7 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.TestStepResultStatus;
+import org.jspecify.annotations.Nullable;
 
 import java.util.AbstractMap;
 import java.util.EnumMap;
@@ -13,7 +14,15 @@ import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.PENDING;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
 import static io.cucumber.messages.types.TestStepResultStatus.UNDEFINED;
-import static io.cucumber.prettyformatter.Ansi.Attributes.*;
+import static io.cucumber.prettyformatter.Ansi.Attributes.BOLD;
+import static io.cucumber.prettyformatter.Ansi.Attributes.BOLD_OFF;
+import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_BLUE;
+import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_BRIGHT_BLACK;
+import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_CYAN;
+import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_DEFAULT;
+import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_GREEN;
+import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_RED;
+import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_YELLOW;
 import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
@@ -173,10 +182,12 @@ public final class Theme {
         return statusIconByStatus.getOrDefault(status, " ");
     }
 
+    @Nullable
     private Entry<Ansi, Ansi> findAnsiBy(Element element) {
         return styleByElement.get(element);
     }
 
+    @Nullable
     private Entry<Ansi, Ansi> findAnsiBy(Element element, TestStepResultStatus status) {
         Map<TestStepResultStatus, Entry<Ansi, Ansi>> styleByStatus = styleByStatusByElement.get(element);
         return styleByStatus == null ? null : styleByStatus.get(status);

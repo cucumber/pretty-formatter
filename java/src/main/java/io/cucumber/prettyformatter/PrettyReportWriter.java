@@ -10,7 +10,6 @@ import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.Step;
 import io.cucumber.messages.types.StepMatchArgument;
-import io.cucumber.messages.types.StepMatchArgumentsList;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStep;
@@ -36,7 +35,23 @@ import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.I
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
-import static io.cucumber.prettyformatter.Theme.Element.*;
+import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
+import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
+import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.FEATURE_NAME;
+import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
+import static io.cucumber.prettyformatter.Theme.Element.RULE;
+import static io.cucumber.prettyformatter.Theme.Element.RULE_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.RULE_NAME;
+import static io.cucumber.prettyformatter.Theme.Element.SCENARIO;
+import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_NAME;
+import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
+import static io.cucumber.prettyformatter.Theme.Element.STEP;
+import static io.cucumber.prettyformatter.Theme.Element.STEP_ARGUMENT;
+import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.STEP_TEXT;
+import static io.cucumber.prettyformatter.Theme.Element.TAG;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -271,12 +286,8 @@ final class PrettyReportWriter implements AutoCloseable {
         }
         writer.println();
         switch (attachment.getContentEncoding()) {
-            case BASE64:
-                writer.println(formatBase64Attachment(attachment));
-                break;
-            case IDENTITY:
-                writer.print(formatTextAttachment(attachment));
-                break;
+            case BASE64 -> writer.println(formatBase64Attachment(attachment));
+            case IDENTITY -> writer.print(formatTextAttachment(attachment));
         }
         writer.println();
         writer.flush();

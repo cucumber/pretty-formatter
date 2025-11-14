@@ -40,7 +40,9 @@ class MessagesToPrettyWriterTest {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         MessagesToPrettyWriter writer = create(bytes);
         writer.close();
-        assertThrows(IOException.class, () -> writer.write(null));
+        assertThrows(IOException.class, () -> writer.write(
+                Envelope.of(new TestRunStarted(toMessage(Instant.now()), "some-id"))
+        ));
     }
 
     @Test
@@ -59,7 +61,7 @@ class MessagesToPrettyWriterTest {
             }
         }
 
-        return new String(bytes.toByteArray(), UTF_8);
+        return bytes.toString(UTF_8);
     }
 
     private static MessagesToPrettyWriter create(ByteArrayOutputStream bytes) {

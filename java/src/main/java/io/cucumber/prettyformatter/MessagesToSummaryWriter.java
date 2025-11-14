@@ -12,7 +12,6 @@ import java.util.function.Function;
 
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_GHERKIN_DOCUMENTS;
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_HOOKS;
-import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_STEP_DEFINITIONS;
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_SUGGESTIONS;
 import static java.util.Objects.requireNonNull;
 

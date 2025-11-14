@@ -46,7 +46,6 @@ import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static java.util.Collections.emptyList;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -147,7 +146,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 .map(testCaseStarted -> {
                     Optional<Pickle> pickle = query.findPickleBy(testCaseStarted);
                     String uri = pickle.map(Pickle::getUri).orElse(null);
-                    Long line = pickle.flatMap(query::findLocationOf).map(Location::getLine).orElse(null);
+                    Integer line = pickle.flatMap(query::findLocationOf).map(Location::getLine).orElse(null);
                     return new OrderableMessage<>(testCaseStarted, uri, line);
                 })
                 .sorted()
@@ -180,14 +179,11 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private static String formatGlobalHookName(HookType hookType) {
-        switch (hookType) {
-            case BEFORE_TEST_RUN:
-                return "BeforeTestRun";
-            case AFTER_TEST_RUN:
-                return "AfterTestRun";
-            default:
-                return "Unknown";
-        }
+        return switch (hookType) {
+            case BEFORE_TEST_RUN -> "BeforeTestRun";
+            case AFTER_TEST_RUN -> "AfterTestRun";
+            default -> "Unknown";
+        };
     }
 
     private <T> void printFinishedItemByStatus(
@@ -327,10 +323,11 @@ final class SummaryReportWriter implements AutoCloseable {
                 .ifPresent(out::println);
     }
 
+    @SuppressWarnings("JavaDurationGetSecondsGetNano")
     private static String formatDuration(Duration duration) {
         long minutes = duration.toMinutes();
-        long seconds = duration.minusMinutes(minutes).getSeconds();
-        long milliseconds = NANOSECONDS.toMillis(duration.getNano());
+        long seconds = duration.toSecondsPart();
+        long milliseconds = duration.toMillisPart();
         return String.format("%sm %s.%ss", minutes, seconds, milliseconds);
     }
 

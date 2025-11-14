@@ -2,7 +2,6 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.NdjsonToMessageIterable;
 import io.cucumber.messages.types.Envelope;
-import io.cucumber.prettyformatter.MessagesToProgressWriter.Builder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -22,19 +21,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
-import static io.cucumber.prettyformatter.MessagesToProgressWriter.builder;
 import static io.cucumber.prettyformatter.Theme.cucumber;
 import static io.cucumber.prettyformatter.Theme.plain;
-import static java.nio.file.Files.readAllBytes;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessagesToProgressWriterAcceptanceTest {
-    private static final NdjsonToMessageIterable.Deserializer deserializer = (json) -> OBJECT_MAPPER.readValue(json, Envelope.class);
+
+    private static final NdjsonToMessageIterable.Deserializer deserializer = json -> OBJECT_MAPPER.readValue(json, Envelope.class);
 
     static List<TestCase> acceptance() throws IOException {
-        Map<String, Builder> themes = new LinkedHashMap<>();
-        themes.put("cucumber", builder().theme(cucumber()));
-        themes.put("plain", builder().theme(plain()));
+        Map<String, MessagesToProgressWriter.Builder> themes = new LinkedHashMap<>();
+        themes.put("cucumber", MessagesToProgressWriter.builder().theme(cucumber()));
+        themes.put("plain", MessagesToProgressWriter.builder().theme(plain()));
 
         List<Path> sources = getSources();
 
@@ -43,8 +43,6 @@ class MessagesToProgressWriterAcceptanceTest {
                 themes.forEach((strategyName, strategy) ->
                         testCases.add(new TestCase(path, strategyName, strategy))));
 
-        
-        
         return testCases;
     }
 
@@ -56,7 +54,7 @@ class MessagesToProgressWriterAcceptanceTest {
         }
     }
 
-    private static <T extends OutputStream> T writeDotProgress(TestCase testCase, T out, Builder builder) throws IOException {
+    private static <T extends OutputStream> T writeDotProgress(TestCase testCase, T out, MessagesToProgressWriter.Builder builder) throws IOException {
         try (InputStream in = Files.newInputStream(testCase.source)) {
             try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, deserializer)) {
                 try (MessagesToProgressWriter writer = builder.build(out)) {
@@ -73,7 +71,7 @@ class MessagesToProgressWriterAcceptanceTest {
     @MethodSource("acceptance")
     void test(TestCase testCase) throws IOException {
         ByteArrayOutputStream bytes = writeDotProgress(testCase, new ByteArrayOutputStream(), testCase.builder);
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
+        assertThat(bytes.toString(UTF_8)).isEqualToIgnoringNewLines(Files.readString(testCase.expected));
     }
 
     @ParameterizedTest
@@ -90,18 +88,18 @@ class MessagesToProgressWriterAcceptanceTest {
     static class TestCase {
         private final Path source;
         private final String themeName;
-        private final Builder builder;
+        private final MessagesToProgressWriter.Builder builder;
         private final Path expected;
 
         private final String name;
 
-        TestCase(Path source, String themeName, Builder builder) {
+        TestCase(Path source, String themeName, MessagesToProgressWriter.Builder builder) {
             this.source = source;
             this.themeName = themeName;
             this.builder = builder;
             String fileName = source.getFileName().toString();
             this.name = fileName.substring(0, fileName.lastIndexOf(".ndjson"));
-            this.expected = source.getParent().resolve(name + "." + themeName + ".progress.log");
+            this.expected = requireNonNull(source.getParent()).resolve(name + "." + themeName + ".progress.log");
         }
 
         @Override

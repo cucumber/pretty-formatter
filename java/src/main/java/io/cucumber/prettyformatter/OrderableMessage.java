@@ -1,17 +1,20 @@
 package io.cucumber.prettyformatter;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Comparator;
 
 import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsFirst;
+import static java.util.Objects.requireNonNull;
 
 final class OrderableMessage<T> implements Comparable<OrderableMessage<T>> {
     private final T message;
-    private final String uri;
-    private final Long line;
+    private final @Nullable String uri;
+    private final @Nullable Integer line;
 
-    OrderableMessage(T message, String uri, Long line) {
-        this.message = message;
+    OrderableMessage(T message, @Nullable String uri, @Nullable Integer line) {
+        this.message = requireNonNull(message);
         this.uri = uri;
         this.line = line;
     }

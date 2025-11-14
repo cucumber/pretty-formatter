@@ -46,7 +46,9 @@ class MessagesToProgressWriterTest {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         MessagesToProgressWriter writer = MessagesToProgressWriter.builder().build(bytes);
         writer.close();
-        assertThrows(IOException.class, () -> writer.write(null));
+        assertThrows(IOException.class, () -> writer.write(
+                Envelope.of(new TestRunStarted(toMessage(Instant.now()), "some-id"))
+        ));
     }
 
     @Test
@@ -63,13 +65,13 @@ class MessagesToProgressWriterTest {
                 "",
                 "",
                 new TestStepResult(
-                        new Duration(0L, 0L),
+                        new Duration(0L, 0),
                         null,
                         TestStepResultStatus.PASSED,
                         null
 
                 ),
-                new Timestamp(0L, 0L)
+                new Timestamp(0L, 0)
         ));
         Envelope[] messages = new Envelope[128];
         Arrays.fill(messages, envelope);
@@ -84,13 +86,13 @@ class MessagesToProgressWriterTest {
                 "",
                 "",
                 new TestStepResult(
-                        new Duration(0L, 0L),
+                        new Duration(0L, 0),
                         null,
                         TestStepResultStatus.PASSED,
                         null
 
                 ),
-                new Timestamp(0L, 0L)
+                new Timestamp(0L, 0)
         ));
         Envelope[] messages = new Envelope[128];
         Arrays.fill(messages, envelope);
@@ -111,7 +113,7 @@ class MessagesToProgressWriterTest {
             }
         }
 
-        return new String(bytes.toByteArray(), UTF_8);
+        return bytes.toString(UTF_8);
     }
 
     private static MessagesToProgressWriter.Builder builder() {

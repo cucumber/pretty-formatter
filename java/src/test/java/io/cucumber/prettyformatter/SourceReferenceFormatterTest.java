@@ -13,8 +13,8 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Could be replaced by <a href=https://github.com/cucumber/compatibility-kit/issues/131>compatibility-kit#131</a>. 
-  */
+ * Could be replaced by <a href=https://github.com/cucumber/compatibility-kit/issues/131>compatibility-kit#131</a>.
+ */
 class SourceReferenceFormatterTest {
 
     private final Function<String, String> uriFormatter = Function.identity();
@@ -43,6 +43,7 @@ class SourceReferenceFormatterTest {
         assertThat(formatter.format(sourceReference))
                 .contains("path/to/example.feature");
     }
+
     @Test
     void uri_with_formatter() {
         Function<String, String> uriFormatter = removePrefix("path/to/");
@@ -68,7 +69,7 @@ class SourceReferenceFormatterTest {
                 "path/to/example.feature",
                 null,
                 null,
-                new Location(31415L, 42L)
+                new Location(31415, 42)
         );
         assertThat(formatter.format(sourceReference))
                 .contains("path/to/example.feature:31415");
@@ -116,7 +117,7 @@ class SourceReferenceFormatterTest {
                         "path/to/org/example/Example.java",
                         "example"
                 ),
-                new Location(31415L, 42L)
+                new Location(31415, 42)
         );
         assertThat(formatter.format(sourceReference))
                 .contains("org.example.Example.example(path/to/org/example/Example.java:31415)");
