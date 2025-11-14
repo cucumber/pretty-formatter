@@ -47,7 +47,7 @@ class MessagesToProgressWriterTest {
         MessagesToProgressWriter writer = MessagesToProgressWriter.builder().build(bytes);
         writer.close();
         assertThrows(IOException.class, () -> writer.write(
-                Envelope.of(new TestRunStarted(toMessage(Instant.now()), "some-id"))
+                Envelope.of(new TestRunStarted(new Timestamp(0L, 0), ""))
         ));
     }
 

@@ -3,6 +3,7 @@ package io.cucumber.prettyformatter;
 import io.cucumber.messages.types.Envelope;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestRunStarted;
+import io.cucumber.messages.types.Timestamp;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -41,7 +42,7 @@ class MessagesToPrettyWriterTest {
         MessagesToPrettyWriter writer = create(bytes);
         writer.close();
         assertThrows(IOException.class, () -> writer.write(
-                Envelope.of(new TestRunStarted(toMessage(Instant.now()), "some-id"))
+                Envelope.of(new TestRunStarted(new Timestamp(0L, 0), ""))
         ));
     }
 
