@@ -48,7 +48,7 @@ import static io.cucumber.prettyformatter.Theme.Element.TAG;
 final class TestTheme {
     
     private TestTheme(){
-        // utility class
+        /* no-op */
     }
     
     static Theme demo() {
