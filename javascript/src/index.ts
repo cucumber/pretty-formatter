@@ -1,8 +1,8 @@
 import { Envelope } from '@cucumber/messages'
 
-import { PrettyPrinter } from './PrettyPrinter.js'
-import { CUCUMBER_THEME } from './theme.js'
-import type { Options } from './types.js'
+import { PrettyPrinter } from './PrettyPrinter'
+import { CUCUMBER_THEME } from './theme'
+import type { Options } from './types'
 
 const DEFAULT_OPTIONS: Required<Options> = {
   attachments: true,
@@ -10,8 +10,8 @@ const DEFAULT_OPTIONS: Required<Options> = {
   theme: CUCUMBER_THEME,
 }
 
-export * from './theme.js'
-export type * from './types.js'
+export * from './theme'
+export type * from './types'
 
 export default {
   type: 'formatter',

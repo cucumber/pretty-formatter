@@ -8,13 +8,13 @@ import { Envelope, TestStepResultStatus } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
-import { SummaryPrinter } from './SummaryPrinter.js'
-import { CUCUMBER_THEME } from './theme.js'
-import type { Options } from './types.js'
+import { SummaryPrinter } from './SummaryPrinter'
+import { CUCUMBER_THEME } from './theme'
+import type { Options } from './types'
 
 describe('SummaryPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
-    cwd: path.join(import.meta.dirname, '..', '..', 'testdata', 'src'),
+    cwd: path.join(__dirname, '..', '..', 'testdata', 'src'),
     absolute: true,
   })
 

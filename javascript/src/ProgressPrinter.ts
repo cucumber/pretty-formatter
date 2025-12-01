@@ -1,8 +1,8 @@
 import { Envelope } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
-import { formatStatusCharacter } from './helpers.js'
-import type { Options } from './types.js'
+import { formatStatusCharacter } from './helpers'
+import type { Options } from './types'
 
 export class ProgressPrinter {
   private readonly query: Query = new Query()

@@ -24,8 +24,8 @@ import {
 } from '@cucumber/messages'
 import { Interval } from 'luxon'
 
-import { TextBuilder } from './TextBuilder.js'
-import { Theme } from './types.js'
+import { TextBuilder } from './TextBuilder'
+import { Theme } from './types'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2

@@ -25,8 +25,8 @@ import {
   indent,
   ORDERED_STATUSES,
   titleCaseStatus,
-} from './helpers.js'
-import type { Options } from './types.js'
+} from './helpers'
+import type { Options } from './types'
 
 export class SummaryPrinter {
   private readonly println: (content?: string) => void
