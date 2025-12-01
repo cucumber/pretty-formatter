@@ -10,6 +10,7 @@ import java.util.function.Function;
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_GHERKIN_DOCUMENTS;
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_HOOKS;
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_SUGGESTIONS;
+import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_UNDEFINED_PARAMETER_TYPES;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -24,6 +25,7 @@ public final class MessagesToSummaryWriter implements AutoCloseable {
             .feature(INCLUDE_HOOKS, true)
             .feature(INCLUDE_GHERKIN_DOCUMENTS, true)
             .feature(INCLUDE_SUGGESTIONS, true)
+            .feature(INCLUDE_UNDEFINED_PARAMETER_TYPES, true)
             .build();
     private final OutputStream out;
     private final Theme theme;
