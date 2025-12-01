@@ -59,6 +59,7 @@ export class SummaryPrinter {
 
   private printStats() {
     this.println()
+    this.printTestRunCount()
     this.printGlobalHookCounts()
     this.printScenarioCounts()
     this.printStepCounts()
@@ -222,6 +223,23 @@ export class SummaryPrinter {
       if (formattedError) {
         this.println(indent(formattedError, 7))
       }
+    }
+  }
+
+  private printTestRunCount() {
+    const testRunFinished = this.query.findTestRunFinished()
+    if (testRunFinished?.exception) {
+      this.println()
+      this.println(
+        formatCounts(
+          'test run',
+          {
+            [TestStepResultStatus.FAILED]: 1,
+          },
+          this.options.theme,
+          this.stream
+        )
+      )
     }
   }
 
