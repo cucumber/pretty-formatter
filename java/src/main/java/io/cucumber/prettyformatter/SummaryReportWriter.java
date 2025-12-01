@@ -245,7 +245,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 .ifPresent(exception -> {
                     out.println(theme.style(STEP, FAILED, firstLetterCapitalizedName(FAILED) + " test run:"));
                     ExceptionFormatter formatter = new ExceptionFormatter(7, theme, FAILED);
-                    out.println(formatter.format(exception));
+                    formatter.format(exception).ifPresent(out::println);
                 });
     }
 
