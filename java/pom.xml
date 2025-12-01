@@ -5,11 +5,11 @@
     <parent>
         <groupId>io.cucumber</groupId>
         <artifactId>cucumber-parent</artifactId>
-        <version>4.3.8</version>
+        <version>4.5.0</version>
     </parent>
 
     <artifactId>pretty-formatter</artifactId>
-    <version>2.3.1-SNAPSHOT</version>
+    <version>2.4.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Pretty Formatter</name>
     <description>Writes a pretty report of the scenario execution as it happens</description>
@@ -17,7 +17,7 @@
 
     <properties>
         <project.Automatic-Module-Name>io.cucumber.prettyformatter</project.Automatic-Module-Name>
-        <project.build.outputTimestamp>1758245480</project.build.outputTimestamp>
+        <project.build.outputTimestamp>1762044952</project.build.outputTimestamp>
     </properties>
 
     <scm>
@@ -32,7 +32,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>5.13.4</version>
+                <version>6.0.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -40,7 +40,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
-                <version>2.20.0</version>
+                <version>2.20.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -48,7 +48,7 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-bom</artifactId>
-                <version>3.27.5</version>
+                <version>3.27.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -59,12 +59,19 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>messages</artifactId>
-            <version>[29.0.1,30.0.0)</version>
+            <version>[29.0.1,31.0.0)</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>query</artifactId>
             <version>[14.4.0,15.0.0)</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>compatibility-kit</artifactId>
+            <version>24.0.1</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -93,13 +100,7 @@
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

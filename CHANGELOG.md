@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.1] - 2025-11-02
+### Fixed
+- [Java] Unwrap optional exceptions in `TestRunFinished`
+
+## [2.4.0] - 2025-10-27
+### Changed
+- Update dependency io.cucumber:messages up to v30
+
 ## [2.3.0] - 2025-09-19
 ### Added
 - [Java] Message based summary printer ([#35](https://github.com/cucumber/pretty-formatter/pull/35))
@@ -53,7 +61,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Java implementation ([#1](https://github.com/cucumber/pretty-formatter/pull/1) M.P. Korstanje)
 
-[Unreleased]: https://github.com/cucumber/pretty-formatter/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/cucumber/pretty-formatter/compare/v2.4.1...HEAD
+[2.4.1]: https://github.com/cucumber/pretty-formatter/compare/v2.4.0...v2.4.1
+[2.4.0]: https://github.com/cucumber/pretty-formatter/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/cucumber/pretty-formatter/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/cucumber/pretty-formatter/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/cucumber/pretty-formatter/compare/v2.0.1...v2.1.0

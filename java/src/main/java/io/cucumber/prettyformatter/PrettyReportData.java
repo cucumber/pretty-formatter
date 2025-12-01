@@ -115,20 +115,19 @@ final class PrettyReportData {
     }
 
     private void preCalculateLocationIndent(TestCaseStarted event) {
-        query.findLineageBy(event)
-                .ifPresent(lineage ->
-                        lineage.scenario().ifPresent(scenario ->
-                                query.findPickleBy(event).ifPresent(pickle -> {
-                                    int scenarioIndent = calculateScenarioIndent(lineage);
-                                    int scenarioLineLength = calculateScenarioLineLength(scenarioIndent, pickle, scenario);
-                                    int longestLine = pickle.getSteps().stream()
-                                            .mapToInt(pickleStep -> preCalculatePickleStepLineLength(scenarioIndent, pickleStep))
-                                            .reduce(scenarioLineLength, Math::max);
+        query.findPickleBy(event).ifPresent(pickle ->
+                query.findLineageBy(pickle).ifPresent(lineage ->
+                        lineage.scenario().ifPresent(scenario -> {
+                            int scenarioIndent = calculateScenarioIndent(lineage);
+                            int scenarioLineLength = calculateScenarioLineLength(scenarioIndent, pickle, scenario);
+                            int longestLine = pickle.getSteps().stream()
+                                    .mapToInt(pickleStep -> preCalculatePickleStepLineLength(scenarioIndent, pickleStep))
+                                    .reduce(scenarioLineLength, Math::max);
 
-                                    scenarioIndentByTestCaseStartedId.put(event.getId(), scenarioIndent);
-                                    // Adds Space between step and comment start
-                                    commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + ONE_SPACE_LENGTH);
-                                })));
+                            scenarioIndentByTestCaseStartedId.put(event.getId(), scenarioIndent);
+                            // Adds Space between step and comment start
+                            commentStartIndexByTestCaseStartedId.put(event.getId(), longestLine + ONE_SPACE_LENGTH);
+                        })));
     }
 
     private Integer preCalculatePickleStepLineLength(int indent, PickleStep pickleStep) {

@@ -316,7 +316,7 @@ final class PrettyReportWriter implements AutoCloseable {
     void handleTestRunFinished(TestRunFinished event) {
         event.getException().ifPresent(exception -> {
             ExceptionFormatter formatter = new ExceptionFormatter(0, theme, FAILED);
-            writer.print(formatter.format(exception));
+            formatter.format(exception).ifPresent(writer::print);
         });
     }
 
