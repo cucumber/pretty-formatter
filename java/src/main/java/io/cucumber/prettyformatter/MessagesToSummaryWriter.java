@@ -1,18 +1,14 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Envelope;
-import io.cucumber.messages.types.UndefinedParameterType;
 import io.cucumber.query.Repository;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_GHERKIN_DOCUMENTS;
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_HOOKS;
-import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_STEP_DEFINITIONS;
 import static io.cucumber.query.Repository.RepositoryFeature.INCLUDE_SUGGESTIONS;
 import static java.util.Objects.requireNonNull;
 
@@ -29,7 +25,6 @@ public final class MessagesToSummaryWriter implements AutoCloseable {
             .feature(INCLUDE_GHERKIN_DOCUMENTS, true)
             .feature(INCLUDE_SUGGESTIONS, true)
             .build();
-    private final List<UndefinedParameterType> undefinedParameterTypes = new ArrayList<>();
     private final OutputStream out;
     private final Theme theme;
     private final Function<String, String> uriFormatter;
@@ -56,7 +51,6 @@ public final class MessagesToSummaryWriter implements AutoCloseable {
             throw new IOException("Stream closed");
         }
         repository.update(envelope);
-        envelope.getUndefinedParameterType().ifPresent(undefinedParameterTypes::add);
     }
 
 
@@ -71,7 +65,7 @@ public final class MessagesToSummaryWriter implements AutoCloseable {
             return;
         }
         
-        try (SummaryReportWriter writer = new SummaryReportWriter(out, theme, uriFormatter, repository, undefinedParameterTypes)){
+        try (SummaryReportWriter writer = new SummaryReportWriter(out, theme, uriFormatter, repository)){
             writer.printSummary();
         } finally {
             streamClosed = true;

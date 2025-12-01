@@ -58,21 +58,18 @@ final class SummaryReportWriter implements AutoCloseable {
     private final SourceReferenceFormatter sourceReferenceFormatter;
     private final Query query;
     private final PrintWriter out;
-    private final List<UndefinedParameterType> undefinedParameterTypes;
 
     SummaryReportWriter(
             OutputStream out,
             Theme theme,
             Function<String, String> uriFormatter,
-            Repository data,
-            List<UndefinedParameterType> undefinedParameterTypes
+            Repository data
     ) {
         this.theme = requireNonNull(theme);
         this.out = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
         this.sourceReferenceFormatter = new SourceReferenceFormatter(uriFormatter);
         this.query = new Query(requireNonNull(data));
-        this.undefinedParameterTypes = requireNonNull(undefinedParameterTypes);
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -335,6 +332,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printUnknownParameterTypes() {
+        List<UndefinedParameterType> undefinedParameterTypes = this.query.findAllUndefinedParameterTypes();
         if (undefinedParameterTypes.isEmpty()) {
             return;
         }
