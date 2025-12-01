@@ -257,7 +257,6 @@ final class SummaryReportWriter implements AutoCloseable {
 
 
     private void printTestRunCount() {
-        // TODO: No coverage?
         findTestRunWithException()
                 // Only print stats if the test run failed with exception, avoid clutter
                 .map(exception -> {
