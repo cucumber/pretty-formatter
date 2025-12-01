@@ -15,14 +15,15 @@ import {
   ERROR_INDENT_LENGTH,
   formatCounts,
   formatDuration,
+  formatForStatus,
   formatHookLocation,
   formatHookTitle,
-  formatNonPassingTitle,
   formatPickleLocation,
   formatTestStepResultError,
   GHERKIN_INDENT_LENGTH,
   indent,
   ORDERED_STATUSES,
+  titleCaseStatus,
 } from './helpers.js'
 import type { Options } from './types.js'
 
@@ -48,6 +49,7 @@ export class SummaryPrinter {
 
   private printSummary() {
     this.printNonPassingScenarios()
+    this.printUnknownParameterTypes()
     this.printNonPassingGlobalHooks()
     this.printStats()
     this.printSnippets()
@@ -102,7 +104,14 @@ export class SummaryPrinter {
       const forThisStatus = reportableByStatus.get(status) ?? []
       if (forThisStatus.length > 0) {
         this.println()
-        this.println(formatNonPassingTitle(status, 'scenarios', this.options.theme, this.stream))
+        this.println(
+          formatForStatus(
+            status,
+            `${titleCaseStatus(status)} scenarios:`,
+            this.options.theme,
+            this.stream
+          )
+        )
         forThisStatus.forEach(({ pickle, location, testCaseStarted, testStepResult }, index) => {
           const formattedLocation = formatPickleLocation(
             pickle,
@@ -134,6 +143,26 @@ export class SummaryPrinter {
     }
   }
 
+  private printUnknownParameterTypes() {
+    const unknownParameterTypes = this.query.findAllUndefinedParameterTypes()
+    if (unknownParameterTypes.length > 0) {
+      this.println()
+      this.println(
+        formatForStatus(
+          TestStepResultStatus.UNDEFINED,
+          'These parameters are missing a parameter type definition:',
+          this.options.theme,
+          this.stream
+        )
+      )
+      unknownParameterTypes.forEach((upt, index) => {
+        this.println(
+          indent(`${index + 1}) '${upt.name}' in '${upt.expression}'`, GHERKIN_INDENT_LENGTH)
+        )
+      })
+    }
+  }
+
   private printNonPassingGlobalHooks() {
     const testRunHookFinished = this.query.findAllTestRunHookFinished()
     const failedHooks = testRunHookFinished.filter(
@@ -143,7 +172,12 @@ export class SummaryPrinter {
     if (failedHooks.length > 0) {
       this.println()
       this.println(
-        formatNonPassingTitle(TestStepResultStatus.FAILED, 'hooks', this.options.theme, this.stream)
+        formatForStatus(
+          TestStepResultStatus.FAILED,
+          `${titleCaseStatus(TestStepResultStatus.FAILED)} hooks:`,
+          this.options.theme,
+          this.stream
+        )
       )
       failedHooks.forEach((testRunHookFinished, index) => {
         const hook = this.query.findHookBy(testRunHookFinished)

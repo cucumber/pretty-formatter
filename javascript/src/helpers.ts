@@ -377,16 +377,13 @@ export function formatStatusCharacter(
   return new TextBuilder(stream).append(character).build(theme.status?.all?.[status])
 }
 
-export function formatNonPassingTitle(
+export function formatForStatus(
   status: TestStepResultStatus,
-  suffix: string,
+  text: string,
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
-  return new TextBuilder(stream)
-    .append(status.charAt(0).toUpperCase() + status.slice(1).toLowerCase())
-    .append(` ${suffix}:`)
-    .build(theme.status?.all?.[status])
+  return new TextBuilder(stream).append(text).build(theme.status?.all?.[status])
 }
 
 export function formatCounts(
@@ -425,4 +422,8 @@ export function formatDuration(start: Timestamp, finish: Timestamp) {
     'milliseconds',
   ])
   return duration.toFormat(DURATION_FORMAT)
+}
+
+export function titleCaseStatus(status: TestStepResultStatus) {
+  return `${status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}`
 }
