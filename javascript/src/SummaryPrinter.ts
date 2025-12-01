@@ -19,6 +19,7 @@ import {
   formatHookLocation,
   formatHookTitle,
   formatPickleLocation,
+  formatTestRunFinishedError,
   formatTestStepResultError,
   GHERKIN_INDENT_LENGTH,
   indent,
@@ -51,6 +52,7 @@ export class SummaryPrinter {
     this.printNonPassingScenarios()
     this.printUnknownParameterTypes()
     this.printNonPassingGlobalHooks()
+    this.printNonPassingTestRun()
     this.printStats()
     this.printSnippets()
   }
@@ -198,6 +200,28 @@ export class SummaryPrinter {
           this.println()
         }
       })
+    }
+  }
+
+  private printNonPassingTestRun() {
+    const testRunFinished = this.query.findTestRunFinished()
+    if (testRunFinished?.exception) {
+      this.println(
+        formatForStatus(
+          TestStepResultStatus.FAILED,
+          `${titleCaseStatus(TestStepResultStatus.FAILED)} test run:`,
+          this.options.theme,
+          this.stream
+        )
+      )
+      const formattedError = formatTestRunFinishedError(
+        testRunFinished,
+        this.options.theme,
+        this.stream
+      )
+      if (formattedError) {
+        this.println(indent(formattedError, 7))
+      }
     }
   }
 
