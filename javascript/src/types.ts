@@ -47,7 +47,7 @@ export interface Theme {
 }
 
 export interface Options {
-  attachments?: boolean
-  featuresAndRules?: boolean
+  includeAttachments?: boolean
+  includeFeaturesAndRules?: boolean
   theme?: Theme
 }

@@ -162,7 +162,7 @@ export class PrettyPrinter {
     )
 
     let scenarioIndent = 0
-    if (this.options.featuresAndRules) {
+    if (this.options.includeFeaturesAndRules) {
       scenarioIndent += GHERKIN_INDENT_LENGTH
       if (lineage.rule) {
         scenarioIndent += GHERKIN_INDENT_LENGTH
@@ -200,7 +200,7 @@ export class PrettyPrinter {
   }
 
   private printFeatureLine(feature: Feature) {
-    if (this.options.featuresAndRules && !this.encounteredFeaturesAndRules.has(feature)) {
+    if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(feature)) {
       this.println()
       this.println(formatFeatureTitle(feature, this.options.theme, this.stream))
     }
@@ -209,7 +209,7 @@ export class PrettyPrinter {
 
   private printRuleLine(rule: Rule | undefined) {
     if (rule) {
-      if (this.options.featuresAndRules && !this.encounteredFeaturesAndRules.has(rule)) {
+      if (this.options.includeFeaturesAndRules && !this.encounteredFeaturesAndRules.has(rule)) {
         this.println()
         this.println(
           indent(formatRuleTitle(rule, this.options.theme, this.stream), GHERKIN_INDENT_LENGTH)
@@ -337,7 +337,7 @@ export class PrettyPrinter {
   }
 
   private handleAttachment(attachment: Attachment) {
-    if (!this.options.attachments) {
+    if (!this.options.includeAttachments) {
       return
     }
     const scenarioIndent = this.getScenarioIndentBy(attachment)

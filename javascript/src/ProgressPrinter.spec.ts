@@ -22,16 +22,16 @@ describe('ProgressPrinter', async () => {
     {
       name: 'cucumber',
       options: {
-        attachments: true,
-        featuresAndRules: true,
+        includeAttachments: true,
+        includeFeaturesAndRules: true,
         theme: CUCUMBER_THEME,
       },
     },
     {
       name: 'plain',
       options: {
-        attachments: true,
-        featuresAndRules: true,
+        includeAttachments: true,
+        includeFeaturesAndRules: true,
         theme: {
           status: {
             icon: {
@@ -69,8 +69,8 @@ describe('ProgressPrinter', async () => {
               content += chunk
             },
             {
-              attachments: true,
-              featuresAndRules: true,
+              includeAttachments: true,
+              includeFeaturesAndRules: true,
               theme: CUCUMBER_THEME,
               ...options,
             }

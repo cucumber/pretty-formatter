@@ -5,8 +5,8 @@ import { CUCUMBER_THEME } from './theme'
 import type { Options } from './types'
 
 const DEFAULT_OPTIONS: Required<Options> = {
-  attachments: true,
-  featuresAndRules: true,
+  includeAttachments: true,
+  includeFeaturesAndRules: true,
   theme: CUCUMBER_THEME,
 }
 

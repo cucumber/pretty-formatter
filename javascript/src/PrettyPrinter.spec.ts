@@ -70,48 +70,48 @@ describe('PrettyPrinter', async () => {
     {
       name: 'cucumber',
       options: {
-        attachments: true,
-        featuresAndRules: true,
+        includeAttachments: true,
+        includeFeaturesAndRules: true,
         theme: CUCUMBER_THEME,
       },
     },
     {
       name: 'demo',
       options: {
-        attachments: true,
-        featuresAndRules: true,
+        includeAttachments: true,
+        includeFeaturesAndRules: true,
         theme: DEMO_THEME,
       },
     },
     {
       name: 'exclude-features-and-rules',
       options: {
-        attachments: true,
-        featuresAndRules: false,
+        includeAttachments: true,
+        includeFeaturesAndRules: false,
         theme: {},
       },
     },
     {
       name: 'exclude-attachments',
       options: {
-        attachments: false,
-        featuresAndRules: true,
+        includeAttachments: false,
+        includeFeaturesAndRules: true,
         theme: {},
       },
     },
     {
       name: 'none',
       options: {
-        attachments: true,
-        featuresAndRules: true,
+        includeAttachments: true,
+        includeFeaturesAndRules: true,
         theme: {},
       },
     },
     {
       name: 'plain',
       options: {
-        attachments: true,
-        featuresAndRules: true,
+        includeAttachments: true,
+        includeFeaturesAndRules: true,
         theme: {
           status: {
             icon: {
@@ -149,8 +149,8 @@ describe('PrettyPrinter', async () => {
               content += chunk
             },
             {
-              attachments: true,
-              featuresAndRules: true,
+              includeAttachments: true,
+              includeFeaturesAndRules: true,
               theme: CUCUMBER_THEME,
               ...options,
             }
