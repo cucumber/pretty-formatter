@@ -1,5 +1,5 @@
-import type { Theme } from './types.js'
-import { TestStepResultStatus } from './types.js'
+import type { Theme } from './types'
+import { TestStepResultStatus } from './types'
 
 export const CUCUMBER_THEME: Theme = {
   attachment: 'blue',

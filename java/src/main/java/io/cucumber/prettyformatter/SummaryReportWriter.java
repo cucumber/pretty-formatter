@@ -58,21 +58,18 @@ final class SummaryReportWriter implements AutoCloseable {
     private final SourceReferenceFormatter sourceReferenceFormatter;
     private final Query query;
     private final PrintWriter out;
-    private final List<UndefinedParameterType> undefinedParameterTypes;
 
     SummaryReportWriter(
             OutputStream out,
             Theme theme,
             Function<String, String> uriFormatter,
-            Repository data,
-            List<UndefinedParameterType> undefinedParameterTypes
+            Repository data
     ) {
         this.theme = requireNonNull(theme);
         this.out = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
         this.sourceReferenceFormatter = new SourceReferenceFormatter(uriFormatter);
         this.query = new Query(requireNonNull(data));
-        this.undefinedParameterTypes = requireNonNull(undefinedParameterTypes);
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -224,7 +221,7 @@ final class SummaryReportWriter implements AutoCloseable {
         if (attempt == 0) {
             return "";
         }
-        return ", after " + attempt + " attempts";
+        return ", after " + (attempt + 1) + " attempts";
     }
 
     private String formatLocationComment(Pickle pickle) {
@@ -238,7 +235,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private String formatLocationComment(Hook hook) {
         return sourceReferenceFormatter.format(hook.getSourceReference())
-                .map(comment -> theme.style(LOCATION, "#" + comment))
+                .map(comment -> theme.style(LOCATION, "# " + comment))
                 .map(comment -> " " + comment)
                 .orElse("");
     }
@@ -248,7 +245,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 .ifPresent(exception -> {
                     out.println(theme.style(STEP, FAILED, firstLetterCapitalizedName(FAILED) + " test run:"));
                     ExceptionFormatter formatter = new ExceptionFormatter(7, theme, FAILED);
-                    out.println(formatter.format(exception));
+                    formatter.format(exception).ifPresent(out::println);
                 });
     }
 
@@ -260,7 +257,6 @@ final class SummaryReportWriter implements AutoCloseable {
 
 
     private void printTestRunCount() {
-        // TODO: No coverage?
         findTestRunWithException()
                 // Only print stats if the test run failed with exception, avoid clutter
                 .map(exception -> {
@@ -335,6 +331,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printUnknownParameterTypes() {
+        List<UndefinedParameterType> undefinedParameterTypes = this.query.findAllUndefinedParameterTypes();
         if (undefinedParameterTypes.isEmpty()) {
             return;
         }

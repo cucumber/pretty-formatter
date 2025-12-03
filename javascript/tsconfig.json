@@ -1,26 +1,11 @@
 {
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "include": ["src"],
   "compilerOptions": {
-    "baseUrl": ".",
+    "lib": ["dom", "es2023"],
+    "target": "es2022",
     "declaration": true,
-    "sourceMap": true,
-    "allowJs": false,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "downlevelIteration": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "experimentalDecorators": true,
-    "module": "NodeNext",
-    "lib": [
-      "ES2022"
-    ],
-    "target": "ES2022",
-    "moduleResolution": "NodeNext",
-    "allowSyntheticDefaultImports": true,
-    "noEmit": true
-  },
-  "ts-node": {
-    "files": true
+    "outDir": "dist",
+    "inlineSourceMap": true
   }
 }
