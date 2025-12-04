@@ -4,13 +4,13 @@ import { Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 
 import { NdjsonToMessageStream } from '@cucumber/message-streams'
-import { Envelope, TestStepResultStatus } from '@cucumber/messages'
+import { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
 import { ProgressPrinter } from './ProgressPrinter'
 import { CUCUMBER_THEME } from './theme'
-import type { Options } from './types'
+import type { ProgressOptions } from './types'
 
 describe('ProgressPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
@@ -18,33 +18,17 @@ describe('ProgressPrinter', async () => {
     absolute: true,
   })
 
-  const variants: ReadonlyArray<{ name: string; options: Options }> = [
+  const variants: ReadonlyArray<{ name: string; options: ProgressOptions }> = [
     {
       name: 'cucumber',
       options: {
-        includeAttachments: true,
-        includeFeatureLine: true,
         theme: CUCUMBER_THEME,
       },
     },
     {
       name: 'plain',
       options: {
-        includeAttachments: true,
-        includeFeatureLine: true,
-        theme: {
-          status: {
-            icon: {
-              [TestStepResultStatus.AMBIGUOUS]: '✘',
-              [TestStepResultStatus.FAILED]: '✘',
-              [TestStepResultStatus.PASSED]: '✔',
-              [TestStepResultStatus.PENDING]: '■',
-              [TestStepResultStatus.SKIPPED]: '↷',
-              [TestStepResultStatus.UNDEFINED]: '■',
-              [TestStepResultStatus.UNKNOWN]: ' ',
-            },
-          },
-        },
+        theme: {},
       },
     },
   ]
@@ -69,10 +53,6 @@ describe('ProgressPrinter', async () => {
               content += chunk
             },
             {
-              includeAttachments: true,
-              includeFeatureLine: true,
-              includeRuleLine: true,
-              useStatusIcon: true,
               theme: CUCUMBER_THEME,
               ...options,
             }

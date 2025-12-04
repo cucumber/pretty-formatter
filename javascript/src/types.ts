@@ -47,10 +47,18 @@ export interface Theme {
   tag?: Style
 }
 
-export interface Options {
+export interface PrettyOptions {
   includeAttachments?: boolean
   includeFeatureLine?: boolean
   includeRuleLine?: boolean
   useStatusIcon?: boolean
+  theme?: Theme
+}
+
+export interface ProgressOptions {
+  theme?: Theme
+}
+
+export interface SummaryOptions {
   theme?: Theme
 }

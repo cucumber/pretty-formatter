@@ -26,7 +26,7 @@ import {
   ORDERED_STATUSES,
   titleCaseStatus,
 } from './helpers'
-import type { Options } from './types'
+import type { SummaryOptions } from './types'
 
 export class SummaryPrinter {
   private readonly println: (content?: string) => void
@@ -35,7 +35,7 @@ export class SummaryPrinter {
   constructor(
     private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
-    private readonly options: Required<Options>
+    private readonly options: Required<SummaryOptions>
   ) {
     this.println = (content: string = '') => this.print(`${content}\n`)
   }

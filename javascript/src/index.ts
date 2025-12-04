@@ -2,9 +2,9 @@ import { Envelope } from '@cucumber/messages'
 
 import { PrettyPrinter } from './PrettyPrinter'
 import { CUCUMBER_THEME } from './theme'
-import type { Options } from './types'
+import type { PrettyOptions } from './types'
 
-const DEFAULT_OPTIONS: Required<Options> = {
+const DEFAULT_OPTIONS: Required<PrettyOptions> = {
   includeAttachments: true,
   includeFeatureLine: true,
   includeRuleLine: true,
@@ -27,7 +27,7 @@ export default {
     write,
   }: {
     on: (type: 'message', handler: (message: Envelope) => void) => void
-    options?: Options
+    options?: PrettyOptions
     stream?: NodeJS.WritableStream
     write: (content: string) => void
   }) {

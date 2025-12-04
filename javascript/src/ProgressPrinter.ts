@@ -2,7 +2,7 @@ import { Envelope } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
 import { formatStatusCharacter } from './helpers'
-import type { Options } from './types'
+import type { ProgressOptions } from './types'
 
 export class ProgressPrinter {
   private readonly query: Query = new Query()
@@ -10,7 +10,7 @@ export class ProgressPrinter {
   constructor(
     private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
-    private readonly options: Required<Options>
+    private readonly options: Required<ProgressOptions>
   ) {}
 
   update(message: Envelope) {

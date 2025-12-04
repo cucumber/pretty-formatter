@@ -38,7 +38,7 @@ import {
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
 } from './helpers'
-import type { Options } from './types'
+import type { PrettyOptions } from './types'
 
 export class PrettyPrinter {
   private readonly println: (content?: string) => void
@@ -56,7 +56,7 @@ export class PrettyPrinter {
   constructor(
     private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
-    private readonly options: Required<Options>
+    private readonly options: Required<PrettyOptions>
   ) {
     this.println = (content: string = '') => this.print(`${content}\n`)
   }

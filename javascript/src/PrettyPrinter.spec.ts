@@ -10,7 +10,7 @@ import { globbySync } from 'globby'
 
 import { PrettyPrinter } from './PrettyPrinter'
 import { CUCUMBER_THEME } from './theme'
-import type { Options, Theme } from './types'
+import type { PrettyOptions, Theme } from './types'
 
 const DEMO_THEME: Theme = {
   attachment: 'blue',
@@ -66,7 +66,7 @@ describe('PrettyPrinter', async () => {
     absolute: true,
   })
 
-  const variants: ReadonlyArray<{ name: string; options: Options }> = [
+  const variants: ReadonlyArray<{ name: string; options: PrettyOptions }> = [
     {
       name: 'cucumber',
       options: {
