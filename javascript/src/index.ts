@@ -6,7 +6,9 @@ import type { Options } from './types'
 
 const DEFAULT_OPTIONS: Required<Options> = {
   includeAttachments: true,
-  includeFeaturesAndRules: true,
+  includeFeatureLine: true,
+  includeRuleLine: true,
+  useStatusIcon: true,
   theme: CUCUMBER_THEME,
 }
 

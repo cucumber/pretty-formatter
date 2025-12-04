@@ -25,7 +25,7 @@ import {
 import { Interval } from 'luxon'
 
 import { TextBuilder } from './TextBuilder'
-import { Theme } from './types'
+import { Style, Theme } from './types'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
@@ -40,7 +40,26 @@ export const ORDERED_STATUSES: TestStepResultStatus[] = [
   TestStepResultStatus.AMBIGUOUS,
   TestStepResultStatus.FAILED,
 ]
-const STATUS_CHARACTERS: Record<TestStepResultStatus, string> = {
+export const DEFAULT_STATUS_COLORS: Record<TestStepResultStatus, Style> = {
+  [TestStepResultStatus.AMBIGUOUS]: 'red',
+  [TestStepResultStatus.FAILED]: 'red',
+  [TestStepResultStatus.PASSED]: 'green',
+  [TestStepResultStatus.PENDING]: 'yellow',
+  [TestStepResultStatus.SKIPPED]: 'cyan',
+  [TestStepResultStatus.UNDEFINED]: 'yellow',
+  [TestStepResultStatus.UNKNOWN]: 'gray',
+}
+
+export const DEFAULT_STATUS_ICONS: Record<TestStepResultStatus, string> = {
+  [TestStepResultStatus.AMBIGUOUS]: '✘',
+  [TestStepResultStatus.FAILED]: '✘',
+  [TestStepResultStatus.PASSED]: '✔',
+  [TestStepResultStatus.PENDING]: '■',
+  [TestStepResultStatus.SKIPPED]: '↷',
+  [TestStepResultStatus.UNDEFINED]: '■',
+  [TestStepResultStatus.UNKNOWN]: ' ',
+} as const
+export const DEFAULT_PROGRESS_ICONS: Record<TestStepResultStatus, string> = {
   [TestStepResultStatus.AMBIGUOUS]: 'A',
   [TestStepResultStatus.FAILED]: 'F',
   [TestStepResultStatus.PASSED]: '.',
@@ -163,12 +182,18 @@ export function formatStepTitle(
   pickleStep: PickleStep,
   step: Step,
   status: TestStepResultStatus,
+  useStatusIcon: boolean,
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
   const builder = new TextBuilder(stream)
-  if (theme.status?.icon?.[status]) {
-    builder.append(theme.status.icon[status], theme.status?.all?.[status]).space()
+  if (useStatusIcon) {
+    builder
+      .append(
+        theme.status?.icon?.[status] ?? DEFAULT_STATUS_ICONS[status],
+        theme.status?.all?.[status]
+      )
+      .space()
   }
   return builder
     .append(
@@ -373,7 +398,7 @@ export function formatStatusCharacter(
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
-  const character = STATUS_CHARACTERS[status]
+  const character = DEFAULT_PROGRESS_ICONS[status]
   return new TextBuilder(stream).append(character).build(theme.status?.all?.[status])
 }
 

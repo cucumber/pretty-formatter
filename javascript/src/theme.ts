@@ -1,5 +1,5 @@
+import { DEFAULT_PROGRESS_ICONS, DEFAULT_STATUS_COLORS, DEFAULT_STATUS_ICONS } from './helpers'
 import type { Theme } from './types'
-import { TestStepResultStatus } from './types'
 
 export const CUCUMBER_THEME: Theme = {
   attachment: 'blue',
@@ -8,23 +8,9 @@ export const CUCUMBER_THEME: Theme = {
   },
   location: 'blackBright',
   status: {
-    all: {
-      [TestStepResultStatus.AMBIGUOUS]: 'red',
-      [TestStepResultStatus.FAILED]: 'red',
-      [TestStepResultStatus.PASSED]: 'green',
-      [TestStepResultStatus.PENDING]: 'yellow',
-      [TestStepResultStatus.SKIPPED]: 'cyan',
-      [TestStepResultStatus.UNDEFINED]: 'yellow',
-    },
-    icon: {
-      [TestStepResultStatus.AMBIGUOUS]: '✘',
-      [TestStepResultStatus.FAILED]: '✘',
-      [TestStepResultStatus.PASSED]: '✔',
-      [TestStepResultStatus.PENDING]: '■',
-      [TestStepResultStatus.SKIPPED]: '↷',
-      [TestStepResultStatus.UNDEFINED]: '■',
-      [TestStepResultStatus.UNKNOWN]: ' ',
-    },
+    all: { ...DEFAULT_STATUS_COLORS },
+    icon: { ...DEFAULT_STATUS_ICONS },
+    progress: { ...DEFAULT_PROGRESS_ICONS },
   },
   rule: {
     keyword: 'bold',

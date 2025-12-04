@@ -71,23 +71,29 @@ describe('PrettyPrinter', async () => {
       name: 'cucumber',
       options: {
         includeAttachments: true,
-        includeFeaturesAndRules: true,
+        includeFeatureLine: true,
+        includeRuleLine: true,
         theme: CUCUMBER_THEME,
+        useStatusIcon: true,
       },
     },
     {
       name: 'demo',
       options: {
         includeAttachments: true,
-        includeFeaturesAndRules: true,
+        includeFeatureLine: true,
+        includeRuleLine: true,
         theme: DEMO_THEME,
+        useStatusIcon: false,
       },
     },
     {
       name: 'exclude-features-and-rules',
       options: {
         includeAttachments: true,
-        includeFeaturesAndRules: false,
+        includeFeatureLine: false,
+        includeRuleLine: false,
+        useStatusIcon: false,
         theme: {},
       },
     },
@@ -95,7 +101,9 @@ describe('PrettyPrinter', async () => {
       name: 'exclude-attachments',
       options: {
         includeAttachments: false,
-        includeFeaturesAndRules: true,
+        includeFeatureLine: true,
+        includeRuleLine: true,
+        useStatusIcon: false,
         theme: {},
       },
     },
@@ -103,7 +111,9 @@ describe('PrettyPrinter', async () => {
       name: 'none',
       options: {
         includeAttachments: true,
-        includeFeaturesAndRules: true,
+        includeFeatureLine: true,
+        includeRuleLine: true,
+        useStatusIcon: false,
         theme: {},
       },
     },
@@ -111,20 +121,10 @@ describe('PrettyPrinter', async () => {
       name: 'plain',
       options: {
         includeAttachments: true,
-        includeFeaturesAndRules: true,
-        theme: {
-          status: {
-            icon: {
-              [TestStepResultStatus.AMBIGUOUS]: '✘',
-              [TestStepResultStatus.FAILED]: '✘',
-              [TestStepResultStatus.PASSED]: '✔',
-              [TestStepResultStatus.PENDING]: '■',
-              [TestStepResultStatus.SKIPPED]: '↷',
-              [TestStepResultStatus.UNDEFINED]: '■',
-              [TestStepResultStatus.UNKNOWN]: ' ',
-            },
-          },
-        },
+        includeFeatureLine: true,
+        includeRuleLine: true,
+        useStatusIcon: true,
+        theme: {},
       },
     },
   ]
@@ -150,7 +150,9 @@ describe('PrettyPrinter', async () => {
             },
             {
               includeAttachments: true,
-              includeFeaturesAndRules: true,
+              includeFeatureLine: true,
+              includeRuleLine: true,
+              useStatusIcon: true,
               theme: CUCUMBER_THEME,
               ...options,
             }

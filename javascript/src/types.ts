@@ -37,6 +37,7 @@ export interface Theme {
   status?: {
     all?: Partial<Record<TestStepResultStatus, Style>>
     icon?: Partial<Record<TestStepResultStatus, string>>
+    progress?: Partial<Record<TestStepResultStatus, string>>
   }
   step?: {
     argument?: Style
@@ -48,6 +49,8 @@ export interface Theme {
 
 export interface Options {
   includeAttachments?: boolean
-  includeFeaturesAndRules?: boolean
+  includeFeatureLine?: boolean
+  includeRuleLine?: boolean
+  useStatusIcon?: boolean
   theme?: Theme
 }

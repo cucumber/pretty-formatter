@@ -23,7 +23,7 @@ describe('SummaryPrinter', async () => {
       name: 'cucumber',
       options: {
         includeAttachments: true,
-        includeFeaturesAndRules: true,
+        includeFeatureLine: true,
         theme: CUCUMBER_THEME,
       },
     },
@@ -31,7 +31,7 @@ describe('SummaryPrinter', async () => {
       name: 'plain',
       options: {
         includeAttachments: true,
-        includeFeaturesAndRules: true,
+        includeFeatureLine: true,
         theme: {
           status: {
             icon: {
@@ -70,7 +70,9 @@ describe('SummaryPrinter', async () => {
             },
             {
               includeAttachments: true,
-              includeFeaturesAndRules: true,
+              includeFeatureLine: true,
+              includeRuleLine: true,
+              useStatusIcon: true,
               theme: CUCUMBER_THEME,
               ...options,
             }
