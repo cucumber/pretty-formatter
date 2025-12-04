@@ -12,6 +12,9 @@ const DEFAULT_OPTIONS: Required<Options> = {
   theme: CUCUMBER_THEME,
 }
 
+export * from './PrettyPrinter'
+export * from './ProgressPrinter'
+export * from './SummaryPrinter'
 export * from './theme'
 export type * from './types'
 
