@@ -37,8 +37,8 @@ import {
   pad,
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
-} from './helpers.js'
-import type { Options } from './types.js'
+} from './helpers'
+import type { Options } from './types'
 
 export class PrettyPrinter {
   private readonly println: (content?: string) => void
