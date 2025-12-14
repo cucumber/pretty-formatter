@@ -175,4 +175,42 @@ describe('PrettyPrinter', async () => {
       }
     })
   }
+
+  describe('summarise', () => {
+    it('should append a summary on request', async () => {
+      let content = ''
+      const printer = new PrettyPrinter(
+        fakeStream,
+        (chunk) => {
+          content += chunk
+        },
+        {
+          theme: {},
+        }
+      )
+
+      const ndjsonFile = path.join(__dirname, '..', '..', 'testdata', 'src', 'minimal.ndjson')
+      await pipeline(
+        fs.createReadStream(ndjsonFile, {
+          encoding: 'utf-8',
+        }),
+        new NdjsonToMessageStream(),
+        new Writable({
+          objectMode: true,
+          write(envelope: Envelope, _: BufferEncoding, callback) {
+            printer.update(envelope)
+            callback()
+          },
+        })
+      )
+
+      printer.summarise()
+
+      const expectedSummary = fs.readFileSync(ndjsonFile.replace('.ndjson', `.plain.summary.log`), {
+        encoding: 'utf-8',
+      })
+
+      expect(content).to.have.string(expectedSummary)
+    })
+  })
 })
