@@ -1,5 +1,4 @@
 import {
-  Envelope,
   Location,
   Pickle,
   TestCaseStarted,
@@ -30,9 +29,9 @@ import type { SummaryOptions } from './types'
 
 export class SummaryPrinter {
   private readonly println: (content?: string) => void
-  private readonly query: Query = new Query()
 
   constructor(
+    private readonly query: Query,
     private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
     private readonly options: Required<SummaryOptions>
@@ -40,15 +39,7 @@ export class SummaryPrinter {
     this.println = (content: string = '') => this.print(`${content}\n`)
   }
 
-  update(message: Envelope) {
-    this.query.update(message)
-
-    if (message.testRunFinished) {
-      this.printSummary()
-    }
-  }
-
-  private printSummary() {
+  public printSummary() {
     this.printNonPassingScenarios()
     this.printUnknownParameterTypes()
     this.printNonPassingGlobalHooks()
