@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [JavaScript] BREAKING CHANGE: Expose `PrettyPrinter` rather than a high-level formatter ([#40](https://github.com/cucumber/pretty-formatter/pull/40))
 - [JavaScript] Publish package in CommonJS format ([#40](https://github.com/cucumber/pretty-formatter/pull/40))
 
+### Fixed
+- [Java] Correct attempt count for retries ([#40](https://github.com/cucumber/pretty-formatter/pull/40))
+- [Java] Unwrap test run exception from `Optional` when printing ([#40](https://github.com/cucumber/pretty-formatter/pull/40))
+
 ## [2.4.1] - 2025-11-02
 ### Fixed
 - [Java] Unwrap optional exceptions in `TestRunFinished`
