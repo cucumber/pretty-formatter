@@ -2,6 +2,7 @@ import { Envelope } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
 import { formatStatusCharacter } from './helpers'
+import { SummaryPrinter } from './SummaryPrinter'
 import type { ProgressOptions } from './types'
 
 export class ProgressPrinter {
@@ -39,5 +40,9 @@ export class ProgressPrinter {
     if (message.testRunFinished) {
       this.print('\n')
     }
+  }
+
+  summarise() {
+    new SummaryPrinter(this.query, this.stream, this.print, this.options).printSummary()
   }
 }

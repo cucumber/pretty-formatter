@@ -38,6 +38,7 @@ import {
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
 } from './helpers'
+import { SummaryPrinter } from './SummaryPrinter'
 import type { PrettyOptions } from './types'
 
 export class PrettyPrinter {
@@ -80,6 +81,10 @@ export class PrettyPrinter {
     if (message.testRunFinished) {
       this.handleTestRunFinished(message.testRunFinished)
     }
+  }
+
+  summarise() {
+    new SummaryPrinter(this.query, this.stream, this.print, this.options).printSummary()
   }
 
   private resolveScenario(testCaseStarted: TestCaseStarted) {
