@@ -3,6 +3,7 @@ import { stripVTControlCharacters } from 'node:util'
 import {
   Attachment,
   AttachmentContentEncoding,
+  Duration,
   Feature,
   Hook,
   HookType,
@@ -20,9 +21,8 @@ import {
   TestStepResult,
   TestStepResultStatus,
   TimeConversion,
-  Timestamp,
 } from '@cucumber/messages'
-import { Interval } from 'luxon'
+import { Duration as LuxonDuration } from 'luxon'
 
 import { TextBuilder } from './TextBuilder'
 import { Style, Theme } from './types'
@@ -438,15 +438,19 @@ export function formatCounts(
   return builder.build()
 }
 
-export function formatDuration(start: Timestamp, finish: Timestamp) {
-  const startMillis = new Date(TimeConversion.timestampToMillisecondsSinceEpoch(start))
-  const finishMillis = new Date(TimeConversion.timestampToMillisecondsSinceEpoch(finish))
-  const duration = Interval.fromDateTimes(startMillis, finishMillis).toDuration([
-    'minutes',
-    'seconds',
-    'milliseconds',
-  ])
-  return duration.toFormat(DURATION_FORMAT)
+export function formatDurations(
+  testRunDuration: Duration,
+  executionDurations: ReadonlyArray<Duration>
+) {
+  const testRunLuxon = LuxonDuration.fromMillis(
+    TimeConversion.durationToMilliseconds(testRunDuration)
+  )
+
+  const executionLuxon = LuxonDuration.fromMillis(
+    executionDurations.reduce((prev, curr) => prev + TimeConversion.durationToMilliseconds(curr), 0)
+  )
+
+  return `${testRunLuxon.toFormat(DURATION_FORMAT)} (${executionLuxon.toFormat(DURATION_FORMAT)} executing your code)`
 }
 
 export function titleCaseStatus(status: TestStepResultStatus) {
