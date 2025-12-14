@@ -1,12 +1,8 @@
 
-@skip
-Scenario: Skipping from a Before hook # samples/skipped/skipped.feature:10
-  Given a step that is skipped        # samples/skipped/skipped.ts:11
+Scenario: Skipping from a step doesn't affect the previous steps # samples/skipped/skipped.feature:9
+  Given a step that does not skip                                # samples/skipped/skipped.ts:3
+  And I skip a step                                              # samples/skipped/skipped.ts:11
 
-Scenario: Skipping from a step doesn't affect the previous steps # samples/skipped/skipped.feature:13
-  Given a step that does not skip                                # samples/skipped/skipped.ts:7
-  And I skip a step                                              # samples/skipped/skipped.ts:15
-
-Scenario: Skipping from a step causes the rest of the scenario to be skipped # samples/skipped/skipped.feature:17
-  Given I skip a step                                                        # samples/skipped/skipped.ts:15
-  And a step that is skipped                                                 # samples/skipped/skipped.ts:11
+Scenario: Skipping from a step causes the rest of the scenario to be skipped # samples/skipped/skipped.feature:13
+  Given I skip a step                                                        # samples/skipped/skipped.ts:11
+  And a step that is skipped                                                 # samples/skipped/skipped.ts:7

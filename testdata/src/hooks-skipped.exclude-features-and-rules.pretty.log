@@ -1,0 +1,11 @@
+
+Scenario: Skip from a step # samples/hooks-skipped/hooks-skipped.feature:5
+  Given a step that skips  # samples/hooks-skipped/hooks-skipped.ts:19
+
+@skip-before
+Scenario: Skip from a Before hook # samples/hooks-skipped/hooks-skipped.feature:13
+  Given a normal step             # samples/hooks-skipped/hooks-skipped.ts:15
+
+@skip-after
+Scenario: Skip from an After hook # samples/hooks-skipped/hooks-skipped.feature:21
+  Given a normal step             # samples/hooks-skipped/hooks-skipped.ts:15
