@@ -3,16 +3,27 @@ import { Query } from '@cucumber/query'
 
 import { formatStatusCharacter } from './helpers'
 import { SummaryPrinter } from './SummaryPrinter'
+import { CUCUMBER_THEME } from './theme'
 import type { ProgressOptions } from './types'
+
+const DEFAULT_OPTIONS: Required<ProgressOptions> = {
+  theme: CUCUMBER_THEME,
+}
 
 export class ProgressPrinter {
   private readonly query: Query = new Query()
+  private readonly options: Required<ProgressOptions>
 
   constructor(
     private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
-    private readonly options: Required<ProgressOptions>
-  ) {}
+    options: ProgressOptions = {}
+  ) {
+    this.options = {
+      ...DEFAULT_OPTIONS,
+      ...options,
+    }
+  }
 
   update(message: Envelope) {
     this.query.update(message)

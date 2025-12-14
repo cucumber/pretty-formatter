@@ -25,18 +25,28 @@ import {
   ORDERED_STATUSES,
   titleCaseStatus,
 } from './helpers'
+import { CUCUMBER_THEME } from './theme'
 import type { SummaryOptions } from './types'
+
+const DEFAULT_OPTIONS: Required<SummaryOptions> = {
+  theme: CUCUMBER_THEME,
+}
 
 export class SummaryPrinter {
   private readonly println: (content?: string) => void
+  private readonly options: Required<SummaryOptions>
 
   constructor(
     private readonly query: Query,
     private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
-    private readonly options: Required<SummaryOptions>
+    options: SummaryOptions = {}
   ) {
     this.println = (content: string = '') => this.print(`${content}\n`)
+    this.options = {
+      ...DEFAULT_OPTIONS,
+      ...options,
+    }
   }
 
   public printSummary() {

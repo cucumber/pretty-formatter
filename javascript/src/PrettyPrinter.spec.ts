@@ -148,14 +148,7 @@ describe('PrettyPrinter', async () => {
             (chunk) => {
               content += chunk
             },
-            {
-              includeAttachments: true,
-              includeFeatureLine: true,
-              includeRuleLine: true,
-              useStatusIcon: true,
-              theme: CUCUMBER_THEME,
-              ...options,
-            }
+            options
           )
 
           await pipeline(

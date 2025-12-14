@@ -39,11 +39,21 @@ import {
   unstyled,
 } from './helpers'
 import { SummaryPrinter } from './SummaryPrinter'
+import { CUCUMBER_THEME } from './theme'
 import type { PrettyOptions } from './types'
+
+const DEFAULT_OPTIONS: Required<PrettyOptions> = {
+  includeAttachments: true,
+  includeFeatureLine: true,
+  includeRuleLine: true,
+  useStatusIcon: true,
+  theme: CUCUMBER_THEME,
+}
 
 export class PrettyPrinter {
   private readonly println: (content?: string) => void
   private readonly query: Query = new Query()
+  private readonly options: Required<PrettyOptions>
   private readonly scenarioIndentByTestCaseStartedId: Map<string, number> = new Map<
     string,
     number
@@ -57,9 +67,13 @@ export class PrettyPrinter {
   constructor(
     private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
-    private readonly options: Required<PrettyOptions>
+    options: PrettyOptions = {}
   ) {
     this.println = (content: string = '') => this.print(`${content}\n`)
+    this.options = {
+      ...DEFAULT_OPTIONS,
+      ...options,
+    }
   }
 
   update(message: Envelope) {

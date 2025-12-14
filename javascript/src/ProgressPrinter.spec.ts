@@ -52,10 +52,7 @@ describe('ProgressPrinter', async () => {
             (chunk) => {
               content += chunk
             },
-            {
-              theme: CUCUMBER_THEME,
-              ...options,
-            }
+            options
           )
 
           await pipeline(
