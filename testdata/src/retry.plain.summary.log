@@ -1,6 +1,6 @@
 
 Failed scenarios:
-  1) Test cases won't retry after failing more than the --retry limit, after 2 attempts # samples/retry/retry.feature:17
+  1) Test cases won't retry after failing more than the --retry limit, after 3 attempts # samples/retry/retry.feature:17
        Error: Exception in step
        samples/retry/retry.feature:18
 

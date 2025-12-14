@@ -8,8 +8,9 @@ import { Envelope, TestStepResultStatus } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
-import type { Options, Theme } from './index.js'
-import formatter, { CUCUMBER_THEME } from './index.js'
+import { PrettyPrinter } from './PrettyPrinter'
+import { CUCUMBER_THEME } from './theme'
+import type { PrettyOptions, Theme } from './types'
 
 const DEMO_THEME: Theme = {
   attachment: 'blue',
@@ -59,73 +60,71 @@ const DEMO_THEME: Theme = {
   tag: ['yellow', 'bold'],
 }
 
-describe('Acceptance Tests', async function () {
-  this.timeout(10_000)
-
+describe('PrettyPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
-    cwd: path.join(import.meta.dirname, '..', '..', 'testdata', 'src'),
+    cwd: path.join(__dirname, '..', '..', 'testdata', 'src'),
     absolute: true,
   })
 
-  const variants: ReadonlyArray<{ name: string; options: Options }> = [
+  const variants: ReadonlyArray<{ name: string; options: PrettyOptions }> = [
     {
       name: 'cucumber',
       options: {
-        attachments: true,
-        featuresAndRules: true,
+        includeAttachments: true,
+        includeFeatureLine: true,
+        includeRuleLine: true,
         theme: CUCUMBER_THEME,
+        useStatusIcon: true,
       },
     },
     {
       name: 'demo',
       options: {
-        attachments: true,
-        featuresAndRules: true,
+        includeAttachments: true,
+        includeFeatureLine: true,
+        includeRuleLine: true,
         theme: DEMO_THEME,
+        useStatusIcon: false,
       },
     },
     {
       name: 'exclude-features-and-rules',
       options: {
-        attachments: true,
-        featuresAndRules: false,
+        includeAttachments: true,
+        includeFeatureLine: false,
+        includeRuleLine: false,
+        useStatusIcon: false,
         theme: {},
       },
     },
     {
       name: 'exclude-attachments',
       options: {
-        attachments: false,
-        featuresAndRules: true,
+        includeAttachments: false,
+        includeFeatureLine: true,
+        includeRuleLine: true,
+        useStatusIcon: false,
         theme: {},
       },
     },
     {
       name: 'none',
       options: {
-        attachments: true,
-        featuresAndRules: true,
+        includeAttachments: true,
+        includeFeatureLine: true,
+        includeRuleLine: true,
+        useStatusIcon: false,
         theme: {},
       },
     },
     {
       name: 'plain',
       options: {
-        attachments: true,
-        featuresAndRules: true,
-        theme: {
-          status: {
-            icon: {
-              [TestStepResultStatus.AMBIGUOUS]: '✘',
-              [TestStepResultStatus.FAILED]: '✘',
-              [TestStepResultStatus.PASSED]: '✔',
-              [TestStepResultStatus.PENDING]: '■',
-              [TestStepResultStatus.SKIPPED]: '↷',
-              [TestStepResultStatus.UNDEFINED]: '■',
-              [TestStepResultStatus.UNKNOWN]: ' ',
-            },
-          },
-        },
+        includeAttachments: true,
+        includeFeatureLine: true,
+        includeRuleLine: true,
+        useStatusIcon: true,
+        theme: {},
       },
     },
   ]
@@ -143,18 +142,14 @@ describe('Acceptance Tests', async function () {
         const [suiteName] = path.basename(ndjsonFile).split('.')
 
         it(suiteName, async () => {
-          let emit: (message: Envelope) => void
           let content = ''
-          formatter.formatter({
-            options,
-            stream: fakeStream,
-            on(type, handler) {
-              emit = handler
-            },
-            write: (chunk) => {
+          const printer = new PrettyPrinter(
+            fakeStream,
+            (chunk) => {
               content += chunk
             },
-          })
+            options
+          )
 
           await pipeline(
             fs.createReadStream(ndjsonFile, { encoding: 'utf-8' }),
@@ -162,7 +157,7 @@ describe('Acceptance Tests', async function () {
             new Writable({
               objectMode: true,
               write(envelope: Envelope, _: BufferEncoding, callback) {
-                emit(envelope)
+                printer.update(envelope)
                 callback()
               },
             })
@@ -180,4 +175,42 @@ describe('Acceptance Tests', async function () {
       }
     })
   }
+
+  describe('summarise', () => {
+    it('should append a summary on request', async () => {
+      let content = ''
+      const printer = new PrettyPrinter(
+        fakeStream,
+        (chunk) => {
+          content += chunk
+        },
+        {
+          theme: {},
+        }
+      )
+
+      const ndjsonFile = path.join(__dirname, '..', '..', 'testdata', 'src', 'minimal.ndjson')
+      await pipeline(
+        fs.createReadStream(ndjsonFile, {
+          encoding: 'utf-8',
+        }),
+        new NdjsonToMessageStream(),
+        new Writable({
+          objectMode: true,
+          write(envelope: Envelope, _: BufferEncoding, callback) {
+            printer.update(envelope)
+            callback()
+          },
+        })
+      )
+
+      printer.summarise()
+
+      const expectedSummary = fs.readFileSync(ndjsonFile.replace('.ndjson', `.plain.summary.log`), {
+        encoding: 'utf-8',
+      })
+
+      expect(content).to.have.string(expectedSummary)
+    })
+  })
 })

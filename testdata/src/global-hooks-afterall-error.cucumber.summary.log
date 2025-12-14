@@ -1,6 +1,6 @@
 
 [31mFailed hooks:[39m
-  1) AfterTestRun [90m#samples/global-hooks-afterall-error/global-hooks-afterall-error.ts:19[39m
+  1) AfterTestRun [90m# samples/global-hooks-afterall-error/global-hooks-afterall-error.ts:19[39m
        [31mError: AfterAll hook went wrong[39m
        [31msamples/global-hooks-afterall-error/global-hooks-afterall-error.ts:19[39m
 

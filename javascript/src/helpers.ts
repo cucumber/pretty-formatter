@@ -4,6 +4,8 @@ import {
   Attachment,
   AttachmentContentEncoding,
   Feature,
+  Hook,
+  HookType,
   Location,
   Pickle,
   PickleDocString,
@@ -17,15 +19,64 @@ import {
   TestStep,
   TestStepResult,
   TestStepResultStatus,
+  TimeConversion,
+  Timestamp,
 } from '@cucumber/messages'
+import { Interval } from 'luxon'
 
-import { TextBuilder } from './TextBuilder.js'
-import { Theme } from './types.js'
+import { TextBuilder } from './TextBuilder'
+import { Style, Theme } from './types'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
 export const ATTACHMENT_INDENT_LENGTH = 4
 export const ERROR_INDENT_LENGTH = 4
+export const ORDERED_STATUSES: TestStepResultStatus[] = [
+  TestStepResultStatus.UNKNOWN,
+  TestStepResultStatus.PASSED,
+  TestStepResultStatus.SKIPPED,
+  TestStepResultStatus.PENDING,
+  TestStepResultStatus.UNDEFINED,
+  TestStepResultStatus.AMBIGUOUS,
+  TestStepResultStatus.FAILED,
+]
+export const DEFAULT_STATUS_COLORS: Record<TestStepResultStatus, Style> = {
+  [TestStepResultStatus.AMBIGUOUS]: 'red',
+  [TestStepResultStatus.FAILED]: 'red',
+  [TestStepResultStatus.PASSED]: 'green',
+  [TestStepResultStatus.PENDING]: 'yellow',
+  [TestStepResultStatus.SKIPPED]: 'cyan',
+  [TestStepResultStatus.UNDEFINED]: 'yellow',
+  [TestStepResultStatus.UNKNOWN]: 'gray',
+}
+
+export const DEFAULT_STATUS_ICONS: Record<TestStepResultStatus, string> = {
+  [TestStepResultStatus.AMBIGUOUS]: '✘',
+  [TestStepResultStatus.FAILED]: '✘',
+  [TestStepResultStatus.PASSED]: '✔',
+  [TestStepResultStatus.PENDING]: '■',
+  [TestStepResultStatus.SKIPPED]: '↷',
+  [TestStepResultStatus.UNDEFINED]: '■',
+  [TestStepResultStatus.UNKNOWN]: ' ',
+} as const
+export const DEFAULT_PROGRESS_ICONS: Record<TestStepResultStatus, string> = {
+  [TestStepResultStatus.AMBIGUOUS]: 'A',
+  [TestStepResultStatus.FAILED]: 'F',
+  [TestStepResultStatus.PASSED]: '.',
+  [TestStepResultStatus.PENDING]: 'P',
+  [TestStepResultStatus.SKIPPED]: '-',
+  [TestStepResultStatus.UNDEFINED]: 'U',
+  [TestStepResultStatus.UNKNOWN]: '?',
+} as const
+const HOOK_TYPE_LABELS: Record<HookType, string> = {
+  [HookType.BEFORE_TEST_RUN]: 'BeforeTestRun',
+  [HookType.AFTER_TEST_RUN]: 'AfterTestRun',
+  [HookType.BEFORE_TEST_CASE]: 'Before',
+  [HookType.AFTER_TEST_CASE]: 'After',
+  [HookType.BEFORE_TEST_STEP]: 'BeforeStep',
+  [HookType.AFTER_TEST_STEP]: 'AfterStep',
+}
+const DURATION_FORMAT = "m'm' s.S's'"
 
 export function ensure<T>(value: T | undefined, message: string): T {
   if (!value) {
@@ -72,6 +123,7 @@ export function formatPickleTags(pickle: Pickle, theme: Theme, stream: NodeJS.Wr
       .build(theme.tag)
   }
 }
+
 export function formatPickleTitle(
   pickle: Pickle,
   scenario: Scenario,
@@ -98,17 +150,50 @@ export function formatPickleLocation(
   return builder.build(theme.location)
 }
 
+export function formatHookTitle(hook: Hook | undefined) {
+  let title = ''
+  if (hook?.type) {
+    title += HOOK_TYPE_LABELS[hook.type]
+  } else {
+    title += 'Hook'
+  }
+  if (hook?.name) {
+    title += ` (${hook.name})`
+  }
+  return title
+}
+
+export function formatHookLocation(
+  hook: Hook | undefined,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  if (hook?.sourceReference.uri) {
+    const builder = new TextBuilder(stream).append('#').space().append(hook.sourceReference.uri)
+    if (hook.sourceReference.location) {
+      builder.append(':').append(hook.sourceReference.location.line)
+    }
+    return builder.build(theme.location)
+  }
+}
+
 export function formatStepTitle(
   testStep: TestStep,
   pickleStep: PickleStep,
   step: Step,
   status: TestStepResultStatus,
+  useStatusIcon: boolean,
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
   const builder = new TextBuilder(stream)
-  if (theme.status?.icon?.[status]) {
-    builder.append(theme.status.icon[status], theme.status?.all?.[status]).space()
+  if (useStatusIcon) {
+    builder
+      .append(
+        theme.status?.icon?.[status] ?? DEFAULT_STATUS_ICONS[status],
+        theme.status?.all?.[status]
+      )
+      .space()
   }
   return builder
     .append(
@@ -306,4 +391,64 @@ function formatBase64Attachment(
 
 function formatTextAttachment(content: string, theme: Theme, stream: NodeJS.WritableStream) {
   return new TextBuilder(stream).append(content).build(theme.attachment)
+}
+
+export function formatStatusCharacter(
+  status: TestStepResultStatus,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  const character = DEFAULT_PROGRESS_ICONS[status]
+  return new TextBuilder(stream).append(character).build(theme.status?.all?.[status])
+}
+
+export function formatForStatus(
+  status: TestStepResultStatus,
+  text: string,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  return new TextBuilder(stream).append(text).build(theme.status?.all?.[status])
+}
+
+export function formatCounts(
+  suffix: string,
+  counts: Partial<Record<TestStepResultStatus, number>>,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  const builder = new TextBuilder(stream)
+  const total = Object.values(counts).reduce((prev, curr) => prev + curr, 0)
+  builder.append(`${total} ${suffix}`)
+  if (total > 0) {
+    let first = true
+    builder.append(' (')
+    for (const status of ORDERED_STATUSES) {
+      const count = counts[status]
+      if (count) {
+        if (!first) {
+          builder.append(', ')
+        }
+        builder.append(`${count} ${status.toLowerCase()}`, theme.status?.all?.[status])
+        first = false
+      }
+    }
+    builder.append(')')
+  }
+  return builder.build()
+}
+
+export function formatDuration(start: Timestamp, finish: Timestamp) {
+  const startMillis = new Date(TimeConversion.timestampToMillisecondsSinceEpoch(start))
+  const finishMillis = new Date(TimeConversion.timestampToMillisecondsSinceEpoch(finish))
+  const duration = Interval.fromDateTimes(startMillis, finishMillis).toDuration([
+    'minutes',
+    'seconds',
+    'milliseconds',
+  ])
+  return duration.toFormat(DURATION_FORMAT)
+}
+
+export function titleCaseStatus(status: TestStepResultStatus) {
+  return `${status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}`
 }

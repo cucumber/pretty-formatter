@@ -37,12 +37,23 @@ import {
   pad,
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
-} from './helpers.js'
-import type { Options } from './types.js'
+} from './helpers'
+import { SummaryPrinter } from './SummaryPrinter'
+import { CUCUMBER_THEME } from './theme'
+import type { PrettyOptions } from './types'
+
+const DEFAULT_OPTIONS: Required<PrettyOptions> = {
+  includeAttachments: true,
+  includeFeatureLine: true,
+  includeRuleLine: true,
+  useStatusIcon: true,
+  theme: CUCUMBER_THEME,
+}
 
 export class PrettyPrinter {
   private readonly println: (content?: string) => void
   private readonly query: Query = new Query()
+  private readonly options: Required<PrettyOptions>
   private readonly scenarioIndentByTestCaseStartedId: Map<string, number> = new Map<
     string,
     number
@@ -56,9 +67,13 @@ export class PrettyPrinter {
   constructor(
     private readonly stream: NodeJS.WritableStream,
     private readonly print: (content: string) => void,
-    private readonly options: Required<Options>
+    options: PrettyOptions = {}
   ) {
     this.println = (content: string = '') => this.print(`${content}\n`)
+    this.options = {
+      ...DEFAULT_OPTIONS,
+      ...options,
+    }
   }
 
   update(message: Envelope) {
@@ -80,6 +95,10 @@ export class PrettyPrinter {
     if (message.testRunFinished) {
       this.handleTestRunFinished(message.testRunFinished)
     }
+  }
+
+  summarise() {
+    new SummaryPrinter(this.query, this.stream, this.print, this.options).printSummary()
   }
 
   private resolveScenario(testCaseStarted: TestCaseStarted) {
@@ -149,6 +168,7 @@ export class PrettyPrinter {
               pickleStep,
               step,
               TestStepResultStatus.UNKNOWN,
+              this.options.useStatusIcon,
               this.options.theme,
               this.stream
             )
@@ -162,9 +182,9 @@ export class PrettyPrinter {
     )
 
     let scenarioIndent = 0
-    if (this.options.featuresAndRules) {
+    if (this.options.includeFeatureLine) {
       scenarioIndent += GHERKIN_INDENT_LENGTH
-      if (lineage.rule) {
+      if (this.options.includeRuleLine && lineage.rule) {
         scenarioIndent += GHERKIN_INDENT_LENGTH
       }
     }
@@ -200,7 +220,7 @@ export class PrettyPrinter {
   }
 
   private printFeatureLine(feature: Feature) {
-    if (this.options.featuresAndRules && !this.encounteredFeaturesAndRules.has(feature)) {
+    if (this.options.includeFeatureLine && !this.encounteredFeaturesAndRules.has(feature)) {
       this.println()
       this.println(formatFeatureTitle(feature, this.options.theme, this.stream))
     }
@@ -209,7 +229,7 @@ export class PrettyPrinter {
 
   private printRuleLine(rule: Rule | undefined) {
     if (rule) {
-      if (this.options.featuresAndRules && !this.encounteredFeaturesAndRules.has(rule)) {
+      if (this.options.includeRuleLine && !this.encounteredFeaturesAndRules.has(rule)) {
         this.println()
         this.println(
           indent(formatRuleTitle(rule, this.options.theme, this.stream), GHERKIN_INDENT_LENGTH)
@@ -277,6 +297,7 @@ export class PrettyPrinter {
           pickleStep,
           step,
           testStepFinished.testStepResult.status,
+          this.options.useStatusIcon,
           this.options.theme,
           this.stream
         ),
@@ -295,7 +316,7 @@ export class PrettyPrinter {
         indent(
           content,
           scenarioIndent +
-            (this.options.theme.status?.icon ? GHERKIN_INDENT_LENGTH : 0) +
+            (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
             STEP_ARGUMENT_INDENT_LENGTH
         )
@@ -328,7 +349,7 @@ export class PrettyPrinter {
         indent(
           content,
           scenarioIndent +
-            (this.options.theme.status?.icon ? GHERKIN_INDENT_LENGTH : 0) +
+            (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
             ERROR_INDENT_LENGTH
         )
@@ -337,7 +358,7 @@ export class PrettyPrinter {
   }
 
   private handleAttachment(attachment: Attachment) {
-    if (!this.options.attachments) {
+    if (!this.options.includeAttachments) {
       return
     }
     const scenarioIndent = this.getScenarioIndentBy(attachment)
@@ -347,7 +368,7 @@ export class PrettyPrinter {
         indent(
           content,
           scenarioIndent +
-            (this.options.theme.status?.icon ? GHERKIN_INDENT_LENGTH : 0) +
+            (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
             ATTACHMENT_INDENT_LENGTH
         )

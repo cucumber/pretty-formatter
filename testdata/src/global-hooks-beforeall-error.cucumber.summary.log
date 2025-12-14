@@ -1,6 +1,6 @@
 
 [31mFailed hooks:[39m
-  1) BeforeTestRun [90m#samples/global-hooks-beforeall-error/global-hooks-beforeall-error.ts:7[39m
+  1) BeforeTestRun [90m# samples/global-hooks-beforeall-error/global-hooks-beforeall-error.ts:7[39m
        [31mError: BeforeAll hook went wrong[39m
        [31msamples/global-hooks-beforeall-error/global-hooks-beforeall-error.ts:7[39m
 
