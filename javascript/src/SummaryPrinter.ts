@@ -306,9 +306,9 @@ export class SummaryPrinter {
     const testStepDurations = this.query
       .findAllTestStepFinished()
       .map((stepFinished) => stepFinished.testStepResult.duration)
-    const executonDurations = [...testRunHookDurations, ...testStepDurations]
+    const executionDurations = [...testRunHookDurations, ...testStepDurations]
 
-    this.println(formatDurations(testRunDuration, executonDurations))
+    this.println(formatDurations(testRunDuration, executionDurations))
   }
 
   private printSnippets() {
