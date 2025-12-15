@@ -1,7 +1,6 @@
 package io.cucumber.prettyformatter;
 
-import io.cucumber.messages.DurationComparator;
-import io.cucumber.messages.TimeConversion;
+import io.cucumber.messages.Convertor;
 import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Hook;
 import io.cucumber.messages.types.HookType;
@@ -329,11 +328,11 @@ final class SummaryReportWriter implements AutoCloseable {
         Stream<Duration> durationsFromHooks = query.findAllTestRunHookFinished()
                 .stream()
                 .map(hookFinished -> hookFinished.getResult().getDuration())
-                .map(TimeConversion::durationToJavaDuration);
+                .map(Convertor::toDuration);
         Stream<Duration> durationsFromSteps = query.findAllTestStepFinished()
                 .stream()
                 .map(hookFinished -> hookFinished.getTestStepResult().getDuration())
-                .map(TimeConversion::durationToJavaDuration);
+                .map(Convertor::toDuration);
         return Stream.concat(durationsFromHooks, durationsFromSteps)
                 .reduce(Duration.ZERO, Duration::plus);
     }
