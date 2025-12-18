@@ -1,5 +1,6 @@
 package io.cucumber.prettyformatter;
 
+import io.cucumber.messages.Convertor;
 import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Hook;
 import io.cucumber.messages.types.HookType;
@@ -102,7 +103,7 @@ final class SummaryReportWriter implements AutoCloseable {
         printGlobalHookCount();
         printScenarioCounts();
         printStepCounts();
-        printDuration();
+        printDurations();
     }
 
     private void printNonPassingGlobalHooks() {
@@ -317,10 +318,23 @@ final class SummaryReportWriter implements AutoCloseable {
         return joiner.toString();
     }
 
-    private void printDuration() {
+    private void printDurations() {
         query.findTestRunDuration()
-                .map(SummaryReportWriter::formatDuration)
+                .map(testRunDuration -> String.format("%s (%s executing your code)", formatDuration(testRunDuration), formatDuration(getExecutionDuration())))
                 .ifPresent(out::println);
+    }
+
+    private Duration getExecutionDuration() {
+        Stream<Duration> durationsFromHooks = query.findAllTestRunHookFinished()
+                .stream()
+                .map(hookFinished -> hookFinished.getResult().getDuration())
+                .map(Convertor::toDuration);
+        Stream<Duration> durationsFromSteps = query.findAllTestStepFinished()
+                .stream()
+                .map(hookFinished -> hookFinished.getTestStepResult().getDuration())
+                .map(Convertor::toDuration);
+        return Stream.concat(durationsFromHooks, durationsFromSteps)
+                .reduce(Duration.ZERO, Duration::plus);
     }
 
     private static String formatDuration(Duration duration) {

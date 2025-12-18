@@ -1,9 +1,8 @@
 import {
+  Duration,
   Location,
   Pickle,
   TestCaseStarted,
-  TestRunFinished,
-  TestRunStarted,
   TestStepResult,
   TestStepResultStatus,
 } from '@cucumber/messages'
@@ -13,7 +12,7 @@ import {
   ensure,
   ERROR_INDENT_LENGTH,
   formatCounts,
-  formatDuration,
+  formatDurations,
   formatForStatus,
   formatHookLocation,
   formatHookTitle,
@@ -64,7 +63,7 @@ export class SummaryPrinter {
     this.printGlobalHookCounts()
     this.printScenarioCounts()
     this.printStepCounts()
-    this.printDuration()
+    this.printDurations()
   }
 
   private printNonPassingScenarios() {
@@ -298,11 +297,18 @@ export class SummaryPrinter {
     this.println(formatCounts('steps', stepCountsByStatus, this.options.theme, this.stream))
   }
 
-  private printDuration() {
-    const testRunStarted = this.query.findTestRunStarted() as TestRunStarted
-    const testRunFinished = this.query.findTestRunFinished() as TestRunFinished
+  private printDurations() {
+    const testRunDuration = this.query.findTestRunDuration() as Duration
 
-    this.println(formatDuration(testRunStarted.timestamp, testRunFinished.timestamp))
+    const testRunHookDurations = this.query
+      .findAllTestRunHookFinished()
+      .map((hookFinished) => hookFinished.result.duration)
+    const testStepDurations = this.query
+      .findAllTestStepFinished()
+      .map((stepFinished) => stepFinished.testStepResult.duration)
+    const executionDurations = [...testRunHookDurations, ...testStepDurations]
+
+    this.println(formatDurations(testRunDuration, executionDurations))
   }
 
   private printSnippets() {

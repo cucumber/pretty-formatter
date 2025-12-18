@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [JavaScript] Add `SummaryPrinter` ([#40](https://github.com/cucumber/pretty-formatter/pull/40))
 - [JavaScript] Add `ProgressPrinter` ([#40](https://github.com/cucumber/pretty-formatter/pull/40))
+- Print execution duration in summary ([#62](https://github.com/cucumber/pretty-formatter/pull/62))
 
 ### Changed
 - [JavaScript] BREAKING CHANGE: Expose `PrettyPrinter` rather than a high-level formatter ([#40](https://github.com/cucumber/pretty-formatter/pull/40))

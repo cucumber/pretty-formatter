@@ -29,7 +29,7 @@ class MessagesToSummaryWriterTest {
         assertThat(out).isEqualToNormalizingNewlines("\n" +
                 "0 scenarios\n" +
                 "0 steps\n" +
-                "0m 20.0s\n"
+                "0m 20.0s (0m 0.0s executing your code)\n"
         );
     }
 
