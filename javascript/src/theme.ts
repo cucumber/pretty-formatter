@@ -1,4 +1,4 @@
-import { DEFAULT_PROGRESS_ICONS, DEFAULT_STATUS_COLORS, DEFAULT_STATUS_ICONS } from './helpers'
+import { DEFAULT_PROGRESS_ICONS, DEFAULT_STATUS_COLORS, DEFAULT_STATUS_ICONS } from './formatting'
 import type { Theme } from './types'
 
 export const CUCUMBER_THEME: Theme = {

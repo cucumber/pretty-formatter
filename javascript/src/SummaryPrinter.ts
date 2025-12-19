@@ -3,29 +3,30 @@ import {
   Location,
   Pickle,
   TestCaseStarted,
-  TestStepResult,
+  TestStep,
+  TestStepFinished,
   TestStepResultStatus,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
 import {
-  ensure,
   ERROR_INDENT_LENGTH,
   formatCounts,
   formatDurations,
   formatForStatus,
-  formatHookLocation,
   formatHookTitle,
   formatPickleLocation,
+  formatSourceLocation,
   formatTestRunFinishedError,
   formatTestStepResultError,
   GHERKIN_INDENT_LENGTH,
   indent,
   ORDERED_STATUSES,
   titleCaseStatus,
-} from './helpers'
+} from './formatting'
 import { CUCUMBER_THEME } from './theme'
 import type { SummaryOptions } from './types'
+import { ensure } from './utils'
 
 const DEFAULT_OPTIONS: Required<SummaryOptions> = {
   theme: CUCUMBER_THEME,
@@ -74,7 +75,7 @@ export class SummaryPrinter {
         pickle: Pickle
         location: Location | undefined
         testCaseStarted: TestCaseStarted
-        testStepResult: TestStepResult
+        responsibleStep?: [TestStepFinished, TestStep]
       }>
     >()
 
@@ -91,6 +92,10 @@ export class SummaryPrinter {
       const testStepResult = this.query.findMostSevereTestStepResultBy(testCaseFinished)
 
       if (testStepResult && !nonReportableStatuses.includes(testStepResult.status)) {
+        // TODO do this a better way
+        const responsibleStep = this.query
+          .findTestStepFinishedAndTestStepBy(testCaseStarted)
+          .find(([finished]) => finished.testStepResult === testStepResult)
         if (!reportableByStatus.has(testStepResult.status)) {
           reportableByStatus.set(testStepResult.status, [])
         }
@@ -98,7 +103,7 @@ export class SummaryPrinter {
           pickle,
           location,
           testCaseStarted,
-          testStepResult,
+          responsibleStep,
         })
       }
     }
@@ -115,7 +120,7 @@ export class SummaryPrinter {
             this.stream
           )
         )
-        forThisStatus.forEach(({ pickle, location, testCaseStarted, testStepResult }, index) => {
+        forThisStatus.forEach(({ pickle, location, testCaseStarted, responsibleStep }, index) => {
           const formattedLocation = formatPickleLocation(
             pickle,
             location,
@@ -130,9 +135,10 @@ export class SummaryPrinter {
               GHERKIN_INDENT_LENGTH
             )
           )
-          if (status === TestStepResultStatus.FAILED) {
+          if (status === TestStepResultStatus.FAILED && responsibleStep) {
+            const [testStepFinished] = responsibleStep
             const content = formatTestStepResultError(
-              testStepResult,
+              testStepFinished.testStepResult,
               this.options.theme,
               this.stream
             )
@@ -184,7 +190,7 @@ export class SummaryPrinter {
       )
       failedHooks.forEach((testRunHookFinished, index) => {
         const hook = this.query.findHookBy(testRunHookFinished)
-        const formattedLocation = formatHookLocation(hook, this.options.theme, this.stream)
+        const formattedLocation = formatSourceLocation(hook, this.options.theme, this.stream)
         this.println(
           indent(
             `${index + 1}) ${formatHookTitle(hook)} ${formattedLocation}`,

@@ -19,17 +19,16 @@ import { Query } from '@cucumber/query'
 
 import {
   ATTACHMENT_INDENT_LENGTH,
-  ensure,
   ERROR_INDENT_LENGTH,
   formatAttachment,
   formatFeatureTitle,
   formatPickleLocation,
+  formatPickleStepTitle,
   formatPickleTags,
   formatPickleTitle,
   formatRuleTitle,
+  formatSourceLocation,
   formatStepArgument,
-  formatStepLocation,
-  formatStepTitle,
   formatTestRunFinishedError,
   formatTestStepResultError,
   GHERKIN_INDENT_LENGTH,
@@ -37,10 +36,12 @@ import {
   pad,
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
-} from './helpers'
+} from './formatting'
+import { resolveStep } from './helpers'
 import { SummaryPrinter } from './SummaryPrinter'
 import { CUCUMBER_THEME } from './theme'
 import type { PrettyOptions } from './types'
+import { ensure } from './utils'
 
 const DEFAULT_OPTIONS: Required<PrettyOptions> = {
   includeAttachments: true,
@@ -120,25 +121,6 @@ export class PrettyPrinter {
     }
   }
 
-  private resolveStep(testStepFinished: TestStepFinished) {
-    const testStep = ensure(
-      this.query.findTestStepBy(testStepFinished),
-      'TestStep must exist for TestStepFinished'
-    )
-    const pickleStep = this.query.findPickleStepBy(testStep)
-    if (!pickleStep) {
-      return undefined
-    }
-    const step = ensure(this.query.findStepBy(pickleStep), 'Step must exist for PickleStep')
-    const stepDefinition = this.query.findUnambiguousStepDefinitionBy(testStep)
-    return {
-      testStep,
-      pickleStep,
-      step,
-      stepDefinition,
-    }
-  }
-
   private preCalculateIndentAndMaxContentLength(testCaseStarted: TestCaseStarted) {
     const pickle = ensure(
       this.query.findPickleBy(testCaseStarted),
@@ -163,7 +145,7 @@ export class PrettyPrinter {
         const step = ensure(this.query.findStepBy(pickleStep), 'Step must exist for PickleStep')
         return indent(
           unstyled(
-            formatStepTitle(
+            formatPickleStepTitle(
               testStep,
               pickleStep,
               step,
@@ -264,8 +246,8 @@ export class PrettyPrinter {
   private handleTestStepFinished(testStepFinished: TestStepFinished) {
     const scenarioIndent = this.getScenarioIndentBy(testStepFinished)
     const maxContentLength = this.getMaxContentLengthBy(testStepFinished)
-    const resolved = this.resolveStep(testStepFinished)
-    if (resolved) {
+    const resolved = resolveStep(testStepFinished, this.query)
+    if (resolved && 'pickleStep' in resolved) {
       const { testStep, pickleStep, step, stepDefinition } = resolved
       this.printStepLine(
         testStepFinished,
@@ -292,7 +274,7 @@ export class PrettyPrinter {
   ) {
     this.printGherkinLine(
       indent(
-        formatStepTitle(
+        formatPickleStepTitle(
           testStep,
           pickleStep,
           step,
@@ -303,7 +285,7 @@ export class PrettyPrinter {
         ),
         GHERKIN_INDENT_LENGTH
       ),
-      formatStepLocation(stepDefinition, this.options.theme, this.stream),
+      formatSourceLocation(stepDefinition, this.options.theme, this.stream),
       scenarioIndent,
       maxContentLength
     )
