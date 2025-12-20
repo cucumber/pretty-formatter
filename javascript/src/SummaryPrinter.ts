@@ -162,6 +162,19 @@ export class SummaryPrinter {
                   GHERKIN_INDENT_LENGTH + sequencePrefix.length + 1 + GHERKIN_INDENT_LENGTH
                 )
               )
+            } else if (resolvedStep && 'hook' in resolvedStep) {
+              const { hook } = resolvedStep
+              let content = formatHookTitle(hook)
+              const location = formatSourceLocation(hook, this.options.theme, this.stream)
+              if (location) {
+                content += ` ${location}`
+              }
+              this.println(
+                indent(
+                  content,
+                  GHERKIN_INDENT_LENGTH + sequencePrefix.length + 1 + GHERKIN_INDENT_LENGTH
+                )
+              )
             }
             if (status === TestStepResultStatus.FAILED) {
               const content = formatTestStepResultError(

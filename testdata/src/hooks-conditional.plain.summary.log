@@ -1,10 +1,12 @@
 
 Failed scenarios:
   1) A failure in the before hook and a skipped step # samples/hooks-conditional/hooks-conditional.feature:7
+       Before # samples/hooks-conditional/hooks-conditional.ts:7
            Error: Exception in conditional hook
            samples/hooks-conditional/hooks-conditional.feature:7
 
   2) A failure in the after hook and a passed step # samples/hooks-conditional/hooks-conditional.feature:11
+       After # samples/hooks-conditional/hooks-conditional.ts:15
            Error: Exception in conditional hook
            samples/hooks-conditional/hooks-conditional.feature:11
 
