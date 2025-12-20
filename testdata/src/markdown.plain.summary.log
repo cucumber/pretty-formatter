@@ -1,8 +1,9 @@
 
 Failed scenarios:
   1) Ylajali! # samples/markdown/markdown.feature.md:38
-       Error: You asked me to fail
-       samples/markdown/markdown.feature.md:24
+       When we use a data table and attach something and then fail # samples/markdown/markdown.ts:12
+           Error: You asked me to fail
+           samples/markdown/markdown.feature.md:24
 
 
 2 scenarios (1 passed, 1 failed)

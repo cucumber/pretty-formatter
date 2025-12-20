@@ -1,6 +1,7 @@
 
 Ambiguous scenarios:
   1) Test cases won't retry when the status is AMBIGUOUS # samples/retry-ambiguous/retry-ambiguous.feature:2
+       Given an ambiguous step
 
 1 scenarios (1 ambiguous)
 1 steps (1 ambiguous)

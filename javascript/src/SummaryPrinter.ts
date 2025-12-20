@@ -16,6 +16,7 @@ import {
   formatForStatus,
   formatHookTitle,
   formatPickleLocation,
+  formatPickleStepTitle,
   formatSourceLocation,
   formatTestRunFinishedError,
   formatTestStepResultError,
@@ -27,6 +28,7 @@ import {
 import { CUCUMBER_THEME } from './theme'
 import type { SummaryOptions } from './types'
 import { ensure } from './utils'
+import { resolveStep } from './helpers'
 
 const DEFAULT_OPTIONS: Required<SummaryOptions> = {
   theme: CUCUMBER_THEME,
@@ -129,22 +131,57 @@ export class SummaryPrinter {
           )
           const formattedAttempt =
             testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
+          const sequencePrefix = `${index + 1})`
           this.println(
             indent(
-              `${index + 1}) ${pickle.name}${formattedAttempt} ${formattedLocation}`,
+              `${sequencePrefix} ${pickle.name}${formattedAttempt} ${formattedLocation}`,
               GHERKIN_INDENT_LENGTH
             )
           )
-          if (status === TestStepResultStatus.FAILED && responsibleStep) {
+          if (responsibleStep) {
             const [testStepFinished] = responsibleStep
-            const content = formatTestStepResultError(
-              testStepFinished.testStepResult,
-              this.options.theme,
-              this.stream
-            )
-            if (content) {
-              this.println(indent(content, GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH + 1))
-              this.println()
+            const resolvedStep = resolveStep(testStepFinished, this.query)
+            if (resolvedStep && 'pickleStep' in resolvedStep) {
+              const { testStep, pickleStep, step, stepDefinition } = resolvedStep
+              let content = formatPickleStepTitle(
+                testStep,
+                pickleStep,
+                step,
+                testStepFinished.testStepResult.status,
+                false,
+                this.options.theme,
+                this.stream
+              )
+              const location = formatSourceLocation(stepDefinition, this.options.theme, this.stream)
+              if (location) {
+                content += ` ${location}`
+              }
+              this.println(
+                indent(
+                  content,
+                  GHERKIN_INDENT_LENGTH + sequencePrefix.length + 1 + GHERKIN_INDENT_LENGTH
+                )
+              )
+            }
+            if (status === TestStepResultStatus.FAILED) {
+              const content = formatTestStepResultError(
+                testStepFinished.testStepResult,
+                this.options.theme,
+                this.stream
+              )
+              if (content) {
+                this.println(
+                  indent(
+                    content,
+                    GHERKIN_INDENT_LENGTH +
+                      sequencePrefix.length +
+                      1 +
+                      GHERKIN_INDENT_LENGTH +
+                      ERROR_INDENT_LENGTH
+                  )
+                )
+                this.println()
+              }
             }
           }
         })
