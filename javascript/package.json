@@ -18,6 +18,7 @@
     "fix": "eslint --ext ts --max-warnings 0 src --fix src && prettier --write src",
     "lint": "eslint --ext ts --max-warnings 0 src && prettier --check src",
     "test": "mocha \"src/**/*.spec.ts\"",
+    "update-expected-files": "UPDATE_EXPECTED_FILES=true npm test",
     "prepublishOnly": "tsc --build tsconfig.build.json"
   },
   "dependencies": {

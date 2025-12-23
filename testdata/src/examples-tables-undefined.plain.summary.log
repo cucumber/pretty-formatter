@@ -1,8 +1,11 @@
 
 Undefined scenarios:
   1) Eating cucumbers # samples/examples-tables-undefined/examples-undefined.feature:15
+       Given there are pear cucumbers
   2) Eating cucumbers # samples/examples-tables-undefined/examples-undefined.feature:16
+       When I eat banana cucumbers
   3) Eating cucumbers # samples/examples-tables-undefined/examples-undefined.feature:17
+       Then I should have apple cucumbers
 
 3 scenarios (3 undefined)
 9 steps (3 passed, 3 skipped, 3 undefined)

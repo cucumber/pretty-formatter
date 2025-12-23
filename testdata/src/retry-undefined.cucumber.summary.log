@@ -1,6 +1,7 @@
 
 [33mUndefined scenarios:[39m
   1) Test cases won't retry when the status is UNDEFINED [90m# samples/retry-undefined/retry-undefined.feature:2[39m
+       [33m[1mGiven [22ma non-existent step[39m
 
 1 scenarios ([33m1 undefined[39m)
 1 steps ([33m1 undefined[39m)

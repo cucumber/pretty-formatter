@@ -3,33 +3,37 @@ import {
   Location,
   Pickle,
   TestCaseStarted,
-  TestStepResult,
+  TestStepFinished,
   TestStepResultStatus,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
 import {
-  ensure,
   ERROR_INDENT_LENGTH,
   formatCounts,
   formatDurations,
   formatForStatus,
-  formatHookLocation,
   formatHookTitle,
   formatPickleLocation,
+  formatPickleStepTitle,
+  formatSourceLocation,
   formatTestRunFinishedError,
   formatTestStepResultError,
   GHERKIN_INDENT_LENGTH,
   indent,
   ORDERED_STATUSES,
   titleCaseStatus,
-} from './helpers'
+} from './formatting'
+import { resolveStep } from './helpers'
 import { CUCUMBER_THEME } from './theme'
 import type { SummaryOptions } from './types'
+import { ensure } from './utils'
 
 const DEFAULT_OPTIONS: Required<SummaryOptions> = {
   theme: CUCUMBER_THEME,
 }
+
+const NON_REPORTABLE_STATUSES = [TestStepResultStatus.PASSED, TestStepResultStatus.SKIPPED]
 
 export class SummaryPrinter {
   private readonly println: (content?: string) => void
@@ -67,14 +71,108 @@ export class SummaryPrinter {
   }
 
   private printNonPassingScenarios() {
-    const nonReportableStatuses = [TestStepResultStatus.PASSED, TestStepResultStatus.SKIPPED]
+    const nonPassingScenarios = this.collectNonPassingScenarios()
+
+    for (const status of ORDERED_STATUSES) {
+      const forThisStatus = nonPassingScenarios.get(status) ?? []
+      if (forThisStatus.length === 0) {
+        continue
+      }
+      this.println()
+      this.println(
+        formatForStatus(
+          status,
+          `${titleCaseStatus(status)} scenarios:`,
+          this.options.theme,
+          this.stream
+        )
+      )
+      forThisStatus.forEach(({ pickle, location, testCaseStarted, testStepFinished }, index) => {
+        const formattedLocation = formatPickleLocation(
+          pickle,
+          location,
+          this.options.theme,
+          this.stream
+        )
+        const formattedAttempt =
+          testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
+        const sequencePrefix = `${index + 1})`
+        this.println(
+          indent(
+            `${sequencePrefix} ${pickle.name}${formattedAttempt} ${formattedLocation}`,
+            GHERKIN_INDENT_LENGTH
+          )
+        )
+        if (testStepFinished) {
+          const resolvedStep = resolveStep(testStepFinished, this.query)
+          if (resolvedStep && 'pickleStep' in resolvedStep) {
+            const { testStep, pickleStep, step, stepDefinition } = resolvedStep
+            let content = formatPickleStepTitle(
+              testStep,
+              pickleStep,
+              step,
+              testStepFinished.testStepResult.status,
+              false,
+              this.options.theme,
+              this.stream
+            )
+            const location = formatSourceLocation(stepDefinition, this.options.theme, this.stream)
+            if (location) {
+              content += ` ${location}`
+            }
+            this.println(
+              indent(
+                content,
+                GHERKIN_INDENT_LENGTH + sequencePrefix.length + 1 + GHERKIN_INDENT_LENGTH
+              )
+            )
+          } else if (resolvedStep && 'hook' in resolvedStep) {
+            const { hook } = resolvedStep
+            let content = formatHookTitle(hook)
+            const location = formatSourceLocation(hook, this.options.theme, this.stream)
+            if (location) {
+              content += ` ${location}`
+            }
+            this.println(
+              indent(
+                content,
+                GHERKIN_INDENT_LENGTH + sequencePrefix.length + 1 + GHERKIN_INDENT_LENGTH
+              )
+            )
+          }
+          if (status === TestStepResultStatus.FAILED) {
+            const content = formatTestStepResultError(
+              testStepFinished.testStepResult,
+              this.options.theme,
+              this.stream
+            )
+            if (content) {
+              this.println(
+                indent(
+                  content,
+                  GHERKIN_INDENT_LENGTH +
+                    sequencePrefix.length +
+                    1 +
+                    GHERKIN_INDENT_LENGTH +
+                    ERROR_INDENT_LENGTH
+                )
+              )
+              this.println()
+            }
+          }
+        }
+      })
+    }
+  }
+
+  private collectNonPassingScenarios() {
     const reportableByStatus = new Map<
       TestStepResultStatus,
       Array<{
         pickle: Pickle
         location: Location | undefined
         testCaseStarted: TestCaseStarted
-        testStepResult: TestStepResult
+        testStepFinished?: TestStepFinished
       }>
     >()
 
@@ -90,7 +188,13 @@ export class SummaryPrinter {
       const location = this.query.findLocationOf(pickle)
       const testStepResult = this.query.findMostSevereTestStepResultBy(testCaseFinished)
 
-      if (testStepResult && !nonReportableStatuses.includes(testStepResult.status)) {
+      if (testStepResult && !NON_REPORTABLE_STATUSES.includes(testStepResult.status)) {
+        const testStepFinished = this.query
+          .findTestStepFinishedAndTestStepBy(testCaseStarted)
+          .map(([testStepFinished]) => testStepFinished)
+          .find(
+            (testStepFinished) => testStepFinished.testStepResult.status === testStepResult.status
+          )
         if (!reportableByStatus.has(testStepResult.status)) {
           reportableByStatus.set(testStepResult.status, [])
         }
@@ -98,52 +202,12 @@ export class SummaryPrinter {
           pickle,
           location,
           testCaseStarted,
-          testStepResult,
+          testStepFinished,
         })
       }
     }
 
-    for (const status of ORDERED_STATUSES) {
-      const forThisStatus = reportableByStatus.get(status) ?? []
-      if (forThisStatus.length > 0) {
-        this.println()
-        this.println(
-          formatForStatus(
-            status,
-            `${titleCaseStatus(status)} scenarios:`,
-            this.options.theme,
-            this.stream
-          )
-        )
-        forThisStatus.forEach(({ pickle, location, testCaseStarted, testStepResult }, index) => {
-          const formattedLocation = formatPickleLocation(
-            pickle,
-            location,
-            this.options.theme,
-            this.stream
-          )
-          const formattedAttempt =
-            testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
-          this.println(
-            indent(
-              `${index + 1}) ${pickle.name}${formattedAttempt} ${formattedLocation}`,
-              GHERKIN_INDENT_LENGTH
-            )
-          )
-          if (status === TestStepResultStatus.FAILED) {
-            const content = formatTestStepResultError(
-              testStepResult,
-              this.options.theme,
-              this.stream
-            )
-            if (content) {
-              this.println(indent(content, GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH + 1))
-              this.println()
-            }
-          }
-        })
-      }
-    }
+    return reportableByStatus
   }
 
   private printUnknownParameterTypes() {
@@ -184,7 +248,7 @@ export class SummaryPrinter {
       )
       failedHooks.forEach((testRunHookFinished, index) => {
         const hook = this.query.findHookBy(testRunHookFinished)
-        const formattedLocation = formatHookLocation(hook, this.options.theme, this.stream)
+        const formattedLocation = formatSourceLocation(hook, this.options.theme, this.stream)
         this.println(
           indent(
             `${index + 1}) ${formatHookTitle(hook)} ${formattedLocation}`,

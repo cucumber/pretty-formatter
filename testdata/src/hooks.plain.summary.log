@@ -1,8 +1,9 @@
 
 Failed scenarios:
   1) No tags and a failed step # samples/hooks/hooks.feature:7
-       Error: Exception in step
-       samples/hooks/hooks.feature:8
+       When a step fails # samples/hooks/hooks.ts:11
+           Error: Exception in step
+           samples/hooks/hooks.feature:8
 
 
 2 scenarios (1 passed, 1 failed)
