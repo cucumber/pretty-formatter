@@ -3,7 +3,8 @@ import {
   Location,
   Pickle,
   TestCaseStarted,
-  TestStepResult,
+  TestStep,
+  TestStepFinished,
   TestStepResultStatus,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
@@ -17,6 +18,8 @@ import {
   formatHookLocation,
   formatHookTitle,
   formatPickleLocation,
+  formatStepLocation,
+  formatStepTitle,
   formatTestRunFinishedError,
   formatTestStepResultError,
   GHERKIN_INDENT_LENGTH,
@@ -74,7 +77,7 @@ export class SummaryPrinter {
         pickle: Pickle
         location: Location | undefined
         testCaseStarted: TestCaseStarted
-        testStepResult: TestStepResult
+        responsibleStep: [TestStepFinished, TestStep]
       }>
     >()
 
@@ -88,17 +91,24 @@ export class SummaryPrinter {
         'Pickle must exist for TestCaseFinished'
       )
       const location = this.query.findLocationOf(pickle)
-      const testStepResult = this.query.findMostSevereTestStepResultBy(testCaseFinished)
+      const mostSevereResult = this.query.findMostSevereTestStepResultBy(testCaseFinished)
 
-      if (testStepResult && !nonReportableStatuses.includes(testStepResult.status)) {
-        if (!reportableByStatus.has(testStepResult.status)) {
-          reportableByStatus.set(testStepResult.status, [])
+      if (mostSevereResult && !nonReportableStatuses.includes(mostSevereResult.status)) {
+        const responsibleStep = this.query
+          .findTestStepFinishedAndTestStepBy(testCaseStarted)
+          .find(
+            ([testStepFinished]) =>
+              testStepFinished.testStepResult.status === mostSevereResult.status
+          ) as [TestStepFinished, TestStep]
+
+        if (!reportableByStatus.has(mostSevereResult.status)) {
+          reportableByStatus.set(mostSevereResult.status, [])
         }
-        reportableByStatus.get(testStepResult.status)?.push({
+        reportableByStatus.get(mostSevereResult.status)?.push({
           pickle,
           location,
           testCaseStarted,
-          testStepResult,
+          responsibleStep,
         })
       }
     }
@@ -115,33 +125,74 @@ export class SummaryPrinter {
             this.stream
           )
         )
-        forThisStatus.forEach(({ pickle, location, testCaseStarted, testStepResult }, index) => {
-          const formattedLocation = formatPickleLocation(
-            pickle,
-            location,
-            this.options.theme,
-            this.stream
-          )
-          const formattedAttempt =
-            testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
-          this.println(
-            indent(
-              `${index + 1}) ${pickle.name}${formattedAttempt} ${formattedLocation}`,
-              GHERKIN_INDENT_LENGTH
-            )
-          )
-          if (status === TestStepResultStatus.FAILED) {
-            const content = formatTestStepResultError(
-              testStepResult,
+        forThisStatus.forEach(
+          (
+            { pickle, location, testCaseStarted, responsibleStep: [testStepFinished, testStep] },
+            index
+          ) => {
+            const formattedLocation = formatPickleLocation(
+              pickle,
+              location,
               this.options.theme,
               this.stream
             )
-            if (content) {
-              this.println(indent(content, GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH + 1))
-              this.println()
+            const formattedAttempt =
+              testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
+            this.println(
+              indent(
+                `${index + 1}) ${pickle.name}${formattedAttempt} ${formattedLocation}`,
+                GHERKIN_INDENT_LENGTH
+              )
+            )
+
+            const content = []
+            if (testStep.pickleStepId) {
+              const pickleStep = ensure(
+                this.query.findPickleStepBy(testStep),
+                'PickleStep must exist for Step with pickleStepId'
+              )
+              const step = ensure(
+                this.query.findStepBy(pickleStep),
+                'Step must exist for PickleStep'
+              )
+              content.push(
+                formatStepTitle(
+                  testStep,
+                  pickleStep,
+                  step,
+                  status,
+                  false,
+                  this.options.theme,
+                  this.stream
+                )
+              )
+              content.push(
+                formatStepLocation(
+                  this.query.findUnambiguousStepDefinitionBy(testStep),
+                  this.options.theme,
+                  this.stream
+                )
+              )
+            } else if (testStep.hookId) {
+              const hook = this.query.findHookBy(testStep)
+              content.push(formatHookTitle(hook))
+              content.push(formatHookLocation(hook, this.options.theme, this.stream))
+            }
+            this.println(indent(content.filter((chunk) => !!chunk).join(' '), 7))
+
+            if (status === TestStepResultStatus.FAILED) {
+              const content = formatTestStepResultError(
+                testStepFinished.testStepResult,
+                this.options.theme,
+                this.stream
+              )
+              if (content) {
+                this.println(indent(content, 11))
+                this.println()
+              }
             }
           }
-        })
+        )
       }
     }
   }
