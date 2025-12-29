@@ -1,21 +1,8 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.Convertor;
+import io.cucumber.messages.types.*;
 import io.cucumber.messages.types.Exception;
-import io.cucumber.messages.types.Hook;
-import io.cucumber.messages.types.HookType;
-import io.cucumber.messages.types.Location;
-import io.cucumber.messages.types.Pickle;
-import io.cucumber.messages.types.Snippet;
-import io.cucumber.messages.types.Suggestion;
-import io.cucumber.messages.types.TestCaseFinished;
-import io.cucumber.messages.types.TestCaseStarted;
-import io.cucumber.messages.types.TestRunFinished;
-import io.cucumber.messages.types.TestRunHookFinished;
-import io.cucumber.messages.types.TestStepFinished;
-import io.cucumber.messages.types.TestStepResult;
-import io.cucumber.messages.types.TestStepResultStatus;
-import io.cucumber.messages.types.UndefinedParameterType;
 import io.cucumber.query.Query;
 import io.cucumber.query.Repository;
 
@@ -33,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -112,14 +100,19 @@ final class SummaryReportWriter implements AutoCloseable {
                 .collect(groupingBy(SummaryReportWriter::getTestStepResultStatusBy));
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
+
         for (TestStepResultStatus status : EnumSet.complementOf(excluded)) {
+            ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
             printFinishedItemByStatus(
                     "hooks",
                     testRunHookFinishedByStatus,
                     status,
                     this::formatHookLine,
-                    testRunHookFinished -> Optional.of(testRunHookFinished.getResult())
-
+                    (testRunHookFinished) -> Optional.of(testRunHookFinished)
+                            .map(TestRunHookFinished::getResult)
+                            .flatMap(TestStepResult::getException)
+                            .flatMap(formatter::format)
+                            .ifPresent(out::println)
             );
         }
     }
@@ -135,9 +128,26 @@ final class SummaryReportWriter implements AutoCloseable {
                     testCaseFinishedByStatus,
                     status,
                     this::formatScenarioLine,
-                    query::findMostSevereTestStepResultBy
+                    (testCaseFinished) -> printResponsibleStep(testCaseFinished, status)
             );
         }
+    }
+
+    private void printResponsibleStep(TestCaseFinished testCaseFinished, TestStepResultStatus status) {
+        ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
+        query.findTestCaseStartedBy(testCaseFinished)
+                .map(query::findTestStepFinishedAndTestStepBy)
+                .flatMap(list -> list.stream()
+                        .filter((entry) -> entry.getKey().getTestStepResult().getStatus() == status)
+                        .findFirst())
+                .ifPresent(responsibleStep -> {
+                    TestStepFinished testStepFinished = responsibleStep.getKey();
+                    testStepFinished
+                            .getTestStepResult()
+                            .getException()
+                            .flatMap(formatter::format)
+                            .ifPresent(out::println);
+                });
     }
 
     private Stream<TestCaseFinished> findAllTestCasesFinishedInCanonicalOrder() {
@@ -193,8 +203,7 @@ final class SummaryReportWriter implements AutoCloseable {
             Map<TestStepResultStatus, List<T>> finishedItemByStatus,
             TestStepResultStatus status,
             Function<T, Optional<String>> formatFinishedItem,
-            Function<T, Optional<TestStepResult>> getTestStepResult
-
+            Consumer<T> printSupplementaryContent
     ) {
         List<T> items = finishedItemByStatus.getOrDefault(status, emptyList());
         if (items.isEmpty()) {
@@ -203,16 +212,12 @@ final class SummaryReportWriter implements AutoCloseable {
         out.println();
         String finishItemByStatusTitle = String.format("%s %s:", firstLetterCapitalizedName(status), finishedItemName);
         out.println(theme.style(STEP, status, finishItemByStatusTitle));
-        ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
         AtomicInteger index = new AtomicInteger(0);
-        for (T testCaseFinished : items) {
-            formatFinishedItem.apply(testCaseFinished)
+        for (T finishedItem : items) {
+            formatFinishedItem.apply(finishedItem)
                     .map(line -> String.format("  %d) %s", index.incrementAndGet(), line))
                     .ifPresent(out::println);
-            getTestStepResult.apply(testCaseFinished)
-                    .flatMap(TestStepResult::getException)
-                    .flatMap(formatter::format)
-                    .ifPresent(out::println);
+            printSupplementaryContent.accept(finishedItem);
         }
     }
 
