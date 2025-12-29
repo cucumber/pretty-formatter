@@ -1,6 +1,7 @@
 
 [31mAmbiguous scenarios:[39m
   1) Test cases won't retry when the status is AMBIGUOUS [90m# samples/retry-ambiguous/retry-ambiguous.feature:2[39m
+       [31m[1mGiven [22man ambiguous step[39m
 
 1 scenarios ([31m1 ambiguous[39m)
 1 steps ([31m1 ambiguous[39m)

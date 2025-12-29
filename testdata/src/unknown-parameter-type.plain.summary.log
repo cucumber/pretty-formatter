@@ -1,6 +1,7 @@
 
 Undefined scenarios:
   1) undefined parameter type # samples/unknown-parameter-type/unknown-parameter-type.feature:6
+       Given CDG is closed because of a strike
 
 These parameters are missing a parameter type definition:
   1) 'airport' in '{airport} is closed because of a strike'

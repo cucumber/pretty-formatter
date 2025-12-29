@@ -1,8 +1,9 @@
 
 Failed scenarios:
   1) A failing scenario # samples/global-hooks/global-hooks.feature:9
-       Error: Exception in step
-       samples/global-hooks/global-hooks.feature:10
+       When a step fails # samples/global-hooks/global-hooks.ts:15
+           Error: Exception in step
+           samples/global-hooks/global-hooks.feature:10
 
 
 4 hooks (4 passed)

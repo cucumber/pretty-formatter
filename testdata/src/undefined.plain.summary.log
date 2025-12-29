@@ -1,9 +1,13 @@
 
 Undefined scenarios:
   1) An undefined step causes a failure # samples/undefined/undefined.feature:8
+       Given a step that is yet to be defined
   2) Steps before undefined steps are executed # samples/undefined/undefined.feature:11
+       And a step that is yet to be defined
   3) Steps after undefined steps are skipped # samples/undefined/undefined.feature:15
+       Given a step that is yet to be defined
   4) Snippets reflect parameter types # samples/undefined/undefined.feature:19
+       Given a list of 8 things
 
 4 scenarios (4 undefined)
 6 steps (1 passed, 1 skipped, 4 undefined)
