@@ -139,8 +139,13 @@ final class SummaryReportWriter implements AutoCloseable {
                     query.findPickleStepBy(testStep)
                             .ifPresent(pickleStep -> {
                                 query.findStepBy(pickleStep).ifPresent(step -> {
-                                    out.println(formatStep(testStepFinished, testStep, pickleStep, step));
+                                    out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
                                 });
+                            });
+
+                    query.findHookBy(testStep)
+                            .ifPresent(hook -> {
+                                out.println(formatHookStep(testStepFinished, testStep, hook));
                             });
 
                     testStepFinished
@@ -151,7 +156,23 @@ final class SummaryReportWriter implements AutoCloseable {
                 });
     }
 
-    private String formatStep(TestStepFinished testStepFinished, TestStep testStep, PickleStep pickleStep, Step step) {
+    private String formatHookStep(TestStepFinished testStepFinished, TestStep testStep, Hook hook) {
+        TestStepResultStatus status = testStepFinished.getTestStepResult().getStatus();
+        return new LineBuilder(theme)
+                .indent(7)
+                .begin(STEP, status)
+                .append(STEP_KEYWORD, hook.getType()
+                        .map(SummaryReportWriter::formatHookType)
+                        .orElse("Unknown"))
+                .append(hook.getName()
+                        .map(name -> "(" + name + ")")
+                        .orElse(""))
+                .end(STEP, status)
+                .append(formatLocationComment(hook))
+                .build();
+    }
+
+    private String formatPickleStep(TestStepFinished testStepFinished, TestStep testStep, PickleStep pickleStep, Step step) {
         TestStepResultStatus status = testStepFinished.getTestStepResult().getStatus();
         return new LineBuilder(theme)
                 .indent(7)
@@ -226,7 +247,7 @@ final class SummaryReportWriter implements AutoCloseable {
         return query.findHookBy(testRunHookFinished)
                 .map(hook -> {
                     String hookTypeName = hook.getType()
-                            .map(SummaryReportWriter::formatGlobalHookName)
+                            .map(SummaryReportWriter::formatHookType)
                             .orElse("Unknown");
                     String hookName = hook.getName()
                             .map(name -> "(" + name + ")")
@@ -236,7 +257,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 });
     }
 
-    private static String formatGlobalHookName(HookType hookType) {
+    private static String formatHookType(HookType hookType) {
         switch (hookType) {
             case BEFORE_TEST_RUN:
                 return "BeforeTestRun";
