@@ -69,8 +69,8 @@ export const DEFAULT_PROGRESS_ICONS: Record<TestStepResultStatus, string> = {
   [TestStepResultStatus.UNKNOWN]: '?',
 } as const
 const HOOK_TYPE_LABELS: Record<HookType, string> = {
-  [HookType.BEFORE_TEST_RUN]: 'BeforeTestRun',
-  [HookType.AFTER_TEST_RUN]: 'AfterTestRun',
+  [HookType.BEFORE_TEST_RUN]: 'BeforeAll',
+  [HookType.AFTER_TEST_RUN]: 'AfterAll',
   [HookType.BEFORE_TEST_CASE]: 'Before',
   [HookType.AFTER_TEST_CASE]: 'After',
   [HookType.BEFORE_TEST_STEP]: 'BeforeStep',

@@ -260,9 +260,9 @@ final class SummaryReportWriter implements AutoCloseable {
     private static String formatHookType(HookType hookType) {
         switch (hookType) {
             case BEFORE_TEST_RUN:
-                return "BeforeTestRun";
+                return "BeforeAll";
             case AFTER_TEST_RUN:
-                return "AfterTestRun";
+                return "AfterAll";
             case BEFORE_TEST_CASE:
                 return "Before";
             case AFTER_TEST_CASE:

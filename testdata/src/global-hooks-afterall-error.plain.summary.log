@@ -1,6 +1,6 @@
 
 Failed hooks:
-  1) AfterTestRun # samples/global-hooks-afterall-error/global-hooks-afterall-error.ts:19
+  1) AfterAll # samples/global-hooks-afterall-error/global-hooks-afterall-error.ts:19
        Error: AfterAll hook went wrong
        samples/global-hooks-afterall-error/global-hooks-afterall-error.ts:19
 
