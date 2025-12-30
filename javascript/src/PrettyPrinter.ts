@@ -25,10 +25,10 @@ import {
   formatCodeLocation,
   formatFeatureTitle,
   formatPickleLocation,
+  formatPickleStepArgument,
   formatPickleTags,
   formatPickleTitle,
   formatRuleTitle,
-  formatStepArgument,
   formatStepTitle,
   formatTestRunFinishedError,
   formatTestStepResultError,
@@ -310,7 +310,7 @@ export class PrettyPrinter {
   }
 
   private printStepArgument(pickleStep: PickleStep, scenarioIndent: number) {
-    const content = formatStepArgument(pickleStep, this.options.theme, this.stream)
+    const content = formatPickleStepArgument(pickleStep, this.options.theme, this.stream)
     if (content) {
       this.println(
         indent(

@@ -2,6 +2,10 @@
 Failed scenarios:
   1) Ylajali! # samples/markdown/markdown.feature.md:38
        When we use a data table and attach something and then fail # samples/markdown/markdown.ts:12
+         | name | age |
+         | Bill | 3   |
+         | Jane | 6   |
+         | Isla | 5   |
            Error: You asked me to fail
            samples/markdown/markdown.feature.md:24
 

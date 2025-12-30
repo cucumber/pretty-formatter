@@ -246,7 +246,7 @@ export function formatCodeLocation(
   }
 }
 
-export function formatStepArgument(
+export function formatPickleStepArgument(
   pickleStep: PickleStep,
   theme: Theme,
   stream: NodeJS.WritableStream

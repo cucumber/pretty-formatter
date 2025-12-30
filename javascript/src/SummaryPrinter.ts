@@ -18,6 +18,7 @@ import {
   formatForStatus,
   formatHookTitle,
   formatPickleLocation,
+  formatPickleStepArgument,
   formatStepTitle,
   formatTestRunFinishedError,
   formatTestStepResultError,
@@ -189,6 +190,10 @@ export class SummaryPrinter {
           7
         )
       )
+      const argument = formatPickleStepArgument(pickleStep, this.options.theme, this.stream)
+      if (argument) {
+        this.println(indent(argument, 9))
+      }
     } else if (testStep.hookId) {
       const hook = this.query.findHookBy(testStep)
       this.println(

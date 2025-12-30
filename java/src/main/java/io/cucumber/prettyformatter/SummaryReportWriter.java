@@ -168,6 +168,24 @@ final class SummaryReportWriter implements AutoCloseable {
                             .ifPresent(pickleStep -> {
                                 query.findStepBy(pickleStep).ifPresent(step -> {
                                     out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
+                                    pickleStep.getArgument().ifPresent(pickleStepArgument -> {
+                                        pickleStepArgument.getDataTable().ifPresent(pickleTable ->
+                                                out.println(new LineBuilder(theme)
+                                                        .accept(lineBuilder -> PickleTableFormatter.builder()
+                                                                .indentation(9)
+                                                                .build()
+                                                                .formatTo(pickleTable, lineBuilder))
+                                                        .build())
+                                        );
+                                        pickleStepArgument.getDocString().ifPresent(pickleDocString ->
+                                                out.println(new LineBuilder(theme)
+                                                        .accept(lineBuilder -> PickleDocStringFormatter.builder()
+                                                                .indentation(9)
+                                                                .build()
+                                                                .formatTo(pickleDocString, lineBuilder))
+                                                        .build())
+                                        );
+                                    });
                                 });
                             });
 
