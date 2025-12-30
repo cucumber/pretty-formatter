@@ -11,14 +11,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -30,8 +23,7 @@ import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
 import static io.cucumber.messages.types.TestStepResultStatus.UNDEFINED;
-import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
-import static io.cucumber.prettyformatter.Theme.Element.STEP;
+import static io.cucumber.prettyformatter.Theme.Element.*;
 import static java.util.Collections.emptyList;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
@@ -134,7 +126,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printResponsibleStep(TestCaseFinished testCaseFinished, TestStepResultStatus status) {
-        ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
+        ExceptionFormatter formatter = new ExceptionFormatter(11, theme, status);
         query.findTestCaseStartedBy(testCaseFinished)
                 .map(query::findTestStepFinishedAndTestStepBy)
                 .flatMap(list -> list.stream()
@@ -142,12 +134,69 @@ final class SummaryReportWriter implements AutoCloseable {
                         .findFirst())
                 .ifPresent(responsibleStep -> {
                     TestStepFinished testStepFinished = responsibleStep.getKey();
+                    TestStep testStep = responsibleStep.getValue();
+
+                    query.findPickleStepBy(testStep)
+                            .ifPresent(pickleStep -> {
+                                query.findStepBy(pickleStep).ifPresent(step -> {
+                                    out.println(formatStep(testStepFinished, testStep, pickleStep, step));
+                                });
+                            });
+
                     testStepFinished
                             .getTestStepResult()
                             .getException()
                             .flatMap(formatter::format)
                             .ifPresent(out::println);
                 });
+    }
+
+    private String formatStep(TestStepFinished testStepFinished, TestStep testStep, PickleStep pickleStep, Step step) {
+        TestStepResultStatus status = testStepFinished.getTestStepResult().getStatus();
+        return new LineBuilder(theme)
+                .indent(7)
+                .begin(STEP, status)
+                .append(STEP_KEYWORD, step.getKeyword())
+                .accept(lineBuilder -> formatStepText(lineBuilder, testStep, pickleStep))
+                .end(STEP, status)
+                .accept(lineBuilder -> formatLocationComment(testStep)
+                        .ifPresent(lineBuilder::append)
+                )
+                .build();
+    }
+
+    private void formatStepText(LineBuilder line, TestStep testStep, PickleStep pickleStep) {
+        formatStepText(line, pickleStep.getText(), getStepMatchArguments(testStep));
+    }
+
+    private List<StepMatchArgument> getStepMatchArguments(TestStep testStep) {
+        List<StepMatchArgument> stepMatchArguments = new ArrayList<>();
+        testStep.getStepMatchArgumentsLists()
+                .filter(stepMatchArgumentsList -> stepMatchArgumentsList.size() == 1)
+                .orElse(emptyList())
+                .forEach(list -> stepMatchArguments.addAll(list.getStepMatchArguments()));
+        return stepMatchArguments;
+    }
+
+    void formatStepText(LineBuilder lineBuilder, String stepText, List<StepMatchArgument> arguments) {
+        int currentIndex = 0;
+        for (StepMatchArgument argument : arguments) {
+            Group group = argument.getGroup();
+            // Ignore absent values, or groups without a start
+            if (group.getValue().isPresent() && group.getStart().isPresent()) {
+                String groupValue = group.getValue().get();
+                // TODO: Messages are silly
+                int groupStart = (int) (long) group.getStart().get();
+                String text = stepText.substring(currentIndex, groupStart);
+                currentIndex = groupStart + groupValue.length();
+                lineBuilder.append(STEP_TEXT, text)
+                        .append(STEP_ARGUMENT, groupValue);
+            }
+        }
+        if (currentIndex != stepText.length()) {
+            String remainder = stepText.substring(currentIndex);
+            lineBuilder.append(STEP_TEXT, remainder);
+        }
     }
 
     private Stream<TestCaseFinished> findAllTestCasesFinishedInCanonicalOrder() {
@@ -237,6 +286,14 @@ final class SummaryReportWriter implements AutoCloseable {
                 .map(line -> ":" + line)
                 .orElse("");
         return " " + theme.style(LOCATION, comment);
+    }
+
+    private Optional<String> formatLocationComment(TestStep testStep) {
+        return query.findUnambiguousStepDefinitionBy(testStep)
+                .map(StepDefinition::getSourceReference)
+                .flatMap(sourceReferenceFormatter::format)
+                .map(comment -> theme.style(LOCATION, "# " + comment))
+                .map(comment -> " " + comment);
     }
 
     private String formatLocationComment(Hook hook) {
