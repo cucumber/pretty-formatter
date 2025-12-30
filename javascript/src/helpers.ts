@@ -85,6 +85,10 @@ export function ensure<T>(value: T | undefined, message: string): T {
   return value
 }
 
+export function join(...originals: ReadonlyArray<string | undefined>) {
+  return originals.filter((part) => !!part).join(' ')
+}
+
 export function indent(original: string, by: number) {
   return original
     .split('\n')

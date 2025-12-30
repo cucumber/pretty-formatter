@@ -23,6 +23,7 @@ import {
   formatTestStepResultError,
   GHERKIN_INDENT_LENGTH,
   indent,
+  join,
   ORDERED_STATUSES,
   titleCaseStatus,
 } from './helpers'
@@ -69,6 +70,48 @@ export class SummaryPrinter {
   }
 
   private printNonPassingScenarios() {
+    const nonPassingScenarios = this.resolveNonPassingScenarios()
+
+    for (const status of ORDERED_STATUSES) {
+      const forThisStatus = nonPassingScenarios.get(status) ?? []
+      if (forThisStatus.length > 0) {
+        this.println()
+        this.println(
+          formatForStatus(
+            status,
+            `${titleCaseStatus(status)} scenarios:`,
+            this.options.theme,
+            this.stream
+          )
+        )
+        forThisStatus.forEach(
+          (
+            { pickle, location, testCaseStarted, responsibleStep: [testStepFinished, testStep] },
+            index
+          ) => {
+            const formattedLocation = formatPickleLocation(
+              pickle,
+              location,
+              this.options.theme,
+              this.stream
+            )
+            const formattedAttempt =
+              testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
+            this.println(
+              indent(
+                `${index + 1}) ${pickle.name}${formattedAttempt} ${formattedLocation}`,
+                GHERKIN_INDENT_LENGTH
+              )
+            )
+
+            this.printResponsibleStep(testStepFinished, testStep, status)
+          }
+        )
+      }
+    }
+  }
+
+  private resolveNonPassingScenarios() {
     const nonReportableStatuses = [TestStepResultStatus.PASSED, TestStepResultStatus.SKIPPED]
     const reportableByStatus = new Map<
       TestStepResultStatus,
@@ -111,87 +154,63 @@ export class SummaryPrinter {
         })
       }
     }
+    return reportableByStatus
+  }
 
-    for (const status of ORDERED_STATUSES) {
-      const forThisStatus = reportableByStatus.get(status) ?? []
-      if (forThisStatus.length > 0) {
-        this.println()
-        this.println(
-          formatForStatus(
-            status,
-            `${titleCaseStatus(status)} scenarios:`,
-            this.options.theme,
-            this.stream
-          )
-        )
-        forThisStatus.forEach(
-          (
-            { pickle, location, testCaseStarted, responsibleStep: [testStepFinished, testStep] },
-            index
-          ) => {
-            const formattedLocation = formatPickleLocation(
-              pickle,
-              location,
+  private printResponsibleStep(
+    testStepFinished: TestStepFinished,
+    testStep: TestStep,
+    status: TestStepResultStatus
+  ) {
+    if (testStep.pickleStepId) {
+      const pickleStep = ensure(
+        this.query.findPickleStepBy(testStep),
+        'PickleStep must exist for Step with pickleStepId'
+      )
+      const step = ensure(this.query.findStepBy(pickleStep), 'Step must exist for PickleStep')
+      this.println(
+        indent(
+          join(
+            formatStepTitle(
+              testStep,
+              pickleStep,
+              step,
+              status,
+              false,
+              this.options.theme,
+              this.stream
+            ),
+            formatCodeLocation(
+              this.query.findUnambiguousStepDefinitionBy(testStep),
               this.options.theme,
               this.stream
             )
-            const formattedAttempt =
-              testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
-            this.println(
-              indent(
-                `${index + 1}) ${pickle.name}${formattedAttempt} ${formattedLocation}`,
-                GHERKIN_INDENT_LENGTH
-              )
-            )
-
-            const content = []
-            if (testStep.pickleStepId) {
-              const pickleStep = ensure(
-                this.query.findPickleStepBy(testStep),
-                'PickleStep must exist for Step with pickleStepId'
-              )
-              const step = ensure(
-                this.query.findStepBy(pickleStep),
-                'Step must exist for PickleStep'
-              )
-              content.push(
-                formatStepTitle(
-                  testStep,
-                  pickleStep,
-                  step,
-                  status,
-                  false,
-                  this.options.theme,
-                  this.stream
-                )
-              )
-              content.push(
-                formatCodeLocation(
-                  this.query.findUnambiguousStepDefinitionBy(testStep),
-                  this.options.theme,
-                  this.stream
-                )
-              )
-            } else if (testStep.hookId) {
-              const hook = this.query.findHookBy(testStep)
-              content.push(formatHookTitle(hook, status, this.options.theme, this.stream))
-              content.push(formatCodeLocation(hook, this.options.theme, this.stream))
-            }
-            this.println(indent(content.filter((chunk) => !!chunk).join(' '), 7))
-
-            if (status === TestStepResultStatus.FAILED) {
-              const content = formatTestStepResultError(
-                testStepFinished.testStepResult,
-                this.options.theme,
-                this.stream
-              )
-              if (content) {
-                this.println(indent(content, 11))
-                this.println()
-              }
-            }
-          }
+          ),
+          7
         )
+      )
+    } else if (testStep.hookId) {
+      const hook = this.query.findHookBy(testStep)
+      this.println(
+        indent(
+          join(
+            formatHookTitle(hook, status, this.options.theme, this.stream),
+            formatCodeLocation(hook, this.options.theme, this.stream)
+          ),
+          7
+        )
+      )
+    }
+
+    if (status === TestStepResultStatus.FAILED) {
+      const content = formatTestStepResultError(
+        testStepFinished.testStepResult,
+        this.options.theme,
+        this.stream
+      )
+      if (content) {
+        this.println(indent(content, 11))
+        this.println()
       }
     }
   }
