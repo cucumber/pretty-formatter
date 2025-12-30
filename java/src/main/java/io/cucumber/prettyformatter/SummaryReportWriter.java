@@ -64,6 +64,7 @@ final class SummaryReportWriter implements AutoCloseable {
     private final Function<String, String> uriFormatter;
     private final SourceReferenceFormatter sourceReferenceFormatter;
     private final StepTextFormatter stepTextFormatter;
+    private final Set<MessagesToSummaryWriter.SummaryFeature> features;
     private final Query query;
     private final PrintWriter out;
 
@@ -71,6 +72,7 @@ final class SummaryReportWriter implements AutoCloseable {
             OutputStream out,
             Theme theme,
             Function<String, String> uriFormatter,
+            Set<MessagesToSummaryWriter.SummaryFeature> features,
             Repository data
     ) {
         this.theme = requireNonNull(theme);
@@ -78,6 +80,7 @@ final class SummaryReportWriter implements AutoCloseable {
         this.uriFormatter = requireNonNull(uriFormatter);
         this.sourceReferenceFormatter = new SourceReferenceFormatter(uriFormatter);
         this.stepTextFormatter = new StepTextFormatter();
+        this.features = requireNonNull(features);
         this.query = new Query(requireNonNull(data));
     }
 
@@ -199,6 +202,17 @@ final class SummaryReportWriter implements AutoCloseable {
                             .getException()
                             .flatMap(formatter::format)
                             .ifPresent(out::println);
+
+                    if (features.contains(MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS)) {
+                        query.findAttachmentsBy(testStepFinished).forEach(attachment ->
+                                out.print(new LineBuilder(theme)
+                                        .accept(lineBuilder -> AttachmentFormatter.builder()
+                                                .indentation(11)
+                                                .build()
+                                                .formatTo(attachment, lineBuilder))
+                                        .build())
+                        );
+                    }
                 });
     }
 

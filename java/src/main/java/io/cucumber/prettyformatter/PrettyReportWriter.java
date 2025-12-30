@@ -15,12 +15,9 @@ import io.cucumber.messages.types.TestStepFinished;
 import io.cucumber.messages.types.TestStepResult;
 import io.cucumber.messages.types.TestStepResultStatus;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +29,6 @@ import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.I
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
-import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_NAME;
@@ -247,47 +243,14 @@ final class PrettyReportWriter implements AutoCloseable {
             return;
         }
         writer.println();
-        switch (attachment.getContentEncoding()) {
-            case BASE64:
-                writer.println(formatBase64Attachment(attachment));
-                break;
-            case IDENTITY:
-                writer.print(formatTextAttachment(attachment));
-                break;
-        }
+        writer.print(new LineBuilder(theme)
+                .accept(lineBuilder -> AttachmentFormatter.builder()
+                        .indentation(data.getAttachmentIndentBy(attachment))
+                        .build()
+                        .formatTo(attachment, lineBuilder))
+                .build());
         writer.println();
         writer.flush();
-    }
-
-    private String formatBase64Attachment(Attachment event) {
-        int bytes = (event.getBody().length() / 4) * 3;
-        String line;
-        if (event.getFileName().isPresent()) {
-            line = String.format("Embedding %s [%s %d bytes]", event.getFileName().get(), event.getMediaType(), bytes);
-        } else {
-            line = String.format("Embedding [%s %d bytes]", event.getMediaType(), bytes);
-        }
-        return new LineBuilder(theme)
-                .indent(data.getAttachmentIndentBy(event))
-                .append(ATTACHMENT, line)
-                .build();
-    }
-
-    private String formatTextAttachment(Attachment event) {
-        int indent = data.getAttachmentIndentBy(event);
-        // Prevent interleaving when multiple threads write to System.out
-        LineBuilder builder = new LineBuilder(theme);
-        try (BufferedReader lines = new BufferedReader(new StringReader(event.getBody()))) {
-            String line;
-            while ((line = lines.readLine()) != null) {
-                builder.indent(indent)
-                        .append(ATTACHMENT, line)
-                        .newLine();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return builder.build();
     }
 
     void handleTestRunFinished(TestRunFinished event) {

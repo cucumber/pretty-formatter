@@ -60,5 +60,6 @@ export interface ProgressOptions {
 }
 
 export interface SummaryOptions {
+  includeAttachments?: boolean
   theme?: Theme
 }

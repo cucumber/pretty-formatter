@@ -12,6 +12,7 @@ import { Query } from '@cucumber/query'
 import {
   ensure,
   ERROR_INDENT_LENGTH,
+  formatAttachment,
   formatCodeLocation,
   formatCounts,
   formatDurations,
@@ -26,12 +27,14 @@ import {
   indent,
   join,
   ORDERED_STATUSES,
+  pad,
   titleCaseStatus,
 } from './helpers'
 import { CUCUMBER_THEME } from './theme'
 import type { SummaryOptions } from './types'
 
 const DEFAULT_OPTIONS: Required<SummaryOptions> = {
+  includeAttachments: true,
   theme: CUCUMBER_THEME,
 }
 
@@ -217,6 +220,12 @@ export class SummaryPrinter {
         this.println(indent(content, 11))
         this.println()
       }
+    }
+
+    if (this.options.includeAttachments) {
+      this.query.findAttachmentsBy(testStepFinished).forEach((attachment) => {
+        this.println(pad(indent(formatAttachment(attachment, this.options.theme, this.stream), 11)))
+      })
     }
   }
 
