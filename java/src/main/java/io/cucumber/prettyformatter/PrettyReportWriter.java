@@ -2,15 +2,12 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Attachment;
 import io.cucumber.messages.types.Feature;
-import io.cucumber.messages.types.Group;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.PickleStep;
 import io.cucumber.messages.types.PickleTag;
 import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.Step;
-import io.cucumber.messages.types.StepMatchArgument;
-import io.cucumber.messages.types.StepMatchArgumentsList;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStep;
@@ -25,7 +22,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -36,8 +32,21 @@ import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.I
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
-import static io.cucumber.prettyformatter.Theme.Element.*;
-import static java.util.Collections.emptyList;
+import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
+import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
+import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.FEATURE_NAME;
+import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
+import static io.cucumber.prettyformatter.Theme.Element.RULE;
+import static io.cucumber.prettyformatter.Theme.Element.RULE_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.RULE_NAME;
+import static io.cucumber.prettyformatter.Theme.Element.SCENARIO;
+import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_NAME;
+import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
+import static io.cucumber.prettyformatter.Theme.Element.STEP;
+import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
+import static io.cucumber.prettyformatter.Theme.Element.TAG;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -45,6 +54,7 @@ final class PrettyReportWriter implements AutoCloseable {
 
     private final Theme theme;
     private final SourceReferenceFormatter sourceReferenceFormatter;
+    private final StepTextFormatter stepTextFormatter;
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
     private final Set<MessagesToPrettyWriter.PrettyFeature> features;
@@ -54,7 +64,7 @@ final class PrettyReportWriter implements AutoCloseable {
             OutputStream out,
             Theme theme,
             Function<String, String> uriFormatter,
-            Set<MessagesToPrettyWriter.PrettyFeature> features, 
+            Set<MessagesToPrettyWriter.PrettyFeature> features,
             PrettyReportData data
 
     ) {
@@ -64,6 +74,7 @@ final class PrettyReportWriter implements AutoCloseable {
         this.features = features;
         this.data = data;
         this.sourceReferenceFormatter = new SourceReferenceFormatter(uriFormatter);
+        this.stepTextFormatter = new StepTextFormatter();
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -191,7 +202,7 @@ final class PrettyReportWriter implements AutoCloseable {
                 .accept(lineBuilder -> formatStatusIcon(lineBuilder, status))
                 .begin(STEP, status)
                 .append(STEP_KEYWORD, step.getKeyword())
-                .accept(lineBuilder -> formatStepText(lineBuilder, testStep, pickleStep))
+                .accept(lineBuilder -> stepTextFormatter.formatTo(testStep, pickleStep, lineBuilder))
                 .end(STEP, status)
                 .accept(lineBuilder -> formatLocation(testStep)
                         .ifPresent(location -> lineBuilder
@@ -211,40 +222,6 @@ final class PrettyReportWriter implements AutoCloseable {
                 .statusIcon(theme.statusIcon(status))
                 .end(STATUS_ICON, status)
                 .append(" ");
-    }
-
-    private void formatStepText(LineBuilder line, TestStep testStep, PickleStep pickleStep) {
-        formatStepText(line, pickleStep.getText(), getStepMatchArguments(testStep));
-    }
-
-    private List<StepMatchArgument> getStepMatchArguments(TestStep testStep) {
-        List<StepMatchArgument> stepMatchArguments = new ArrayList<>();
-        testStep.getStepMatchArgumentsLists()
-                .filter(stepMatchArgumentsList -> stepMatchArgumentsList.size() == 1)
-                .orElse(emptyList())
-                .forEach(list -> stepMatchArguments.addAll(list.getStepMatchArguments()));
-        return stepMatchArguments;
-    }
-
-    void formatStepText(LineBuilder lineBuilder, String stepText, List<StepMatchArgument> arguments) {
-        int currentIndex = 0;
-        for (StepMatchArgument argument : arguments) {
-            Group group = argument.getGroup();
-            // Ignore absent values, or groups without a start
-            if (group.getValue().isPresent() && group.getStart().isPresent()) {
-                String groupValue = group.getValue().get();
-                // TODO: Messages are silly
-                int groupStart = (int) (long) group.getStart().get();
-                String text = stepText.substring(currentIndex, groupStart);
-                currentIndex = groupStart + groupValue.length();
-                lineBuilder.append(STEP_TEXT, text)
-                        .append(STEP_ARGUMENT, groupValue);
-            }
-        }
-        if (currentIndex != stepText.length()) {
-            String remainder = stepText.substring(currentIndex);
-            lineBuilder.append(STEP_TEXT, remainder);
-        }
     }
 
     private Optional<String> formatLocation(TestStep testStep) {

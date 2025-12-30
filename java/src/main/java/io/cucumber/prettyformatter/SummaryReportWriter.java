@@ -1,8 +1,25 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.Convertor;
-import io.cucumber.messages.types.*;
 import io.cucumber.messages.types.Exception;
+import io.cucumber.messages.types.Hook;
+import io.cucumber.messages.types.HookType;
+import io.cucumber.messages.types.Location;
+import io.cucumber.messages.types.Pickle;
+import io.cucumber.messages.types.PickleStep;
+import io.cucumber.messages.types.Snippet;
+import io.cucumber.messages.types.Step;
+import io.cucumber.messages.types.StepDefinition;
+import io.cucumber.messages.types.Suggestion;
+import io.cucumber.messages.types.TestCaseFinished;
+import io.cucumber.messages.types.TestCaseStarted;
+import io.cucumber.messages.types.TestRunFinished;
+import io.cucumber.messages.types.TestRunHookFinished;
+import io.cucumber.messages.types.TestStep;
+import io.cucumber.messages.types.TestStepFinished;
+import io.cucumber.messages.types.TestStepResult;
+import io.cucumber.messages.types.TestStepResultStatus;
+import io.cucumber.messages.types.UndefinedParameterType;
 import io.cucumber.query.Query;
 import io.cucumber.query.Repository;
 
@@ -11,7 +28,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.*;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -23,7 +47,9 @@ import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
 import static io.cucumber.messages.types.TestStepResultStatus.UNDEFINED;
-import static io.cucumber.prettyformatter.Theme.Element.*;
+import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
+import static io.cucumber.prettyformatter.Theme.Element.STEP;
+import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
 import static java.util.Collections.emptyList;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
@@ -37,6 +63,7 @@ final class SummaryReportWriter implements AutoCloseable {
     private final Theme theme;
     private final Function<String, String> uriFormatter;
     private final SourceReferenceFormatter sourceReferenceFormatter;
+    private final StepTextFormatter stepTextFormatter;
     private final Query query;
     private final PrintWriter out;
 
@@ -50,6 +77,7 @@ final class SummaryReportWriter implements AutoCloseable {
         this.out = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
         this.sourceReferenceFormatter = new SourceReferenceFormatter(uriFormatter);
+        this.stepTextFormatter = new StepTextFormatter();
         this.query = new Query(requireNonNull(data));
     }
 
@@ -178,46 +206,12 @@ final class SummaryReportWriter implements AutoCloseable {
                 .indent(7)
                 .begin(STEP, status)
                 .append(STEP_KEYWORD, step.getKeyword())
-                .accept(lineBuilder -> formatStepText(lineBuilder, testStep, pickleStep))
+                .accept(lineBuilder -> stepTextFormatter.formatTo(testStep, pickleStep, lineBuilder))
                 .end(STEP, status)
                 .accept(lineBuilder -> formatLocationComment(testStep)
                         .ifPresent(lineBuilder::append)
                 )
                 .build();
-    }
-
-    private void formatStepText(LineBuilder line, TestStep testStep, PickleStep pickleStep) {
-        formatStepText(line, pickleStep.getText(), getStepMatchArguments(testStep));
-    }
-
-    private List<StepMatchArgument> getStepMatchArguments(TestStep testStep) {
-        List<StepMatchArgument> stepMatchArguments = new ArrayList<>();
-        testStep.getStepMatchArgumentsLists()
-                .filter(stepMatchArgumentsList -> stepMatchArgumentsList.size() == 1)
-                .orElse(emptyList())
-                .forEach(list -> stepMatchArguments.addAll(list.getStepMatchArguments()));
-        return stepMatchArguments;
-    }
-
-    void formatStepText(LineBuilder lineBuilder, String stepText, List<StepMatchArgument> arguments) {
-        int currentIndex = 0;
-        for (StepMatchArgument argument : arguments) {
-            Group group = argument.getGroup();
-            // Ignore absent values, or groups without a start
-            if (group.getValue().isPresent() && group.getStart().isPresent()) {
-                String groupValue = group.getValue().get();
-                // TODO: Messages are silly
-                int groupStart = (int) (long) group.getStart().get();
-                String text = stepText.substring(currentIndex, groupStart);
-                currentIndex = groupStart + groupValue.length();
-                lineBuilder.append(STEP_TEXT, text)
-                        .append(STEP_ARGUMENT, groupValue);
-            }
-        }
-        if (currentIndex != stepText.length()) {
-            String remainder = stepText.substring(currentIndex);
-            lineBuilder.append(STEP_TEXT, remainder);
-        }
     }
 
     private Stream<TestCaseFinished> findAllTestCasesFinishedInCanonicalOrder() {
