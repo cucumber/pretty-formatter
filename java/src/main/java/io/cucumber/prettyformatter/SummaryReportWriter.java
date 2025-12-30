@@ -242,6 +242,14 @@ final class SummaryReportWriter implements AutoCloseable {
                 return "BeforeTestRun";
             case AFTER_TEST_RUN:
                 return "AfterTestRun";
+            case BEFORE_TEST_CASE:
+                return "Before";
+            case AFTER_TEST_CASE:
+                return "After";
+            case BEFORE_TEST_STEP:
+                return "BeforeStep";
+            case AFTER_TEST_STEP:
+                return "AfterStep";
             default:
                 return "Unknown";
         }
