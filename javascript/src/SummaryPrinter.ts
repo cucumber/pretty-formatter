@@ -12,13 +12,12 @@ import { Query } from '@cucumber/query'
 import {
   ensure,
   ERROR_INDENT_LENGTH,
+  formatCodeLocation,
   formatCounts,
   formatDurations,
   formatForStatus,
-  formatHookLocation,
   formatHookTitle,
   formatPickleLocation,
-  formatStepLocation,
   formatStepTitle,
   formatTestRunFinishedError,
   formatTestStepResultError,
@@ -167,7 +166,7 @@ export class SummaryPrinter {
                 )
               )
               content.push(
-                formatStepLocation(
+                formatCodeLocation(
                   this.query.findUnambiguousStepDefinitionBy(testStep),
                   this.options.theme,
                   this.stream
@@ -175,8 +174,8 @@ export class SummaryPrinter {
               )
             } else if (testStep.hookId) {
               const hook = this.query.findHookBy(testStep)
-              content.push(formatHookTitle(hook))
-              content.push(formatHookLocation(hook, this.options.theme, this.stream))
+              content.push(formatHookTitle(hook, status, this.options.theme, this.stream))
+              content.push(formatCodeLocation(hook, this.options.theme, this.stream))
             }
             this.println(indent(content.filter((chunk) => !!chunk).join(' '), 7))
 
@@ -235,10 +234,10 @@ export class SummaryPrinter {
       )
       failedHooks.forEach((testRunHookFinished, index) => {
         const hook = this.query.findHookBy(testRunHookFinished)
-        const formattedLocation = formatHookLocation(hook, this.options.theme, this.stream)
+        const formattedLocation = formatCodeLocation(hook, this.options.theme, this.stream)
         this.println(
           indent(
-            `${index + 1}) ${formatHookTitle(hook)} ${formattedLocation}`,
+            `${index + 1}) ${formatHookTitle(hook, TestStepResultStatus.FAILED, {}, this.stream)} ${formattedLocation}`,
             GHERKIN_INDENT_LENGTH
           )
         )

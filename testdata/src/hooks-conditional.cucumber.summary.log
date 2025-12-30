@@ -1,12 +1,12 @@
 
 [31mFailed scenarios:[39m
   1) A failure in the before hook and a skipped step [90m# samples/hooks-conditional/hooks-conditional.feature:7[39m
-       Before [90m# samples/hooks-conditional/hooks-conditional.ts:7[39m
+       [31m[1mBefore[22m[39m [90m# samples/hooks-conditional/hooks-conditional.ts:7[39m
            [31mError: Exception in conditional hook[39m
            [31msamples/hooks-conditional/hooks-conditional.feature:7[39m
 
   2) A failure in the after hook and a passed step [90m# samples/hooks-conditional/hooks-conditional.feature:11[39m
-       After [90m# samples/hooks-conditional/hooks-conditional.ts:15[39m
+       [31m[1mAfter[22m[39m [90m# samples/hooks-conditional/hooks-conditional.ts:15[39m
            [31mError: Exception in conditional hook[39m
            [31msamples/hooks-conditional/hooks-conditional.feature:11[39m
 

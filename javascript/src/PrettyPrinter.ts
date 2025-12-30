@@ -22,13 +22,13 @@ import {
   ensure,
   ERROR_INDENT_LENGTH,
   formatAttachment,
+  formatCodeLocation,
   formatFeatureTitle,
   formatPickleLocation,
   formatPickleTags,
   formatPickleTitle,
   formatRuleTitle,
   formatStepArgument,
-  formatStepLocation,
   formatStepTitle,
   formatTestRunFinishedError,
   formatTestStepResultError,
@@ -303,7 +303,7 @@ export class PrettyPrinter {
         ),
         GHERKIN_INDENT_LENGTH
       ),
-      formatStepLocation(stepDefinition, this.options.theme, this.stream),
+      formatCodeLocation(stepDefinition, this.options.theme, this.stream),
       scenarioIndent,
       maxContentLength
     )
