@@ -218,7 +218,6 @@ export class SummaryPrinter {
       )
       if (content) {
         this.println(indent(content, 11))
-        this.println()
       }
     }
 
@@ -281,7 +280,6 @@ export class SummaryPrinter {
         )
         if (content) {
           this.println(indent(content, GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH + 1))
-          this.println()
         }
       })
     }

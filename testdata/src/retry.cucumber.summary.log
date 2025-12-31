@@ -5,7 +5,6 @@
            [31mError: Exception in step[39m
            [31msamples/retry/retry.feature:18[39m
 
-
 4 scenarios ([32m3 passed[39m, [31m1 failed[39m)
 4 steps ([32m3 passed[39m, [31m1 failed[39m)
 0m 0.37s (0m 0.9s executing your code)

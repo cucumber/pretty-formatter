@@ -4,7 +4,6 @@ Failed hooks:
        Error: BeforeAll hook went wrong
        samples/global-hooks-beforeall-error/global-hooks-beforeall-error.ts:7
 
-
 5 hooks (4 passed, 1 failed)
 0 scenarios
 0 steps

@@ -7,7 +7,6 @@ Failed scenarios:
            -8 !== 0
            
            samples/examples-tables/examples-tables.feature:14
-
   2) Eating cucumbers # samples/examples-tables/examples-tables.feature:26
        Then I should have 0 cucumbers # samples/examples-tables/examples-tables.ts:16
            AssertionError: Expected values to be strictly equal:
@@ -15,7 +14,6 @@ Failed scenarios:
            -1 !== 0
            
            samples/examples-tables/examples-tables.feature:14
-
 
 7 scenarios (5 passed, 2 failed)
 21 steps (19 passed, 2 failed)

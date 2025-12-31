@@ -5,7 +5,6 @@ Failed scenarios:
            Error: Exception in step
            samples/global-hooks/global-hooks.feature:10
 
-
 4 hooks (4 passed)
 2 scenarios (1 passed, 1 failed)
 2 steps (1 passed, 1 failed)

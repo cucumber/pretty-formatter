@@ -5,7 +5,6 @@ Failed scenarios:
            Error: BOOM
            samples/stack-traces/stack-traces.feature:10
 
-
 1 scenarios (1 failed)
 1 steps (1 failed)
 0m 0.5s (0m 0.1s executing your code)
