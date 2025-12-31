@@ -10,6 +10,7 @@ import {
 import { Query } from '@cucumber/query'
 
 import {
+  ATTACHMENT_INDENT_LENGTH,
   ensure,
   ERROR_INDENT_LENGTH,
   formatAttachment,
@@ -28,6 +29,7 @@ import {
   join,
   ORDERED_STATUSES,
   pad,
+  STEP_ARGUMENT_INDENT_LENGTH,
   titleCaseStatus,
 } from './helpers'
 import { CUCUMBER_THEME } from './theme'
@@ -102,10 +104,7 @@ export class SummaryPrinter {
             const formattedAttempt =
               testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
             this.println(
-              indent(
-                `${index + 1}) ${pickle.name}${formattedAttempt} ${formattedLocation}`,
-                GHERKIN_INDENT_LENGTH
-              )
+              indent(`${index + 1}) ${pickle.name}${formattedAttempt} ${formattedLocation}`, 2)
             )
 
             this.printResponsibleStep(testStepFinished, testStep, status)
@@ -166,6 +165,7 @@ export class SummaryPrinter {
     testStep: TestStep,
     status: TestStepResultStatus
   ) {
+    const baselineIndent = 5
     if (testStep.pickleStepId) {
       const pickleStep = ensure(
         this.query.findPickleStepBy(testStep),
@@ -190,12 +190,14 @@ export class SummaryPrinter {
               this.stream
             )
           ),
-          7
+          baselineIndent + GHERKIN_INDENT_LENGTH
         )
       )
       const argument = formatPickleStepArgument(pickleStep, this.options.theme, this.stream)
       if (argument) {
-        this.println(indent(argument, 9))
+        this.println(
+          indent(argument, baselineIndent + GHERKIN_INDENT_LENGTH + STEP_ARGUMENT_INDENT_LENGTH)
+        )
       }
     } else if (testStep.hookId) {
       const hook = this.query.findHookBy(testStep)
@@ -205,7 +207,7 @@ export class SummaryPrinter {
             formatHookTitle(hook, status, this.options.theme, this.stream),
             formatCodeLocation(hook, this.options.theme, this.stream)
           ),
-          7
+          baselineIndent + GHERKIN_INDENT_LENGTH
         )
       )
     }
@@ -217,13 +219,20 @@ export class SummaryPrinter {
         this.stream
       )
       if (content) {
-        this.println(indent(content, 11))
+        this.println(indent(content, baselineIndent + GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH))
       }
     }
 
     if (this.options.includeAttachments) {
       this.query.findAttachmentsBy(testStepFinished).forEach((attachment) => {
-        this.println(pad(indent(formatAttachment(attachment, this.options.theme, this.stream), 11)))
+        this.println(
+          pad(
+            indent(
+              formatAttachment(attachment, this.options.theme, this.stream),
+              baselineIndent + GHERKIN_INDENT_LENGTH + ATTACHMENT_INDENT_LENGTH
+            )
+          )
+        )
       })
     }
   }
