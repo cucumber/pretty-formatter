@@ -123,7 +123,6 @@ final class SummaryReportWriter implements AutoCloseable {
                 .collect(groupingBy(SummaryReportWriter::getTestStepResultStatusBy));
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
-
         for (TestStepResultStatus status : EnumSet.complementOf(excluded)) {
             printFinishedItemByStatus(
                     "hooks",

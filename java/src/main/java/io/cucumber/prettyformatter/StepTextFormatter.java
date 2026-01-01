@@ -14,9 +14,6 @@ import static java.util.Collections.emptyList;
 
 final class StepTextFormatter {
 
-    StepTextFormatter() {
-    }
-
     void formatTo(TestStep testStep, PickleStep pickleStep, LineBuilder lineBuilder) {
         formatStepText(lineBuilder, pickleStep.getText(), getStepMatchArguments(testStep));
     }
