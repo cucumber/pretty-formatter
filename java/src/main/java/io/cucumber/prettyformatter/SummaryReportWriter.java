@@ -128,7 +128,7 @@ final class SummaryReportWriter implements AutoCloseable {
                     "hooks",
                     testRunHookFinishedByStatus,
                     status,
-                    this::formatHookLine,
+                    this::formatHookLineTo,
                     this::printTestRunHookException
             );
         }
@@ -152,7 +152,7 @@ final class SummaryReportWriter implements AutoCloseable {
                     "scenarios",
                     testCaseFinishedByStatus,
                     status,
-                    this::formatScenarioLine,
+                    this::formatScenarioLineTo,
                     this::printResponsibleStep
             );
         }
@@ -230,7 +230,7 @@ final class SummaryReportWriter implements AutoCloseable {
                         .map(name -> "(" + name + ")")
                         .orElse(""))
                 .end(STEP, status)
-                .append(formatLocationComment(hook))
+                .accept(lineBuilder -> formatLocationCommentTo(hook, lineBuilder))
                 .build();
     }
 
@@ -258,29 +258,27 @@ final class SummaryReportWriter implements AutoCloseable {
                 .map(OrderableMessage::getMessage);
     }
 
-    private Optional<String> formatScenarioLine(TestCaseFinished testCaseFinished) {
-        return query.findTestCaseStartedBy(testCaseFinished)
-                .flatMap(testCaseStarted -> query.findPickleBy(testCaseStarted)
-                        .map(pickle -> {
-                            String name = pickle.getName();
-                            String attempt = formatAttempt(testCaseStarted);
-                            String location = formatLocationComment(pickle);
-                            return String.format("%s%s%s", name, attempt, location);
-                        }));
+    private void formatScenarioLineTo(TestCaseFinished testCaseFinished, LineBuilder lineBuilder) {
+        query.findTestCaseStartedBy(testCaseFinished)
+                .ifPresent(testCaseStarted -> query.findPickleBy(testCaseStarted)
+                        .ifPresent(pickle -> lineBuilder
+                                .append(pickle.getName())
+                                .append(formatAttempt(testCaseStarted))
+                                .accept(innerLineBuilder -> formatLocationCommentTo(pickle, innerLineBuilder))));
     }
 
-    private Optional<String> formatHookLine(TestRunHookFinished testRunHookFinished) {
-        return query.findHookBy(testRunHookFinished)
-                .map(hook -> {
-                    String hookTypeName = hook.getType()
-                            .map(SummaryReportWriter::formatHookType)
-                            .orElse("Unknown");
-                    String hookName = hook.getName()
-                            .map(name -> "(" + name + ")")
-                            .orElse("");
-                    String location = formatLocationComment(hook);
-                    return String.format("%s%s%s", hookTypeName, hookName, location);
-                });
+    private void formatHookLineTo(TestRunHookFinished testRunHookFinished, LineBuilder lineBuilder) {
+        query.findHookBy(testRunHookFinished)
+                .ifPresent(hook -> lineBuilder
+                        .append(hook.getType()
+                                .map(SummaryReportWriter::formatHookType)
+                                .orElse("Unknown"))
+                        .accept(innerLineBuilder -> hook.getName()
+                                .ifPresent(hookName -> innerLineBuilder
+                                        .append("(")
+                                        .append(hookName)
+                                        .append(")")))
+                        .accept(innerLineBuilder -> formatLocationCommentTo(hook, lineBuilder)));
     }
 
     private static String formatHookType(HookType hookType) {
@@ -306,7 +304,7 @@ final class SummaryReportWriter implements AutoCloseable {
             String finishedItemName,
             Map<TestStepResultStatus, List<T>> finishedItemByStatus,
             TestStepResultStatus status,
-            Function<T, Optional<String>> formatFinishedItem,
+            BiConsumer<T, LineBuilder> formatFinishedItem,
             BiConsumer<T, TestStepResultStatus> printSupplementaryContent
     ) {
         List<T> items = finishedItemByStatus.getOrDefault(status, emptyList());
@@ -318,9 +316,12 @@ final class SummaryReportWriter implements AutoCloseable {
         out.println(theme.style(STEP, status, finishItemByStatusTitle));
         AtomicInteger index = new AtomicInteger(0);
         for (T finishedItem : items) {
-            formatFinishedItem.apply(finishedItem)
-                    .map(line -> String.format("  %d) %s", index.incrementAndGet(), line))
-                    .ifPresent(out::println);
+            out.println(new LineBuilder(theme)
+                    .append("  ")
+                    .append(String.valueOf(index.incrementAndGet()))
+                    .append(") ")
+                    .accept(lineBuilder -> formatFinishedItem.accept(finishedItem, lineBuilder))
+                    .build());
             printSupplementaryContent.accept(finishedItem, status);
         }
     }
@@ -334,13 +335,14 @@ final class SummaryReportWriter implements AutoCloseable {
         return ", after " + (attempt + 1) + " attempts";
     }
 
-    private String formatLocationComment(Pickle pickle) {
-        String formattedUri = uriFormatter.apply(pickle.getUri());
-        String comment = "# " + formattedUri + query.findLocationOf(pickle)
-                .map(Location::getLine)
-                .map(line -> ":" + line)
-                .orElse("");
-        return " " + theme.style(LOCATION, comment);
+    private void formatLocationCommentTo(Pickle pickle, LineBuilder lineBuilder) {
+        lineBuilder.append(" ")
+                .begin(LOCATION)
+                .append("# ")
+                .append(uriFormatter.apply(pickle.getUri()))
+                .accept(innerLineBuilder -> query.findLocationOf(pickle)
+                        .ifPresent(location -> lineBuilder.append(":").append(String.valueOf(location.getLine()))))
+                .end(LOCATION);
     }
 
     private void formatLocationCommentTo(TestStep testStep, LineBuilder lineBuilder) {
@@ -352,11 +354,12 @@ final class SummaryReportWriter implements AutoCloseable {
                         .append(LOCATION, "# " + comment));
     }
 
-    private String formatLocationComment(Hook hook) {
-        return sourceReferenceFormatter.format(hook.getSourceReference())
-                .map(comment -> theme.style(LOCATION, "# " + comment))
-                .map(comment -> " " + comment)
-                .orElse("");
+    private void formatLocationCommentTo(Hook hook, LineBuilder lineBuilder) {
+        sourceReferenceFormatter.format(hook.getSourceReference())
+                .ifPresent(comment -> {
+                    lineBuilder.append(" ")
+                            .append(LOCATION, "# " + comment);
+                });
     }
 
     private void printNonPassingTestRun() {
