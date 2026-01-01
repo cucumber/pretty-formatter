@@ -37,7 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -125,19 +125,22 @@ final class SummaryReportWriter implements AutoCloseable {
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
 
         for (TestStepResultStatus status : EnumSet.complementOf(excluded)) {
-            ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
             printFinishedItemByStatus(
                     "hooks",
                     testRunHookFinishedByStatus,
                     status,
                     this::formatHookLine,
-                    (testRunHookFinished) -> Optional.of(testRunHookFinished)
-                            .map(TestRunHookFinished::getResult)
-                            .flatMap(TestStepResult::getException)
-                            .flatMap(formatter::format)
-                            .ifPresent(out::println)
+                    this::printTestRunHookException
             );
         }
+    }
+
+    private void printTestRunHookException(TestRunHookFinished testRunHookFinished, TestStepResultStatus status) {
+        TestStepResult result = testRunHookFinished.getResult();
+        ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
+        result.getException()
+                .flatMap(formatter::format)
+                .ifPresent(out::println);
     }
 
     private void printNonPassingScenarios() {
@@ -151,7 +154,7 @@ final class SummaryReportWriter implements AutoCloseable {
                     testCaseFinishedByStatus,
                     status,
                     this::formatScenarioLine,
-                    (testCaseFinished) -> printResponsibleStep(testCaseFinished, status)
+                    this::printResponsibleStep
             );
         }
     }
@@ -194,7 +197,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
                     query.findHookBy(testStep)
                             .ifPresent(hook -> {
-                                out.println(formatHookStep(testStepFinished, testStep, hook));
+                                out.println(formatHookStep(testStepFinished, hook));
                             });
 
                     testStepFinished
@@ -216,7 +219,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 });
     }
 
-    private String formatHookStep(TestStepFinished testStepFinished, TestStep testStep, Hook hook) {
+    private String formatHookStep(TestStepFinished testStepFinished, Hook hook) {
         TestStepResultStatus status = testStepFinished.getTestStepResult().getStatus();
         return new LineBuilder(theme)
                 .indent(7)
@@ -307,7 +310,7 @@ final class SummaryReportWriter implements AutoCloseable {
             Map<TestStepResultStatus, List<T>> finishedItemByStatus,
             TestStepResultStatus status,
             Function<T, Optional<String>> formatFinishedItem,
-            Consumer<T> printSupplementaryContent
+            BiConsumer<T, TestStepResultStatus> printSupplementaryContent
     ) {
         List<T> items = finishedItemByStatus.getOrDefault(status, emptyList());
         if (items.isEmpty()) {
@@ -321,7 +324,7 @@ final class SummaryReportWriter implements AutoCloseable {
             formatFinishedItem.apply(finishedItem)
                     .map(line -> String.format("  %d) %s", index.incrementAndGet(), line))
                     .ifPresent(out::println);
-            printSupplementaryContent.accept(finishedItem);
+            printSupplementaryContent.accept(finishedItem, status);
         }
     }
 
