@@ -242,9 +242,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 .append(STEP_KEYWORD, step.getKeyword())
                 .accept(lineBuilder -> stepTextFormatter.formatTo(testStep, pickleStep, lineBuilder))
                 .end(STEP, status)
-                .accept(lineBuilder -> formatLocationComment(testStep)
-                        .ifPresent(lineBuilder::append)
-                )
+                .accept(lineBuilder -> formatLocationCommentTo(testStep, lineBuilder))
                 .build();
     }
 
@@ -345,12 +343,13 @@ final class SummaryReportWriter implements AutoCloseable {
         return " " + theme.style(LOCATION, comment);
     }
 
-    private Optional<String> formatLocationComment(TestStep testStep) {
-        return query.findUnambiguousStepDefinitionBy(testStep)
+    private void formatLocationCommentTo(TestStep testStep, LineBuilder lineBuilder) {
+        query.findUnambiguousStepDefinitionBy(testStep)
                 .map(StepDefinition::getSourceReference)
                 .flatMap(sourceReferenceFormatter::format)
-                .map(comment -> theme.style(LOCATION, "# " + comment))
-                .map(comment -> " " + comment);
+                .ifPresent(comment -> lineBuilder
+                        .append(" ")
+                        .append(LOCATION, "# " + comment));
     }
 
     private String formatLocationComment(Hook hook) {
