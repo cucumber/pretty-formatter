@@ -159,7 +159,6 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printResponsibleStep(TestCaseFinished testCaseFinished, TestStepResultStatus status) {
-        ExceptionFormatter formatter = new ExceptionFormatter(11, theme, status);
         query.findTestCaseStartedBy(testCaseFinished)
                 .map(query::findTestStepFinishedAndTestStepBy)
                 .flatMap(list -> list.stream()
@@ -175,7 +174,7 @@ final class SummaryReportWriter implements AutoCloseable {
                                     out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
                                     pickleStep.getArgument().ifPresent(pickleStepArgument -> {
                                         pickleStepArgument.getDataTable().ifPresent(pickleTable ->
-                                                out.println(new LineBuilder(theme)
+                                                out.print(new LineBuilder(theme)
                                                         .accept(lineBuilder -> PickleTableFormatter.builder()
                                                                 .indentation(9)
                                                                 .build()
@@ -183,7 +182,7 @@ final class SummaryReportWriter implements AutoCloseable {
                                                         .build())
                                         );
                                         pickleStepArgument.getDocString().ifPresent(pickleDocString ->
-                                                out.println(new LineBuilder(theme)
+                                                out.print(new LineBuilder(theme)
                                                         .accept(lineBuilder -> PickleDocStringFormatter.builder()
                                                                 .indentation(9)
                                                                 .build()
@@ -199,6 +198,7 @@ final class SummaryReportWriter implements AutoCloseable {
                                 out.println(formatHookStep(testStepFinished, hook));
                             });
 
+                    ExceptionFormatter formatter = new ExceptionFormatter(11, theme, status);
                     testStepFinished
                             .getTestStepResult()
                             .getException()
@@ -208,6 +208,7 @@ final class SummaryReportWriter implements AutoCloseable {
                     if (features.contains(MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS)) {
                         query.findAttachmentsBy(testStepFinished).forEach(attachment ->
                                 out.print(new LineBuilder(theme)
+                                        .newLine()
                                         .accept(lineBuilder -> AttachmentFormatter.builder()
                                                 .indentation(11)
                                                 .build()

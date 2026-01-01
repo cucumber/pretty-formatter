@@ -6,7 +6,6 @@ Failed scenarios:
          | Bill | 3   |
          | Jane | 6   |
          | Isla | 5   |
-
            Error: You asked me to fail
            samples/markdown/markdown.feature.md:24
 

@@ -6,11 +6,10 @@
          | Bill | 3   |
          | Jane | 6   |
          | Isla | 5   |
-
            [31mError: You asked me to fail[39m
            [31msamples/markdown/markdown.feature.md:24[39m
-           [34mWe are logging some plain text (fail)[39m
 
+           [34mWe are logging some plain text (fail)[39m
 
 2 scenarios ([32m1 passed[39m, [31m1 failed[39m)
 8 steps ([32m6 passed[39m, [36m1 skipped[39m, [31m1 failed[39m)

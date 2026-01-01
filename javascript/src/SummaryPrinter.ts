@@ -225,7 +225,7 @@ export class SummaryPrinter {
 
     if (this.options.includeAttachments) {
       this.query.findAttachmentsBy(testStepFinished).forEach((attachment) => {
-        this.println(
+        this.print(
           pad(
             indent(
               formatAttachment(attachment, this.options.theme, this.stream),
@@ -311,7 +311,7 @@ export class SummaryPrinter {
         this.stream
       )
       if (formattedError) {
-        this.println(indent(formattedError, 7))
+        this.print(indent(formattedError, 7))
       }
     }
   }
