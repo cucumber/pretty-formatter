@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
+import static io.cucumber.prettyformatter.MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS;
 import static io.cucumber.prettyformatter.MessagesToSummaryWriter.builder;
 import static io.cucumber.prettyformatter.Theme.cucumber;
 import static io.cucumber.prettyformatter.Theme.plain;
@@ -41,7 +42,10 @@ class MessagesToSummaryWriterAcceptanceTest {
         Map<String, Builder> themes = new LinkedHashMap<>();
         themes.put("cucumber", builder().theme(cucumber()));
         themes.put("plain", builder().theme(plain()));
-
+        themes.put("exclude-attachments", builder()
+                .theme(plain())
+                .feature(INCLUDE_ATTACHMENTS, false));
+        
         List<Path> sources = getSources();
 
         List<TestCase> testCases = new ArrayList<>();

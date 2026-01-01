@@ -9,8 +9,6 @@ Failed scenarios:
 
            Error: You asked me to fail
            samples/markdown/markdown.feature.md:24
-           We are logging some plain text (fail)
-
 
 2 scenarios (1 passed, 1 failed)
 8 steps (6 passed, 1 skipped, 1 failed)

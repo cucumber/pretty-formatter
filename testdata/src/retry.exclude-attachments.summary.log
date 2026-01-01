@@ -1,0 +1,10 @@
+
+Failed scenarios:
+  1) Test cases won't retry after failing more than the --retry limit, after 3 attempts # samples/retry/retry.feature:17
+       Given a step that always fails # samples/retry/retry.ts:23
+           Error: Exception in step
+           samples/retry/retry.feature:18
+
+4 scenarios (3 passed, 1 failed)
+4 steps (3 passed, 1 failed)
+0m 0.37s (0m 0.9s executing your code)

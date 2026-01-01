@@ -6,9 +6,9 @@
          | Bill | 3   |
          | Jane | 6   |
          | Isla | 5   |
+
            [31mError: You asked me to fail[39m
            [31msamples/markdown/markdown.feature.md:24[39m
-
            [34mWe are logging some plain text (fail)[39m
 
 

@@ -139,7 +139,7 @@ final class SummaryReportWriter implements AutoCloseable {
         ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
         result.getException()
                 .flatMap(formatter::format)
-                .ifPresent(out::println);
+                .ifPresent(out::print);
     }
 
     private void printNonPassingScenarios() {
@@ -203,7 +203,7 @@ final class SummaryReportWriter implements AutoCloseable {
                             .getTestStepResult()
                             .getException()
                             .flatMap(formatter::format)
-                            .ifPresent(out::println);
+                            .ifPresent(out::print);
 
                     if (features.contains(MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS)) {
                         query.findAttachmentsBy(testStepFinished).forEach(attachment ->
@@ -367,7 +367,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 .ifPresent(exception -> {
                     out.println(theme.style(STEP, FAILED, firstLetterCapitalizedName(FAILED) + " test run:"));
                     ExceptionFormatter formatter = new ExceptionFormatter(7, theme, FAILED);
-                    formatter.format(exception).ifPresent(out::println);
+                    formatter.format(exception).ifPresent(out::print);
                 });
     }
 

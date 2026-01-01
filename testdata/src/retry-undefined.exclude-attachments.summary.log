@@ -1,0 +1,15 @@
+
+Undefined scenarios:
+  1) Test cases won't retry when the status is UNDEFINED # samples/retry-undefined/retry-undefined.feature:2
+       Given a non-existent step
+
+1 scenarios (1 undefined)
+1 steps (1 undefined)
+0m 0.5s (0m 0.0s executing your code)
+
+You can implement missing steps with the snippets below:
+
+Given("a non-existent step", () => {
+  return "pending"
+})
+
