@@ -13,6 +13,8 @@ import { SummaryPrinter } from './SummaryPrinter'
 import { CUCUMBER_THEME } from './theme'
 import type { SummaryOptions } from './types'
 
+const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
+
 describe('SummaryPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
     cwd: path.join(__dirname, '..', '..', 'testdata', 'src'),
@@ -72,12 +74,15 @@ describe('SummaryPrinter', async () => {
 
           printer.printSummary()
 
-          const expectedOutput = fs.readFileSync(
-            ndjsonFile.replace('.ndjson', `.${name}.summary.log`),
-            {
+          const expectedPath = ndjsonFile.replace('.ndjson', `.${name}.summary.log`)
+          if (updateExpectedFiles) {
+            fs.writeFileSync(expectedPath, content, {
               encoding: 'utf-8',
-            }
-          )
+            })
+          }
+          const expectedOutput = fs.readFileSync(expectedPath, {
+            encoding: 'utf-8',
+          })
 
           expect(content).to.eq(expectedOutput)
         })

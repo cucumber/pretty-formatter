@@ -22,13 +22,13 @@ import {
   ensure,
   ERROR_INDENT_LENGTH,
   formatAttachment,
+  formatCodeLocation,
   formatFeatureTitle,
   formatPickleLocation,
+  formatPickleStepArgument,
   formatPickleTags,
   formatPickleTitle,
   formatRuleTitle,
-  formatStepArgument,
-  formatStepLocation,
   formatStepTitle,
   formatTestRunFinishedError,
   formatTestStepResultError,
@@ -303,14 +303,14 @@ export class PrettyPrinter {
         ),
         GHERKIN_INDENT_LENGTH
       ),
-      formatStepLocation(stepDefinition, this.options.theme, this.stream),
+      formatCodeLocation(stepDefinition, this.options.theme, this.stream),
       scenarioIndent,
       maxContentLength
     )
   }
 
   private printStepArgument(pickleStep: PickleStep, scenarioIndent: number) {
-    const content = formatStepArgument(pickleStep, this.options.theme, this.stream)
+    const content = formatPickleStepArgument(pickleStep, this.options.theme, this.stream)
     if (content) {
       this.println(
         indent(

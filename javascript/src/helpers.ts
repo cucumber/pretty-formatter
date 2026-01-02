@@ -69,8 +69,8 @@ export const DEFAULT_PROGRESS_ICONS: Record<TestStepResultStatus, string> = {
   [TestStepResultStatus.UNKNOWN]: '?',
 } as const
 const HOOK_TYPE_LABELS: Record<HookType, string> = {
-  [HookType.BEFORE_TEST_RUN]: 'BeforeTestRun',
-  [HookType.AFTER_TEST_RUN]: 'AfterTestRun',
+  [HookType.BEFORE_TEST_RUN]: 'BeforeAll',
+  [HookType.AFTER_TEST_RUN]: 'AfterAll',
   [HookType.BEFORE_TEST_CASE]: 'Before',
   [HookType.AFTER_TEST_CASE]: 'After',
   [HookType.BEFORE_TEST_STEP]: 'BeforeStep',
@@ -83,6 +83,10 @@ export function ensure<T>(value: T | undefined, message: string): T {
     throw new Error(message)
   }
   return value
+}
+
+export function join(...originals: ReadonlyArray<string | undefined>) {
+  return originals.filter((part) => !!part).join(' ')
 }
 
 export function indent(original: string, by: number) {
@@ -150,31 +154,20 @@ export function formatPickleLocation(
   return builder.build(theme.location)
 }
 
-export function formatHookTitle(hook: Hook | undefined) {
-  let title = ''
-  if (hook?.type) {
-    title += HOOK_TYPE_LABELS[hook.type]
-  } else {
-    title += 'Hook'
-  }
-  if (hook?.name) {
-    title += ` (${hook.name})`
-  }
-  return title
-}
-
-export function formatHookLocation(
+export function formatHookTitle(
   hook: Hook | undefined,
+  status: TestStepResultStatus,
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
-  if (hook?.sourceReference.uri) {
-    const builder = new TextBuilder(stream).append('#').space().append(hook.sourceReference.uri)
-    if (hook.sourceReference.location) {
-      builder.append(':').append(hook.sourceReference.location.line)
-    }
-    return builder.build(theme.location)
+  const builder = new TextBuilder(stream).append(
+    hook?.type ? HOOK_TYPE_LABELS[hook.type] : 'Hook',
+    theme.step?.keyword
+  )
+  if (hook?.name) {
+    builder.append(` (${hook.name})`, theme.step?.text)
   }
+  return builder.build(theme.status?.all?.[status])
 }
 
 export function formatStepTitle(
@@ -236,24 +229,24 @@ function formatStepText(
   return builder.build()
 }
 
-export function formatStepLocation(
-  stepDefinition: StepDefinition | undefined,
+export function formatCodeLocation(
+  hookOrStepDefinition: Hook | StepDefinition | undefined,
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
-  if (stepDefinition?.sourceReference.uri) {
+  if (hookOrStepDefinition?.sourceReference.uri) {
     const builder = new TextBuilder(stream)
       .append('#')
       .space()
-      .append(stepDefinition.sourceReference.uri)
-    if (stepDefinition.sourceReference.location) {
-      builder.append(':').append(stepDefinition.sourceReference.location.line)
+      .append(hookOrStepDefinition.sourceReference.uri)
+    if (hookOrStepDefinition.sourceReference.location) {
+      builder.append(':').append(hookOrStepDefinition.sourceReference.location.line)
     }
     return builder.build(theme.location)
   }
 }
 
-export function formatStepArgument(
+export function formatPickleStepArgument(
   pickleStep: PickleStep,
   theme: Theme,
   stream: NodeJS.WritableStream

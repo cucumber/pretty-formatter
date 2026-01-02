@@ -1,8 +1,11 @@
 
 [33mPending scenarios:[39m
   1) Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[39m
+       [33m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
   2) Steps before unimplemented steps are executed [90m# samples/pending/pending.feature:12[39m
+       [33m[1mAnd [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
   3) Steps after unimplemented steps are skipped [90m# samples/pending/pending.feature:16[39m
+       [33m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
 
 3 scenarios ([33m3 pending[39m)
 5 steps ([32m1 passed[39m, [36m1 skipped[39m, [33m3 pending[39m)

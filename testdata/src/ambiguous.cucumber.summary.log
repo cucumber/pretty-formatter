@@ -1,6 +1,7 @@
 
 [31mAmbiguous scenarios:[39m
   1) Multiple step definitions for a step [90m# samples/ambiguous/ambiguous.feature:5[39m
+       [31m[1mGiven [22ma step with multiple definitions[39m
 
 1 scenarios ([31m1 ambiguous[39m)
 1 steps ([31m1 ambiguous[39m)
