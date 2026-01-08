@@ -328,6 +328,27 @@ export function formatTestStepResultError(
   }
 }
 
+export function formatAmbiguousStep(
+  stepDefinitions: readonly StepDefinition[],
+  theme: Theme,
+  stream: NodeJS.WritableStream
+): string | undefined {
+  const builder = new TextBuilder(stream)
+  builder.append('Multiple matching step definitions found:')
+  for (const stepDefinition of stepDefinitions) {
+    builder.line()
+    builder.append('  - ')
+    if (stepDefinition.pattern?.source) {
+      builder.append(stepDefinition.pattern.source)
+    }
+    const location = formatCodeLocation(stepDefinition, theme, stream)
+    if (location) {
+      builder.space().append(location)
+    }
+  }
+  return builder.build(undefined, true)
+}
+
 export function formatTestRunFinishedError(
   testRunFinished: TestRunFinished,
   theme: Theme,

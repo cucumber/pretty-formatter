@@ -21,6 +21,7 @@ import {
   ATTACHMENT_INDENT_LENGTH,
   ensure,
   ERROR_INDENT_LENGTH,
+  formatAmbiguousStep,
   formatAttachment,
   formatCodeLocation,
   formatFeatureTitle,
@@ -277,6 +278,7 @@ export class PrettyPrinter {
         maxContentLength
       )
       this.printStepArgument(pickleStep, scenarioIndent)
+      this.printAmbiguousStep(testStepFinished, testStep, scenarioIndent)
     }
     this.printError(testStepFinished, scenarioIndent)
   }
@@ -354,6 +356,31 @@ export class PrettyPrinter {
             ERROR_INDENT_LENGTH
         )
       )
+    }
+  }
+
+  private printAmbiguousStep(
+    testStepFinished: TestStepFinished,
+    testStep: TestStep,
+    scenarioIndent: number
+  ) {
+    if (testStepFinished.testStepResult.status === TestStepResultStatus.AMBIGUOUS) {
+      const content = formatAmbiguousStep(
+        this.query.findStepDefinitionsBy(testStep),
+        this.options.theme,
+        this.stream
+      )
+      if (content) {
+        this.println(
+          indent(
+            content,
+            scenarioIndent +
+              (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
+              GHERKIN_INDENT_LENGTH +
+              ERROR_INDENT_LENGTH
+          )
+        )
+      }
     }
   }
 
