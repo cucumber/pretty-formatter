@@ -120,6 +120,10 @@ export function formatRuleTitle(rule: Rule, theme: Theme, stream: NodeJS.Writabl
     .build(theme.rule?.all)
 }
 
+export function formatDescription(description: string, stream: NodeJS.WritableStream) {
+  return new TextBuilder(stream).append(description).build()
+}
+
 export function formatPickleTags(pickle: Pickle, theme: Theme, stream: NodeJS.WritableStream) {
   if (pickle && pickle.tags.length > 0) {
     return new TextBuilder(stream)

@@ -23,6 +23,7 @@ import {
   ERROR_INDENT_LENGTH,
   formatAttachment,
   formatCodeLocation,
+  formatDescription,
   formatFeatureTitle,
   formatPickleLocation,
   formatPickleStepArgument,
@@ -223,6 +224,10 @@ export class PrettyPrinter {
     if (this.options.includeFeatureLine && !this.encounteredFeaturesAndRules.has(feature)) {
       this.println()
       this.println(formatFeatureTitle(feature, this.options.theme, this.stream))
+      if (feature.description) {
+        this.println()
+        this.println(formatDescription(feature.description, this.stream))
+      }
     }
     this.encounteredFeaturesAndRules.add(feature)
   }
@@ -234,6 +239,10 @@ export class PrettyPrinter {
         this.println(
           indent(formatRuleTitle(rule, this.options.theme, this.stream), GHERKIN_INDENT_LENGTH)
         )
+        if (rule.description) {
+          this.println()
+          this.println(formatDescription(rule.description, this.stream))
+        }
       }
       this.encounteredFeaturesAndRules.add(rule)
     }
