@@ -34,6 +34,13 @@ describe('SummaryPrinter', async () => {
         theme: {},
       },
     },
+    {
+      name: 'exclude-attachments',
+      options: {
+        theme: {},
+        includeAttachments: false,
+      },
+    },
   ]
 
   // just enough so Node.js internals consider it a color-supporting stream
