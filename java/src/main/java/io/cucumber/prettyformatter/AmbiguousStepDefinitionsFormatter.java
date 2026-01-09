@@ -26,7 +26,7 @@ final class AmbiguousStepDefinitionsFormatter {
                 .newLine();
         for (StepDefinition stepDefinition : stepDefinitions) {
             lineBuilder.indent(indentation)
-                    .append("  - ")
+                    .append("  • ")
                     .append(stepDefinition.getPattern().getSource());
             sourceReferenceFormatter.format(stepDefinition.getSourceReference())
                     .ifPresent(location -> lineBuilder.append(" ").append(LOCATION, "# " + location));

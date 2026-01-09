@@ -337,7 +337,7 @@ export function formatAmbiguousStep(
   builder.append('Multiple matching step definitions found:')
   for (const stepDefinition of stepDefinitions) {
     builder.line()
-    builder.append('  - ')
+    builder.append('  • ')
     if (stepDefinition.pattern?.source) {
       builder.append(stepDefinition.pattern.source)
     }
