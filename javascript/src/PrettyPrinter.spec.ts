@@ -12,6 +12,8 @@ import { PrettyPrinter } from './PrettyPrinter'
 import { CUCUMBER_THEME } from './theme'
 import type { PrettyOptions, Theme } from './types'
 
+const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
+
 const DEMO_THEME: Theme = {
   attachment: 'blue',
   dataTable: {
@@ -163,12 +165,15 @@ describe('PrettyPrinter', async () => {
             })
           )
 
-          const expectedOutput = fs.readFileSync(
-            ndjsonFile.replace('.ndjson', `.${name}.pretty.log`),
-            {
+          const expectedPath = ndjsonFile.replace('.ndjson', `.${name}.pretty.log`)
+          if (updateExpectedFiles) {
+            fs.writeFileSync(expectedPath, content, {
               encoding: 'utf-8',
-            }
-          )
+            })
+          }
+          const expectedOutput = fs.readFileSync(expectedPath, {
+            encoding: 'utf-8',
+          })
 
           expect(content).to.eq(expectedOutput)
         })

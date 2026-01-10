@@ -43,6 +43,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.cucumber.messages.types.TestStepResultStatus.AMBIGUOUS;
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
@@ -190,6 +191,15 @@ final class SummaryReportWriter implements AutoCloseable {
                                                         .build())
                                         );
                                     });
+                                    if (status == AMBIGUOUS) {
+                                        out.print(new LineBuilder(theme)
+                                                .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter.builder()
+                                                        .indentation(11)
+                                                        .sourceReferenceFormatter(sourceReferenceFormatter)
+                                                        .build()
+                                                        .formatTo(query.findStepDefinitionsBy(testStep), lineBuilder))
+                                                .build());
+                                    }
                                 });
                             });
 
