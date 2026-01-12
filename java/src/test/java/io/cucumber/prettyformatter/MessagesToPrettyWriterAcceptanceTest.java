@@ -1,6 +1,7 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.NdjsonToMessageIterable;
+import io.cucumber.messages.ndjson.Deserializer;
 import io.cucumber.messages.types.Envelope;
 import io.cucumber.prettyformatter.MessagesToPrettyWriter.Builder;
 import org.junit.jupiter.api.Disabled;
@@ -21,7 +22,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_ATTACHMENTS;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
@@ -34,7 +34,6 @@ import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessagesToPrettyWriterAcceptanceTest {
-    private static final NdjsonToMessageIterable.Deserializer deserializer = (json) -> OBJECT_MAPPER.readValue(json, Envelope.class);
 
     static List<TestCase> acceptance() throws IOException {
         Map<String, MessagesToPrettyWriter.Builder> themes = new LinkedHashMap<>();
@@ -70,7 +69,7 @@ class MessagesToPrettyWriterAcceptanceTest {
 
     private static <T extends OutputStream> T writePrettyReport(TestCase testCase, T out, Builder builder) throws IOException {
         try (InputStream in = Files.newInputStream(testCase.source)) {
-            try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, deserializer)) {
+            try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, new Deserializer())) {
                 try (MessagesToPrettyWriter writer = builder.build(out)) {
                     for (Envelope envelope : envelopes) {
                         writer.write(envelope);
