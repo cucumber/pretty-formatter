@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@cucumber/message-streams": "^4.0.1",
-    "@cucumber/messages": "31.1.0",
+    "@cucumber/messages": "31.2.0",
     "@eslint/compat": "^2.0.0",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.30.1",
