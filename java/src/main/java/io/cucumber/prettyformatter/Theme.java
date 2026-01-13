@@ -40,17 +40,19 @@ public final class Theme {
     private final Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement;
     private final Map<TestStepResultStatus, String> statusIconByStatus;
     private final Map<TestStepResultStatus, String> progressIconByStatus;
+    private final String bulletPointIcon;
 
     private Theme(
             Map<Element, Entry<Ansi, Ansi>> styleByElement,
             Map<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement,
             Map<TestStepResultStatus, String> statusIconByStatus,
-            Map<TestStepResultStatus, String> progressIconByStatus
+            Map<TestStepResultStatus, String> progressIconByStatus, String bulletPointIcon
     ) {
         this.styleByElement = requireNonNull(styleByElement);
         this.styleByStatusByElement = requireNonNull(styleByStatusByElement);
         this.statusIconByStatus = statusIconByStatus;
         this.progressIconByStatus = progressIconByStatus;
+        this.bulletPointIcon = bulletPointIcon;
     }
 
     /**
@@ -95,6 +97,7 @@ public final class Theme {
                 .style(PROGRESS_ICON, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(FOREGROUND_DEFAULT))
                 .progressIcon(UNDEFINED, "U")
                 .style(PROGRESS_ICON, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
+                .bulletPointIcon("•")
                 .build();
     }
 
@@ -103,6 +106,7 @@ public final class Theme {
      */
     public static Theme none() {
         return Theme.builder()
+                .bulletPointIcon("•")
                 .build();
     }
 
@@ -123,6 +127,7 @@ public final class Theme {
                 .progressIcon(PENDING, "P")
                 .progressIcon(SKIPPED, "-")
                 .progressIcon(UNDEFINED, "U")
+                .bulletPointIcon("•")
                 .build();
     }
 
@@ -171,6 +176,10 @@ public final class Theme {
     String statusIcon(TestStepResultStatus status) {
         // Status icons are assumed to be 1 character wide by default.
         return statusIconByStatus.getOrDefault(status, " ");
+    }
+
+    String bulletPointIcon() {
+        return bulletPointIcon == null ? " " : bulletPointIcon;
     }
 
     private Entry<Ansi, Ansi> findAnsiBy(Element element) {
@@ -358,6 +367,7 @@ public final class Theme {
         private final EnumMap<TestStepResultStatus, String> progressIconByStatus = new EnumMap<>(TestStepResultStatus.class);
         private final EnumMap<Element, Entry<Ansi, Ansi>> styleByElement = new EnumMap<>(Element.class);
         private final EnumMap<Element, Map<TestStepResultStatus, Entry<Ansi, Ansi>>> styleByStatusByElement = new EnumMap<>(Element.class);
+        private String bulletPointIcon;
 
         private Builder() {
 
@@ -413,6 +423,20 @@ public final class Theme {
         }
 
         /**
+         * Adds a bullet point icon.
+         * <p>
+         * Visually the bullet point icon must be 1-space wide.
+         *
+         * @param icon   the icon
+         * @return this builder
+         */
+        public Builder bulletPointIcon(String icon) {
+            requireNonNull(icon);
+            this.bulletPointIcon = icon;
+            return this;
+        }
+
+        /**
          * Adds a style and reset style for an element.
          *
          * @param element    the element to style
@@ -437,7 +461,8 @@ public final class Theme {
                     new EnumMap<>(styleByElement),
                     new EnumMap<>(styleByStatusByElement),
                     new EnumMap<>(statusIconByStatus),
-                    new EnumMap<>(progressIconByStatus)
+                    new EnumMap<>(progressIconByStatus),
+                    bulletPointIcon
             );
         }
 

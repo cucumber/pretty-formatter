@@ -232,9 +232,9 @@ final class PrettyReportWriter implements AutoCloseable {
         if (event.getTestStepResult().getStatus() == AMBIGUOUS) {
             data.findTestStepBy(event).ifPresent(testStep -> {
                 writer.print(new LineBuilder(theme)
-                        .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter.builder()
+                        .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
+                                .builder(sourceReferenceFormatter, theme)
                                 .indentation(data.getStackTraceIndentBy(event))
-                                .sourceReferenceFormatter(sourceReferenceFormatter)
                                 .build()
                                 .formatTo(data.findStepDefinitionsBy(testStep), lineBuilder))
                         .build());

@@ -76,6 +76,7 @@ public class TestTheme {
                 .style(STEP_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(STEP_TEXT, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
                 .style(TAG, Ansi.with(FOREGROUND_YELLOW, BOLD), Ansi.with(BOLD_OFF, FOREGROUND_DEFAULT))
+                .bulletPointIcon("•")
                 .build();
     }
 }

@@ -10,14 +10,16 @@ final class AmbiguousStepDefinitionsFormatter {
 
     private final int indentation;
     private final SourceReferenceFormatter sourceReferenceFormatter;
+    private final Theme theme;
 
-    private AmbiguousStepDefinitionsFormatter(int indentation, SourceReferenceFormatter sourceReferenceFormatter) {
+    private AmbiguousStepDefinitionsFormatter(Theme theme, int indentation, SourceReferenceFormatter sourceReferenceFormatter) {
+        this.theme = theme;
         this.indentation = indentation;
         this.sourceReferenceFormatter = sourceReferenceFormatter;
     }
 
-    static Builder builder() {
-        return new Builder();
+    static Builder builder(SourceReferenceFormatter sourceReferenceFormatter, Theme theme) {
+        return new Builder(sourceReferenceFormatter, theme);
     }
 
     void formatTo(List<StepDefinition> stepDefinitions, LineBuilder lineBuilder) {
@@ -26,7 +28,9 @@ final class AmbiguousStepDefinitionsFormatter {
                 .newLine();
         for (StepDefinition stepDefinition : stepDefinitions) {
             lineBuilder.indent(indentation)
-                    .append("  • ")
+                    .append("  ")
+                    .append(theme.bulletPointIcon())
+                    .append(" ")
                     .append(stepDefinition.getPattern().getSource());
             sourceReferenceFormatter.format(stepDefinition.getSourceReference())
                     .ifPresent(location -> lineBuilder.append(" ").append(LOCATION, "# " + location));
@@ -35,10 +39,13 @@ final class AmbiguousStepDefinitionsFormatter {
     }
 
     static final class Builder {
+        private final SourceReferenceFormatter sourceReferenceFormatter;
+        private final Theme theme;
         private int indentation = 0;
-        private SourceReferenceFormatter sourceReferenceFormatter;
 
-        private Builder() {
+        private Builder(SourceReferenceFormatter sourceReferenceFormatter, Theme theme) {
+            this.sourceReferenceFormatter = sourceReferenceFormatter;
+            this.theme = theme;
         }
 
         Builder indentation(int indentation) {
@@ -46,13 +53,8 @@ final class AmbiguousStepDefinitionsFormatter {
             return this;
         }
 
-        Builder sourceReferenceFormatter(SourceReferenceFormatter sourceReferenceFormatter) {
-            this.sourceReferenceFormatter = sourceReferenceFormatter;
-            return this;
-        }
-
         AmbiguousStepDefinitionsFormatter build() {
-            return new AmbiguousStepDefinitionsFormatter(indentation, sourceReferenceFormatter);
+            return new AmbiguousStepDefinitionsFormatter(theme, indentation, sourceReferenceFormatter);
         }
     }
 }

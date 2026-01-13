@@ -193,9 +193,9 @@ final class SummaryReportWriter implements AutoCloseable {
                                     });
                                     if (status == AMBIGUOUS) {
                                         out.print(new LineBuilder(theme)
-                                                .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter.builder()
+                                                .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
+                                                        .builder(sourceReferenceFormatter, theme)
                                                         .indentation(11)
-                                                        .sourceReferenceFormatter(sourceReferenceFormatter)
                                                         .build()
                                                         .formatTo(query.findStepDefinitionsBy(testStep), lineBuilder))
                                                 .build());
