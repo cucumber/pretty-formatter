@@ -59,6 +59,7 @@ export interface PrettyOptions {
 }
 
 export interface ProgressOptions {
+  includeAttachments?: boolean
   theme?: Theme
 }
 
