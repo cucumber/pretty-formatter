@@ -4,63 +4,15 @@ import { Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 
 import { NdjsonToMessageStream } from '@cucumber/message-streams'
-import { Envelope, TestStepResultStatus } from '@cucumber/messages'
+import { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
 import { PrettyPrinter } from './PrettyPrinter'
-import { CUCUMBER_THEME } from './theme'
-import type { PrettyOptions, Theme } from './types'
+import { CUCUMBER_THEME, DEMO_THEME, NONE_THEME, PLAIN_THEME } from './theme'
+import type { PrettyOptions } from './types'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
-
-const DEMO_THEME: Theme = {
-  attachment: 'blue',
-  dataTable: {
-    all: 'blackBright',
-    border: 'dim',
-    content: 'italic',
-  },
-  docString: {
-    all: 'blackBright',
-    content: 'italic',
-    delimiter: 'dim',
-    mediaType: 'bold',
-  },
-  feature: {
-    all: 'bgBlue',
-    keyword: 'bold',
-    name: 'italic',
-  },
-  location: 'blackBright',
-  status: {
-    all: {
-      [TestStepResultStatus.AMBIGUOUS]: 'red',
-      [TestStepResultStatus.FAILED]: 'red',
-      [TestStepResultStatus.PASSED]: 'green',
-      [TestStepResultStatus.PENDING]: 'yellow',
-      [TestStepResultStatus.SKIPPED]: 'cyan',
-      [TestStepResultStatus.UNDEFINED]: 'yellow',
-      [TestStepResultStatus.UNKNOWN]: [],
-    },
-  },
-  rule: {
-    all: 'bgBlue',
-    keyword: 'bold',
-    name: 'italic',
-  },
-  scenario: {
-    all: 'bgBlue',
-    keyword: 'bold',
-    name: 'italic',
-  },
-  step: {
-    argument: 'bold',
-    keyword: 'bold',
-    text: 'italic',
-  },
-  tag: ['yellow', 'bold'],
-}
 
 describe('PrettyPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
@@ -96,7 +48,7 @@ describe('PrettyPrinter', async () => {
         includeFeatureLine: false,
         includeRuleLine: false,
         useStatusIcon: false,
-        theme: {},
+        theme: NONE_THEME,
       },
     },
     {
@@ -106,7 +58,7 @@ describe('PrettyPrinter', async () => {
         includeFeatureLine: true,
         includeRuleLine: true,
         useStatusIcon: false,
-        theme: {},
+        theme: NONE_THEME,
       },
     },
     {
@@ -116,7 +68,7 @@ describe('PrettyPrinter', async () => {
         includeFeatureLine: true,
         includeRuleLine: true,
         useStatusIcon: false,
-        theme: {},
+        theme: NONE_THEME,
       },
     },
     {
@@ -126,7 +78,7 @@ describe('PrettyPrinter', async () => {
         includeFeatureLine: true,
         includeRuleLine: true,
         useStatusIcon: true,
-        theme: {},
+        theme: PLAIN_THEME,
       },
     },
   ]

@@ -1,5 +1,36 @@
-import { DEFAULT_PROGRESS_ICONS, DEFAULT_STATUS_COLORS, DEFAULT_STATUS_ICONS } from './helpers'
-import type { Theme } from './types'
+import { TestStepResultStatus } from '@cucumber/messages'
+
+import { Style, Theme } from './types'
+
+const CUCUMBER_STATUS_COLORS: Record<TestStepResultStatus, Style> = {
+  [TestStepResultStatus.AMBIGUOUS]: 'red',
+  [TestStepResultStatus.FAILED]: 'red',
+  [TestStepResultStatus.PASSED]: 'green',
+  [TestStepResultStatus.PENDING]: 'yellow',
+  [TestStepResultStatus.SKIPPED]: 'cyan',
+  [TestStepResultStatus.UNDEFINED]: 'yellow',
+  [TestStepResultStatus.UNKNOWN]: 'gray',
+}
+
+const CUCUMBER_STATUS_ICONS: Record<TestStepResultStatus, string> = {
+  [TestStepResultStatus.AMBIGUOUS]: '✘',
+  [TestStepResultStatus.FAILED]: '✘',
+  [TestStepResultStatus.PASSED]: '✔',
+  [TestStepResultStatus.PENDING]: '■',
+  [TestStepResultStatus.SKIPPED]: '↷',
+  [TestStepResultStatus.UNDEFINED]: '■',
+  [TestStepResultStatus.UNKNOWN]: ' ',
+}
+
+const CUCUMBER_PROGRESS_ICONS: Record<TestStepResultStatus, string> = {
+  [TestStepResultStatus.AMBIGUOUS]: 'A',
+  [TestStepResultStatus.FAILED]: 'F',
+  [TestStepResultStatus.PASSED]: '.',
+  [TestStepResultStatus.PENDING]: 'P',
+  [TestStepResultStatus.SKIPPED]: '-',
+  [TestStepResultStatus.UNDEFINED]: 'U',
+  [TestStepResultStatus.UNKNOWN]: '?',
+}
 
 export const CUCUMBER_THEME: Theme = {
   attachment: 'blue',
@@ -8,9 +39,9 @@ export const CUCUMBER_THEME: Theme = {
   },
   location: 'blackBright',
   status: {
-    all: { ...DEFAULT_STATUS_COLORS },
-    icon: { ...DEFAULT_STATUS_ICONS },
-    progress: { ...DEFAULT_PROGRESS_ICONS },
+    all: CUCUMBER_STATUS_COLORS,
+    icon: CUCUMBER_STATUS_ICONS,
+    progress: CUCUMBER_PROGRESS_ICONS,
   },
   rule: {
     keyword: 'bold',
@@ -21,5 +52,67 @@ export const CUCUMBER_THEME: Theme = {
   step: {
     argument: 'bold',
     keyword: 'bold',
+  },
+  symbol: {
+    bullet: '•',
+  },
+}
+
+export const DEMO_THEME: Theme = {
+  attachment: 'blue',
+  dataTable: {
+    all: 'blackBright',
+    border: 'dim',
+    content: 'italic',
+  },
+  docString: {
+    all: 'blackBright',
+    content: 'italic',
+    delimiter: 'dim',
+    mediaType: 'bold',
+  },
+  feature: {
+    all: 'bgBlue',
+    keyword: 'bold',
+    name: 'italic',
+  },
+  location: 'blackBright',
+  status: {
+    all: CUCUMBER_STATUS_COLORS,
+  },
+  rule: {
+    all: 'bgBlue',
+    keyword: 'bold',
+    name: 'italic',
+  },
+  scenario: {
+    all: 'bgBlue',
+    keyword: 'bold',
+    name: 'italic',
+  },
+  step: {
+    argument: 'bold',
+    keyword: 'bold',
+    text: 'italic',
+  },
+  tag: ['yellow', 'bold'],
+  symbol: {
+    bullet: '•',
+  },
+}
+
+export const PLAIN_THEME: Theme = {
+  status: {
+    icon: CUCUMBER_STATUS_ICONS,
+    progress: CUCUMBER_PROGRESS_ICONS,
+  },
+  symbol: {
+    bullet: '•',
+  },
+}
+
+export const NONE_THEME: Theme = {
+  symbol: {
+    bullet: '•',
   },
 }

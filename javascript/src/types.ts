@@ -45,6 +45,9 @@ export interface Theme {
     text?: Style
   }
   tag?: Style
+  symbol?: {
+    bullet?: string
+  }
 }
 
 export interface PrettyOptions {

@@ -1,5 +1,5 @@
 export * from './PrettyPrinter'
 export * from './ProgressPrinter'
 export * from './SummaryPrinter'
-export * from './theme'
+export { CUCUMBER_THEME } from './theme'
 export type * from './types'

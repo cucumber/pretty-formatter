@@ -9,7 +9,7 @@ import { expect } from 'chai'
 import { globbySync } from 'globby'
 
 import { ProgressPrinter } from './ProgressPrinter'
-import { CUCUMBER_THEME } from './theme'
+import { CUCUMBER_THEME, PLAIN_THEME } from './theme'
 import type { ProgressOptions } from './types'
 
 describe('ProgressPrinter', async () => {
@@ -28,7 +28,7 @@ describe('ProgressPrinter', async () => {
     {
       name: 'plain',
       options: {
-        theme: {},
+        theme: PLAIN_THEME,
       },
     },
   ]
