@@ -7,6 +7,7 @@ import { CUCUMBER_THEME } from './theme'
 import type { ProgressOptions } from './types'
 
 const DEFAULT_OPTIONS: Required<ProgressOptions> = {
+  includeAttachments: true,
   theme: CUCUMBER_THEME,
 }
 

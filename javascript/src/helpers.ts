@@ -25,7 +25,7 @@ import {
 import { Duration as LuxonDuration } from 'luxon'
 
 import { TextBuilder } from './TextBuilder'
-import { Style, Theme } from './types'
+import { Theme } from './types'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
@@ -40,34 +40,7 @@ export const ORDERED_STATUSES: TestStepResultStatus[] = [
   TestStepResultStatus.AMBIGUOUS,
   TestStepResultStatus.FAILED,
 ]
-export const DEFAULT_STATUS_COLORS: Record<TestStepResultStatus, Style> = {
-  [TestStepResultStatus.AMBIGUOUS]: 'red',
-  [TestStepResultStatus.FAILED]: 'red',
-  [TestStepResultStatus.PASSED]: 'green',
-  [TestStepResultStatus.PENDING]: 'yellow',
-  [TestStepResultStatus.SKIPPED]: 'cyan',
-  [TestStepResultStatus.UNDEFINED]: 'yellow',
-  [TestStepResultStatus.UNKNOWN]: 'gray',
-}
 
-export const DEFAULT_STATUS_ICONS: Record<TestStepResultStatus, string> = {
-  [TestStepResultStatus.AMBIGUOUS]: '✘',
-  [TestStepResultStatus.FAILED]: '✘',
-  [TestStepResultStatus.PASSED]: '✔',
-  [TestStepResultStatus.PENDING]: '■',
-  [TestStepResultStatus.SKIPPED]: '↷',
-  [TestStepResultStatus.UNDEFINED]: '■',
-  [TestStepResultStatus.UNKNOWN]: ' ',
-} as const
-export const DEFAULT_PROGRESS_ICONS: Record<TestStepResultStatus, string> = {
-  [TestStepResultStatus.AMBIGUOUS]: 'A',
-  [TestStepResultStatus.FAILED]: 'F',
-  [TestStepResultStatus.PASSED]: '.',
-  [TestStepResultStatus.PENDING]: 'P',
-  [TestStepResultStatus.SKIPPED]: '-',
-  [TestStepResultStatus.UNDEFINED]: 'U',
-  [TestStepResultStatus.UNKNOWN]: '?',
-} as const
 const HOOK_TYPE_LABELS: Record<HookType, string> = {
   [HookType.BEFORE_TEST_RUN]: 'BeforeAll',
   [HookType.AFTER_TEST_RUN]: 'AfterAll',
@@ -181,12 +154,7 @@ export function formatStepTitle(
 ) {
   const builder = new TextBuilder(stream)
   if (useStatusIcon) {
-    builder
-      .append(
-        theme.status?.icon?.[status] ?? DEFAULT_STATUS_ICONS[status],
-        theme.status?.all?.[status]
-      )
-      .space()
+    builder.append(theme.status?.icon?.[status] || ' ', theme.status?.all?.[status]).space()
   }
   return builder
     .append(
@@ -328,6 +296,27 @@ export function formatTestStepResultError(
   }
 }
 
+export function formatAmbiguousStep(
+  stepDefinitions: readonly StepDefinition[],
+  theme: Theme,
+  stream: NodeJS.WritableStream
+): string | undefined {
+  const builder = new TextBuilder(stream)
+  builder.append('Multiple matching step definitions found:')
+  for (const stepDefinition of stepDefinitions) {
+    builder.line()
+    builder.append(`  ${theme.symbol?.bullet || ' '} `)
+    if (stepDefinition.pattern?.source) {
+      builder.append(stepDefinition.pattern.source)
+    }
+    const location = formatCodeLocation(stepDefinition, theme, stream)
+    if (location) {
+      builder.space().append(location)
+    }
+  }
+  return builder.build(undefined, true)
+}
+
 export function formatTestRunFinishedError(
   testRunFinished: TestRunFinished,
   theme: Theme,
@@ -391,7 +380,7 @@ export function formatStatusCharacter(
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
-  const character = DEFAULT_PROGRESS_ICONS[status]
+  const character = theme.status?.progress?.[status] || ' '
   return new TextBuilder(stream).append(character).build(theme.status?.all?.[status])
 }
 

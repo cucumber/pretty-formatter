@@ -8,6 +8,7 @@ import io.cucumber.messages.types.PickleTag;
 import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.Step;
+import io.cucumber.messages.types.StepDefinition;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStep;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+import static io.cucumber.messages.types.TestStepResultStatus.AMBIGUOUS;
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_ATTACHMENTS;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
@@ -161,6 +163,7 @@ final class PrettyReportWriter implements AutoCloseable {
 
     void handleTestStepFinished(TestStepFinished event) {
         printStep(event);
+        printAmbiguousStep(event);
         printException(event);
         writer.flush();
     }
@@ -225,6 +228,19 @@ final class PrettyReportWriter implements AutoCloseable {
                 .flatMap(sourceReferenceFormatter::format);
     }
 
+    private void printAmbiguousStep(TestStepFinished event) {
+        if (event.getTestStepResult().getStatus() == AMBIGUOUS) {
+            data.findTestStepBy(event).ifPresent(testStep -> {
+                writer.print(new LineBuilder(theme)
+                        .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
+                                .builder(sourceReferenceFormatter, theme)
+                                .indentation(data.getStackTraceIndentBy(event))
+                                .build()
+                                .formatTo(data.findStepDefinitionsBy(testStep), lineBuilder))
+                        .build());
+            });
+        }
+    }
 
     private void printException(TestStepFinished event) {
         int indent = data.getStackTraceIndentBy(event);

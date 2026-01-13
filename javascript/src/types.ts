@@ -45,6 +45,9 @@ export interface Theme {
     text?: Style
   }
   tag?: Style
+  symbol?: {
+    bullet?: string
+  }
 }
 
 export interface PrettyOptions {
@@ -56,6 +59,7 @@ export interface PrettyOptions {
 }
 
 export interface ProgressOptions {
+  includeAttachments?: boolean
   theme?: Theme
 }
 

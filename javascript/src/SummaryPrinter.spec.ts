@@ -10,7 +10,7 @@ import { expect } from 'chai'
 import { globbySync } from 'globby'
 
 import { SummaryPrinter } from './SummaryPrinter'
-import { CUCUMBER_THEME } from './theme'
+import { CUCUMBER_THEME, PLAIN_THEME } from './theme'
 import type { SummaryOptions } from './types'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
@@ -31,7 +31,14 @@ describe('SummaryPrinter', async () => {
     {
       name: 'plain',
       options: {
-        theme: {},
+        theme: PLAIN_THEME,
+      },
+    },
+    {
+      name: 'exclude-attachments',
+      options: {
+        theme: PLAIN_THEME,
+        includeAttachments: false,
       },
     },
   ]

@@ -13,6 +13,7 @@ import {
   ATTACHMENT_INDENT_LENGTH,
   ensure,
   ERROR_INDENT_LENGTH,
+  formatAmbiguousStep,
   formatAttachment,
   formatCodeLocation,
   formatCounts,
@@ -198,6 +199,15 @@ export class SummaryPrinter {
         this.println(
           indent(argument, baselineIndent + GHERKIN_INDENT_LENGTH + STEP_ARGUMENT_INDENT_LENGTH)
         )
+      }
+      if (status === TestStepResultStatus.AMBIGUOUS) {
+        const stepDefinitions = this.query.findStepDefinitionsBy(testStep)
+        const content = formatAmbiguousStep(stepDefinitions, this.options.theme, this.stream)
+        if (content) {
+          this.println(
+            indent(content, baselineIndent + GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH)
+          )
+        }
       }
     } else if (testStep.hookId) {
       const hook = this.query.findHookBy(testStep)
