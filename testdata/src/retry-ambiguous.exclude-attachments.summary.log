@@ -3,8 +3,8 @@ Ambiguous scenarios:
   1) Test cases won't retry when the status is AMBIGUOUS # samples/retry-ambiguous/retry-ambiguous.feature:2
        Given an ambiguous step
            Multiple matching step definitions found:
-             • an ambiguous step # samples/retry-ambiguous/retry-ambiguous.ts:3
-             • an ambiguous step # samples/retry-ambiguous/retry-ambiguous.ts:7
+             - an ambiguous step # samples/retry-ambiguous/retry-ambiguous.ts:3
+             - an ambiguous step # samples/retry-ambiguous/retry-ambiguous.ts:7
 
 1 scenarios (1 ambiguous)
 1 steps (1 ambiguous)

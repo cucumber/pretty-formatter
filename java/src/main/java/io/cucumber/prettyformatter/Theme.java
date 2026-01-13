@@ -105,9 +105,7 @@ public final class Theme {
      * Empty theme that does not apply any styling to the output.
      */
     public static Theme none() {
-        return Theme.builder()
-                .bulletPointIcon("•")
-                .build();
+        return Theme.builder().build();
     }
 
     /**
@@ -127,7 +125,7 @@ public final class Theme {
                 .progressIcon(PENDING, "P")
                 .progressIcon(SKIPPED, "-")
                 .progressIcon(UNDEFINED, "U")
-                .bulletPointIcon("•")
+                .bulletPointIcon("-")
                 .build();
     }
 

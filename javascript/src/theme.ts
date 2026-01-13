@@ -107,12 +107,8 @@ export const PLAIN_THEME: Theme = {
     progress: CUCUMBER_PROGRESS_ICONS,
   },
   symbol: {
-    bullet: '•',
+    bullet: '-',
   },
 }
 
-export const NONE_THEME: Theme = {
-  symbol: {
-    bullet: '•',
-  },
-}
+export const NONE_THEME: Theme = {}
