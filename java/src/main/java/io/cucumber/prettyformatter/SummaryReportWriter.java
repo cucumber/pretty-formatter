@@ -160,7 +160,7 @@ final class SummaryReportWriter implements AutoCloseable {
                             String name = pickle.getName();
                             String attempt = formatAttempt(testCaseStarted);
                             String location = formatLocationComment(pickle);
-                            return String.format("%s%s%s", name, attempt, location);
+                            return name + attempt + location;
                         }));
     }
 
@@ -174,7 +174,7 @@ final class SummaryReportWriter implements AutoCloseable {
                             .map(name -> "(" + name + ")")
                             .orElse("");
                     String location = formatLocationComment(hook);
-                    return String.format("%s%s%s", hookTypeName, hookName, location);
+                    return hookTypeName + hookName + location;
                 });
     }
 
@@ -199,13 +199,13 @@ final class SummaryReportWriter implements AutoCloseable {
             return;
         }
         out.println();
-        String finishItemByStatusTitle = String.format("%s %s:", firstLetterCapitalizedName(status), finishedItemName);
+        String finishItemByStatusTitle = "%s %s:".formatted(firstLetterCapitalizedName(status), finishedItemName);
         out.println(theme.style(STEP, status, finishItemByStatusTitle));
         ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
         AtomicInteger index = new AtomicInteger(0);
         for (T testCaseFinished : items) {
             formatFinishedItem.apply(testCaseFinished)
-                    .map(line -> String.format("  %d) %s", index.incrementAndGet(), line))
+                    .map(line -> "  %d) %s".formatted(index.incrementAndGet(), line))
                     .ifPresent(out::println);
             getTestStepResult.apply(testCaseFinished)
                     .flatMap(TestStepResult::getException)
@@ -328,7 +328,7 @@ final class SummaryReportWriter implements AutoCloseable {
         long minutes = duration.toMinutes();
         long seconds = duration.toSecondsPart();
         long milliseconds = duration.toMillisPart();
-        return String.format("%sm %s.%ss", minutes, seconds, milliseconds);
+        return "%sm %d.%ds".formatted(String.valueOf(minutes), seconds, milliseconds);
     }
 
     private void printUnknownParameterTypes() {
@@ -341,7 +341,7 @@ final class SummaryReportWriter implements AutoCloseable {
         for (UndefinedParameterType undefinedParameterType : undefinedParameterTypes) {
             String name = undefinedParameterType.getName();
             String expression = undefinedParameterType.getExpression();
-            out.println(String.format("  %s) '%s' in '%s'", ++index, name, expression));
+            out.println("  %s) '%s' in '%s'".formatted(++index, name, expression));
         }
     }
 

@@ -297,9 +297,9 @@ final class PrettyReportWriter implements AutoCloseable {
         int bytes = (event.getBody().length() / 4) * 3;
         String line;
         if (event.getFileName().isPresent()) {
-            line = String.format("Embedding %s [%s %d bytes]", event.getFileName().get(), event.getMediaType(), bytes);
+            line = "Embedding %s [%s %d bytes]".formatted(event.getFileName().get(), event.getMediaType(), bytes);
         } else {
-            line = String.format("Embedding [%s %d bytes]", event.getMediaType(), bytes);
+            line = "Embedding [%s %d bytes]".formatted(event.getMediaType(), bytes);
         }
         return new LineBuilder(theme)
                 .indent(data.getAttachmentIndentBy(event))
