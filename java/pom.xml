@@ -16,7 +16,6 @@
     <url>https://github.com/cucumber/pretty-formatter</url>
 
     <properties>
-        <osgi.bundle-symbolic-name>io.cucumber.prettyformatter</osgi.bundle-symbolic-name>
         <project.build.outputTimestamp>1762044952</project.build.outputTimestamp>
     </properties>
 
