@@ -61,21 +61,18 @@ export class SummaryPrinter {
    *
    * @param params - Initialisation object
    * @param params.stream - The stream being written to, used for feature detection
-   * @param params.print - A function to output content to the stream
    * @param params.options - Options for the output
    */
   constructor({
     stream = process.stdout,
-    print = (content) => stream.write(content),
     options = {},
   }: {
     stream?: NodeJS.WritableStream
-    print?: (content: string) => void
     options?: SummaryOptions
   } = {}) {
     this.stream = stream
-    this.print = print
-    this.println = (content: string = '') => this.print(`${content}\n`)
+    this.print = (content) => stream.write(content)
+    this.println = (content = '') => this.print(`${content}\n`)
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
@@ -104,17 +101,14 @@ export class SummaryPrinter {
     query: Query,
     {
       stream = process.stdout,
-      print = (content) => stream.write(content),
       options = {},
     }: {
       stream?: NodeJS.WritableStream
-      print?: (content: string) => void
       options?: SummaryOptions
     } = {}
   ) {
     const printer = new SummaryPrinter({
       stream,
-      print,
       options,
     })
     printer.query = query

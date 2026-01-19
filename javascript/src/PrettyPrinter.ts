@@ -81,21 +81,18 @@ export class PrettyPrinter {
    *
    * @param params -Initialisation object
    * @param params.stream - The writable stream used for TTY detection and styling
-   * @param params.print - A function to output content to the formatter's output
    * @param params.options - Configuration options for the pretty output
    */
   constructor({
     stream = process.stdout,
-    print = (content) => stream.write(content),
     options = {},
   }: {
     stream?: NodeJS.WritableStream
-    print?: (content: string) => void
     options?: PrettyOptions
   } = {}) {
     this.stream = stream
-    this.print = print
-    this.println = (content: string = '') => this.print(`${content}\n`)
+    this.print = (content) => stream.write(content)
+    this.println = (content = '') => this.print(`${content}\n`)
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
@@ -131,7 +128,6 @@ export class PrettyPrinter {
   private summarise() {
     SummaryPrinter.summarise(this.query, {
       stream: this.stream,
-      print: this.print,
       options: this.options,
     })
   }

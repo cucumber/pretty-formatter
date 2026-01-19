@@ -31,20 +31,17 @@ export class ProgressPrinter {
    *
    * @param params - Initialisation object
    * @param params.stream - The stream being written to, used for feature detection
-   * @param params.print - A function to output content to the stream
    * @param params.options - Options for the output
    */
   constructor({
     stream = process.stdout,
-    print = (content) => stream.write(content),
     options = {},
   }: {
     stream?: NodeJS.WritableStream
-    print?: (content: string) => void
     options?: ProgressOptions
   } = {}) {
     this.stream = stream
-    this.print = print
+    this.print = (content) => stream.write(content)
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
@@ -90,7 +87,6 @@ export class ProgressPrinter {
   private summarise() {
     SummaryPrinter.summarise(this.query, {
       stream: this.stream,
-      print: this.print,
       options: this.options,
     })
   }

@@ -8,6 +8,7 @@ import { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
+import { makeFakeStream } from '../test/makeFakeStream'
 import { PrettyPrinter } from './PrettyPrinter'
 import { CUCUMBER_THEME, DEMO_THEME, NONE_THEME, PLAIN_THEME } from './theme'
 import type { PrettyOptions } from './types'
@@ -83,13 +84,6 @@ describe('PrettyPrinter', async () => {
     },
   ]
 
-  // just enough so Node.js internals consider it a color-supporting stream
-  const fakeStream = {
-    _writableState: {},
-    isTTY: true,
-    getColorDepth: () => 3,
-  } as unknown as NodeJS.WritableStream
-
   for (const { name, options } of variants) {
     describe(name, () => {
       for (const ndjsonFile of ndjsonFiles) {
@@ -97,11 +91,9 @@ describe('PrettyPrinter', async () => {
 
         it(suiteName, async () => {
           let content = ''
+          const stream = makeFakeStream((chunk) => (content += chunk))
           const printer = new PrettyPrinter({
-            stream: fakeStream,
-            print: (chunk) => {
-              content += chunk
-            },
+            stream,
             options,
           })
 
@@ -136,11 +128,9 @@ describe('PrettyPrinter', async () => {
   describe('summarise', () => {
     it('should append a summary when the option is enabled', async () => {
       let content = ''
+      const stream = makeFakeStream((chunk) => (content += chunk))
       const printer = new PrettyPrinter({
-        stream: fakeStream,
-        print: (chunk) => {
-          content += chunk
-        },
+        stream,
         options: {
           theme: CUCUMBER_THEME,
           summarise: true,

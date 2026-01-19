@@ -8,6 +8,7 @@ import { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
+import { makeFakeStream } from '../test/makeFakeStream'
 import { SummaryPrinter } from './SummaryPrinter'
 import { CUCUMBER_THEME, PLAIN_THEME } from './theme'
 import type { SummaryOptions } from './types'
@@ -42,13 +43,6 @@ describe('SummaryPrinter', async () => {
     },
   ]
 
-  // just enough so Node.js internals consider it a color-supporting stream
-  const fakeStream = {
-    _writableState: {},
-    isTTY: true,
-    getColorDepth: () => 3,
-  } as unknown as NodeJS.WritableStream
-
   for (const { name, options } of variants) {
     describe(name, () => {
       for (const ndjsonFile of ndjsonFiles) {
@@ -56,11 +50,9 @@ describe('SummaryPrinter', async () => {
 
         it(suiteName, async () => {
           let content = ''
+          const stream = makeFakeStream((chunk) => (content += chunk))
           const printer = new SummaryPrinter({
-            stream: fakeStream,
-            print: (chunk) => {
-              content += chunk
-            },
+            stream,
             options,
           })
 
