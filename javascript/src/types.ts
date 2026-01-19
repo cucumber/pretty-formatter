@@ -50,20 +50,72 @@ export interface Theme {
   }
 }
 
+/**
+ * Options for the PrettyPrinter
+ */
 export interface PrettyOptions {
+  /**
+   * Whether to include attachments in the output
+   * @defaultValue true
+   */
   includeAttachments?: boolean
+  /**
+   * Whether to include feature headers in the output
+   * @defaultValue true
+   */
   includeFeatureLine?: boolean
+  /**
+   * Whether to include rule headers in the output
+   * @defaultValue true
+   */
   includeRuleLine?: boolean
+  /**
+   * Whether to print a summary at the end of the test run
+   * @defaultValue false
+   */
+  summarise?: boolean
+  /**
+   * Whether to show status icons alongside step results
+   * @defaultValue true
+   */
   useStatusIcon?: boolean
+  /**
+   * Theme for styling the output
+   */
   theme?: Theme
 }
 
+/**
+ * Options for the ProgressPrinter
+ */
 export interface ProgressOptions {
+  /**
+   * Whether to include attachments in the summary output
+   * @defaultValue true
+   */
   includeAttachments?: boolean
+  /**
+   * Whether to print a summary at the end of the test run
+   * @defaultValue false
+   */
+  summarise?: boolean
+  /**
+   * Theme for styling the output
+   */
   theme?: Theme
 }
 
+/**
+ * Options for the SummaryPrinter
+ */
 export interface SummaryOptions {
+  /**
+   * Whether to include attachments in the summary output
+   * @defaultValue true
+   */
   includeAttachments?: boolean
+  /**
+   * Theme for styling the output
+   */
   theme?: Theme
 }

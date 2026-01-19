@@ -5,7 +5,6 @@ import { pipeline } from 'node:stream/promises'
 
 import { NdjsonToMessageStream } from '@cucumber/message-streams'
 import { Envelope } from '@cucumber/messages'
-import { Query } from '@cucumber/query'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
@@ -56,16 +55,14 @@ describe('SummaryPrinter', async () => {
         const [suiteName] = path.basename(ndjsonFile).split('.')
 
         it(suiteName, async () => {
-          const query = new Query()
           let content = ''
-          const printer = new SummaryPrinter(
-            query,
-            fakeStream,
-            (chunk) => {
+          const printer = new SummaryPrinter({
+            stream: fakeStream,
+            print: (chunk) => {
               content += chunk
             },
-            options
-          )
+            options,
+          })
 
           await pipeline(
             fs.createReadStream(ndjsonFile, { encoding: 'utf-8' }),
@@ -73,13 +70,11 @@ describe('SummaryPrinter', async () => {
             new Writable({
               objectMode: true,
               write(envelope: Envelope, _: BufferEncoding, callback) {
-                query.update(envelope)
+                printer.update(envelope)
                 callback()
               },
             })
           )
-
-          printer.printSummary()
 
           const expectedPath = ndjsonFile.replace('.ndjson', `.${name}.summary.log`)
           if (updateExpectedFiles) {

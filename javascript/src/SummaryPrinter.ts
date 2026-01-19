@@ -1,5 +1,6 @@
 import {
   Duration,
+  Envelope,
   Location,
   Pickle,
   TestCaseStarted,
@@ -41,16 +42,39 @@ const DEFAULT_OPTIONS: Required<SummaryOptions> = {
   theme: CUCUMBER_THEME,
 }
 
+/**
+ * Prints a summary of test results including non-passing scenarios, statistics, and snippets
+ *
+ * @remarks
+ * Outputs non-passing scenarios and hooks, scenario and step counts, durations, and suggested
+ * snippets for undefined steps.
+ */
 export class SummaryPrinter {
+  private readonly stream: NodeJS.WritableStream
+  private readonly print: (content: string) => void
   private readonly println: (content?: string) => void
   private readonly options: Required<SummaryOptions>
+  private query: Query = new Query()
 
-  constructor(
-    private readonly query: Query,
-    private readonly stream: NodeJS.WritableStream,
-    private readonly print: (content: string) => void,
-    options: SummaryOptions = {}
-  ) {
+  /**
+   * Creates a new SummaryPrinter instance
+   *
+   * @param params - Initialisation object
+   * @param params.stream - The stream being written to, used for feature detection
+   * @param params.print - A function to output content to the stream
+   * @param params.options - Options for the output
+   */
+  constructor({
+    stream = process.stdout,
+    print = (content) => stream.write(content),
+    options = {},
+  }: {
+    stream?: NodeJS.WritableStream
+    print?: (content: string) => void
+    options?: SummaryOptions
+  } = {}) {
+    this.stream = stream
+    this.print = print
     this.println = (content: string = '') => this.print(`${content}\n`)
     this.options = {
       ...DEFAULT_OPTIONS,
@@ -58,7 +82,46 @@ export class SummaryPrinter {
     }
   }
 
-  public printSummary() {
+  /**
+   * Processes a Cucumber message envelope and prints if appropriate
+   *
+   * @param envelope - The Cucumber message envelope to process
+   */
+  public update(envelope: Envelope) {
+    this.query.update(envelope)
+    if (envelope.testRunFinished) {
+      this.printSummary()
+    }
+  }
+
+  /**
+   * Immediately print a summary from pre-populated Query object
+   *
+   * @param query - A pre-populated Query object to be summarised
+   * @param params - See constructor
+   */
+  public static summarise(
+    query: Query,
+    {
+      stream = process.stdout,
+      print = (content) => stream.write(content),
+      options = {},
+    }: {
+      stream?: NodeJS.WritableStream
+      print?: (content: string) => void
+      options?: SummaryOptions
+    } = {}
+  ) {
+    const printer = new SummaryPrinter({
+      stream,
+      print,
+      options,
+    })
+    printer.query = query
+    printer.printSummary()
+  }
+
+  private printSummary() {
     this.printNonPassingScenarios()
     this.printUnknownParameterTypes()
     this.printNonPassingGlobalHooks()

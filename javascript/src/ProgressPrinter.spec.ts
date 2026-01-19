@@ -47,13 +47,13 @@ describe('ProgressPrinter', async () => {
 
         it(suiteName, async () => {
           let content = ''
-          const printer = new ProgressPrinter(
-            fakeStream,
-            (chunk) => {
+          const printer = new ProgressPrinter({
+            stream: fakeStream,
+            print: (chunk) => {
               content += chunk
             },
-            options
-          )
+            options,
+          })
 
           await pipeline(
             fs.createReadStream(ndjsonFile, { encoding: 'utf-8' }),
@@ -81,17 +81,18 @@ describe('ProgressPrinter', async () => {
   }
 
   describe('summarise', () => {
-    it('should append a summary on request', async () => {
+    it('should append a summary when the option is enabled', async () => {
       let content = ''
-      const printer = new ProgressPrinter(
-        fakeStream,
-        (chunk) => {
+      const printer = new ProgressPrinter({
+        stream: fakeStream,
+        print: (chunk) => {
           content += chunk
         },
-        {
-          theme: {},
-        }
-      )
+        options: {
+          theme: CUCUMBER_THEME,
+          summarise: true,
+        },
+      })
 
       const ndjsonFile = path.join(__dirname, '..', '..', 'testdata', 'src', 'minimal.ndjson')
       await pipeline(
@@ -108,13 +109,16 @@ describe('ProgressPrinter', async () => {
         })
       )
 
-      printer.summarise()
+      const expectedProgress = fs.readFileSync(
+        ndjsonFile.replace('.ndjson', `.cucumber.progress.log`),
+        { encoding: 'utf-8' }
+      )
+      const expectedSummary = fs.readFileSync(
+        ndjsonFile.replace('.ndjson', `.cucumber.summary.log`),
+        { encoding: 'utf-8' }
+      )
 
-      const expectedSummary = fs.readFileSync(ndjsonFile.replace('.ndjson', `.plain.summary.log`), {
-        encoding: 'utf-8',
-      })
-
-      expect(content).to.have.string(expectedSummary)
+      expect(content).to.eq(expectedProgress + expectedSummary)
     })
   })
 })
