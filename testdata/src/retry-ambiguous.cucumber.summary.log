@@ -1,11 +1,11 @@
 
-[31mAmbiguous scenarios:[39m
+[35mAmbiguous scenarios:[39m
   1) Test cases won't retry when the status is AMBIGUOUS [90m# samples/retry-ambiguous/retry-ambiguous.feature:2[39m
-       [31m[1mGiven [22man ambiguous step[39m
+       [35m[1mGiven [22man ambiguous step[39m
            Multiple matching step definitions found:
              • an ambiguous step [90m# samples/retry-ambiguous/retry-ambiguous.ts:3[39m
              • an ambiguous step [90m# samples/retry-ambiguous/retry-ambiguous.ts:7[39m
 
-1 scenarios ([31m1 ambiguous[39m)
-1 steps ([31m1 ambiguous[39m)
+1 scenarios ([35m1 ambiguous[39m)
+1 steps ([35m1 ambiguous[39m)
 0m 0.5s (0m 0.0s executing your code)
