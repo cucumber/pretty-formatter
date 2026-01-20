@@ -45,3 +45,11 @@
         [34mhttps://cucumber.io[39m
 
     [32m[1mWhen [22m[3ma link to [23m[1m"https://cucumber.io"[22m[3m is attached[23m[39m [90m# samples/attachments/attachments.ts:47[39m
+
+  [44m[1mScenario:[22m [3mAttaching during a failed step[23m[49m                                             [90m# samples/attachments/attachments.feature:38[39m
+
+        [34mhello[39m
+
+    [31m[1mWhen [22m[3mthe string [23m[1m"hello"[22m[3m is attached as [23m[1m"application/octet-stream"[22m[3m before a failure[23m[39m [90m# samples/attachments/attachments.ts:51[39m
+        [31mError: whoops[39m
+        [31msamples/attachments/attachments.feature:39[39m

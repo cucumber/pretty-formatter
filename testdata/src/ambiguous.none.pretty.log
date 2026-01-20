@@ -5,4 +5,4 @@ Feature: Ambiguous steps
     Given a step with multiple definitions
         Multiple matching step definitions found:
             ^a (.*?) with (.*?)$ # samples/ambiguous/ambiguous.ts:3
-            ^a step with (.*)$ # samples/ambiguous/ambiguous.ts:7
+            ^a step with (.*?)$ # samples/ambiguous/ambiguous.ts:7

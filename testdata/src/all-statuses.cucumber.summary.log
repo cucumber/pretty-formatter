@@ -1,0 +1,32 @@
+
+[33mPending scenarios:[39m
+  1) Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+       [33m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+
+[33mUndefined scenarios:[39m
+  1) Undefined [90m# samples/all-statuses/all-statuses.feature:26[39m
+       [33m[1mAnd [22man undefined step[39m
+
+[35mAmbiguous scenarios:[39m
+  1) Ambiguous [90m# samples/all-statuses/all-statuses.feature:31[39m
+       [35m[1mAnd [22man ambiguous step[39m
+           Multiple matching step definitions found:
+             • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:17[39m
+             • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:19[39m
+
+[31mFailed scenarios:[39m
+  1) Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+       [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+           [31mError: whoops[39m
+           [31msamples/all-statuses/all-statuses.feature:13[39m
+
+6 scenarios ([32m1 passed[39m, [36m1 skipped[39m, [33m1 pending[39m, [33m1 undefined[39m, [35m1 ambiguous[39m, [31m1 failed[39m)
+18 steps ([32m8 passed[39m, [36m6 skipped[39m, [33m1 pending[39m, [33m1 undefined[39m, [35m1 ambiguous[39m, [31m1 failed[39m)
+0m 0.49s (0m 0.11s executing your code)
+
+You can implement missing steps with the snippets below:
+
+Given("an undefined step", () => {
+  return "pending"
+})
+
