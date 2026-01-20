@@ -5,4 +5,4 @@
     [35m[1mGiven [22m[3ma step with multiple definitions[23m[39m
         Multiple matching step definitions found:
           • ^a (.*?) with (.*?)$ [90m# samples/ambiguous/ambiguous.ts:3[39m
-          • ^a step with (.*)$ [90m# samples/ambiguous/ambiguous.ts:7[39m
+          • ^a step with (.*?)$ [90m# samples/ambiguous/ambiguous.ts:7[39m
