@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [JavaScript] BREAKING CHANGE: Expose `PrettyPrinter` rather than a high-level formatter ([#40](https://github.com/cucumber/pretty-formatter/pull/40))
 - [JavaScript] Publish package in CommonJS format ([#40](https://github.com/cucumber/pretty-formatter/pull/40))
-- Use magenta for ambiguous ([#71](https://github.com/cucumber/pretty-formatter/pull/71))
+- Overhaul status colours ([#71](https://github.com/cucumber/pretty-formatter/pull/71), [#72](https://github.com/cucumber/pretty-formatter/pull/72))
 
 ### Fixed
 - [Java] Correct attempt count for retries ([#40](https://github.com/cucumber/pretty-formatter/pull/40))

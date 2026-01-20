@@ -6,9 +6,9 @@ const CUCUMBER_STATUS_COLORS: Record<TestStepResultStatus, Style> = {
   [TestStepResultStatus.AMBIGUOUS]: 'magenta',
   [TestStepResultStatus.FAILED]: 'red',
   [TestStepResultStatus.PASSED]: 'green',
-  [TestStepResultStatus.PENDING]: 'yellow',
-  [TestStepResultStatus.SKIPPED]: 'cyan',
-  [TestStepResultStatus.UNDEFINED]: 'yellow',
+  [TestStepResultStatus.PENDING]: 'cyan',
+  [TestStepResultStatus.SKIPPED]: 'yellow',
+  [TestStepResultStatus.UNDEFINED]: 'blue',
   [TestStepResultStatus.UNKNOWN]: 'gray',
 }
 
