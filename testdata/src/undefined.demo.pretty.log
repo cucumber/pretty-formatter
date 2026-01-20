@@ -2,15 +2,15 @@
 [44m[1mFeature:[22m [3mUndefined steps[23m[49m
 
   [44m[1mScenario:[22m [3mAn undefined step causes a failure[23m[49m [90m# samples/undefined/undefined.feature:8[39m
-    [33m[1mGiven [22m[3ma step that is yet to be defined[23m[39m
+    [34m[1mGiven [22m[3ma step that is yet to be defined[23m[39m
 
   [44m[1mScenario:[22m [3mSteps before undefined steps are executed[23m[49m [90m# samples/undefined/undefined.feature:11[39m
     [32m[1mGiven [22m[3man implemented step[23m[39m                         [90m# samples/undefined/undefined.ts:3[39m
-    [33m[1mAnd [22m[3ma step that is yet to be defined[23m[39m
+    [34m[1mAnd [22m[3ma step that is yet to be defined[23m[39m
 
   [44m[1mScenario:[22m [3mSteps after undefined steps are skipped[23m[49m [90m# samples/undefined/undefined.feature:15[39m
-    [33m[1mGiven [22m[3ma step that is yet to be defined[23m[39m
-    [36m[1mAnd [22m[3ma step that will be skipped[23m[39m                 [90m# samples/undefined/undefined.ts:7[39m
+    [34m[1mGiven [22m[3ma step that is yet to be defined[23m[39m
+    [33m[1mAnd [22m[3ma step that will be skipped[23m[39m                 [90m# samples/undefined/undefined.ts:7[39m
 
   [44m[1mScenario:[22m [3mSnippets reflect parameter types[23m[49m [90m# samples/undefined/undefined.feature:19[39m
-    [33m[1mGiven [22m[3ma list of 8 things[23m[39m
+    [34m[1mGiven [22m[3ma list of 8 things[23m[39m

@@ -2,4 +2,4 @@
 [44m[1mFeature:[22m [3mParameter Types[23m[49m
 
   [44m[1mScenario:[22m [3mundefined parameter type[23m[49m        [90m# samples/unknown-parameter-type/unknown-parameter-type.feature:6[39m
-    [33m[1mGiven [22m[3mCDG is closed because of a strike[23m[39m
+    [34m[1mGiven [22m[3mCDG is closed because of a strike[23m[39m

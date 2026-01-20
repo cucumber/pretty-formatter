@@ -2,5 +2,5 @@
 [44m[1mFeature:[22m [3mRetry - With Pending Steps[23m[49m
 
   [44m[1mScenario:[22m [3mTest cases won't retry when the status is PENDING[23m[49m [90m# samples/retry-pending/retry-pending.feature:2[39m
-    [33m[1mGiven [22m[3ma pending step[23m[39m                                      [90m# samples/retry-pending/retry-pending.ts:3[39m
-        [33mTODO[39m
+    [36m[1mGiven [22m[3ma pending step[23m[39m                                      [90m# samples/retry-pending/retry-pending.ts:3[39m
+        [36mTODO[39m

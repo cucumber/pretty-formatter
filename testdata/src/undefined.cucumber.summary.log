@@ -1,16 +1,16 @@
 
-[33mUndefined scenarios:[39m
+[34mUndefined scenarios:[39m
   1) An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
-       [33m[1mGiven [22ma step that is yet to be defined[39m
+       [34m[1mGiven [22ma step that is yet to be defined[39m
   2) Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:11[39m
-       [33m[1mAnd [22ma step that is yet to be defined[39m
+       [34m[1mAnd [22ma step that is yet to be defined[39m
   3) Steps after undefined steps are skipped [90m# samples/undefined/undefined.feature:15[39m
-       [33m[1mGiven [22ma step that is yet to be defined[39m
+       [34m[1mGiven [22ma step that is yet to be defined[39m
   4) Snippets reflect parameter types [90m# samples/undefined/undefined.feature:19[39m
-       [33m[1mGiven [22ma list of 8 things[39m
+       [34m[1mGiven [22ma list of 8 things[39m
 
-4 scenarios ([33m4 undefined[39m)
-6 steps ([32m1 passed[39m, [36m1 skipped[39m, [33m4 undefined[39m)
+4 scenarios ([34m4 undefined[39m)
+6 steps ([32m1 passed[39m, [33m1 skipped[39m, [34m4 undefined[39m)
 0m 0.21s (0m 0.1s executing your code)
 
 You can implement missing steps with the snippets below:

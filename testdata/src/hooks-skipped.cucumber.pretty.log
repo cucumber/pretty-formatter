@@ -2,11 +2,11 @@
 [1mFeature:[22m Hooks and skipped
 
   [1mScenario:[22m Skip from a step  [90m# samples/hooks-skipped/hooks-skipped.feature:5[39m
-    [36m↷[39m [36m[1mGiven [22ma step that skips[39m [90m# samples/hooks-skipped/hooks-skipped.ts:19[39m
+    [33m↷[39m [33m[1mGiven [22ma step that skips[39m [90m# samples/hooks-skipped/hooks-skipped.ts:19[39m
 
   @skip-before
   [1mScenario:[22m Skip from a Before hook [90m# samples/hooks-skipped/hooks-skipped.feature:13[39m
-    [36m↷[39m [36m[1mGiven [22ma normal step[39m           [90m# samples/hooks-skipped/hooks-skipped.ts:15[39m
+    [33m↷[39m [33m[1mGiven [22ma normal step[39m           [90m# samples/hooks-skipped/hooks-skipped.ts:15[39m
 
   @skip-after
   [1mScenario:[22m Skip from an After hook [90m# samples/hooks-skipped/hooks-skipped.feature:21[39m
