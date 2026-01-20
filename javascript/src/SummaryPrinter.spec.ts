@@ -5,10 +5,10 @@ import { pipeline } from 'node:stream/promises'
 
 import { NdjsonToMessageStream } from '@cucumber/message-streams'
 import { Envelope } from '@cucumber/messages'
-import { Query } from '@cucumber/query'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
+import { makeFakeStream } from '../test/makeFakeStream'
 import { SummaryPrinter } from './SummaryPrinter'
 import { CUCUMBER_THEME, PLAIN_THEME } from './theme'
 import type { SummaryOptions } from './types'
@@ -43,29 +43,18 @@ describe('SummaryPrinter', async () => {
     },
   ]
 
-  // just enough so Node.js internals consider it a color-supporting stream
-  const fakeStream = {
-    _writableState: {},
-    isTTY: true,
-    getColorDepth: () => 3,
-  } as unknown as NodeJS.WritableStream
-
   for (const { name, options } of variants) {
     describe(name, () => {
       for (const ndjsonFile of ndjsonFiles) {
         const [suiteName] = path.basename(ndjsonFile).split('.')
 
         it(suiteName, async () => {
-          const query = new Query()
           let content = ''
-          const printer = new SummaryPrinter(
-            query,
-            fakeStream,
-            (chunk) => {
-              content += chunk
-            },
-            options
-          )
+          const stream = makeFakeStream((chunk) => (content += chunk))
+          const printer = new SummaryPrinter({
+            stream,
+            options,
+          })
 
           await pipeline(
             fs.createReadStream(ndjsonFile, { encoding: 'utf-8' }),
@@ -73,13 +62,11 @@ describe('SummaryPrinter', async () => {
             new Writable({
               objectMode: true,
               write(envelope: Envelope, _: BufferEncoding, callback) {
-                query.update(envelope)
+                printer.update(envelope)
                 callback()
               },
             })
           )
-
-          printer.printSummary()
 
           const expectedPath = ndjsonFile.replace('.ndjson', `.${name}.summary.log`)
           if (updateExpectedFiles) {

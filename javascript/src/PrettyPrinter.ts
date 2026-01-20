@@ -47,14 +47,25 @@ const DEFAULT_OPTIONS: Required<PrettyOptions> = {
   includeAttachments: true,
   includeFeatureLine: true,
   includeRuleLine: true,
+  summarise: false,
   useStatusIcon: true,
   theme: CUCUMBER_THEME,
 }
 
+/**
+ * Prints test progress in a prettified Gherkin-style format
+ *
+ * @remarks
+ * Outputs features, rules, scenarios, and steps with proper indentation and styling.
+ * Shows step results, attachments, and error details as tests execute. This is the
+ * primary formatter for readable console output during test runs.
+ */
 export class PrettyPrinter {
+  private readonly stream: NodeJS.WritableStream
+  private readonly print: (content: string) => void
   private readonly println: (content?: string) => void
-  private readonly query: Query = new Query()
   private readonly options: Required<PrettyOptions>
+  private readonly query: Query = new Query()
   private readonly scenarioIndentByTestCaseStartedId: Map<string, number> = new Map<
     string,
     number
@@ -65,18 +76,34 @@ export class PrettyPrinter {
   >()
   private readonly encounteredFeaturesAndRules: Set<Feature | Rule> = new Set()
 
-  constructor(
-    private readonly stream: NodeJS.WritableStream,
-    private readonly print: (content: string) => void,
-    options: PrettyOptions = {}
-  ) {
-    this.println = (content: string = '') => this.print(`${content}\n`)
+  /**
+   * Creates a new PrettyPrinter instance
+   *
+   * @param params -Initialisation object
+   * @param params.stream - The writable stream used for TTY detection and styling
+   * @param params.options - Configuration options for the pretty output
+   */
+  constructor({
+    stream = process.stdout,
+    options = {},
+  }: {
+    stream?: NodeJS.WritableStream
+    options?: PrettyOptions
+  } = {}) {
+    this.stream = stream
+    this.print = (content) => stream.write(content)
+    this.println = (content = '') => this.print(`${content}\n`)
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
     }
   }
 
+  /**
+   * Processes a Cucumber message envelope and prints if appropriate
+   *
+   * @param message - The Cucumber message envelope to process
+   */
   update(message: Envelope) {
     this.query.update(message)
 
@@ -98,8 +125,11 @@ export class PrettyPrinter {
     }
   }
 
-  summarise() {
-    new SummaryPrinter(this.query, this.stream, this.print, this.options).printSummary()
+  private summarise() {
+    SummaryPrinter.summarise(this.query, {
+      stream: this.stream,
+      options: this.options,
+    })
   }
 
   private resolveScenario(testCaseStarted: TestCaseStarted) {
@@ -407,6 +437,9 @@ export class PrettyPrinter {
     const content = formatTestRunFinishedError(testRunFinished, this.options.theme, this.stream)
     if (content) {
       this.println(content)
+    }
+    if (this.options.summarise) {
+      this.summarise()
     }
   }
 }

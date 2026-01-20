@@ -8,6 +8,7 @@ import { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
+import { makeFakeStream } from '../test/makeFakeStream'
 import { ProgressPrinter } from './ProgressPrinter'
 import { CUCUMBER_THEME, PLAIN_THEME } from './theme'
 import type { ProgressOptions } from './types'
@@ -33,13 +34,6 @@ describe('ProgressPrinter', async () => {
     },
   ]
 
-  // just enough so Node.js internals consider it a color-supporting stream
-  const fakeStream = {
-    _writableState: {},
-    isTTY: true,
-    getColorDepth: () => 3,
-  } as unknown as NodeJS.WritableStream
-
   for (const { name, options } of variants) {
     describe(name, () => {
       for (const ndjsonFile of ndjsonFiles) {
@@ -47,13 +41,11 @@ describe('ProgressPrinter', async () => {
 
         it(suiteName, async () => {
           let content = ''
-          const printer = new ProgressPrinter(
-            fakeStream,
-            (chunk) => {
-              content += chunk
-            },
-            options
-          )
+          const stream = makeFakeStream((chunk) => (content += chunk))
+          const printer = new ProgressPrinter({
+            stream,
+            options,
+          })
 
           await pipeline(
             fs.createReadStream(ndjsonFile, { encoding: 'utf-8' }),
@@ -81,17 +73,16 @@ describe('ProgressPrinter', async () => {
   }
 
   describe('summarise', () => {
-    it('should append a summary on request', async () => {
+    it('should append a summary when the option is enabled', async () => {
       let content = ''
-      const printer = new ProgressPrinter(
-        fakeStream,
-        (chunk) => {
-          content += chunk
+      const stream = makeFakeStream((chunk) => (content += chunk))
+      const printer = new ProgressPrinter({
+        stream,
+        options: {
+          theme: CUCUMBER_THEME,
+          summarise: true,
         },
-        {
-          theme: {},
-        }
-      )
+      })
 
       const ndjsonFile = path.join(__dirname, '..', '..', 'testdata', 'src', 'minimal.ndjson')
       await pipeline(
@@ -108,13 +99,16 @@ describe('ProgressPrinter', async () => {
         })
       )
 
-      printer.summarise()
+      const expectedProgress = fs.readFileSync(
+        ndjsonFile.replace('.ndjson', `.cucumber.progress.log`),
+        { encoding: 'utf-8' }
+      )
+      const expectedSummary = fs.readFileSync(
+        ndjsonFile.replace('.ndjson', `.cucumber.summary.log`),
+        { encoding: 'utf-8' }
+      )
 
-      const expectedSummary = fs.readFileSync(ndjsonFile.replace('.ndjson', `.plain.summary.log`), {
-        encoding: 'utf-8',
-      })
-
-      expect(content).to.have.string(expectedSummary)
+      expect(content).to.eq(expectedProgress + expectedSummary)
     })
   })
 })
