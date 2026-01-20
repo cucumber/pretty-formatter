@@ -3,7 +3,7 @@ import { TestStepResultStatus } from '@cucumber/messages'
 import { Style, Theme } from './types'
 
 const CUCUMBER_STATUS_COLORS: Record<TestStepResultStatus, Style> = {
-  [TestStepResultStatus.AMBIGUOUS]: 'red',
+  [TestStepResultStatus.AMBIGUOUS]: 'magenta',
   [TestStepResultStatus.FAILED]: 'red',
   [TestStepResultStatus.PASSED]: 'green',
   [TestStepResultStatus.PENDING]: 'yellow',

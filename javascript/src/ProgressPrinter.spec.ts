@@ -13,6 +13,8 @@ import { ProgressPrinter } from './ProgressPrinter'
 import { CUCUMBER_THEME, PLAIN_THEME } from './theme'
 import type { ProgressOptions } from './types'
 
+const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
+
 describe('ProgressPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
     cwd: path.join(__dirname, '..', '..', 'testdata', 'src'),
@@ -59,12 +61,15 @@ describe('ProgressPrinter', async () => {
             })
           )
 
-          const expectedOutput = fs.readFileSync(
-            ndjsonFile.replace('.ndjson', `.${name}.progress.log`),
-            {
+          const expectedPath = ndjsonFile.replace('.ndjson', `.${name}.progress.log`)
+          if (updateExpectedFiles) {
+            fs.writeFileSync(expectedPath, content, {
               encoding: 'utf-8',
-            }
-          )
+            })
+          }
+          const expectedOutput = fs.readFileSync(expectedPath, {
+            encoding: 'utf-8',
+          })
 
           expect(content).to.eq(expectedOutput)
         })
