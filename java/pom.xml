@@ -63,7 +63,7 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>query</artifactId>
-            <version>[15.0.0-SNAPSHOT,16.0.0)</version>
+            <version>[15.0.0,16.0.0)</version>
         </dependency>
 
         <dependency>
