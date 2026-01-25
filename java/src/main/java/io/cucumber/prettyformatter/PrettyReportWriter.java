@@ -8,7 +8,6 @@ import io.cucumber.messages.types.PickleTag;
 import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.Step;
-import io.cucumber.messages.types.StepDefinition;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStep;

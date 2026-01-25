@@ -1,10 +1,10 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.Convertor;
+import io.cucumber.messages.LocationComparator;
 import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Hook;
 import io.cucumber.messages.types.HookType;
-import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.PickleStep;
 import io.cucumber.messages.types.Snippet;
@@ -29,6 +29,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -36,7 +37,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -52,14 +52,18 @@ import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
 import static java.util.Collections.emptyList;
+import static java.util.Comparator.nullsFirst;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 final class SummaryReportWriter implements AutoCloseable {
+
+
+    private static final Comparator<Pickle> pickleComparator = Comparator.comparing(Pickle::getUri)
+            .thenComparing(pickle -> pickle.getLocation().orElse(null), nullsFirst(new LocationComparator()));
 
     private final Theme theme;
     private final Function<String, String> uriFormatter;
@@ -144,7 +148,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printNonPassingScenarios() {
-        Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus = findAllTestCasesFinishedInCanonicalOrder()
+        var testCaseFinishedByStatus = query.findAllTestCaseFinishedOrderBy(Query::findPickleBy, pickleComparator).stream()
                 .collect(groupingBy(this::getTestStepResultStatusBy));
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
@@ -163,45 +167,44 @@ final class SummaryReportWriter implements AutoCloseable {
         query.findTestCaseStartedBy(testCaseFinished)
                 .map(query::findTestStepFinishedAndTestStepBy)
                 .flatMap(list -> list.stream()
-                        .filter((entry) -> entry.getKey().getTestStepResult().getStatus() == status)
+                        .filter(entry -> entry.getKey().getTestStepResult().getStatus() == status)
                         .findFirst())
                 .ifPresent(responsibleStep -> {
                     TestStepFinished testStepFinished = responsibleStep.getKey();
                     TestStep testStep = responsibleStep.getValue();
 
                     query.findPickleStepBy(testStep)
-                            .ifPresent(pickleStep -> {
-                                query.findStepBy(pickleStep).ifPresent(step -> {
-                                    out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
-                                    pickleStep.getArgument().ifPresent(pickleStepArgument -> {
-                                        pickleStepArgument.getDataTable().ifPresent(pickleTable ->
-                                                out.print(new LineBuilder(theme)
-                                                        .accept(lineBuilder -> PickleTableFormatter.builder()
-                                                                .indentation(9)
-                                                                .build()
-                                                                .formatTo(pickleTable, lineBuilder))
-                                                        .build())
-                                        );
-                                        pickleStepArgument.getDocString().ifPresent(pickleDocString ->
-                                                out.print(new LineBuilder(theme)
-                                                        .accept(lineBuilder -> PickleDocStringFormatter.builder()
-                                                                .indentation(9)
-                                                                .build()
-                                                                .formatTo(pickleDocString, lineBuilder))
-                                                        .build())
-                                        );
-                                    });
-                                    if (status == AMBIGUOUS) {
-                                        out.print(new LineBuilder(theme)
-                                                .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
-                                                        .builder(sourceReferenceFormatter, theme)
-                                                        .indentation(11)
-                                                        .build()
-                                                        .formatTo(query.findStepDefinitionsBy(testStep), lineBuilder))
-                                                .build());
-                                    }
+                            .ifPresent(pickleStep ->
+                                    query.findStepBy(pickleStep).ifPresent(step -> {
+                                out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
+                                pickleStep.getArgument().ifPresent(pickleStepArgument -> {
+                                    pickleStepArgument.getDataTable().ifPresent(pickleTable ->
+                                            out.print(new LineBuilder(theme)
+                                                    .accept(lineBuilder -> PickleTableFormatter.builder()
+                                                            .indentation(9)
+                                                            .build()
+                                                            .formatTo(pickleTable, lineBuilder))
+                                                    .build())
+                                    );
+                                    pickleStepArgument.getDocString().ifPresent(pickleDocString ->
+                                            out.print(new LineBuilder(theme)
+                                                    .accept(lineBuilder -> PickleDocStringFormatter.builder()
+                                                            .indentation(9)
+                                                            .build()
+                                                            .formatTo(pickleDocString, lineBuilder))
+                                                    .build())
+                                    );
                                 });
-                            });
+                                if (status == AMBIGUOUS) {
+                                    out.print(new LineBuilder(theme)
+                                            .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
+                                                    .builder(sourceReferenceFormatter, theme)
+                                                    .indentation(11)
+                                                    .build()
+                                                    .formatTo(query.findStepDefinitionsBy(testStep), lineBuilder))
+                                            .build());
+                                }
+                            }));
 
                     query.findHookBy(testStep)
                             .ifPresent(hook -> {
@@ -257,18 +260,6 @@ final class SummaryReportWriter implements AutoCloseable {
                 .build();
     }
 
-    private Stream<TestCaseFinished> findAllTestCasesFinishedInCanonicalOrder() {
-        return query.findAllTestCaseFinished().stream()
-                .map(testCaseStarted -> {
-                    Optional<Pickle> pickle = query.findPickleBy(testCaseStarted);
-                    String uri = pickle.map(Pickle::getUri).orElse(null);
-                    Long line = pickle.flatMap(query::findLocationOf).map(Location::getLine).orElse(null);
-                    return new OrderableMessage<>(testCaseStarted, uri, line);
-                })
-                .sorted()
-                .map(OrderableMessage::getMessage);
-    }
-
     private void formatScenarioLineTo(TestCaseFinished testCaseFinished, LineBuilder lineBuilder) {
         query.findTestCaseStartedBy(testCaseFinished)
                 .ifPresent(testCaseStarted -> query.findPickleBy(testCaseStarted)
@@ -293,22 +284,14 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private static String formatHookType(HookType hookType) {
-        switch (hookType) {
-            case BEFORE_TEST_RUN:
-                return "BeforeAll";
-            case AFTER_TEST_RUN:
-                return "AfterAll";
-            case BEFORE_TEST_CASE:
-                return "Before";
-            case AFTER_TEST_CASE:
-                return "After";
-            case BEFORE_TEST_STEP:
-                return "BeforeStep";
-            case AFTER_TEST_STEP:
-                return "AfterStep";
-            default:
-                return "Unknown";
-        }
+        return switch (hookType) {
+            case BEFORE_TEST_RUN -> "BeforeAll";
+            case AFTER_TEST_RUN -> "AfterAll";
+            case BEFORE_TEST_CASE -> "Before";
+            case AFTER_TEST_CASE -> "After";
+            case BEFORE_TEST_STEP -> "BeforeStep";
+            case AFTER_TEST_STEP -> "AfterStep";
+        };
     }
 
     private <T> void printFinishedItemByStatus(
@@ -323,13 +306,13 @@ final class SummaryReportWriter implements AutoCloseable {
             return;
         }
         out.println();
-        String finishItemByStatusTitle = String.format("%s %s:", firstLetterCapitalizedName(status), finishedItemName);
+        String finishItemByStatusTitle = "%s %s:".formatted(firstLetterCapitalizedName(status), finishedItemName);
         out.println(theme.style(STEP, status, finishItemByStatusTitle));
-        AtomicInteger index = new AtomicInteger(0);
-        for (T finishedItem : items) {
+        for (int i = 0; i < items.size(); i++) {
+            T finishedItem = items.get(i);
             out.println(new LineBuilder(theme)
                     .append("  ")
-                    .append(String.valueOf(index.incrementAndGet()))
+                    .append(String.valueOf(i + 1))
                     .append(") ")
                     .accept(lineBuilder -> formatFinishedItem.accept(finishedItem, lineBuilder))
                     .build());
@@ -452,7 +435,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private void printDurations() {
         query.findTestRunDuration()
-                .map(testRunDuration -> String.format("%s (%s executing your code)", formatDuration(testRunDuration), formatDuration(getExecutionDuration())))
+                .map(testRunDuration -> "%s (%s executing your code)".formatted(formatDuration(testRunDuration), formatDuration(getExecutionDuration())))
                 .ifPresent(out::println);
     }
 
@@ -471,9 +454,9 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private static String formatDuration(Duration duration) {
         long minutes = duration.toMinutes();
-        long seconds = duration.minusMinutes(minutes).getSeconds();
-        long milliseconds = NANOSECONDS.toMillis(duration.getNano());
-        return String.format("%sm %s.%ss", minutes, seconds, milliseconds);
+        long seconds = duration.toSecondsPart();
+        long milliseconds = duration.toMillisPart();
+        return "%sm %d.%ds".formatted(String.valueOf(minutes), seconds, milliseconds);
     }
 
     private void printUnknownParameterTypes() {
@@ -487,12 +470,12 @@ final class SummaryReportWriter implements AutoCloseable {
         for (UndefinedParameterType undefinedParameterType : undefinedParameterTypes) {
             String name = undefinedParameterType.getName();
             String expression = undefinedParameterType.getExpression();
-            out.println(String.format("  %s) '%s' in '%s'", ++index, name, expression));
+            out.println("  %s) '%s' in '%s'".formatted(++index, name, expression));
         }
     }
 
     private void printSnippets() {
-        Set<Snippet> snippets = findAllTestCasesFinishedInCanonicalOrder()
+        var snippets = query.findAllTestCaseFinishedOrderBy(Query::findPickleBy, pickleComparator).stream()
                 .map(query::findPickleBy)
                 .filter(Optional::isPresent)
                 .map(Optional::get)

@@ -46,7 +46,12 @@ import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_TEXT;
 import static io.cucumber.prettyformatter.Theme.Element.TAG;
 
-public class TestTheme {
+final class TestTheme {
+    
+    private TestTheme(){
+        /* no-op */
+    }
+    
     static Theme demo() {
         return Theme.builder()
                 .style(ATTACHMENT, Ansi.with(FOREGROUND_BLUE), Ansi.with(FOREGROUND_DEFAULT))

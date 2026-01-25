@@ -215,7 +215,7 @@ final class PrettyReportData {
         return query.findPickleBy(testCaseStarted);
     }
 
-    Optional<Long> findLineOf(Pickle pickle) {
+    Optional<Integer> findLineOf(Pickle pickle) {
         return query.findLocationOf(pickle).map(Location::getLine);
     }
 

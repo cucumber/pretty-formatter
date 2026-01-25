@@ -22,23 +22,17 @@ final class AttachmentFormatter {
 
     void formatTo(Attachment attachment, LineBuilder lineBuilder) {
         switch (attachment.getContentEncoding()) {
-            case BASE64:
-                formatBase64Attachment(attachment, lineBuilder);
-                break;
-            case IDENTITY:
-                formatTextAttachment(attachment, lineBuilder);
-                break;
+            case BASE64 -> formatBase64Attachment(attachment, lineBuilder);
+            case IDENTITY -> formatTextAttachment(attachment, lineBuilder);
         }
     }
 
     private void formatBase64Attachment(Attachment attachment, LineBuilder lineBuilder) {
         int bytes = (attachment.getBody().length() / 4) * 3;
-        String line;
-        if (attachment.getFileName().isPresent()) {
-            line = String.format("Embedding %s [%s %d bytes]", attachment.getFileName().get(), attachment.getMediaType(), bytes);
-        } else {
-            line = String.format("Embedding [%s %d bytes]", attachment.getMediaType(), bytes);
-        }
+        String line = attachment.getFileName().isPresent() //
+                ? "Embedding %s [%s %d bytes]".formatted(attachment.getFileName().get(), attachment.getMediaType(), bytes) //
+                : "Embedding [%s %d bytes]".formatted(attachment.getMediaType(), bytes);
+
         lineBuilder.indent(indentation)
                 .append(ATTACHMENT, line)
                 .newLine();

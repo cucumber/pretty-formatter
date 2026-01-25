@@ -30,7 +30,7 @@ final class PickleDocStringFormatter {
                 .newLine();
 
         // Doc strings are normalized to \n by Gherkin.
-        String[] lines = pickleDocString.getContent().split("\\n");
+        String[] lines = pickleDocString.getContent().split("\\n", 0);
         for (String line : lines) {
             lineBuilder.indent(indentation).
                     begin(DOC_STRING)

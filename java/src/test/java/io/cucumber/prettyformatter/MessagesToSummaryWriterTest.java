@@ -3,6 +3,7 @@ package io.cucumber.prettyformatter;
 import io.cucumber.messages.types.Envelope;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestRunStarted;
+import io.cucumber.messages.types.Timestamp;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -26,19 +27,23 @@ class MessagesToSummaryWriterTest {
                 Envelope.of(new TestRunStarted(toMessage(started), "some-id")),
                 Envelope.of(new TestRunFinished(null, true, toMessage(finished), null, "some-id")));
 
-        assertThat(out).isEqualToNormalizingNewlines("\n" +
-                "0 scenarios\n" +
-                "0 steps\n" +
-                "0m 20.0s (0m 0.0s executing your code)\n"
+        assertThat(out).isEqualToNormalizingNewlines("""
+                
+                0 scenarios
+                0 steps
+                0m 20.0s (0m 0.0s executing your code)
+                """
         );
     }
 
     @Test
     void it_writes_no_message_to_summary() throws IOException {
         String out = renderAsSummary();
-        assertThat(out).isEqualToNormalizingNewlines("\n" +
-                "0 scenarios\n" +
-                "0 steps\n");
+        assertThat(out).isEqualToNormalizingNewlines("""
+                
+                0 scenarios
+                0 steps
+                """);
     }
 
     @Test
@@ -46,7 +51,9 @@ class MessagesToSummaryWriterTest {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         MessagesToSummaryWriter writer = create(bytes);
         writer.close();
-        assertThrows(IOException.class, () -> writer.write(null));
+        assertThrows(IOException.class, () -> writer.write(
+                Envelope.of(new TestRunStarted(new Timestamp(0L, 0), ""))
+        ));
     }
 
     @Test
@@ -65,7 +72,7 @@ class MessagesToSummaryWriterTest {
             }
         }
 
-        return new String(bytes.toByteArray(), UTF_8);
+        return bytes.toString(UTF_8);
     }
 
     private static MessagesToSummaryWriter create(ByteArrayOutputStream bytes) {

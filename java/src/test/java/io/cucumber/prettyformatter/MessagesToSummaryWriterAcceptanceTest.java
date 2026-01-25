@@ -1,17 +1,15 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.compatibilitykit.MessageOrderer;
-import io.cucumber.messages.NdjsonToMessageIterable;
+import io.cucumber.messages.NdjsonToMessageReader;
 import io.cucumber.messages.ndjson.Deserializer;
 import io.cucumber.messages.types.Envelope;
-import io.cucumber.prettyformatter.MessagesToSummaryWriter.Builder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,10 +24,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.cucumber.prettyformatter.MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS;
-import static io.cucumber.prettyformatter.MessagesToSummaryWriter.builder;
 import static io.cucumber.prettyformatter.Theme.cucumber;
 import static io.cucumber.prettyformatter.Theme.plain;
-import static java.nio.file.Files.readAllBytes;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessagesToSummaryWriterAcceptanceTest {
@@ -38,13 +36,13 @@ class MessagesToSummaryWriterAcceptanceTest {
     private static final MessageOrderer messageOrderer = new MessageOrderer(random);
 
     static List<TestCase> acceptance() throws IOException {
-        Map<String, Builder> themes = new LinkedHashMap<>();
-        themes.put("cucumber", builder().theme(cucumber()));
-        themes.put("plain", builder().theme(plain()));
-        themes.put("exclude-attachments", builder()
+        Map<String, MessagesToSummaryWriter.Builder> themes = new LinkedHashMap<>();
+        themes.put("cucumber", MessagesToSummaryWriter.builder().theme(cucumber()));
+        themes.put("plain", MessagesToSummaryWriter.builder().theme(plain()));
+        themes.put("exclude-attachments", MessagesToSummaryWriter.builder()
                 .theme(plain())
                 .feature(INCLUDE_ATTACHMENTS, false));
-        
+
         List<Path> sources = getSources();
 
         List<TestCase> testCases = new ArrayList<>();
@@ -63,24 +61,23 @@ class MessagesToSummaryWriterAcceptanceTest {
         }
     }
 
-    private static ByteArrayOutputStream writeSummaryReport(TestCase testCase, Builder builder, Consumer<List<Envelope>> orderer) throws IOException {
+    private static ByteArrayOutputStream writeSummaryReport(TestCase testCase, MessagesToSummaryWriter.Builder builder, Consumer<List<Envelope>> orderer) throws IOException {
         return writeSummaryReport(testCase, new ByteArrayOutputStream(), builder, orderer);
     }
 
-    private static <T extends OutputStream> T writeSummaryReport(TestCase testCase, T out, Builder builder, Consumer<List<Envelope>> orderer) throws IOException {
-        List<Envelope> messages = new ArrayList<>();
-        try (InputStream in = Files.newInputStream(testCase.source)) {
-            try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, new Deserializer())) {
-                envelopes.forEach(messages::add);
+    private static <T extends OutputStream> T writeSummaryReport(TestCase testCase, T out, MessagesToSummaryWriter.Builder builder, Consumer<List<Envelope>> orderer) throws IOException {
+        try (var in = Files.newInputStream(testCase.source)) {
+            try (var reader = new NdjsonToMessageReader(in, new Deserializer())) {
+                List<Envelope> messages = reader.lines().collect(Collectors.toList());
+                orderer.accept(messages);
+                try (var writer = builder.build(out)) {
+                    for (Envelope envelope : messages) {
+                        writer.write(envelope);
+                    }
+                }
             }
         }
-        orderer.accept(messages);
 
-        try (MessagesToSummaryWriter writer = builder.build(out)) {
-            for (Envelope envelope : messages) {
-                writer.write(envelope);
-            }
-        }
         return out;
     }
 
@@ -88,14 +85,14 @@ class MessagesToSummaryWriterAcceptanceTest {
     @MethodSource("acceptance")
     void test(TestCase testCase) throws IOException {
         ByteArrayOutputStream bytes = writeSummaryReport(testCase, testCase.builder, messageOrderer.originalOrder());
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
+        assertThat(bytes.toString(UTF_8)).isEqualToIgnoringNewLines(Files.readString(testCase.expected));
     }
 
     @ParameterizedTest
     @MethodSource("acceptance")
     void testWithSimulatedParallelExecution(TestCase testCase) throws IOException {
         ByteArrayOutputStream bytes = writeSummaryReport(testCase, testCase.builder, messageOrderer.simulateParallelExecution());
-        assertThat(bytes.toString()).isEqualToIgnoringNewLines(new String(readAllBytes(testCase.expected)));
+        assertThat(bytes.toString(UTF_8)).isEqualToIgnoringNewLines(Files.readString(testCase.expected));
     }
 
     @ParameterizedTest
@@ -112,18 +109,18 @@ class MessagesToSummaryWriterAcceptanceTest {
     static class TestCase {
         private final Path source;
         private final String themeName;
-        private final Builder builder;
+        private final MessagesToSummaryWriter.Builder builder;
         private final Path expected;
 
         private final String name;
 
-        TestCase(Path source, String themeName, Builder builder) {
+        TestCase(Path source, String themeName, MessagesToSummaryWriter.Builder builder) {
             this.source = source;
             this.themeName = themeName;
             this.builder = builder;
             String fileName = source.getFileName().toString();
             this.name = fileName.substring(0, fileName.lastIndexOf(".ndjson"));
-            this.expected = source.getParent().resolve(name + "." + themeName + ".summary.log");
+            this.expected = requireNonNull(source.getParent()).resolve(name + "." + themeName + ".summary.log");
         }
 
         @Override
