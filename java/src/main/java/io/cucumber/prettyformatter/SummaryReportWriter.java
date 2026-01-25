@@ -1,10 +1,10 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.Convertor;
+import io.cucumber.messages.LocationComparator;
 import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Hook;
 import io.cucumber.messages.types.HookType;
-import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.PickleStep;
 import io.cucumber.messages.types.Snippet;
@@ -29,6 +29,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -51,6 +52,7 @@ import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
 import static java.util.Collections.emptyList;
+import static java.util.Comparator.nullsFirst;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.counting;
@@ -58,6 +60,10 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 final class SummaryReportWriter implements AutoCloseable {
+
+
+    private static final Comparator<Pickle> pickleComparator = Comparator.comparing(Pickle::getUri)
+            .thenComparing(pickle -> pickle.getLocation().orElse(null), nullsFirst(new LocationComparator()));
 
     private final Theme theme;
     private final Function<String, String> uriFormatter;
@@ -142,7 +148,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printNonPassingScenarios() {
-        Map<TestStepResultStatus, List<TestCaseFinished>> testCaseFinishedByStatus = findAllTestCasesFinishedInCanonicalOrder()
+        var testCaseFinishedByStatus = query.findAllTestCaseFinishedOrderBy(Query::findPickleBy, pickleComparator).stream()
                 .collect(groupingBy(this::getTestStepResultStatusBy));
 
         EnumSet<TestStepResultStatus> excluded = EnumSet.of(PASSED, SKIPPED);
@@ -252,18 +258,6 @@ final class SummaryReportWriter implements AutoCloseable {
                 .end(STEP, status)
                 .accept(lineBuilder -> formatLocationCommentTo(testStep, lineBuilder))
                 .build();
-    }
-
-    private Stream<TestCaseFinished> findAllTestCasesFinishedInCanonicalOrder() {
-        return query.findAllTestCaseFinished().stream()
-                .map(testCaseStarted -> {
-                    Optional<Pickle> pickle = query.findPickleBy(testCaseStarted);
-                    String uri = pickle.map(Pickle::getUri).orElse(null);
-                    Integer line = pickle.flatMap(query::findLocationOf).map(Location::getLine).orElse(null);
-                    return new OrderableMessage<>(testCaseStarted, uri, line);
-                })
-                .sorted()
-                .map(OrderableMessage::getMessage);
     }
 
     private void formatScenarioLineTo(TestCaseFinished testCaseFinished, LineBuilder lineBuilder) {
@@ -481,7 +475,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printSnippets() {
-        Set<Snippet> snippets = findAllTestCasesFinishedInCanonicalOrder()
+        var snippets = query.findAllTestCaseFinishedOrderBy(Query::findPickleBy, pickleComparator).stream()
                 .map(query::findPickleBy)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
