@@ -3,7 +3,7 @@ Scenario: With an valid attachment in the hook and a passed step # samples/hooks
 
       Embedding [image/svg+xml 2199 bytes]
 
-  When a step passes                                             # samples/hooks-attachment/hooks-attachment.ts:9
+  When a step passes                                             # samples/hooks-attachment/hooks-attachment.ts:11
 
       Embedding [image/svg+xml 2199 bytes]
 

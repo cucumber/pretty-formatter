@@ -2,14 +2,12 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Attachment;
 import io.cucumber.messages.types.Feature;
-import io.cucumber.messages.types.Group;
 import io.cucumber.messages.types.Pickle;
 import io.cucumber.messages.types.PickleStep;
 import io.cucumber.messages.types.PickleTag;
 import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
 import io.cucumber.messages.types.Step;
-import io.cucumber.messages.types.StepMatchArgument;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestStep;
@@ -17,25 +15,21 @@ import io.cucumber.messages.types.TestStepFinished;
 import io.cucumber.messages.types.TestStepResult;
 import io.cucumber.messages.types.TestStepResultStatus;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+import static io.cucumber.messages.types.TestStepResultStatus.AMBIGUOUS;
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_ATTACHMENTS;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.USE_STATUS_ICON;
-import static io.cucumber.prettyformatter.Theme.Element.ATTACHMENT;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.FEATURE_NAME;
@@ -48,11 +42,8 @@ import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_KEYWORD;
 import static io.cucumber.prettyformatter.Theme.Element.SCENARIO_NAME;
 import static io.cucumber.prettyformatter.Theme.Element.STATUS_ICON;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
-import static io.cucumber.prettyformatter.Theme.Element.STEP_ARGUMENT;
 import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
-import static io.cucumber.prettyformatter.Theme.Element.STEP_TEXT;
 import static io.cucumber.prettyformatter.Theme.Element.TAG;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -60,6 +51,7 @@ final class PrettyReportWriter implements AutoCloseable {
 
     private final Theme theme;
     private final SourceReferenceFormatter sourceReferenceFormatter;
+    private final StepTextFormatter stepTextFormatter;
     private final Function<String, String> uriFormatter;
     private final PrintWriter writer;
     private final Set<MessagesToPrettyWriter.PrettyFeature> features;
@@ -69,7 +61,7 @@ final class PrettyReportWriter implements AutoCloseable {
             OutputStream out,
             Theme theme,
             Function<String, String> uriFormatter,
-            Set<MessagesToPrettyWriter.PrettyFeature> features, 
+            Set<MessagesToPrettyWriter.PrettyFeature> features,
             PrettyReportData data
 
     ) {
@@ -79,6 +71,7 @@ final class PrettyReportWriter implements AutoCloseable {
         this.features = features;
         this.data = data;
         this.sourceReferenceFormatter = new SourceReferenceFormatter(uriFormatter);
+        this.stepTextFormatter = new StepTextFormatter();
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -169,6 +162,7 @@ final class PrettyReportWriter implements AutoCloseable {
 
     void handleTestStepFinished(TestStepFinished event) {
         printStep(event);
+        printAmbiguousStep(event);
         printException(event);
         writer.flush();
     }
@@ -206,7 +200,7 @@ final class PrettyReportWriter implements AutoCloseable {
                 .accept(lineBuilder -> formatStatusIcon(lineBuilder, status))
                 .begin(STEP, status)
                 .append(STEP_KEYWORD, step.getKeyword())
-                .accept(lineBuilder -> formatStepText(lineBuilder, testStep, pickleStep))
+                .accept(lineBuilder -> stepTextFormatter.formatTo(testStep, pickleStep, lineBuilder))
                 .end(STEP, status)
                 .accept(lineBuilder -> formatLocation(testStep)
                         .ifPresent(location -> lineBuilder
@@ -228,45 +222,24 @@ final class PrettyReportWriter implements AutoCloseable {
                 .append(" ");
     }
 
-    private void formatStepText(LineBuilder line, TestStep testStep, PickleStep pickleStep) {
-        formatStepText(line, pickleStep.getText(), getStepMatchArguments(testStep));
-    }
-
-    private List<StepMatchArgument> getStepMatchArguments(TestStep testStep) {
-        List<StepMatchArgument> stepMatchArguments = new ArrayList<>();
-        testStep.getStepMatchArgumentsLists()
-                .filter(stepMatchArgumentsList -> stepMatchArgumentsList.size() == 1)
-                .orElse(emptyList())
-                .forEach(list -> stepMatchArguments.addAll(list.getStepMatchArguments()));
-        return stepMatchArguments;
-    }
-
-    void formatStepText(LineBuilder lineBuilder, String stepText, List<StepMatchArgument> arguments) {
-        int currentIndex = 0;
-        for (StepMatchArgument argument : arguments) {
-            Group group = argument.getGroup();
-            // Ignore absent values, or groups without a start
-            if (group.getValue().isPresent() && group.getStart().isPresent()) {
-                String groupValue = group.getValue().get();
-                // TODO: Messages are silly
-                int groupStart = (int) (long) group.getStart().get();
-                String text = stepText.substring(currentIndex, groupStart);
-                currentIndex = groupStart + groupValue.length();
-                lineBuilder.append(STEP_TEXT, text)
-                        .append(STEP_ARGUMENT, groupValue);
-            }
-        }
-        if (currentIndex != stepText.length()) {
-            String remainder = stepText.substring(currentIndex);
-            lineBuilder.append(STEP_TEXT, remainder);
-        }
-    }
-
     private Optional<String> formatLocation(TestStep testStep) {
         return data.findSourceReferenceBy(testStep)
                 .flatMap(sourceReferenceFormatter::format);
     }
 
+    private void printAmbiguousStep(TestStepFinished event) {
+        if (event.getTestStepResult().getStatus() == AMBIGUOUS) {
+            data.findTestStepBy(event).ifPresent(testStep -> {
+                writer.print(new LineBuilder(theme)
+                        .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
+                                .builder(sourceReferenceFormatter, theme)
+                                .indentation(data.getStackTraceIndentBy(event))
+                                .build()
+                                .formatTo(data.findStepDefinitionsBy(testStep), lineBuilder))
+                        .build());
+            });
+        }
+    }
 
     private void printException(TestStepFinished event) {
         int indent = data.getStackTraceIndentBy(event);
@@ -285,43 +258,14 @@ final class PrettyReportWriter implements AutoCloseable {
             return;
         }
         writer.println();
-        switch (attachment.getContentEncoding()) {
-            case BASE64 -> writer.println(formatBase64Attachment(attachment));
-            case IDENTITY -> writer.print(formatTextAttachment(attachment));
-        }
+        writer.print(new LineBuilder(theme)
+                .accept(lineBuilder -> AttachmentFormatter.builder()
+                        .indentation(data.getAttachmentIndentBy(attachment))
+                        .build()
+                        .formatTo(attachment, lineBuilder))
+                .build());
         writer.println();
         writer.flush();
-    }
-
-    private String formatBase64Attachment(Attachment event) {
-        int bytes = (event.getBody().length() / 4) * 3;
-        String line;
-        if (event.getFileName().isPresent()) {
-            line = "Embedding %s [%s %d bytes]".formatted(event.getFileName().get(), event.getMediaType(), bytes);
-        } else {
-            line = "Embedding [%s %d bytes]".formatted(event.getMediaType(), bytes);
-        }
-        return new LineBuilder(theme)
-                .indent(data.getAttachmentIndentBy(event))
-                .append(ATTACHMENT, line)
-                .build();
-    }
-
-    private String formatTextAttachment(Attachment event) {
-        int indent = data.getAttachmentIndentBy(event);
-        // Prevent interleaving when multiple threads write to System.out
-        LineBuilder builder = new LineBuilder(theme);
-        try (BufferedReader lines = new BufferedReader(new StringReader(event.getBody()))) {
-            String line;
-            while ((line = lines.readLine()) != null) {
-                builder.indent(indent)
-                        .append(ATTACHMENT, line)
-                        .newLine();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return builder.build();
     }
 
     void handleTestRunFinished(TestRunFinished event) {

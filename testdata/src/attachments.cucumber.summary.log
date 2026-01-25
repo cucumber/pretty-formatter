@@ -1,4 +1,12 @@
 
-7 scenarios ([32m7 passed[39m)
-7 steps ([32m7 passed[39m)
-0m 0.36s
+[31mFailed scenarios:[39m
+  1) Attaching during a failed step [90m# samples/attachments/attachments.feature:38[39m
+       [31m[1mWhen [22mthe string [1m"hello"[22m is attached as [1m"application/octet-stream"[22m before a failure[39m [90m# samples/attachments/attachments.ts:51[39m
+           [31mError: whoops[39m
+           [31msamples/attachments/attachments.feature:39[39m
+
+           [34mhello[39m
+
+8 scenarios ([32m7 passed[39m, [31m1 failed[39m)
+8 steps ([32m7 passed[39m, [31m1 failed[39m)
+0m 0.41s (0m 0.8s executing your code)

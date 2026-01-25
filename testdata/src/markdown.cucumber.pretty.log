@@ -22,7 +22,7 @@
           | Isla | 5   |
             [31mError: You asked me to fail[39m
             [31msamples/markdown/markdown.feature.md:24[39m
-      [36m↷[39m [36m[1mThen [22mthis might or might not run[39m                            [90m# samples/markdown/markdown.ts:23[39m
+      [33m↷[39m [33m[1mThen [22mthis might or might not run[39m                            [90m# samples/markdown/markdown.ts:23[39m
 
     [1mScenario Outline:[22m Ylajali!                                      [90m# samples/markdown/markdown.feature.md:39[39m
       [32m✔[39m [32m[1mGiven [22msome TypeScript code:[39m                                 [90m# samples/markdown/markdown.ts:4[39m

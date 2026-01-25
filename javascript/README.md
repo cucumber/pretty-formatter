@@ -4,7 +4,7 @@
   pretty-formatter
 </h1>
 <p align="center">
-  <b>Writes a rich report of the scenario and example execution as it happens</b>
+  <b>Rich formatting of Cucumber progress and results for the terminal</b>
 </p>
 
 <p align="center">
@@ -16,15 +16,66 @@
 
 ## Usage
 
-For usage in `@cucumber/cucumber`, see https://github.com/cucumber/cucumber-js/blob/main/docs/formatters.md#pretty
+This package is used internally in `@cucumber/cucumber` to provide the `summary`, `progress` and `pretty` formatters; you don't need to install or manage it yourself.
+For usage, see https://github.com/cucumber/cucumber-js/blob/main/docs/formatters.md.
 
-## Options
+You can use these low-level classes to provide formatting for a different implementation of Cucumber.
 
-- `attachments` - whether to include attachments (defaults to `true`)
-- `featuresAndRules` - whether to include headings for Features and Rules (defaults to `true`)
-- `theme` - control over the styling of various elements (see below)
+### SummaryPrinter
 
-## Themes
+Prints a summary of test results including non-passing scenarios, statistics, and snippets.
+
+```typescript
+import { SummaryPrinter } from '@cucumber/pretty-formatter'
+
+const printer = new SummaryPrinter()
+
+// each time a message is emitted
+printer.update(envelope)
+```
+
+Can also be used to summarise a test run that already happened, with a pre-populated `Query` object:
+
+```typescript
+import { Query } from '@cucumber/query'
+import { SummaryPrinter } from '@cucumber/pretty-formatter'
+
+const query = new Query()
+
+// each time a message is emitted
+query.update(envelope)
+
+// later
+SummaryPrinter.summarise(query)
+```
+
+### ProgressPrinter
+
+Prints test progress as single-character status indicators.
+
+```typescript
+import { ProgressPrinter } from '@cucumber/pretty-formatter'
+
+const printer = new ProgressPrinter()
+
+// each time a message is emitted
+printer.update(envelope)
+```
+
+### PrettyPrinter
+
+Prints test progress in a prettified Gherkin-style format.
+
+```typescript
+import { PrettyPrinter } from '@cucumber/pretty-formatter'
+
+const printer = new PrettyPrinter()
+
+// each time a message is emitted
+printer.update(envelope)
+```
+
+### Themes
 
 Here's the schema for a theme:
 
@@ -61,6 +112,7 @@ interface Theme {
     status?: {
         all?: Partial<Record<TestStepResultStatus, Style>>
         icon?: Partial<Record<TestStepResultStatus, string>>
+        progress?: Partial<Record<TestStepResultStatus, string>>
     }
     step?: {
         argument?: Style
@@ -68,6 +120,9 @@ interface Theme {
         text?: Style
     }
     tag?: Style
+    symbol?: {
+        bullet?: string
+    }
 }
 
 enum TestStepResultStatus {

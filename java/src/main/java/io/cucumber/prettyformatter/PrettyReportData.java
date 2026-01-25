@@ -207,6 +207,10 @@ final class PrettyReportData {
                 .map(StepDefinition::getSourceReference);
     }
 
+    List<StepDefinition> findStepDefinitionsBy(TestStep testStep) {
+        return query.findStepDefinitionsBy(testStep);
+    }
+
     Optional<Pickle> findPickleBy(TestCaseStarted testCaseStarted) {
         return query.findPickleBy(testCaseStarted);
     }

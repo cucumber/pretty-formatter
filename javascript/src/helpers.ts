@@ -3,7 +3,10 @@ import { stripVTControlCharacters } from 'node:util'
 import {
   Attachment,
   AttachmentContentEncoding,
+  Duration,
   Feature,
+  Hook,
+  HookType,
   Location,
   Pickle,
   PickleDocString,
@@ -17,21 +20,46 @@ import {
   TestStep,
   TestStepResult,
   TestStepResultStatus,
+  TimeConversion,
 } from '@cucumber/messages'
+import { Duration as LuxonDuration } from 'luxon'
 
-import { TextBuilder } from './TextBuilder.js'
-import { Theme } from './types.js'
+import { TextBuilder } from './TextBuilder'
+import { Theme } from './types'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
 export const ATTACHMENT_INDENT_LENGTH = 4
 export const ERROR_INDENT_LENGTH = 4
+export const ORDERED_STATUSES: TestStepResultStatus[] = [
+  TestStepResultStatus.UNKNOWN,
+  TestStepResultStatus.PASSED,
+  TestStepResultStatus.SKIPPED,
+  TestStepResultStatus.PENDING,
+  TestStepResultStatus.UNDEFINED,
+  TestStepResultStatus.AMBIGUOUS,
+  TestStepResultStatus.FAILED,
+]
+
+const HOOK_TYPE_LABELS: Record<HookType, string> = {
+  [HookType.BEFORE_TEST_RUN]: 'BeforeAll',
+  [HookType.AFTER_TEST_RUN]: 'AfterAll',
+  [HookType.BEFORE_TEST_CASE]: 'Before',
+  [HookType.AFTER_TEST_CASE]: 'After',
+  [HookType.BEFORE_TEST_STEP]: 'BeforeStep',
+  [HookType.AFTER_TEST_STEP]: 'AfterStep',
+}
+const DURATION_FORMAT = "m'm' s.S's'"
 
 export function ensure<T>(value: T | undefined, message: string): T {
   if (!value) {
     throw new Error(message)
   }
   return value
+}
+
+export function join(...originals: ReadonlyArray<string | undefined>) {
+  return originals.filter((part) => !!part).join(' ')
 }
 
 export function indent(original: string, by: number) {
@@ -72,6 +100,7 @@ export function formatPickleTags(pickle: Pickle, theme: Theme, stream: NodeJS.Wr
       .build(theme.tag)
   }
 }
+
 export function formatPickleTitle(
   pickle: Pickle,
   scenario: Scenario,
@@ -98,17 +127,34 @@ export function formatPickleLocation(
   return builder.build(theme.location)
 }
 
+export function formatHookTitle(
+  hook: Hook | undefined,
+  status: TestStepResultStatus,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  const builder = new TextBuilder(stream).append(
+    hook?.type ? HOOK_TYPE_LABELS[hook.type] : 'Hook',
+    theme.step?.keyword
+  )
+  if (hook?.name) {
+    builder.append(` (${hook.name})`, theme.step?.text)
+  }
+  return builder.build(theme.status?.all?.[status])
+}
+
 export function formatStepTitle(
   testStep: TestStep,
   pickleStep: PickleStep,
   step: Step,
   status: TestStepResultStatus,
+  useStatusIcon: boolean,
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
   const builder = new TextBuilder(stream)
-  if (theme.status?.icon?.[status]) {
-    builder.append(theme.status.icon[status], theme.status?.all?.[status]).space()
+  if (useStatusIcon) {
+    builder.append(theme.status?.icon?.[status] || ' ', theme.status?.all?.[status]).space()
   }
   return builder
     .append(
@@ -151,24 +197,24 @@ function formatStepText(
   return builder.build()
 }
 
-export function formatStepLocation(
-  stepDefinition: StepDefinition | undefined,
+export function formatCodeLocation(
+  hookOrStepDefinition: Hook | StepDefinition | undefined,
   theme: Theme,
   stream: NodeJS.WritableStream
 ) {
-  if (stepDefinition?.sourceReference.uri) {
+  if (hookOrStepDefinition?.sourceReference.uri) {
     const builder = new TextBuilder(stream)
       .append('#')
       .space()
-      .append(stepDefinition.sourceReference.uri)
-    if (stepDefinition.sourceReference.location) {
-      builder.append(':').append(stepDefinition.sourceReference.location.line)
+      .append(hookOrStepDefinition.sourceReference.uri)
+    if (hookOrStepDefinition.sourceReference.location) {
+      builder.append(':').append(hookOrStepDefinition.sourceReference.location.line)
     }
     return builder.build(theme.location)
   }
 }
 
-export function formatStepArgument(
+export function formatPickleStepArgument(
   pickleStep: PickleStep,
   theme: Theme,
   stream: NodeJS.WritableStream
@@ -250,6 +296,27 @@ export function formatTestStepResultError(
   }
 }
 
+export function formatAmbiguousStep(
+  stepDefinitions: readonly StepDefinition[],
+  theme: Theme,
+  stream: NodeJS.WritableStream
+): string | undefined {
+  const builder = new TextBuilder(stream)
+  builder.append('Multiple matching step definitions found:')
+  for (const stepDefinition of stepDefinitions) {
+    builder.line()
+    builder.append(`  ${theme.symbol?.bullet || ' '} `)
+    if (stepDefinition.pattern?.source) {
+      builder.append(stepDefinition.pattern.source)
+    }
+    const location = formatCodeLocation(stepDefinition, theme, stream)
+    if (location) {
+      builder.space().append(location)
+    }
+  }
+  return builder.build(undefined, true)
+}
+
 export function formatTestRunFinishedError(
   testRunFinished: TestRunFinished,
   theme: Theme,
@@ -306,4 +373,68 @@ function formatBase64Attachment(
 
 function formatTextAttachment(content: string, theme: Theme, stream: NodeJS.WritableStream) {
   return new TextBuilder(stream).append(content).build(theme.attachment)
+}
+
+export function formatStatusCharacter(
+  status: TestStepResultStatus,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  const character = theme.status?.progress?.[status] || ' '
+  return new TextBuilder(stream).append(character).build(theme.status?.all?.[status])
+}
+
+export function formatForStatus(
+  status: TestStepResultStatus,
+  text: string,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  return new TextBuilder(stream).append(text).build(theme.status?.all?.[status])
+}
+
+export function formatCounts(
+  suffix: string,
+  counts: Partial<Record<TestStepResultStatus, number>>,
+  theme: Theme,
+  stream: NodeJS.WritableStream
+) {
+  const builder = new TextBuilder(stream)
+  const total = Object.values(counts).reduce((prev, curr) => prev + curr, 0)
+  builder.append(`${total} ${suffix}`)
+  if (total > 0) {
+    let first = true
+    builder.append(' (')
+    for (const status of ORDERED_STATUSES) {
+      const count = counts[status]
+      if (count) {
+        if (!first) {
+          builder.append(', ')
+        }
+        builder.append(`${count} ${status.toLowerCase()}`, theme.status?.all?.[status])
+        first = false
+      }
+    }
+    builder.append(')')
+  }
+  return builder.build()
+}
+
+export function formatDurations(
+  testRunDuration: Duration,
+  executionDurations: ReadonlyArray<Duration>
+) {
+  const testRunLuxon = LuxonDuration.fromMillis(
+    TimeConversion.durationToMilliseconds(testRunDuration)
+  )
+
+  const executionLuxon = LuxonDuration.fromMillis(
+    executionDurations.reduce((prev, curr) => prev + TimeConversion.durationToMilliseconds(curr), 0)
+  )
+
+  return `${testRunLuxon.toFormat(DURATION_FORMAT)} (${executionLuxon.toFormat(DURATION_FORMAT)} executing your code)`
+}
+
+export function titleCaseStatus(status: TestStepResultStatus) {
+  return `${status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}`
 }

@@ -1,0 +1,38 @@
+
+Feature: All statuses
+
+  Scenario: Passing # samples/all-statuses/all-statuses.feature:6
+    ✔ Given a step  # samples/all-statuses/all-statuses.ts:3
+    ✔ And a step    # samples/all-statuses/all-statuses.ts:3
+    ✔ And a step    # samples/all-statuses/all-statuses.ts:3
+
+  Scenario: Failing      # samples/all-statuses/all-statuses.feature:11
+    ✔ Given a step       # samples/all-statuses/all-statuses.ts:3
+    ✘ And a failing step # samples/all-statuses/all-statuses.ts:5
+          Error: whoops
+          samples/all-statuses/all-statuses.feature:13
+    ↷ And a step         # samples/all-statuses/all-statuses.ts:3
+
+  Scenario: Pending      # samples/all-statuses/all-statuses.feature:16
+    ✔ Given a step       # samples/all-statuses/all-statuses.ts:3
+    ■ And a pending step # samples/all-statuses/all-statuses.ts:9
+          TODO
+    ↷ And a step         # samples/all-statuses/all-statuses.ts:3
+
+  Scenario: Skipped      # samples/all-statuses/all-statuses.feature:21
+    ✔ Given a step       # samples/all-statuses/all-statuses.ts:3
+    ↷ And a skipped step # samples/all-statuses/all-statuses.ts:13
+    ↷ And a step         # samples/all-statuses/all-statuses.ts:3
+
+  Scenario: Undefined       # samples/all-statuses/all-statuses.feature:26
+    ✔ Given a step          # samples/all-statuses/all-statuses.ts:3
+    ■ And an undefined step
+    ↷ And a step            # samples/all-statuses/all-statuses.ts:3
+
+  Scenario: Ambiguous       # samples/all-statuses/all-statuses.feature:31
+    ✔ Given a step          # samples/all-statuses/all-statuses.ts:3
+    ✘ And an ambiguous step
+          Multiple matching step definitions found:
+            - an ambiguous step # samples/all-statuses/all-statuses.ts:17
+            - an ambiguous step # samples/all-statuses/all-statuses.ts:19
+    ↷ And a step            # samples/all-statuses/all-statuses.ts:3

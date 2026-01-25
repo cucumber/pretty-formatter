@@ -21,14 +21,15 @@ import {
   ATTACHMENT_INDENT_LENGTH,
   ensure,
   ERROR_INDENT_LENGTH,
+  formatAmbiguousStep,
   formatAttachment,
+  formatCodeLocation,
   formatFeatureTitle,
   formatPickleLocation,
+  formatPickleStepArgument,
   formatPickleTags,
   formatPickleTitle,
   formatRuleTitle,
-  formatStepArgument,
-  formatStepLocation,
   formatStepTitle,
   formatTestRunFinishedError,
   formatTestStepResultError,
@@ -37,11 +38,33 @@ import {
   pad,
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
-} from './helpers.js'
-import type { Options } from './types.js'
+} from './helpers'
+import { SummaryPrinter } from './SummaryPrinter'
+import { CUCUMBER_THEME } from './theme'
+import type { PrettyOptions } from './types'
 
+const DEFAULT_OPTIONS: Required<PrettyOptions> = {
+  includeAttachments: true,
+  includeFeatureLine: true,
+  includeRuleLine: true,
+  summarise: false,
+  useStatusIcon: true,
+  theme: CUCUMBER_THEME,
+}
+
+/**
+ * Prints test progress in a prettified Gherkin-style format
+ *
+ * @remarks
+ * Outputs features, rules, scenarios, and steps with proper indentation and styling.
+ * Shows step results, attachments, and error details as tests execute. This is the
+ * primary formatter for readable console output during test runs.
+ */
 export class PrettyPrinter {
+  private readonly stream: NodeJS.WritableStream
+  private readonly print: (content: string) => void
   private readonly println: (content?: string) => void
+  private readonly options: Required<PrettyOptions>
   private readonly query: Query = new Query()
   private readonly scenarioIndentByTestCaseStartedId: Map<string, number> = new Map<
     string,
@@ -53,14 +76,34 @@ export class PrettyPrinter {
   >()
   private readonly encounteredFeaturesAndRules: Set<Feature | Rule> = new Set()
 
-  constructor(
-    private readonly stream: NodeJS.WritableStream,
-    private readonly print: (content: string) => void,
-    private readonly options: Required<Options>
-  ) {
-    this.println = (content: string = '') => this.print(`${content}\n`)
+  /**
+   * Creates a new PrettyPrinter instance
+   *
+   * @param params -Initialisation object
+   * @param params.stream - The writable stream used for TTY detection and styling
+   * @param params.options - Configuration options for the pretty output
+   */
+  constructor({
+    stream = process.stdout,
+    options = {},
+  }: {
+    stream?: NodeJS.WritableStream
+    options?: PrettyOptions
+  } = {}) {
+    this.stream = stream
+    this.print = (content) => stream.write(content)
+    this.println = (content = '') => this.print(`${content}\n`)
+    this.options = {
+      ...DEFAULT_OPTIONS,
+      ...options,
+    }
   }
 
+  /**
+   * Processes a Cucumber message envelope and prints if appropriate
+   *
+   * @param message - The Cucumber message envelope to process
+   */
   update(message: Envelope) {
     this.query.update(message)
 
@@ -80,6 +123,13 @@ export class PrettyPrinter {
     if (message.testRunFinished) {
       this.handleTestRunFinished(message.testRunFinished)
     }
+  }
+
+  private summarise() {
+    SummaryPrinter.summarise(this.query, {
+      stream: this.stream,
+      options: this.options,
+    })
   }
 
   private resolveScenario(testCaseStarted: TestCaseStarted) {
@@ -149,6 +199,7 @@ export class PrettyPrinter {
               pickleStep,
               step,
               TestStepResultStatus.UNKNOWN,
+              this.options.useStatusIcon,
               this.options.theme,
               this.stream
             )
@@ -162,9 +213,9 @@ export class PrettyPrinter {
     )
 
     let scenarioIndent = 0
-    if (this.options.featuresAndRules) {
+    if (this.options.includeFeatureLine) {
       scenarioIndent += GHERKIN_INDENT_LENGTH
-      if (lineage.rule) {
+      if (this.options.includeRuleLine && lineage.rule) {
         scenarioIndent += GHERKIN_INDENT_LENGTH
       }
     }
@@ -200,7 +251,7 @@ export class PrettyPrinter {
   }
 
   private printFeatureLine(feature: Feature) {
-    if (this.options.featuresAndRules && !this.encounteredFeaturesAndRules.has(feature)) {
+    if (this.options.includeFeatureLine && !this.encounteredFeaturesAndRules.has(feature)) {
       this.println()
       this.println(formatFeatureTitle(feature, this.options.theme, this.stream))
     }
@@ -209,7 +260,7 @@ export class PrettyPrinter {
 
   private printRuleLine(rule: Rule | undefined) {
     if (rule) {
-      if (this.options.featuresAndRules && !this.encounteredFeaturesAndRules.has(rule)) {
+      if (this.options.includeRuleLine && !this.encounteredFeaturesAndRules.has(rule)) {
         this.println()
         this.println(
           indent(formatRuleTitle(rule, this.options.theme, this.stream), GHERKIN_INDENT_LENGTH)
@@ -257,6 +308,7 @@ export class PrettyPrinter {
         maxContentLength
       )
       this.printStepArgument(pickleStep, scenarioIndent)
+      this.printAmbiguousStep(testStepFinished, testStep, scenarioIndent)
     }
     this.printError(testStepFinished, scenarioIndent)
   }
@@ -277,25 +329,26 @@ export class PrettyPrinter {
           pickleStep,
           step,
           testStepFinished.testStepResult.status,
+          this.options.useStatusIcon,
           this.options.theme,
           this.stream
         ),
         GHERKIN_INDENT_LENGTH
       ),
-      formatStepLocation(stepDefinition, this.options.theme, this.stream),
+      formatCodeLocation(stepDefinition, this.options.theme, this.stream),
       scenarioIndent,
       maxContentLength
     )
   }
 
   private printStepArgument(pickleStep: PickleStep, scenarioIndent: number) {
-    const content = formatStepArgument(pickleStep, this.options.theme, this.stream)
+    const content = formatPickleStepArgument(pickleStep, this.options.theme, this.stream)
     if (content) {
       this.println(
         indent(
           content,
           scenarioIndent +
-            (this.options.theme.status?.icon ? GHERKIN_INDENT_LENGTH : 0) +
+            (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
             STEP_ARGUMENT_INDENT_LENGTH
         )
@@ -328,7 +381,7 @@ export class PrettyPrinter {
         indent(
           content,
           scenarioIndent +
-            (this.options.theme.status?.icon ? GHERKIN_INDENT_LENGTH : 0) +
+            (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
             ERROR_INDENT_LENGTH
         )
@@ -336,8 +389,33 @@ export class PrettyPrinter {
     }
   }
 
+  private printAmbiguousStep(
+    testStepFinished: TestStepFinished,
+    testStep: TestStep,
+    scenarioIndent: number
+  ) {
+    if (testStepFinished.testStepResult.status === TestStepResultStatus.AMBIGUOUS) {
+      const content = formatAmbiguousStep(
+        this.query.findStepDefinitionsBy(testStep),
+        this.options.theme,
+        this.stream
+      )
+      if (content) {
+        this.println(
+          indent(
+            content,
+            scenarioIndent +
+              (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
+              GHERKIN_INDENT_LENGTH +
+              ERROR_INDENT_LENGTH
+          )
+        )
+      }
+    }
+  }
+
   private handleAttachment(attachment: Attachment) {
-    if (!this.options.attachments) {
+    if (!this.options.includeAttachments) {
       return
     }
     const scenarioIndent = this.getScenarioIndentBy(attachment)
@@ -347,7 +425,7 @@ export class PrettyPrinter {
         indent(
           content,
           scenarioIndent +
-            (this.options.theme.status?.icon ? GHERKIN_INDENT_LENGTH : 0) +
+            (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
             ATTACHMENT_INDENT_LENGTH
         )
@@ -359,6 +437,9 @@ export class PrettyPrinter {
     const content = formatTestRunFinishedError(testRunFinished, this.options.theme, this.stream)
     if (content) {
       this.println(content)
+    }
+    if (this.options.summarise) {
+      this.summarise()
     }
   }
 }

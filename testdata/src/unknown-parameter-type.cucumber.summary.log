@@ -1,13 +1,14 @@
 
-[33mUndefined scenarios:[39m
+[34mUndefined scenarios:[39m
   1) undefined parameter type [90m# samples/unknown-parameter-type/unknown-parameter-type.feature:6[39m
+       [34m[1mGiven [22mCDG is closed because of a strike[39m
 
-[33mThese parameters are missing a parameter type definition:[39m
+[34mThese parameters are missing a parameter type definition:[39m
   1) 'airport' in '{airport} is closed because of a strike'
 
-1 scenarios ([33m1 undefined[39m)
-1 steps ([33m1 undefined[39m)
-0m 0.5s
+1 scenarios ([34m1 undefined[39m)
+1 steps ([34m1 undefined[39m)
+0m 0.5s (0m 0.0s executing your code)
 
 You can implement missing steps with the snippets below:
 

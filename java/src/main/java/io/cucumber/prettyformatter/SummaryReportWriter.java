@@ -1,16 +1,21 @@
 package io.cucumber.prettyformatter;
 
+import io.cucumber.messages.Convertor;
 import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.Hook;
 import io.cucumber.messages.types.HookType;
 import io.cucumber.messages.types.Location;
 import io.cucumber.messages.types.Pickle;
+import io.cucumber.messages.types.PickleStep;
 import io.cucumber.messages.types.Snippet;
+import io.cucumber.messages.types.Step;
+import io.cucumber.messages.types.StepDefinition;
 import io.cucumber.messages.types.Suggestion;
 import io.cucumber.messages.types.TestCaseFinished;
 import io.cucumber.messages.types.TestCaseStarted;
 import io.cucumber.messages.types.TestRunFinished;
 import io.cucumber.messages.types.TestRunHookFinished;
+import io.cucumber.messages.types.TestStep;
 import io.cucumber.messages.types.TestStepFinished;
 import io.cucumber.messages.types.TestStepResult;
 import io.cucumber.messages.types.TestStepResultStatus;
@@ -31,18 +36,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.cucumber.messages.types.TestStepResultStatus.AMBIGUOUS;
 import static io.cucumber.messages.types.TestStepResultStatus.FAILED;
 import static io.cucumber.messages.types.TestStepResultStatus.PASSED;
 import static io.cucumber.messages.types.TestStepResultStatus.SKIPPED;
 import static io.cucumber.messages.types.TestStepResultStatus.UNDEFINED;
 import static io.cucumber.prettyformatter.Theme.Element.LOCATION;
 import static io.cucumber.prettyformatter.Theme.Element.STEP;
+import static io.cucumber.prettyformatter.Theme.Element.STEP_KEYWORD;
 import static java.util.Collections.emptyList;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
@@ -55,23 +62,25 @@ final class SummaryReportWriter implements AutoCloseable {
     private final Theme theme;
     private final Function<String, String> uriFormatter;
     private final SourceReferenceFormatter sourceReferenceFormatter;
+    private final StepTextFormatter stepTextFormatter;
+    private final Set<MessagesToSummaryWriter.SummaryFeature> features;
     private final Query query;
     private final PrintWriter out;
-    private final List<UndefinedParameterType> undefinedParameterTypes;
 
     SummaryReportWriter(
             OutputStream out,
             Theme theme,
             Function<String, String> uriFormatter,
-            Repository data,
-            List<UndefinedParameterType> undefinedParameterTypes
+            Set<MessagesToSummaryWriter.SummaryFeature> features,
+            Repository data
     ) {
         this.theme = requireNonNull(theme);
         this.out = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
         this.sourceReferenceFormatter = new SourceReferenceFormatter(uriFormatter);
+        this.stepTextFormatter = new StepTextFormatter();
+        this.features = requireNonNull(features);
         this.query = new Query(requireNonNull(data));
-        this.undefinedParameterTypes = requireNonNull(undefinedParameterTypes);
     }
 
     private static PrintWriter createPrintWriter(OutputStream out) {
@@ -104,7 +113,7 @@ final class SummaryReportWriter implements AutoCloseable {
         printGlobalHookCount();
         printScenarioCounts();
         printStepCounts();
-        printDuration();
+        printDurations();
     }
 
     private void printNonPassingGlobalHooks() {
@@ -118,11 +127,18 @@ final class SummaryReportWriter implements AutoCloseable {
                     "hooks",
                     testRunHookFinishedByStatus,
                     status,
-                    this::formatHookLine,
-                    testRunHookFinished -> Optional.of(testRunHookFinished.getResult())
-
+                    this::formatHookLineTo,
+                    this::printTestRunHookException
             );
         }
+    }
+
+    private void printTestRunHookException(TestRunHookFinished testRunHookFinished, TestStepResultStatus status) {
+        TestStepResult result = testRunHookFinished.getResult();
+        ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
+        result.getException()
+                .flatMap(formatter::format)
+                .ifPresent(out::print);
     }
 
     private void printNonPassingScenarios() {
@@ -135,10 +151,107 @@ final class SummaryReportWriter implements AutoCloseable {
                     "scenarios",
                     testCaseFinishedByStatus,
                     status,
-                    this::formatScenarioLine,
-                    query::findMostSevereTestStepResultBy
+                    this::formatScenarioLineTo,
+                    this::printResponsibleStep
             );
         }
+    }
+
+    private void printResponsibleStep(TestCaseFinished testCaseFinished, TestStepResultStatus status) {
+        query.findTestCaseStartedBy(testCaseFinished)
+                .map(query::findTestStepFinishedAndTestStepBy)
+                .flatMap(list -> list.stream()
+                        .filter(entry -> entry.getKey().getTestStepResult().getStatus() == status)
+                        .findFirst())
+                .ifPresent(responsibleStep -> {
+                    TestStepFinished testStepFinished = responsibleStep.getKey();
+                    TestStep testStep = responsibleStep.getValue();
+
+                    query.findPickleStepBy(testStep)
+                            .ifPresent(pickleStep ->
+                                    query.findStepBy(pickleStep).ifPresent(step -> {
+                                out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
+                                pickleStep.getArgument().ifPresent(pickleStepArgument -> {
+                                    pickleStepArgument.getDataTable().ifPresent(pickleTable ->
+                                            out.print(new LineBuilder(theme)
+                                                    .accept(lineBuilder -> PickleTableFormatter.builder()
+                                                            .indentation(9)
+                                                            .build()
+                                                            .formatTo(pickleTable, lineBuilder))
+                                                    .build())
+                                    );
+                                    pickleStepArgument.getDocString().ifPresent(pickleDocString ->
+                                            out.print(new LineBuilder(theme)
+                                                    .accept(lineBuilder -> PickleDocStringFormatter.builder()
+                                                            .indentation(9)
+                                                            .build()
+                                                            .formatTo(pickleDocString, lineBuilder))
+                                                    .build())
+                                    );
+                                });
+                                if (status == AMBIGUOUS) {
+                                    out.print(new LineBuilder(theme)
+                                            .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
+                                                    .builder(sourceReferenceFormatter, theme)
+                                                    .indentation(11)
+                                                    .build()
+                                                    .formatTo(query.findStepDefinitionsBy(testStep), lineBuilder))
+                                            .build());
+                                }
+                            }));
+
+                    query.findHookBy(testStep)
+                            .ifPresent(hook -> {
+                                out.println(formatHookStep(testStepFinished, hook));
+                            });
+
+                    ExceptionFormatter formatter = new ExceptionFormatter(11, theme, status);
+                    testStepFinished
+                            .getTestStepResult()
+                            .getException()
+                            .flatMap(formatter::format)
+                            .ifPresent(out::print);
+
+                    if (features.contains(MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS)) {
+                        query.findAttachmentsBy(testStepFinished).forEach(attachment ->
+                                out.print(new LineBuilder(theme)
+                                        .newLine()
+                                        .accept(lineBuilder -> AttachmentFormatter.builder()
+                                                .indentation(11)
+                                                .build()
+                                                .formatTo(attachment, lineBuilder))
+                                        .build())
+                        );
+                    }
+                });
+    }
+
+    private String formatHookStep(TestStepFinished testStepFinished, Hook hook) {
+        TestStepResultStatus status = testStepFinished.getTestStepResult().getStatus();
+        return new LineBuilder(theme)
+                .indent(7)
+                .begin(STEP, status)
+                .append(STEP_KEYWORD, hook.getType()
+                        .map(SummaryReportWriter::formatHookType)
+                        .orElse("Unknown"))
+                .append(hook.getName()
+                        .map(name -> "(" + name + ")")
+                        .orElse(""))
+                .end(STEP, status)
+                .accept(lineBuilder -> formatLocationCommentTo(hook, lineBuilder))
+                .build();
+    }
+
+    private String formatPickleStep(TestStepFinished testStepFinished, TestStep testStep, PickleStep pickleStep, Step step) {
+        TestStepResultStatus status = testStepFinished.getTestStepResult().getStatus();
+        return new LineBuilder(theme)
+                .indent(7)
+                .begin(STEP, status)
+                .append(STEP_KEYWORD, step.getKeyword())
+                .accept(lineBuilder -> stepTextFormatter.formatTo(testStep, pickleStep, lineBuilder))
+                .end(STEP, status)
+                .accept(lineBuilder -> formatLocationCommentTo(testStep, lineBuilder))
+                .build();
     }
 
     private Stream<TestCaseFinished> findAllTestCasesFinishedInCanonicalOrder() {
@@ -153,36 +266,37 @@ final class SummaryReportWriter implements AutoCloseable {
                 .map(OrderableMessage::getMessage);
     }
 
-    private Optional<String> formatScenarioLine(TestCaseFinished testCaseFinished) {
-        return query.findTestCaseStartedBy(testCaseFinished)
-                .flatMap(testCaseStarted -> query.findPickleBy(testCaseStarted)
-                        .map(pickle -> {
-                            String name = pickle.getName();
-                            String attempt = formatAttempt(testCaseStarted);
-                            String location = formatLocationComment(pickle);
-                            return name + attempt + location;
-                        }));
+    private void formatScenarioLineTo(TestCaseFinished testCaseFinished, LineBuilder lineBuilder) {
+        query.findTestCaseStartedBy(testCaseFinished)
+                .ifPresent(testCaseStarted -> query.findPickleBy(testCaseStarted)
+                        .ifPresent(pickle -> lineBuilder
+                                .append(pickle.getName())
+                                .append(formatAttempt(testCaseStarted))
+                                .accept(innerLineBuilder -> formatLocationCommentTo(pickle, innerLineBuilder))));
     }
 
-    private Optional<String> formatHookLine(TestRunHookFinished testRunHookFinished) {
-        return query.findHookBy(testRunHookFinished)
-                .map(hook -> {
-                    String hookTypeName = hook.getType()
-                            .map(SummaryReportWriter::formatGlobalHookName)
-                            .orElse("Unknown");
-                    String hookName = hook.getName()
-                            .map(name -> "(" + name + ")")
-                            .orElse("");
-                    String location = formatLocationComment(hook);
-                    return hookTypeName + hookName + location;
-                });
+    private void formatHookLineTo(TestRunHookFinished testRunHookFinished, LineBuilder lineBuilder) {
+        query.findHookBy(testRunHookFinished)
+                .ifPresent(hook -> lineBuilder
+                        .append(hook.getType()
+                                .map(SummaryReportWriter::formatHookType)
+                                .orElse("Unknown"))
+                        .accept(innerLineBuilder -> hook.getName()
+                                .ifPresent(hookName -> innerLineBuilder
+                                        .append("(")
+                                        .append(hookName)
+                                        .append(")")))
+                        .accept(innerLineBuilder -> formatLocationCommentTo(hook, lineBuilder)));
     }
 
-    private static String formatGlobalHookName(HookType hookType) {
+    private static String formatHookType(HookType hookType) {
         return switch (hookType) {
-            case BEFORE_TEST_RUN -> "BeforeTestRun";
-            case AFTER_TEST_RUN -> "AfterTestRun";
-            default -> "Unknown";
+            case BEFORE_TEST_RUN -> "BeforeAll";
+            case AFTER_TEST_RUN -> "AfterAll";
+            case BEFORE_TEST_CASE -> "Before";
+            case AFTER_TEST_CASE -> "After";
+            case BEFORE_TEST_STEP -> "BeforeStep";
+            case AFTER_TEST_STEP -> "AfterStep";
         };
     }
 
@@ -190,9 +304,8 @@ final class SummaryReportWriter implements AutoCloseable {
             String finishedItemName,
             Map<TestStepResultStatus, List<T>> finishedItemByStatus,
             TestStepResultStatus status,
-            Function<T, Optional<String>> formatFinishedItem,
-            Function<T, Optional<TestStepResult>> getTestStepResult
-
+            BiConsumer<T, LineBuilder> formatFinishedItem,
+            BiConsumer<T, TestStepResultStatus> printSupplementaryContent
     ) {
         List<T> items = finishedItemByStatus.getOrDefault(status, emptyList());
         if (items.isEmpty()) {
@@ -201,16 +314,15 @@ final class SummaryReportWriter implements AutoCloseable {
         out.println();
         String finishItemByStatusTitle = "%s %s:".formatted(firstLetterCapitalizedName(status), finishedItemName);
         out.println(theme.style(STEP, status, finishItemByStatusTitle));
-        ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
-        AtomicInteger index = new AtomicInteger(0);
-        for (T testCaseFinished : items) {
-            formatFinishedItem.apply(testCaseFinished)
-                    .map(line -> "  %d) %s".formatted(index.incrementAndGet(), line))
-                    .ifPresent(out::println);
-            getTestStepResult.apply(testCaseFinished)
-                    .flatMap(TestStepResult::getException)
-                    .flatMap(formatter::format)
-                    .ifPresent(out::println);
+        for (int i = 0; i < items.size(); i++) {
+            T finishedItem = items.get(i);
+            out.println(new LineBuilder(theme)
+                    .append("  ")
+                    .append(String.valueOf(i + 1))
+                    .append(") ")
+                    .accept(lineBuilder -> formatFinishedItem.accept(finishedItem, lineBuilder))
+                    .build());
+            printSupplementaryContent.accept(finishedItem, status);
         }
     }
 
@@ -220,23 +332,34 @@ final class SummaryReportWriter implements AutoCloseable {
         if (attempt == 0) {
             return "";
         }
-        return ", after " + attempt + " attempts";
+        return ", after " + (attempt + 1) + " attempts";
     }
 
-    private String formatLocationComment(Pickle pickle) {
-        String formattedUri = uriFormatter.apply(pickle.getUri());
-        String comment = "# " + formattedUri + query.findLocationOf(pickle)
-                .map(Location::getLine)
-                .map(line -> ":" + line)
-                .orElse("");
-        return " " + theme.style(LOCATION, comment);
+    private void formatLocationCommentTo(Pickle pickle, LineBuilder lineBuilder) {
+        lineBuilder.append(" ")
+                .begin(LOCATION)
+                .append("# ")
+                .append(uriFormatter.apply(pickle.getUri()))
+                .accept(innerLineBuilder -> query.findLocationOf(pickle)
+                        .ifPresent(location -> lineBuilder.append(":").append(String.valueOf(location.getLine()))))
+                .end(LOCATION);
     }
 
-    private String formatLocationComment(Hook hook) {
-        return sourceReferenceFormatter.format(hook.getSourceReference())
-                .map(comment -> theme.style(LOCATION, "#" + comment))
-                .map(comment -> " " + comment)
-                .orElse("");
+    private void formatLocationCommentTo(TestStep testStep, LineBuilder lineBuilder) {
+        query.findUnambiguousStepDefinitionBy(testStep)
+                .map(StepDefinition::getSourceReference)
+                .flatMap(sourceReferenceFormatter::format)
+                .ifPresent(comment -> lineBuilder
+                        .append(" ")
+                        .append(LOCATION, "# " + comment));
+    }
+
+    private void formatLocationCommentTo(Hook hook, LineBuilder lineBuilder) {
+        sourceReferenceFormatter.format(hook.getSourceReference())
+                .ifPresent(comment -> {
+                    lineBuilder.append(" ")
+                            .append(LOCATION, "# " + comment);
+                });
     }
 
     private void printNonPassingTestRun() {
@@ -244,7 +367,7 @@ final class SummaryReportWriter implements AutoCloseable {
                 .ifPresent(exception -> {
                     out.println(theme.style(STEP, FAILED, firstLetterCapitalizedName(FAILED) + " test run:"));
                     ExceptionFormatter formatter = new ExceptionFormatter(7, theme, FAILED);
-                    out.println(formatter.format(exception));
+                    formatter.format(exception).ifPresent(out::print);
                 });
     }
 
@@ -256,7 +379,6 @@ final class SummaryReportWriter implements AutoCloseable {
 
 
     private void printTestRunCount() {
-        // TODO: No coverage?
         findTestRunWithException()
                 // Only print stats if the test run failed with exception, avoid clutter
                 .map(exception -> {
@@ -317,13 +439,25 @@ final class SummaryReportWriter implements AutoCloseable {
         return joiner.toString();
     }
 
-    private void printDuration() {
+    private void printDurations() {
         query.findTestRunDuration()
-                .map(SummaryReportWriter::formatDuration)
+                .map(testRunDuration -> "%s (%s executing your code)".formatted(formatDuration(testRunDuration), formatDuration(getExecutionDuration())))
                 .ifPresent(out::println);
     }
 
-    @SuppressWarnings("JavaDurationGetSecondsGetNano")
+    private Duration getExecutionDuration() {
+        Stream<Duration> durationsFromHooks = query.findAllTestRunHookFinished()
+                .stream()
+                .map(hookFinished -> hookFinished.getResult().getDuration())
+                .map(Convertor::toDuration);
+        Stream<Duration> durationsFromSteps = query.findAllTestStepFinished()
+                .stream()
+                .map(hookFinished -> hookFinished.getTestStepResult().getDuration())
+                .map(Convertor::toDuration);
+        return Stream.concat(durationsFromHooks, durationsFromSteps)
+                .reduce(Duration.ZERO, Duration::plus);
+    }
+
     private static String formatDuration(Duration duration) {
         long minutes = duration.toMinutes();
         long seconds = duration.toSecondsPart();
@@ -332,6 +466,7 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private void printUnknownParameterTypes() {
+        List<UndefinedParameterType> undefinedParameterTypes = this.query.findAllUndefinedParameterTypes();
         if (undefinedParameterTypes.isEmpty()) {
             return;
         }

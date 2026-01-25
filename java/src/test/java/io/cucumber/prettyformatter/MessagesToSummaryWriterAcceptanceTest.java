@@ -1,7 +1,8 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.compatibilitykit.MessageOrderer;
-import io.cucumber.messages.NdjsonToMessageIterable;
+import io.cucumber.messages.NdjsonToMessageReader;
+import io.cucumber.messages.ndjson.Deserializer;
 import io.cucumber.messages.types.Envelope;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,7 +10,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
+import static io.cucumber.prettyformatter.MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS;
 import static io.cucumber.prettyformatter.Theme.cucumber;
 import static io.cucumber.prettyformatter.Theme.plain;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -32,7 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MessagesToSummaryWriterAcceptanceTest {
 
-    private static final NdjsonToMessageIterable.Deserializer deserializer = json -> OBJECT_MAPPER.readValue(json, Envelope.class);
     private static final Random random = new Random(202509171620L);
     private static final MessageOrderer messageOrderer = new MessageOrderer(random);
 
@@ -40,6 +39,9 @@ class MessagesToSummaryWriterAcceptanceTest {
         Map<String, MessagesToSummaryWriter.Builder> themes = new LinkedHashMap<>();
         themes.put("cucumber", MessagesToSummaryWriter.builder().theme(cucumber()));
         themes.put("plain", MessagesToSummaryWriter.builder().theme(plain()));
+        themes.put("exclude-attachments", MessagesToSummaryWriter.builder()
+                .theme(plain())
+                .feature(INCLUDE_ATTACHMENTS, false));
 
         List<Path> sources = getSources();
 
@@ -64,19 +66,18 @@ class MessagesToSummaryWriterAcceptanceTest {
     }
 
     private static <T extends OutputStream> T writeSummaryReport(TestCase testCase, T out, MessagesToSummaryWriter.Builder builder, Consumer<List<Envelope>> orderer) throws IOException {
-        List<Envelope> messages = new ArrayList<>();
-        try (InputStream in = Files.newInputStream(testCase.source)) {
-            try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, deserializer)) {
-                envelopes.forEach(messages::add);
+        try (var in = Files.newInputStream(testCase.source)) {
+            try (var reader = new NdjsonToMessageReader(in, new Deserializer())) {
+                List<Envelope> messages = reader.lines().collect(Collectors.toList());
+                orderer.accept(messages);
+                try (var writer = builder.build(out)) {
+                    for (Envelope envelope : messages) {
+                        writer.write(envelope);
+                    }
+                }
             }
         }
-        orderer.accept(messages);
 
-        try (MessagesToSummaryWriter writer = builder.build(out)) {
-            for (Envelope envelope : messages) {
-                writer.write(envelope);
-            }
-        }
         return out;
     }
 

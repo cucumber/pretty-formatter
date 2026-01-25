@@ -31,7 +31,7 @@ class MessagesToSummaryWriterTest {
                 
                 0 scenarios
                 0 steps
-                0m 20.0s
+                0m 20.0s (0m 0.0s executing your code)
                 """
         );
     }

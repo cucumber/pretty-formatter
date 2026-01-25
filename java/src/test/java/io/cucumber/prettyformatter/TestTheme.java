@@ -17,6 +17,7 @@ import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_BRIGHT_BLAC
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_CYAN;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_DEFAULT;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_GREEN;
+import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_MAGENTA;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_RED;
 import static io.cucumber.prettyformatter.Ansi.Attributes.FOREGROUND_YELLOW;
 import static io.cucumber.prettyformatter.Ansi.Attributes.ITALIC;
@@ -71,16 +72,17 @@ final class TestTheme {
                 .style(SCENARIO, Ansi.with(BACKGROUND_BLUE), Ansi.with(BACKGROUND_DEFAULT))
                 .style(SCENARIO_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(SCENARIO_NAME, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
-                .style(STEP, UNDEFINED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
-                .style(STEP, PENDING, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
+                .style(STEP, UNDEFINED, Ansi.with(FOREGROUND_BLUE), Ansi.with(FOREGROUND_DEFAULT))
+                .style(STEP, PENDING, Ansi.with(FOREGROUND_CYAN), Ansi.with(FOREGROUND_DEFAULT))
                 .style(STEP, FAILED, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
-                .style(STEP, AMBIGUOUS, Ansi.with(FOREGROUND_RED), Ansi.with(FOREGROUND_DEFAULT))
+                .style(STEP, AMBIGUOUS, Ansi.with(FOREGROUND_MAGENTA), Ansi.with(FOREGROUND_DEFAULT))
                 .style(STEP, PASSED, Ansi.with(FOREGROUND_GREEN), Ansi.with(FOREGROUND_DEFAULT))
-                .style(STEP, SKIPPED, Ansi.with(FOREGROUND_CYAN), Ansi.with(FOREGROUND_DEFAULT))
+                .style(STEP, SKIPPED, Ansi.with(FOREGROUND_YELLOW), Ansi.with(FOREGROUND_DEFAULT))
                 .style(STEP_ARGUMENT, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(STEP_KEYWORD, Ansi.with(BOLD), Ansi.with(BOLD_OFF))
                 .style(STEP_TEXT, Ansi.with(ITALIC), Ansi.with(ITALIC_OFF))
                 .style(TAG, Ansi.with(FOREGROUND_YELLOW, BOLD), Ansi.with(BOLD_OFF, FOREGROUND_DEFAULT))
+                .bulletPointIcon("•")
                 .build();
     }
 }

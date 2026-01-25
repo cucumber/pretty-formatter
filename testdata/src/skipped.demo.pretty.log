@@ -1,14 +1,10 @@
 
 [44m[1mFeature:[22m [3mSkipping scenarios[23m[49m
 
-  [33m[1m@skip[22m[39m
-  [44m[1mScenario:[22m [3mSkipping from a Before hook[23m[49m [90m# samples/skipped/skipped.feature:10[39m
-    [36m[1mGiven [22m[3ma step that is skipped[23m[39m        [90m# samples/skipped/skipped.ts:11[39m
+  [44m[1mScenario:[22m [3mSkipping from a step doesn't affect the previous steps[23m[49m [90m# samples/skipped/skipped.feature:9[39m
+    [32m[1mGiven [22m[3ma step that does not skip[23m[39m                                [90m# samples/skipped/skipped.ts:3[39m
+    [33m[1mAnd [22m[3mI skip a step[23m[39m                                              [90m# samples/skipped/skipped.ts:11[39m
 
-  [44m[1mScenario:[22m [3mSkipping from a step doesn't affect the previous steps[23m[49m [90m# samples/skipped/skipped.feature:13[39m
-    [32m[1mGiven [22m[3ma step that does not skip[23m[39m                                [90m# samples/skipped/skipped.ts:7[39m
-    [36m[1mAnd [22m[3mI skip a step[23m[39m                                              [90m# samples/skipped/skipped.ts:15[39m
-
-  [44m[1mScenario:[22m [3mSkipping from a step causes the rest of the scenario to be skipped[23m[49m [90m# samples/skipped/skipped.feature:17[39m
-    [36m[1mGiven [22m[3mI skip a step[23m[39m                                                        [90m# samples/skipped/skipped.ts:15[39m
-    [36m[1mAnd [22m[3ma step that is skipped[23m[39m                                                 [90m# samples/skipped/skipped.ts:11[39m
+  [44m[1mScenario:[22m [3mSkipping from a step causes the rest of the scenario to be skipped[23m[49m [90m# samples/skipped/skipped.feature:13[39m
+    [33m[1mGiven [22m[3mI skip a step[23m[39m                                                        [90m# samples/skipped/skipped.ts:11[39m
+    [33m[1mAnd [22m[3ma step that is skipped[23m[39m                                                 [90m# samples/skipped/skipped.ts:7[39m

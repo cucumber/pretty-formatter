@@ -1,10 +1,11 @@
 
-[33mUndefined scenarios:[39m
+[34mUndefined scenarios:[39m
   1) Test cases won't retry when the status is UNDEFINED [90m# samples/retry-undefined/retry-undefined.feature:2[39m
+       [34m[1mGiven [22ma non-existent step[39m
 
-1 scenarios ([33m1 undefined[39m)
-1 steps ([33m1 undefined[39m)
-0m 0.5s
+1 scenarios ([34m1 undefined[39m)
+1 steps ([34m1 undefined[39m)
+0m 0.5s (0m 0.0s executing your code)
 
 You can implement missing steps with the snippets below:
 

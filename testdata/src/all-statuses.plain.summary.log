@@ -1,0 +1,32 @@
+
+Pending scenarios:
+  1) Pending # samples/all-statuses/all-statuses.feature:16
+       And a pending step # samples/all-statuses/all-statuses.ts:9
+
+Undefined scenarios:
+  1) Undefined # samples/all-statuses/all-statuses.feature:26
+       And an undefined step
+
+Ambiguous scenarios:
+  1) Ambiguous # samples/all-statuses/all-statuses.feature:31
+       And an ambiguous step
+           Multiple matching step definitions found:
+             - an ambiguous step # samples/all-statuses/all-statuses.ts:17
+             - an ambiguous step # samples/all-statuses/all-statuses.ts:19
+
+Failed scenarios:
+  1) Failing # samples/all-statuses/all-statuses.feature:11
+       And a failing step # samples/all-statuses/all-statuses.ts:5
+           Error: whoops
+           samples/all-statuses/all-statuses.feature:13
+
+6 scenarios (1 passed, 1 skipped, 1 pending, 1 undefined, 1 ambiguous, 1 failed)
+18 steps (8 passed, 6 skipped, 1 pending, 1 undefined, 1 ambiguous, 1 failed)
+0m 0.49s (0m 0.11s executing your code)
+
+You can implement missing steps with the snippets below:
+
+Given("an undefined step", () => {
+  return "pending"
+})
+

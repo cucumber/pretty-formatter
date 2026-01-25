@@ -1,0 +1,38 @@
+
+[44m[1mFeature:[22m [3mAll statuses[23m[49m
+
+  [44m[1mScenario:[22m [3mPassing[23m[49m [90m# samples/all-statuses/all-statuses.feature:6[39m
+    [32m[1mGiven [22m[3ma step[23m[39m    [90m# samples/all-statuses/all-statuses.ts:3[39m
+    [32m[1mAnd [22m[3ma step[23m[39m      [90m# samples/all-statuses/all-statuses.ts:3[39m
+    [32m[1mAnd [22m[3ma step[23m[39m      [90m# samples/all-statuses/all-statuses.ts:3[39m
+
+  [44m[1mScenario:[22m [3mFailing[23m[49m    [90m# samples/all-statuses/all-statuses.feature:11[39m
+    [32m[1mGiven [22m[3ma step[23m[39m       [90m# samples/all-statuses/all-statuses.ts:3[39m
+    [31m[1mAnd [22m[3ma failing step[23m[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+        [31mError: whoops[39m
+        [31msamples/all-statuses/all-statuses.feature:13[39m
+    [33m[1mAnd [22m[3ma step[23m[39m         [90m# samples/all-statuses/all-statuses.ts:3[39m
+
+  [44m[1mScenario:[22m [3mPending[23m[49m    [90m# samples/all-statuses/all-statuses.feature:16[39m
+    [32m[1mGiven [22m[3ma step[23m[39m       [90m# samples/all-statuses/all-statuses.ts:3[39m
+    [36m[1mAnd [22m[3ma pending step[23m[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+        [36mTODO[39m
+    [33m[1mAnd [22m[3ma step[23m[39m         [90m# samples/all-statuses/all-statuses.ts:3[39m
+
+  [44m[1mScenario:[22m [3mSkipped[23m[49m    [90m# samples/all-statuses/all-statuses.feature:21[39m
+    [32m[1mGiven [22m[3ma step[23m[39m       [90m# samples/all-statuses/all-statuses.ts:3[39m
+    [33m[1mAnd [22m[3ma skipped step[23m[39m [90m# samples/all-statuses/all-statuses.ts:13[39m
+    [33m[1mAnd [22m[3ma step[23m[39m         [90m# samples/all-statuses/all-statuses.ts:3[39m
+
+  [44m[1mScenario:[22m [3mUndefined[23m[49m     [90m# samples/all-statuses/all-statuses.feature:26[39m
+    [32m[1mGiven [22m[3ma step[23m[39m          [90m# samples/all-statuses/all-statuses.ts:3[39m
+    [34m[1mAnd [22m[3man undefined step[23m[39m
+    [33m[1mAnd [22m[3ma step[23m[39m            [90m# samples/all-statuses/all-statuses.ts:3[39m
+
+  [44m[1mScenario:[22m [3mAmbiguous[23m[49m     [90m# samples/all-statuses/all-statuses.feature:31[39m
+    [32m[1mGiven [22m[3ma step[23m[39m          [90m# samples/all-statuses/all-statuses.ts:3[39m
+    [35m[1mAnd [22m[3man ambiguous step[23m[39m
+        Multiple matching step definitions found:
+          • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:17[39m
+          • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:19[39m
+    [33m[1mAnd [22m[3ma step[23m[39m            [90m# samples/all-statuses/all-statuses.ts:3[39m

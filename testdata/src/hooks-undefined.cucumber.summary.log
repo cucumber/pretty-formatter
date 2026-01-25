@@ -1,10 +1,11 @@
 
-[33mUndefined scenarios:[39m
+[34mUndefined scenarios:[39m
   1) No tags and a undefined step [90m# samples/hooks-undefined/hooks-undefined.feature:4[39m
+       [34m[1mWhen [22ma step does not exist[39m
 
-1 scenarios ([33m1 undefined[39m)
-3 steps ([32m2 passed[39m, [33m1 undefined[39m)
-0m 0.9s
+1 scenarios ([34m1 undefined[39m)
+3 steps ([32m2 passed[39m, [34m1 undefined[39m)
+0m 0.9s (0m 0.2s executing your code)
 
 You can implement missing steps with the snippets below:
 

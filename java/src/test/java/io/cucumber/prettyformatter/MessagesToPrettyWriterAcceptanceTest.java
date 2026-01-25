@@ -1,14 +1,13 @@
 package io.cucumber.prettyformatter;
 
-import io.cucumber.messages.NdjsonToMessageIterable;
-import io.cucumber.messages.types.Envelope;
+import io.cucumber.messages.NdjsonToMessageReader;
+import io.cucumber.messages.ndjson.Deserializer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +19,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.cucumber.prettyformatter.Jackson.OBJECT_MAPPER;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_ATTACHMENTS;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_FEATURE_LINE;
 import static io.cucumber.prettyformatter.MessagesToPrettyWriter.PrettyFeature.INCLUDE_RULE_LINE;
@@ -33,7 +31,6 @@ import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessagesToPrettyWriterAcceptanceTest {
-    private static final NdjsonToMessageIterable.Deserializer deserializer = json -> OBJECT_MAPPER.readValue(json, Envelope.class);
 
     static List<TestCase> acceptance() throws IOException {
         Map<String, MessagesToPrettyWriter.Builder> themes = new LinkedHashMap<>();
@@ -68,10 +65,10 @@ class MessagesToPrettyWriterAcceptanceTest {
     }
 
     private static <T extends OutputStream> T writePrettyReport(TestCase testCase, T out, MessagesToPrettyWriter.Builder builder) throws IOException {
-        try (InputStream in = Files.newInputStream(testCase.source)) {
-            try (NdjsonToMessageIterable envelopes = new NdjsonToMessageIterable(in, deserializer)) {
-                try (MessagesToPrettyWriter writer = builder.build(out)) {
-                    for (Envelope envelope : envelopes) {
+        try (var in = Files.newInputStream(testCase.source)) {
+            try (var reader = new NdjsonToMessageReader(in, new Deserializer())) {
+                try (var writer = builder.build(out)) {
+                    for (var envelope : reader.lines().toList()) {
                         writer.write(envelope);
                     }
                 }
