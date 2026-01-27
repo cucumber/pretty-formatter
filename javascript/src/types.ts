@@ -116,6 +116,11 @@ export interface ProgressBarOptions {
    */
   includeAttachments?: boolean
   /**
+   * Whether to print a summary at the end of the test run
+   * @defaultValue false
+   */
+  summarise?: boolean
+  /**
    * Theme for styling the output
    */
   theme?: Theme

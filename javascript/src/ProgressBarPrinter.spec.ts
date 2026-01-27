@@ -25,6 +25,9 @@ describe('ProgressBarPrinter', () => {
       const stream = makeFakeStream()
       const printer = new ProgressBarPrinter({
         stream,
+        options: {
+          summarise: true,
+        },
       })
 
       const ndjsonContent = fs.readFileSync(ndjsonFile, { encoding: 'utf-8' })
@@ -67,6 +70,9 @@ describe('ProgressBarPrinter', () => {
     const stream = makeFakeStream()
     const printer = new ProgressBarPrinter({
       stream,
+      options: {
+        summarise: true,
+      },
     })
 
     const ndjsonFile = path.join(__dirname, '..', '..', 'testdata', 'src', 'all-statuses.ndjson')

@@ -37,6 +37,7 @@ type Problem = {
 
 const DEFAULT_OPTIONS: Required<ProgressBarOptions> = {
   includeAttachments: true,
+  summarise: false,
   theme: CUCUMBER_THEME,
 }
 
@@ -225,7 +226,7 @@ export class ProgressBarPrinter {
         this.printedProblems.push({ type, details })
       }
     }
-    if (this.phase === Phase.DONE) {
+    if (this.phase === Phase.DONE && this.options.summarise) {
       output += this.makeSummaryBlock()
     } else {
       output += this.makeProgressBlock()
