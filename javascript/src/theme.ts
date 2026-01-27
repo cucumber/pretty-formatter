@@ -33,6 +33,7 @@ const CUCUMBER_PROGRESS_ICONS: Record<TestStepResultStatus, string> = {
 }
 
 export const CUCUMBER_THEME: Theme = {
+  affix: 'italic',
   attachment: 'blue',
   feature: {
     keyword: 'bold',
@@ -59,6 +60,7 @@ export const CUCUMBER_THEME: Theme = {
 }
 
 export const DEMO_THEME: Theme = {
+  affix: 'italic',
   attachment: 'blue',
   dataTable: {
     all: 'blackBright',

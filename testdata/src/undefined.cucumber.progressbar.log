@@ -1,0 +1,173 @@
+[meta]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
+  Getting ready...
+  
+[testRunStarted]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/2 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/5 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 scenarios
+  ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/6 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+  
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/4 scenarios
+  ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/6 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+  
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/4 scenarios
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/6 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+  
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/4 scenarios
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 3/6 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+    2) [3mScenario:[23m Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:11[39m
+         [34m[1mAnd [22ma step that is yet to be defined[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 2/4 scenarios
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 3/6 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+    2) [3mScenario:[23m Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:11[39m
+         [34m[1mAnd [22ma step that is yet to be defined[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 2/4 scenarios
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 4/6 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+    2) [3mScenario:[23m Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:11[39m
+         [34m[1mAnd [22ma step that is yet to be defined[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 2/4 scenarios
+  ██████████████████████████████████████████░░░░░░░░ 5/6 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+    2) [3mScenario:[23m Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:11[39m
+         [34m[1mAnd [22ma step that is yet to be defined[39m
+    3) [3mScenario:[23m Steps after undefined steps are skipped [90m# samples/undefined/undefined.feature:15[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+  
+  ██████████████████████████████████████░░░░░░░░░░░░ 3/4 scenarios
+  ██████████████████████████████████████████░░░░░░░░ 5/6 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+    2) [3mScenario:[23m Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:11[39m
+         [34m[1mAnd [22ma step that is yet to be defined[39m
+    3) [3mScenario:[23m Steps after undefined steps are skipped [90m# samples/undefined/undefined.feature:15[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+  
+  ██████████████████████████████████████░░░░░░░░░░░░ 3/4 scenarios
+  ██████████████████████████████████████████████████ 6/6 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+    2) [3mScenario:[23m Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:11[39m
+         [34m[1mAnd [22ma step that is yet to be defined[39m
+    3) [3mScenario:[23m Steps after undefined steps are skipped [90m# samples/undefined/undefined.feature:15[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+    4) [3mScenario:[23m Snippets reflect parameter types [90m# samples/undefined/undefined.feature:19[39m
+         [34m[1mGiven [22ma list of 8 things[39m
+  
+  ██████████████████████████████████████████████████ 4/4 scenarios
+  ██████████████████████████████████████████████████ 6/6 steps
+  Running 0 scenarios...
+  
+[testRunFinished]
+  Problems:
+    1) [3mScenario:[23m An undefined step causes a failure [90m# samples/undefined/undefined.feature:8[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+    2) [3mScenario:[23m Steps before undefined steps are executed [90m# samples/undefined/undefined.feature:11[39m
+         [34m[1mAnd [22ma step that is yet to be defined[39m
+    3) [3mScenario:[23m Steps after undefined steps are skipped [90m# samples/undefined/undefined.feature:15[39m
+         [34m[1mGiven [22ma step that is yet to be defined[39m
+    4) [3mScenario:[23m Snippets reflect parameter types [90m# samples/undefined/undefined.feature:19[39m
+         [34m[1mGiven [22ma list of 8 things[39m
+  
+  4 scenarios ([34m4 undefined[39m)
+  6 steps ([32m1 passed[39m, [33m1 skipped[39m, [34m4 undefined[39m)
+  0m 0.21s (0m 0.1s executing your code)
+  
+  You can implement missing steps with the snippets below:
+  
+  Given("a step that is yet to be defined", () => {
+    return "pending"
+  })
+  
+  Given("a list of {int} things", (int: number) => {
+    return "pending"
+  })
+  
+  Given("a list of {float} things", (float: number) => {
+    return "pending"
+  })
+  
+  

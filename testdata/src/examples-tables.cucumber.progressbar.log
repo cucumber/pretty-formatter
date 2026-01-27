@@ -1,0 +1,470 @@
+[meta]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
+  Getting ready...
+  
+[testRunStarted]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/2 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/9 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/12 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/5 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/15 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/18 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/7 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/21 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/7 scenarios
+  ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/7 scenarios
+  █████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/7 scenarios
+  ███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/21 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  
+  ███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/7 scenarios
+  ███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/21 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  
+  ███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/7 scenarios
+  ██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 4/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/7 scenarios
+  ████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 5/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/7 scenarios
+  ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 6/21 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  
+  ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/7 scenarios
+  ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 6/21 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  
+  ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/7 scenarios
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 7/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/7 scenarios
+  ███████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 8/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/7 scenarios
+  █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 9/21 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/7 scenarios
+  █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 9/21 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/7 scenarios
+  ████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░ 10/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/7 scenarios
+  ██████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░ 11/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/7 scenarios
+  █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 12/21 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 4/7 scenarios
+  █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 12/21 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 4/7 scenarios
+  ███████████████████████████████░░░░░░░░░░░░░░░░░░░ 13/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 4/7 scenarios
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 14/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 4/7 scenarios
+  ████████████████████████████████████░░░░░░░░░░░░░░ 15/21 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  ████████████████████████████████████░░░░░░░░░░░░░░ 5/7 scenarios
+  ████████████████████████████████████░░░░░░░░░░░░░░ 15/21 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  ████████████████████████████████████░░░░░░░░░░░░░░ 5/7 scenarios
+  ██████████████████████████████████████░░░░░░░░░░░░ 16/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  ████████████████████████████████████░░░░░░░░░░░░░░ 5/7 scenarios
+  ████████████████████████████████████████░░░░░░░░░░ 17/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  ████████████████████████████████████░░░░░░░░░░░░░░ 5/7 scenarios
+  ███████████████████████████████████████████░░░░░░░ 18/21 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  ███████████████████████████████████████████░░░░░░░ 6/7 scenarios
+  ███████████████████████████████████████████░░░░░░░ 18/21 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  ███████████████████████████████████████████░░░░░░░ 6/7 scenarios
+  █████████████████████████████████████████████░░░░░ 19/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  ███████████████████████████████████████████░░░░░░░ 6/7 scenarios
+  ████████████████████████████████████████████████░░ 20/21 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  ███████████████████████████████████████████░░░░░░░ 6/7 scenarios
+  ██████████████████████████████████████████████████ 21/21 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  ██████████████████████████████████████████████████ 7/7 scenarios
+  ██████████████████████████████████████████████████ 21/21 steps
+  Running 0 scenarios...
+  
+[testRunFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:25[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-8 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables/examples-tables.feature:26[39m
+         [31m[1mThen [22mI should have [1m0[22m cucumbers[39m [90m# samples/examples-tables/examples-tables.ts:16[39m
+             [31mAssertionError: Expected values to be strictly equal:[39m
+             [31m[39m
+             [31m-1 !== 0[39m
+             [31m[39m
+             [31msamples/examples-tables/examples-tables.feature:14[39m
+  
+  7 scenarios ([32m5 passed[39m, [31m2 failed[39m)
+  21 steps ([32m19 passed[39m, [31m2 failed[39m)
+  0m 0.57s (0m 0.21s executing your code)
+  

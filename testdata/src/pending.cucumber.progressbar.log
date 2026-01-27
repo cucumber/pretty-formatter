@@ -1,0 +1,122 @@
+[meta]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
+  Getting ready...
+  
+[testRunStarted]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/2 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/5 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
+  ██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/5 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+  
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
+  ██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/5 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+  
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
+  ████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/5 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+  
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
+  ██████████████████████████████░░░░░░░░░░░░░░░░░░░░ 3/5 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+    2) [3mScenario:[23m Steps before unimplemented steps are executed [90m# samples/pending/pending.feature:12[39m
+         [36m[1mAnd [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+  
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
+  ██████████████████████████████░░░░░░░░░░░░░░░░░░░░ 3/5 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+    2) [3mScenario:[23m Steps before unimplemented steps are executed [90m# samples/pending/pending.feature:12[39m
+         [36m[1mAnd [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+  
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
+  ████████████████████████████████████████░░░░░░░░░░ 4/5 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+    2) [3mScenario:[23m Steps before unimplemented steps are executed [90m# samples/pending/pending.feature:12[39m
+         [36m[1mAnd [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+  
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
+  ██████████████████████████████████████████████████ 5/5 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+    2) [3mScenario:[23m Steps before unimplemented steps are executed [90m# samples/pending/pending.feature:12[39m
+         [36m[1mAnd [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+    3) [3mScenario:[23m Steps after unimplemented steps are skipped [90m# samples/pending/pending.feature:16[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+  
+  ██████████████████████████████████████████████████ 3/3 scenarios
+  ██████████████████████████████████████████████████ 5/5 steps
+  Running 0 scenarios...
+  
+[testRunFinished]
+  Problems:
+    1) [3mScenario:[23m Unimplemented step signals pending status [90m# samples/pending/pending.feature:9[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+    2) [3mScenario:[23m Steps before unimplemented steps are executed [90m# samples/pending/pending.feature:12[39m
+         [36m[1mAnd [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+    3) [3mScenario:[23m Steps after unimplemented steps are skipped [90m# samples/pending/pending.feature:16[39m
+         [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending/pending.ts:11[39m
+  
+  3 scenarios ([36m3 pending[39m)
+  5 steps ([32m1 passed[39m, [33m1 skipped[39m, [36m3 pending[39m)
+  0m 0.17s (0m 0.4s executing your code)
+  
