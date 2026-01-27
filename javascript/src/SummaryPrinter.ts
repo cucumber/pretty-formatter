@@ -234,7 +234,7 @@ export class SummaryPrinter {
   private printSnippets() {
     const suggestions = findAllSuggestions(this.query)
     if (suggestions.length > 0) {
-      this.print(composeSnippets(suggestions))
+      this.println(composeSnippets(suggestions))
     }
   }
 }

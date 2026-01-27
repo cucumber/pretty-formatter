@@ -15,7 +15,6 @@ export function composeSnippets(suggestions: ReadonlyArray<Suggestion>): string 
     lines.push(snippet)
     lines.push('')
   }
-  lines.push('')
 
   return lines.join('\n')
 }

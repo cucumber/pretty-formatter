@@ -235,10 +235,12 @@ export class ProgressBarPrinter {
 
   private makeSummaryBlock() {
     let output = '\n'
-    output += composeStats(this.query, this.options.theme, this.stream) + '\n'
+    output += composeStats(this.query, this.options.theme, this.stream)
+    output += '\n'
     const suggestions = findAllSuggestions(this.query)
     if (suggestions.length > 0) {
       output += composeSnippets(suggestions)
+      output += '\n'
     }
     return output
   }
