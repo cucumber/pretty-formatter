@@ -40,6 +40,8 @@ const DEFAULT_OPTIONS: Required<ProgressBarOptions> = {
   summarise: false,
   theme: CUCUMBER_THEME,
 }
+const MAX_BAR_WIDTH = 50
+const MIN_LEGEND_WIDTH = 30
 
 /**
  * Prints test progress as an updating progress bar, with problems prepended above
@@ -257,7 +259,7 @@ export class ProgressBarPrinter {
   }
 
   private makeBar(finished: number, total: number, label: string) {
-    const barWidth = Math.min(this.stream.columns - 30, 50)
+    const barWidth = Math.min(this.stream.columns - MIN_LEGEND_WIDTH, MAX_BAR_WIDTH)
     const ratio = total > 0 ? finished / total : 0
     const filledCount = Math.round(ratio * barWidth)
     const emptyCount = barWidth - filledCount
