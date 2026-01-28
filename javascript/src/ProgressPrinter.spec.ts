@@ -42,8 +42,7 @@ describe('ProgressPrinter', async () => {
         const [suiteName] = path.basename(ndjsonFile).split('.')
 
         it(suiteName, async () => {
-          let content = ''
-          const stream = makeFakeStream((chunk) => (content += chunk))
+          const stream = makeFakeStream()
           const printer = new ProgressPrinter({
             stream,
             options,
@@ -63,7 +62,7 @@ describe('ProgressPrinter', async () => {
 
           const expectedPath = ndjsonFile.replace('.ndjson', `.${name}.progress.log`)
           if (updateExpectedFiles) {
-            fs.writeFileSync(expectedPath, content, {
+            fs.writeFileSync(expectedPath, stream.content, {
               encoding: 'utf-8',
             })
           }
@@ -71,7 +70,7 @@ describe('ProgressPrinter', async () => {
             encoding: 'utf-8',
           })
 
-          expect(content).to.eq(expectedOutput)
+          expect(stream.content).to.eq(expectedOutput)
         })
       }
     })
@@ -79,8 +78,7 @@ describe('ProgressPrinter', async () => {
 
   describe('summarise', () => {
     it('should append a summary when the option is enabled', async () => {
-      let content = ''
-      const stream = makeFakeStream((chunk) => (content += chunk))
+      const stream = makeFakeStream()
       const printer = new ProgressPrinter({
         stream,
         options: {
@@ -113,7 +111,7 @@ describe('ProgressPrinter', async () => {
         { encoding: 'utf-8' }
       )
 
-      expect(content).to.eq(expectedProgress + expectedSummary)
+      expect(stream.content).to.eq(expectedProgress + expectedSummary)
     })
   })
 })

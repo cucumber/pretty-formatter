@@ -1,4 +1,5 @@
 export * from './PrettyPrinter'
+export * from './ProgressBarPrinter'
 export * from './ProgressPrinter'
 export * from './SummaryPrinter'
 export { CUCUMBER_THEME } from './theme'

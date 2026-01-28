@@ -1,7 +1,7 @@
 import { Envelope } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
-import { formatStatusCharacter } from './helpers'
+import { formatStatusCharacter } from './formatting'
 import { SummaryPrinter } from './SummaryPrinter'
 import { CUCUMBER_THEME } from './theme'
 import type { ProgressOptions } from './types'

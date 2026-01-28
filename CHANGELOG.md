@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Print execution duration in summary ([#62](https://github.com/cucumber/pretty-formatter/pull/62))
 - Include responsible step in summary ([#63](https://github.com/cucumber/pretty-formatter/pull/63))
 - Show matching step definitions for ambiguous steps ([#67](https://github.com/cucumber/pretty-formatter/pull/67))
+- Add progress bar printer ([#79](https://github.com/cucumber/pretty-formatter/pull/79))
 
 ### Changed
 - [JavaScript] BREAKING CHANGE: Expose `PrettyPrinter` rather than a high-level formatter ([#40](https://github.com/cucumber/pretty-formatter/pull/40))

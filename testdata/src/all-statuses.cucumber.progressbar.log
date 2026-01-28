@@ -1,0 +1,345 @@
+[meta]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
+  Getting ready...
+  
+[testRunStarted]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/2 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/9 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/12 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/5 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/15 steps
+  Running 0 scenarios...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/18 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 scenarios
+  ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 scenarios
+  ██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 scenarios
+  ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/18 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  
+  ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/6 scenarios
+  ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/18 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  
+  ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/6 scenarios
+  ███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 4/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/6 scenarios
+  ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 5/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/6 scenarios
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 6/18 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+  
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/6 scenarios
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 6/18 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+  
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/6 scenarios
+  ███████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 7/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+  
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/6 scenarios
+  ██████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 8/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+  
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/6 scenarios
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 9/18 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 3/6 scenarios
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 9/18 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 3/6 scenarios
+  ████████████████████████████░░░░░░░░░░░░░░░░░░░░░░ 10/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 3/6 scenarios
+  ███████████████████████████████░░░░░░░░░░░░░░░░░░░ 11/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 3/6 scenarios
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 12/18 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+  
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 4/6 scenarios
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 12/18 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+  
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 4/6 scenarios
+  ████████████████████████████████████░░░░░░░░░░░░░░ 13/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+  
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 4/6 scenarios
+  ███████████████████████████████████████░░░░░░░░░░░ 14/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+  
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 4/6 scenarios
+  ██████████████████████████████████████████░░░░░░░░ 15/18 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+    3) [3mScenario:[23m Undefined [90m# samples/all-statuses/all-statuses.feature:26[39m
+         [34m[1mAnd [22man undefined step[39m
+  
+  ██████████████████████████████████████████░░░░░░░░ 5/6 scenarios
+  ██████████████████████████████████████████░░░░░░░░ 15/18 steps
+  Running 0 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+    3) [3mScenario:[23m Undefined [90m# samples/all-statuses/all-statuses.feature:26[39m
+         [34m[1mAnd [22man undefined step[39m
+  
+  ██████████████████████████████████████████░░░░░░░░ 5/6 scenarios
+  ████████████████████████████████████████████░░░░░░ 16/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+    3) [3mScenario:[23m Undefined [90m# samples/all-statuses/all-statuses.feature:26[39m
+         [34m[1mAnd [22man undefined step[39m
+  
+  ██████████████████████████████████████████░░░░░░░░ 5/6 scenarios
+  ███████████████████████████████████████████████░░░ 17/18 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+    3) [3mScenario:[23m Undefined [90m# samples/all-statuses/all-statuses.feature:26[39m
+         [34m[1mAnd [22man undefined step[39m
+  
+  ██████████████████████████████████████████░░░░░░░░ 5/6 scenarios
+  ██████████████████████████████████████████████████ 18/18 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+    3) [3mScenario:[23m Undefined [90m# samples/all-statuses/all-statuses.feature:26[39m
+         [34m[1mAnd [22man undefined step[39m
+    4) [3mScenario:[23m Ambiguous [90m# samples/all-statuses/all-statuses.feature:31[39m
+         [35m[1mAnd [22man ambiguous step[39m
+             Multiple matching step definitions found:
+               • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:17[39m
+               • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:19[39m
+  
+  ██████████████████████████████████████████████████ 6/6 scenarios
+  ██████████████████████████████████████████████████ 18/18 steps
+  Running 0 scenarios...
+  
+[testRunFinished]
+  Problems:
+    1) [3mScenario:[23m Failing [90m# samples/all-statuses/all-statuses.feature:11[39m
+         [31m[1mAnd [22ma failing step[39m [90m# samples/all-statuses/all-statuses.ts:5[39m
+             [31mError: whoops[39m
+             [31msamples/all-statuses/all-statuses.feature:13[39m
+    2) [3mScenario:[23m Pending [90m# samples/all-statuses/all-statuses.feature:16[39m
+         [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
+    3) [3mScenario:[23m Undefined [90m# samples/all-statuses/all-statuses.feature:26[39m
+         [34m[1mAnd [22man undefined step[39m
+    4) [3mScenario:[23m Ambiguous [90m# samples/all-statuses/all-statuses.feature:31[39m
+         [35m[1mAnd [22man ambiguous step[39m
+             Multiple matching step definitions found:
+               • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:17[39m
+               • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:19[39m
+  
+  6 scenarios ([32m1 passed[39m, [33m1 skipped[39m, [36m1 pending[39m, [34m1 undefined[39m, [35m1 ambiguous[39m, [31m1 failed[39m)
+  18 steps ([32m8 passed[39m, [33m6 skipped[39m, [36m1 pending[39m, [34m1 undefined[39m, [35m1 ambiguous[39m, [31m1 failed[39m)
+  0m 0.49s (0m 0.11s executing your code)
+  
+  You can implement missing steps with the snippets below:
+  
+  Given("an undefined step", () => {
+    return "pending"
+  })
+  
+  

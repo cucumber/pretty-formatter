@@ -18,30 +18,31 @@ import {
 import { Query } from '@cucumber/query'
 
 import {
-  ATTACHMENT_INDENT_LENGTH,
-  ensure,
-  ERROR_INDENT_LENGTH,
   formatAmbiguousStep,
   formatAttachment,
-  formatCodeLocation,
+  formatError,
   formatFeatureTitle,
   formatPickleLocation,
   formatPickleStepArgument,
-  formatPickleTags,
   formatPickleTitle,
   formatRuleTitle,
+  formatSourceReference,
   formatStepTitle,
-  formatTestRunFinishedError,
-  formatTestStepResultError,
+  formatTags,
+} from './formatting'
+import { SummaryPrinter } from './SummaryPrinter'
+import { CUCUMBER_THEME } from './theme'
+import type { PrettyOptions } from './types'
+import {
+  ATTACHMENT_INDENT_LENGTH,
+  ensure,
+  ERROR_INDENT_LENGTH,
   GHERKIN_INDENT_LENGTH,
   indent,
   pad,
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
-} from './helpers'
-import { SummaryPrinter } from './SummaryPrinter'
-import { CUCUMBER_THEME } from './theme'
-import type { PrettyOptions } from './types'
+} from './utils'
 
 const DEFAULT_OPTIONS: Required<PrettyOptions> = {
   includeAttachments: true,
@@ -271,9 +272,8 @@ export class PrettyPrinter {
   }
 
   private printTags(pickle: Pickle, scenarioIndent: number) {
-    const output = formatPickleTags(pickle, this.options.theme, this.stream)
-    if (output) {
-      this.println(indent(output, scenarioIndent))
+    if (pickle.tags.length > 0) {
+      this.println(indent(formatTags(pickle.tags, this.options.theme, this.stream), scenarioIndent))
     }
   }
 
@@ -335,18 +335,19 @@ export class PrettyPrinter {
         ),
         GHERKIN_INDENT_LENGTH
       ),
-      formatCodeLocation(stepDefinition, this.options.theme, this.stream),
+      stepDefinition?.sourceReference
+        ? formatSourceReference(stepDefinition.sourceReference, this.options.theme, this.stream)
+        : undefined,
       scenarioIndent,
       maxContentLength
     )
   }
 
   private printStepArgument(pickleStep: PickleStep, scenarioIndent: number) {
-    const content = formatPickleStepArgument(pickleStep, this.options.theme, this.stream)
-    if (content) {
+    if (pickleStep.argument) {
       this.println(
         indent(
-          content,
+          formatPickleStepArgument(pickleStep.argument, this.options.theme, this.stream),
           scenarioIndent +
             (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
             GHERKIN_INDENT_LENGTH +
@@ -371,12 +372,17 @@ export class PrettyPrinter {
   }
 
   private printError(testStepFinished: TestStepFinished, scenarioIndent: number) {
-    const content = formatTestStepResultError(
-      testStepFinished.testStepResult,
-      this.options.theme,
-      this.stream
-    )
-    if (content) {
+    const error =
+      testStepFinished.testStepResult.exception?.stackTrace ||
+      testStepFinished.testStepResult.exception?.message ||
+      testStepFinished.testStepResult.message
+    if (error) {
+      const content = formatError(
+        error,
+        testStepFinished.testStepResult.status,
+        this.options.theme,
+        this.stream
+      )
       this.println(
         indent(
           content,
@@ -434,9 +440,9 @@ export class PrettyPrinter {
   }
 
   private handleTestRunFinished(testRunFinished: TestRunFinished) {
-    const content = formatTestRunFinishedError(testRunFinished, this.options.theme, this.stream)
-    if (content) {
-      this.println(content)
+    const error = testRunFinished.exception?.stackTrace || testRunFinished.exception?.message
+    if (error) {
+      this.println(formatError(error, TestStepResultStatus.FAILED, this.options.theme, this.stream))
     }
     if (this.options.summarise) {
       this.summarise()

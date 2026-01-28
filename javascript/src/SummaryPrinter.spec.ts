@@ -49,8 +49,7 @@ describe('SummaryPrinter', async () => {
         const [suiteName] = path.basename(ndjsonFile).split('.')
 
         it(suiteName, async () => {
-          let content = ''
-          const stream = makeFakeStream((chunk) => (content += chunk))
+          const stream = makeFakeStream()
           const printer = new SummaryPrinter({
             stream,
             options,
@@ -70,7 +69,7 @@ describe('SummaryPrinter', async () => {
 
           const expectedPath = ndjsonFile.replace('.ndjson', `.${name}.summary.log`)
           if (updateExpectedFiles) {
-            fs.writeFileSync(expectedPath, content, {
+            fs.writeFileSync(expectedPath, stream.content, {
               encoding: 'utf-8',
             })
           }
@@ -78,7 +77,7 @@ describe('SummaryPrinter', async () => {
             encoding: 'utf-8',
           })
 
-          expect(content).to.eq(expectedOutput)
+          expect(stream.content).to.eq(expectedOutput)
         })
       }
     })

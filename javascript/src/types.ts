@@ -6,6 +6,7 @@ export type Style = Parameters<typeof styleText>[0]
 export { TestStepResultStatus } from '@cucumber/messages'
 
 export interface Theme {
+  affix?: Style
   attachment?: Style
   dataTable?: {
     all?: Style
@@ -89,6 +90,26 @@ export interface PrettyOptions {
  * Options for the ProgressPrinter
  */
 export interface ProgressOptions {
+  /**
+   * Whether to include attachments in the summary output
+   * @defaultValue true
+   */
+  includeAttachments?: boolean
+  /**
+   * Whether to print a summary at the end of the test run
+   * @defaultValue false
+   */
+  summarise?: boolean
+  /**
+   * Theme for styling the output
+   */
+  theme?: Theme
+}
+
+/**
+ * Options for the ProgressBarPrinter
+ */
+export interface ProgressBarOptions {
   /**
    * Whether to include attachments in the summary output
    * @defaultValue true
