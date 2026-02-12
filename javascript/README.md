@@ -12,7 +12,7 @@
   <a href="https://github.com/cucumber/pretty-formatter/actions" style="text-decoration: none"><img src="https://github.com/cucumber/pretty-formatter/actions/workflows/test-javascript.yaml/badge.svg" alt="Build status"></a>
 </p>
 
-![Example output of the pretty formatting, showing the different colors used](https://github.com/user-attachments/assets/feed2857-b8cb-4663-9a5a-57044cfa5356)
+![Example output of the pretty formatting, showing the different colors used](../screenshots/all-statuses.cucumber.pretty.png)
 
 ## Usage
 
