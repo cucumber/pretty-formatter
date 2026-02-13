@@ -4,7 +4,7 @@
   pretty-formatter
 </h1>
 <p align="center">
-  <b>Writes a rich report of the scenario and example execution as it happens</b>
+  <b>Rich formatting of Cucumber progress and results for the terminal</b>
 </p>
 
 <p align="center">
@@ -18,37 +18,45 @@
 </p>
 
 
-Pretty Formatter
-================
+This package provides several printers and utilities for rich formatting of Cucumber progress and results in the terminal.
+
+## Pretty
 
 The pretty formatter writes a rich report of the scenario and example execution as it happens. Useful when running Cucumber from the terminal.
-The summary formatter writes a rich summary at the end of the test run.
 
-![Example output of the pretty formatting, showing the different colors used](https://github.com/user-attachments/assets/f7270e9d-e434-490f-ad96-c178f165a8eb)
+![Example output of the pretty formatting, showing the different colors used](./screenshots/all-statuses.cucumber.pretty.png)
 
-## Progress formatter
+## Progress
 
 The progress formatter is minimalist progress indicator that writes a single character status for each test. Useful the test suite gets large. Pairs well with the summary formatter.
+
+![Example output of the progress formatting, showing the different colors used](./screenshots/all-statuses.cucumber.progress.png)
+
+## Summary
+
+The summary formatter writes a rich summary at the end of the test run.
+
+![Example output of the summary formatting, showing the different colors used](./screenshots/all-statuses.cucumber.summary.png)
 
 ## Test outcome coloring
 
 Each step is colored according to the outcome. When the `cucumber` theme is in
 use the following colors and symbols are used.
 
-| Cucumber Outcome | Color  | Status Symbol | Progress Symbol |
-|------------------|--------|---------------|-----------------|
-| UNKNOWN          | n/a    | n/a           | n/a             |
-| PASSED           | Green  | ✔             | .               |
-| SKIPPED          | Cyan   | ↷             | -               |
-| PENDING          | Yellow | ■             | P               |
-| UNDEFINED        | Yellow | ■             | U               |
-| AMBIGUOUS        | Red    | ✘             | A               |
-| FAILED           | Red    | ✘             | F               |
+| Cucumber Outcome | Color   | Status Symbol | Progress Symbol |
+|------------------|---------|---------------|-----------------|
+| UNKNOWN          | n/a     | n/a           | n/a             |
+| PASSED           | Green   | ✔             | .               |
+| SKIPPED          | Yellow  | ↷             | -               |
+| PENDING          | Cyan    | ■             | P               |
+| UNDEFINED        | Blue    | ■             | U               |
+| AMBIGUOUS        | Magenta | ✘             | A               |
+| FAILED           | Red     | ✘             | F               |
 
 ## Usage and installation
 
 * [Java](./java/README.md)
-* [Javascript](./javascript/README.md)
+* [JavaScript](./javascript/README.md)
 
 ## Contributing
 
