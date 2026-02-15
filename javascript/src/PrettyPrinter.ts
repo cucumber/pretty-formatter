@@ -37,6 +37,7 @@ import {
   ATTACHMENT_INDENT_LENGTH,
   ensure,
   ERROR_INDENT_LENGTH,
+  extractReportableMessage,
   GHERKIN_INDENT_LENGTH,
   indent,
   pad,
@@ -372,10 +373,7 @@ export class PrettyPrinter {
   }
 
   private printError(testStepFinished: TestStepFinished, scenarioIndent: number) {
-    const error =
-      testStepFinished.testStepResult.exception?.stackTrace ||
-      testStepFinished.testStepResult.exception?.message ||
-      testStepFinished.testStepResult.message
+    const error = extractReportableMessage(testStepFinished.testStepResult)
     if (error) {
       const content = formatError(
         error,

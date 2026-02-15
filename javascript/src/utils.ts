@@ -1,6 +1,6 @@
 import { stripVTControlCharacters } from 'node:util'
 
-import { TestStepResultStatus } from '@cucumber/messages'
+import { TestStepResult, TestStepResultStatus } from '@cucumber/messages'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
@@ -60,4 +60,18 @@ export function pad(original: string) {
 
 export function unstyled(text: string) {
   return stripVTControlCharacters(text)
+}
+
+export function extractReportableMessage(testStepResult: TestStepResult): string | undefined {
+  const { status, exception, message: legacyMessage } = testStepResult
+
+  if (status === TestStepResultStatus.FAILED) {
+    return exception?.stackTrace || exception?.message || legacyMessage
+  }
+
+  if (status === TestStepResultStatus.PENDING || status === TestStepResultStatus.SKIPPED) {
+    return exception?.message
+  }
+
+  return undefined
 }

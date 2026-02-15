@@ -12,7 +12,14 @@ import {
   formatStepTitle,
 } from '../formatting'
 import type { SummaryOptions } from '../types'
-import { ensure, GHERKIN_INDENT_LENGTH, indent, join, STEP_ARGUMENT_INDENT_LENGTH } from '../utils'
+import {
+  ensure,
+  extractReportableMessage,
+  GHERKIN_INDENT_LENGTH,
+  indent,
+  join,
+  STEP_ARGUMENT_INDENT_LENGTH,
+} from '../utils'
 
 const ERROR_INDENT_LENGTH = 4
 const ATTACHMENT_INDENT_LENGTH = 4
@@ -99,25 +106,11 @@ export function composeScenarioSummary(
     )
   }
 
-  if (
-    [
-      TestStepResultStatus.SKIPPED,
-      TestStepResultStatus.PENDING,
-      TestStepResultStatus.FAILED,
-    ].includes(status)
-  ) {
-    const error =
-      testStepFinished.testStepResult.exception?.stackTrace ||
-      testStepFinished.testStepResult.exception?.message ||
-      testStepFinished.testStepResult.message
-    if (error) {
-      lines.push(
-        indent(
-          formatError(error, status, theme, stream),
-          GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH
-        )
-      )
-    }
+  const error = extractReportableMessage(testStepFinished.testStepResult)
+  if (error) {
+    lines.push(
+      indent(formatError(error, status, theme, stream), GHERKIN_INDENT_LENGTH + ERROR_INDENT_LENGTH)
+    )
   }
 
   if (includeAttachments) {

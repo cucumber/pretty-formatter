@@ -3,5 +3,4 @@
 
   [1mScenario:[22m Skipping via an exception [90m# samples/skipped-exception/skipped-exception.feature:6[39m
     [33m↷[39m [33m[1mGiven [22mI skip a step[39m             [90m# samples/skipped-exception/skipped-exception.ts:3[39m
-          [33mSkippedException: skipping[39m
-          [33msamples/skipped-exception/skipped-exception.feature:7[39m
+          [33mskipping[39m
