@@ -1,0 +1,51 @@
+
+Pending scenarios:
+  1) Pending as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:29
+       Given a pending step # samples/failedish-combinations/failedish-combinations.ts:11
+
+Undefined scenarios:
+  1) Undefined as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:34
+       Given an undefined step
+
+Ambiguous scenarios:
+  1) Pending as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:7
+       And an ambiguous step
+           Multiple matching step definitions found:
+             - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+             - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+  2) Undefined as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:12
+       And an ambiguous step
+           Multiple matching step definitions found:
+             - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+             - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+  3) Ambiguous as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:17
+       Given an ambiguous step
+           Multiple matching step definitions found:
+             - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+             - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+  4) Ambiguous as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:39
+       Given an ambiguous step
+           Multiple matching step definitions found:
+             - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+             - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+
+Failed scenarios:
+  1) Failed as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:22
+       Given a failing step # samples/failedish-combinations/failedish-combinations.ts:19
+           Error: whoops
+           samples/failedish-combinations/failedish-combinations.feature:23
+  2) Failed as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:44
+       Given a failing step # samples/failedish-combinations/failedish-combinations.ts:19
+           Error: whoops
+           samples/failedish-combinations/failedish-combinations.feature:45
+
+9 scenarios (1 skipped, 1 pending, 1 undefined, 4 ambiguous, 2 failed)
+27 steps (11 skipped, 2 pending, 6 undefined, 6 ambiguous, 2 failed)
+0m 0.73s (0m 0.5s executing your code)
+
+You can implement missing steps with the snippets below:
+
+Given("an undefined step", () => {
+  return "pending"
+})
+

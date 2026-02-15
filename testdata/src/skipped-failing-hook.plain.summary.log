@@ -1,0 +1,10 @@
+
+Failed scenarios:
+  1) Failure in an After hook # samples/skipped-failing-hook/skipped-failing-hook.feature:6
+       After # samples/skipped-failing-hook/skipped-failing-hook.ts:7
+           Error: whoops
+           samples/skipped-failing-hook/skipped-failing-hook.feature:6
+
+1 scenarios (1 failed)
+2 steps (1 skipped, 1 failed)
+0m 0.7s (0m 0.2s executing your code)

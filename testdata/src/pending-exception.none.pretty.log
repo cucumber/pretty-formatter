@@ -1,0 +1,7 @@
+
+Feature: Pending steps via exception
+
+  Scenario: Pending via an exception    # samples/pending-exception/pending-exception.feature:5
+    Given an unimplemented pending step # samples/pending-exception/pending-exception.ts:3
+        PendingException: TODO
+        samples/pending-exception/pending-exception.feature:6

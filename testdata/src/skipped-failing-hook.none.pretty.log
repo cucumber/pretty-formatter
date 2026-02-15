@@ -1,0 +1,7 @@
+
+Feature: Skipped followed by failing hook
+
+  Scenario: Failure in an After hook # samples/skipped-failing-hook/skipped-failing-hook.feature:6
+    Given a step that skips          # samples/skipped-failing-hook/skipped-failing-hook.ts:3
+        Error: whoops
+        samples/skipped-failing-hook/skipped-failing-hook.feature:6

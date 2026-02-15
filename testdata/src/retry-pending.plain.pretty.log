@@ -3,4 +3,3 @@ Feature: Retry - With Pending Steps
 
   Scenario: Test cases won't retry when the status is PENDING # samples/retry-pending/retry-pending.feature:2
     ■ Given a pending step                                    # samples/retry-pending/retry-pending.ts:3
-          TODO

@@ -1,0 +1,10 @@
+
+[31mFailed scenarios:[39m
+  1) Failure in an After hook [90m# samples/skipped-failing-hook/skipped-failing-hook.feature:6[39m
+       [31m[1mAfter[22m[39m [90m# samples/skipped-failing-hook/skipped-failing-hook.ts:7[39m
+           [31mError: whoops[39m
+           [31msamples/skipped-failing-hook/skipped-failing-hook.feature:6[39m
+
+1 scenarios ([31m1 failed[39m)
+2 steps ([33m1 skipped[39m, [31m1 failed[39m)
+0m 0.7s (0m 0.2s executing your code)

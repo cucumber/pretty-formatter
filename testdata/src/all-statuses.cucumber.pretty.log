@@ -16,7 +16,6 @@
   [1mScenario:[22m Pending      [90m# samples/all-statuses/all-statuses.feature:16[39m
     [32m✔[39m [32m[1mGiven [22ma step[39m       [90m# samples/all-statuses/all-statuses.ts:3[39m
     [36m■[39m [36m[1mAnd [22ma pending step[39m [90m# samples/all-statuses/all-statuses.ts:9[39m
-          [36mTODO[39m
     [33m↷[39m [33m[1mAnd [22ma step[39m         [90m# samples/all-statuses/all-statuses.ts:3[39m
 
   [1mScenario:[22m Skipped      [90m# samples/all-statuses/all-statuses.feature:21[39m
@@ -33,6 +32,6 @@
     [32m✔[39m [32m[1mGiven [22ma step[39m          [90m# samples/all-statuses/all-statuses.ts:3[39m
     [35m✘[39m [35m[1mAnd [22man ambiguous step[39m
           Multiple matching step definitions found:
-            • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:17[39m
-            • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:19[39m
+            • ^an ambiguous (.*?)$ [90m# samples/all-statuses/all-statuses.ts:17[39m
+            • ^(.*?) ambiguous step$ [90m# samples/all-statuses/all-statuses.ts:19[39m
     [33m↷[39m [33m[1mAnd [22ma step[39m            [90m# samples/all-statuses/all-statuses.ts:3[39m

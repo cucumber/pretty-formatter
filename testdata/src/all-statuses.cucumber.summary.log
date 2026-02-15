@@ -11,8 +11,8 @@
   1) Ambiguous [90m# samples/all-statuses/all-statuses.feature:31[39m
        [35m[1mAnd [22man ambiguous step[39m
            Multiple matching step definitions found:
-             • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:17[39m
-             • an ambiguous step [90m# samples/all-statuses/all-statuses.ts:19[39m
+             • ^an ambiguous (.*?)$ [90m# samples/all-statuses/all-statuses.ts:17[39m
+             • ^(.*?) ambiguous step$ [90m# samples/all-statuses/all-statuses.ts:19[39m
 
 [31mFailed scenarios:[39m
   1) Failing [90m# samples/all-statuses/all-statuses.feature:11[39m

@@ -16,7 +16,6 @@ Feature: All statuses
   Scenario: Pending      # samples/all-statuses/all-statuses.feature:16
     ✔ Given a step       # samples/all-statuses/all-statuses.ts:3
     ■ And a pending step # samples/all-statuses/all-statuses.ts:9
-          TODO
     ↷ And a step         # samples/all-statuses/all-statuses.ts:3
 
   Scenario: Skipped      # samples/all-statuses/all-statuses.feature:21
@@ -33,6 +32,6 @@ Feature: All statuses
     ✔ Given a step          # samples/all-statuses/all-statuses.ts:3
     ✘ And an ambiguous step
           Multiple matching step definitions found:
-            - an ambiguous step # samples/all-statuses/all-statuses.ts:17
-            - an ambiguous step # samples/all-statuses/all-statuses.ts:19
+            - ^an ambiguous (.*?)$ # samples/all-statuses/all-statuses.ts:17
+            - ^(.*?) ambiguous step$ # samples/all-statuses/all-statuses.ts:19
     ↷ And a step            # samples/all-statuses/all-statuses.ts:3
