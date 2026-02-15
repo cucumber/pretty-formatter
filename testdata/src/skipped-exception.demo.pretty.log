@@ -1,0 +1,7 @@
+
+[44m[1mFeature:[22m [3mSkipping scenarios via exception[23m[49m
+
+  [44m[1mScenario:[22m [3mSkipping via an exception[23m[49m [90m# samples/skipped-exception/skipped-exception.feature:6[39m
+    [33m[1mGiven [22m[3mI skip a step[23m[39m               [90m# samples/skipped-exception/skipped-exception.ts:3[39m
+        [33mSkippedException: skipping[39m
+        [33msamples/skipped-exception/skipped-exception.feature:7[39m

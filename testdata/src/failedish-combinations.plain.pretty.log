@@ -1,0 +1,75 @@
+
+Feature: Failed-ish combinations
+
+  Rule: Undefined and ambiguous steps can follow a failed-ish step
+
+    Scenario: Pending as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:7
+      ■ Given a pending step                       # samples/failedish-combinations/failedish-combinations.ts:11
+      ■ And an undefined step
+      ✘ And an ambiguous step
+            Multiple matching step definitions found:
+              - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+              - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+
+    Scenario: Undefined as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:12
+      ■ Given an undefined step
+      ■ And an undefined step
+      ✘ And an ambiguous step
+            Multiple matching step definitions found:
+              - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+              - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+
+    Scenario: Ambiguous as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:17
+      ✘ Given an ambiguous step
+            Multiple matching step definitions found:
+              - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+              - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+      ■ And an undefined step
+      ✘ And an ambiguous step
+            Multiple matching step definitions found:
+              - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+              - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+
+    Scenario: Failed as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:22
+      ✘ Given a failing step                      # samples/failedish-combinations/failedish-combinations.ts:19
+            Error: whoops
+            samples/failedish-combinations/failedish-combinations.feature:23
+      ■ And an undefined step
+      ✘ And an ambiguous step
+            Multiple matching step definitions found:
+              - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+              - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+
+  Rule: Failed and pending steps do not follow a failed-ish step
+
+    Scenario: Pending as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:29
+      ■ Given a pending step                       # samples/failedish-combinations/failedish-combinations.ts:11
+      ↷ And a pending step                         # samples/failedish-combinations/failedish-combinations.ts:11
+      ↷ And a failing step                         # samples/failedish-combinations/failedish-combinations.ts:19
+
+    Scenario: Undefined as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:34
+      ■ Given an undefined step
+      ↷ And a pending step                           # samples/failedish-combinations/failedish-combinations.ts:11
+      ↷ And a failing step                           # samples/failedish-combinations/failedish-combinations.ts:19
+
+    Scenario: Ambiguous as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:39
+      ✘ Given an ambiguous step
+            Multiple matching step definitions found:
+              - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+              - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+      ↷ And a pending step                           # samples/failedish-combinations/failedish-combinations.ts:11
+      ↷ And a failing step                           # samples/failedish-combinations/failedish-combinations.ts:19
+
+    Scenario: Failed as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:44
+      ✘ Given a failing step                      # samples/failedish-combinations/failedish-combinations.ts:19
+            Error: whoops
+            samples/failedish-combinations/failedish-combinations.feature:45
+      ↷ And a pending step                        # samples/failedish-combinations/failedish-combinations.ts:11
+      ↷ And a failing step                        # samples/failedish-combinations/failedish-combinations.ts:19
+
+  Rule: No pickle steps follow a skipped step
+
+    Scenario: Step marks itself skipped # samples/failedish-combinations/failedish-combinations.feature:51
+      ↷ Given a skipped step            # samples/failedish-combinations/failedish-combinations.ts:7
+      ↷ And an undefined step
+      ↷ And an ambiguous step

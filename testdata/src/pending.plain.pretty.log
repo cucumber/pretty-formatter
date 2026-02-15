@@ -3,14 +3,11 @@ Feature: Pending steps
 
   Scenario: Unimplemented step signals pending status # samples/pending/pending.feature:9
     ■ Given an unimplemented pending step             # samples/pending/pending.ts:11
-          TODO
 
   Scenario: Steps before unimplemented steps are executed # samples/pending/pending.feature:12
     ✔ Given an implemented non-pending step               # samples/pending/pending.ts:3
     ■ And an unimplemented pending step                   # samples/pending/pending.ts:11
-          TODO
 
   Scenario: Steps after unimplemented steps are skipped # samples/pending/pending.feature:16
     ■ Given an unimplemented pending step               # samples/pending/pending.ts:11
-          TODO
     ↷ And an implemented step that is skipped           # samples/pending/pending.ts:7

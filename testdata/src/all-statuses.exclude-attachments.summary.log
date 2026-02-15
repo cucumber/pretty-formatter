@@ -11,8 +11,8 @@ Ambiguous scenarios:
   1) Ambiguous # samples/all-statuses/all-statuses.feature:31
        And an ambiguous step
            Multiple matching step definitions found:
-             - an ambiguous step # samples/all-statuses/all-statuses.ts:17
-             - an ambiguous step # samples/all-statuses/all-statuses.ts:19
+             - ^an ambiguous (.*?)$ # samples/all-statuses/all-statuses.ts:17
+             - ^(.*?) ambiguous step$ # samples/all-statuses/all-statuses.ts:19
 
 Failed scenarios:
   1) Failing # samples/all-statuses/all-statuses.feature:11

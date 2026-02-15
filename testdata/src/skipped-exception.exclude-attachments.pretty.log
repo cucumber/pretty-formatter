@@ -1,0 +1,7 @@
+
+Feature: Skipping scenarios via exception
+
+  Scenario: Skipping via an exception # samples/skipped-exception/skipped-exception.feature:6
+    Given I skip a step               # samples/skipped-exception/skipped-exception.ts:3
+        SkippedException: skipping
+        samples/skipped-exception/skipped-exception.feature:7

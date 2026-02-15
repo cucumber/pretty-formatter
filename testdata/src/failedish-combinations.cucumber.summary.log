@@ -1,0 +1,51 @@
+
+[36mPending scenarios:[39m
+  1) Pending as the first failed-ish step [90m# samples/failedish-combinations/failedish-combinations.feature:29[39m
+       [36m[1mGiven [22ma pending step[39m [90m# samples/failedish-combinations/failedish-combinations.ts:11[39m
+
+[34mUndefined scenarios:[39m
+  1) Undefined as the first failed-ish step [90m# samples/failedish-combinations/failedish-combinations.feature:34[39m
+       [34m[1mGiven [22man undefined step[39m
+
+[35mAmbiguous scenarios:[39m
+  1) Pending as the first failed-ish step [90m# samples/failedish-combinations/failedish-combinations.feature:7[39m
+       [35m[1mAnd [22man ambiguous step[39m
+           Multiple matching step definitions found:
+             • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+             • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+  2) Undefined as the first failed-ish step [90m# samples/failedish-combinations/failedish-combinations.feature:12[39m
+       [35m[1mAnd [22man ambiguous step[39m
+           Multiple matching step definitions found:
+             • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+             • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+  3) Ambiguous as the first failed-ish step [90m# samples/failedish-combinations/failedish-combinations.feature:17[39m
+       [35m[1mGiven [22man ambiguous step[39m
+           Multiple matching step definitions found:
+             • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+             • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+  4) Ambiguous as the first failed-ish step [90m# samples/failedish-combinations/failedish-combinations.feature:39[39m
+       [35m[1mGiven [22man ambiguous step[39m
+           Multiple matching step definitions found:
+             • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+             • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+
+[31mFailed scenarios:[39m
+  1) Failed as the first failed-ish step [90m# samples/failedish-combinations/failedish-combinations.feature:22[39m
+       [31m[1mGiven [22ma failing step[39m [90m# samples/failedish-combinations/failedish-combinations.ts:19[39m
+           [31mError: whoops[39m
+           [31msamples/failedish-combinations/failedish-combinations.feature:23[39m
+  2) Failed as the first failed-ish step [90m# samples/failedish-combinations/failedish-combinations.feature:44[39m
+       [31m[1mGiven [22ma failing step[39m [90m# samples/failedish-combinations/failedish-combinations.ts:19[39m
+           [31mError: whoops[39m
+           [31msamples/failedish-combinations/failedish-combinations.feature:45[39m
+
+9 scenarios ([33m1 skipped[39m, [36m1 pending[39m, [34m1 undefined[39m, [35m4 ambiguous[39m, [31m2 failed[39m)
+27 steps ([33m11 skipped[39m, [36m2 pending[39m, [34m6 undefined[39m, [35m6 ambiguous[39m, [31m2 failed[39m)
+0m 0.73s (0m 0.5s executing your code)
+
+You can implement missing steps with the snippets below:
+
+Given("an undefined step", () => {
+  return "pending"
+})
+

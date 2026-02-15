@@ -1,0 +1,75 @@
+
+[44m[1mFeature:[22m [3mFailed-ish combinations[23m[49m
+
+  [44m[1mRule:[22m [3mUndefined and ambiguous steps can follow a failed-ish step[23m[49m
+
+    [44m[1mScenario:[22m [3mPending as the first failed-ish step[23m[49m [90m# samples/failedish-combinations/failedish-combinations.feature:7[39m
+      [36m[1mGiven [22m[3ma pending step[23m[39m                         [90m# samples/failedish-combinations/failedish-combinations.ts:11[39m
+      [34m[1mAnd [22m[3man undefined step[23m[39m
+      [35m[1mAnd [22m[3man ambiguous step[23m[39m
+          Multiple matching step definitions found:
+            • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+            • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+
+    [44m[1mScenario:[22m [3mUndefined as the first failed-ish step[23m[49m [90m# samples/failedish-combinations/failedish-combinations.feature:12[39m
+      [34m[1mGiven [22m[3man undefined step[23m[39m
+      [34m[1mAnd [22m[3man undefined step[23m[39m
+      [35m[1mAnd [22m[3man ambiguous step[23m[39m
+          Multiple matching step definitions found:
+            • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+            • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+
+    [44m[1mScenario:[22m [3mAmbiguous as the first failed-ish step[23m[49m [90m# samples/failedish-combinations/failedish-combinations.feature:17[39m
+      [35m[1mGiven [22m[3man ambiguous step[23m[39m
+          Multiple matching step definitions found:
+            • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+            • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+      [34m[1mAnd [22m[3man undefined step[23m[39m
+      [35m[1mAnd [22m[3man ambiguous step[23m[39m
+          Multiple matching step definitions found:
+            • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+            • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+
+    [44m[1mScenario:[22m [3mFailed as the first failed-ish step[23m[49m [90m# samples/failedish-combinations/failedish-combinations.feature:22[39m
+      [31m[1mGiven [22m[3ma failing step[23m[39m                        [90m# samples/failedish-combinations/failedish-combinations.ts:19[39m
+          [31mError: whoops[39m
+          [31msamples/failedish-combinations/failedish-combinations.feature:23[39m
+      [34m[1mAnd [22m[3man undefined step[23m[39m
+      [35m[1mAnd [22m[3man ambiguous step[23m[39m
+          Multiple matching step definitions found:
+            • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+            • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+
+  [44m[1mRule:[22m [3mFailed and pending steps do not follow a failed-ish step[23m[49m
+
+    [44m[1mScenario:[22m [3mPending as the first failed-ish step[23m[49m [90m# samples/failedish-combinations/failedish-combinations.feature:29[39m
+      [36m[1mGiven [22m[3ma pending step[23m[39m                         [90m# samples/failedish-combinations/failedish-combinations.ts:11[39m
+      [33m[1mAnd [22m[3ma pending step[23m[39m                           [90m# samples/failedish-combinations/failedish-combinations.ts:11[39m
+      [33m[1mAnd [22m[3ma failing step[23m[39m                           [90m# samples/failedish-combinations/failedish-combinations.ts:19[39m
+
+    [44m[1mScenario:[22m [3mUndefined as the first failed-ish step[23m[49m [90m# samples/failedish-combinations/failedish-combinations.feature:34[39m
+      [34m[1mGiven [22m[3man undefined step[23m[39m
+      [33m[1mAnd [22m[3ma pending step[23m[39m                             [90m# samples/failedish-combinations/failedish-combinations.ts:11[39m
+      [33m[1mAnd [22m[3ma failing step[23m[39m                             [90m# samples/failedish-combinations/failedish-combinations.ts:19[39m
+
+    [44m[1mScenario:[22m [3mAmbiguous as the first failed-ish step[23m[49m [90m# samples/failedish-combinations/failedish-combinations.feature:39[39m
+      [35m[1mGiven [22m[3man ambiguous step[23m[39m
+          Multiple matching step definitions found:
+            • ^an ambiguous (.*?)$ [90m# samples/failedish-combinations/failedish-combinations.ts:15[39m
+            • ^(.*?) ambiguous step$ [90m# samples/failedish-combinations/failedish-combinations.ts:17[39m
+      [33m[1mAnd [22m[3ma pending step[23m[39m                             [90m# samples/failedish-combinations/failedish-combinations.ts:11[39m
+      [33m[1mAnd [22m[3ma failing step[23m[39m                             [90m# samples/failedish-combinations/failedish-combinations.ts:19[39m
+
+    [44m[1mScenario:[22m [3mFailed as the first failed-ish step[23m[49m [90m# samples/failedish-combinations/failedish-combinations.feature:44[39m
+      [31m[1mGiven [22m[3ma failing step[23m[39m                        [90m# samples/failedish-combinations/failedish-combinations.ts:19[39m
+          [31mError: whoops[39m
+          [31msamples/failedish-combinations/failedish-combinations.feature:45[39m
+      [33m[1mAnd [22m[3ma pending step[23m[39m                          [90m# samples/failedish-combinations/failedish-combinations.ts:11[39m
+      [33m[1mAnd [22m[3ma failing step[23m[39m                          [90m# samples/failedish-combinations/failedish-combinations.ts:19[39m
+
+  [44m[1mRule:[22m [3mNo pickle steps follow a skipped step[23m[49m
+
+    [44m[1mScenario:[22m [3mStep marks itself skipped[23m[49m [90m# samples/failedish-combinations/failedish-combinations.feature:51[39m
+      [33m[1mGiven [22m[3ma skipped step[23m[39m              [90m# samples/failedish-combinations/failedish-combinations.ts:7[39m
+      [33m[1mAnd [22m[3man undefined step[23m[39m
+      [33m[1mAnd [22m[3man ambiguous step[23m[39m
