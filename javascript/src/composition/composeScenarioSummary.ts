@@ -99,7 +99,13 @@ export function composeScenarioSummary(
     )
   }
 
-  if (status === TestStepResultStatus.FAILED) {
+  if (
+    [
+      TestStepResultStatus.SKIPPED,
+      TestStepResultStatus.PENDING,
+      TestStepResultStatus.FAILED,
+    ].includes(status)
+  ) {
     const error =
       testStepFinished.testStepResult.exception?.stackTrace ||
       testStepFinished.testStepResult.exception?.message ||
