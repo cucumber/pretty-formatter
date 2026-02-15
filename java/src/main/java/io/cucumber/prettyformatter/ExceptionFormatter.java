@@ -23,15 +23,23 @@ final class ExceptionFormatter {
     }
 
     Optional<String> format(Exception exception) {
-        if (exception.getStackTrace().isPresent()) {
-            String stacktrace = exception.getStackTrace().get();
-            return Optional.of(format(stacktrace));
+        // For FAILED, prefer stack trace, fall back to message
+        if (status == TestStepResultStatus.FAILED) {
+            if (exception.getStackTrace().isPresent()) {
+                return Optional.of(format(exception.getStackTrace().get()));
+            }
+            if (exception.getMessage().isPresent()) {
+                return Optional.of(format(exception.getMessage().get()));
+            }
+            return Optional.empty();
         }
-        // Fallback
-        if (exception.getMessage().isPresent()) {
-            String message = exception.getMessage().get();
-            return Optional.of(format(message));
+
+        // For PENDING/SKIPPED, only show the message (not stack trace)
+        if (status == TestStepResultStatus.PENDING || status == TestStepResultStatus.SKIPPED) {
+            return exception.getMessage().map(this::format);
         }
+
+        // For all other statuses, return nothing
         return Optional.empty();
     }
 
