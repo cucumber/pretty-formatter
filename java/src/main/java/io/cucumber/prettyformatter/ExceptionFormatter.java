@@ -2,6 +2,7 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.TestStepResultStatus;
+import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +23,7 @@ final class ExceptionFormatter {
         this.status = status;
     }
 
-    Optional<String> format(Exception exception) {
+    Optional<String> format(Exception exception, @Nullable String standaloneMessage) {
         // For FAILED, prefer stack trace, fall back to message
         if (status == TestStepResultStatus.FAILED) {
             if (exception.getStackTrace().isPresent()) {
@@ -31,16 +32,23 @@ final class ExceptionFormatter {
             if (exception.getMessage().isPresent()) {
                 return Optional.of(format(exception.getMessage().get()));
             }
-            return Optional.empty();
+            return Optional.ofNullable(standaloneMessage).map(this::format);
         }
 
         // For PENDING/SKIPPED, only show the message (not stack trace)
         if (status == TestStepResultStatus.PENDING || status == TestStepResultStatus.SKIPPED) {
-            return exception.getMessage().map(this::format);
+            if (exception.getMessage().isPresent()) {
+                return Optional.of(format(exception.getMessage().get()));
+            }
+            return Optional.ofNullable(standaloneMessage).map(this::format);
         }
 
         // For all other statuses, return nothing
         return Optional.empty();
+    }
+
+    Optional<String> format(Exception exception) {
+        return format(exception, null);
     }
 
     String format(String message) {

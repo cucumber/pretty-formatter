@@ -63,14 +63,14 @@ export function unstyled(text: string) {
 }
 
 export function extractReportableMessage(testStepResult: TestStepResult): string | undefined {
-  const { status, exception, message: legacyMessage } = testStepResult
+  const { status, exception, message: standaloneMessage } = testStepResult
 
   if (status === TestStepResultStatus.FAILED) {
-    return exception?.stackTrace || exception?.message || legacyMessage
+    return exception?.stackTrace || exception?.message || standaloneMessage
   }
 
   if (status === TestStepResultStatus.PENDING || status === TestStepResultStatus.SKIPPED) {
-    return exception?.message
+    return exception?.message || standaloneMessage
   }
 
   return undefined

@@ -142,8 +142,10 @@ final class SummaryReportWriter implements AutoCloseable {
     private void printTestRunHookException(TestRunHookFinished testRunHookFinished, TestStepResultStatus status) {
         TestStepResult result = testRunHookFinished.getResult();
         ExceptionFormatter formatter = new ExceptionFormatter(7, theme, status);
+        String standaloneMessage = result.getMessage().orElse(null);
         result.getException()
-                .flatMap(formatter::format)
+                .flatMap(exception -> formatter.format(exception, standaloneMessage))
+                .or(() -> Optional.ofNullable(standaloneMessage).map(formatter::format))
                 .ifPresent(out::print);
     }
 
@@ -212,10 +214,12 @@ final class SummaryReportWriter implements AutoCloseable {
                             });
 
                     ExceptionFormatter formatter = new ExceptionFormatter(11, theme, status);
-                    testStepFinished
-                            .getTestStepResult()
+                    TestStepResult testStepResult = testStepFinished.getTestStepResult();
+                    String standaloneMessage = testStepResult.getMessage().orElse(null);
+                    testStepResult
                             .getException()
-                            .flatMap(formatter::format)
+                            .flatMap(exception -> formatter.format(exception, standaloneMessage))
+                            .or(() -> Optional.ofNullable(standaloneMessage).map(formatter::format))
                             .ifPresent(out::print);
 
                     if (features.contains(MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS)) {
