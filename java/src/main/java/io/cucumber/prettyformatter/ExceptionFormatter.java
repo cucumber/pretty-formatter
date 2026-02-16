@@ -2,6 +2,7 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.types.Exception;
 import io.cucumber.messages.types.TestStepResultStatus;
+import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,17 +23,32 @@ final class ExceptionFormatter {
         this.status = status;
     }
 
-    Optional<String> format(Exception exception) {
-        if (exception.getStackTrace().isPresent()) {
-            String stacktrace = exception.getStackTrace().get();
-            return Optional.of(format(stacktrace));
+    Optional<String> format(Exception exception, @Nullable String standaloneMessage) {
+        // For FAILED, prefer stack trace, fall back to message
+        if (status == TestStepResultStatus.FAILED) {
+            if (exception.getStackTrace().isPresent()) {
+                return Optional.of(format(exception.getStackTrace().get()));
+            }
+            if (exception.getMessage().isPresent()) {
+                return Optional.of(format(exception.getMessage().get()));
+            }
+            return Optional.ofNullable(standaloneMessage).map(this::format);
         }
-        // Fallback
-        if (exception.getMessage().isPresent()) {
-            String message = exception.getMessage().get();
-            return Optional.of(format(message));
+
+        // For PENDING/SKIPPED, only show the message (not stack trace)
+        if (status == TestStepResultStatus.PENDING || status == TestStepResultStatus.SKIPPED) {
+            if (exception.getMessage().isPresent()) {
+                return Optional.of(format(exception.getMessage().get()));
+            }
+            return Optional.ofNullable(standaloneMessage).map(this::format);
         }
+
+        // For all other statuses, return nothing
         return Optional.empty();
+    }
+
+    Optional<String> format(Exception exception) {
+        return format(exception, null);
     }
 
     String format(String message) {

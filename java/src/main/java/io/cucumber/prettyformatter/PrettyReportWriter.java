@@ -246,10 +246,11 @@ final class PrettyReportWriter implements AutoCloseable {
         TestStepResult testStepResult = event.getTestStepResult();
         TestStepResultStatus status = testStepResult.getStatus();
         ExceptionFormatter formatter = new ExceptionFormatter(indent, theme, status);
+        String standaloneMessage = testStepResult.getMessage().orElse(null);
         testStepResult.getException()
-                .map(formatter::format)
-                // Fallback
-                .orElseGet(() -> testStepResult.getMessage().map(formatter::format))
+                .flatMap(exception -> formatter.format(exception, standaloneMessage))
+                // Fallback for when there is no exception at all
+                .or(() -> Optional.ofNullable(standaloneMessage).map(formatter::format))
                 .ifPresent(writer::print);
     }
 

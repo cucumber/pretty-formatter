@@ -26,8 +26,7 @@
   Problems:
     1) [3mScenario:[23m Pending via an exception [90m# samples/pending-exception/pending-exception.feature:5[39m
          [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending-exception/pending-exception.ts:3[39m
-             [36mPendingException: TODO[39m
-             [36msamples/pending-exception/pending-exception.feature:6[39m
+             [36mTODO[39m
   
   ██████████████████████████████████████████████████ 1/1 scenarios
   ██████████████████████████████████████████████████ 1/1 steps
@@ -37,8 +36,7 @@
   Problems:
     1) [3mScenario:[23m Pending via an exception [90m# samples/pending-exception/pending-exception.feature:5[39m
          [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending-exception/pending-exception.ts:3[39m
-             [36mPendingException: TODO[39m
-             [36msamples/pending-exception/pending-exception.feature:6[39m
+             [36mTODO[39m
   
   1 scenarios ([36m1 pending[39m)
   1 steps ([36m1 pending[39m)

@@ -3,5 +3,4 @@
 
   [1mScenario:[22m Pending via an exception      [90m# samples/pending-exception/pending-exception.feature:5[39m
     [36m■[39m [36m[1mGiven [22man unimplemented pending step[39m [90m# samples/pending-exception/pending-exception.ts:3[39m
-          [36mPendingException: TODO[39m
-          [36msamples/pending-exception/pending-exception.feature:6[39m
+          [36mTODO[39m

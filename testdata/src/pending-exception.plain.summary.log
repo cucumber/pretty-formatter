@@ -2,8 +2,7 @@
 Pending scenarios:
   1) Pending via an exception # samples/pending-exception/pending-exception.feature:5
        Given an unimplemented pending step # samples/pending-exception/pending-exception.ts:3
-           PendingException: TODO
-           samples/pending-exception/pending-exception.feature:6
+           TODO
 
 1 scenarios (1 pending)
 1 steps (1 pending)
