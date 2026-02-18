@@ -1,18 +1,30 @@
 import { Suggestion } from '@cucumber/messages'
 
-export function composeSnippets(suggestions: ReadonlyArray<Suggestion>): string {
-  const snippets = suggestions
-    .flatMap((suggestion) => suggestion.snippets)
-    .map((snippet) => snippet.code)
+import { FormatCodeFunction } from '../types'
 
-  const uniqueSnippets = new Set(snippets)
+export function composeSnippets(
+  suggestions: ReadonlyArray<Suggestion>,
+  formatCode: FormatCodeFunction,
+  stream: NodeJS.WritableStream
+): string {
+  const snippets = suggestions.flatMap((suggestion) => suggestion.snippets)
+
+  // dedup by code while preserving full Snippet
+  const seen = new Set<string>()
+  const uniqueSnippets = snippets.filter((snippet) => {
+    if (seen.has(snippet.code)) {
+      return false
+    }
+    seen.add(snippet.code)
+    return true
+  })
 
   const lines: Array<string> = []
   lines.push('')
   lines.push('You can implement missing steps with the snippets below:')
   lines.push('')
   for (const snippet of uniqueSnippets) {
-    lines.push(snippet)
+    lines.push(formatCode(snippet, stream))
     lines.push('')
   }
 

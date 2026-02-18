@@ -1,9 +1,11 @@
 import { styleText } from 'node:util'
 
-import { TestStepResultStatus } from '@cucumber/messages'
+import { Snippet, TestStepResultStatus } from '@cucumber/messages'
 
 export type Style = Parameters<typeof styleText>[0]
 export { TestStepResultStatus } from '@cucumber/messages'
+
+export type FormatCodeFunction = (snippet: Snippet, stream: NodeJS.WritableStream) => string
 
 export interface Theme {
   affix?: Style
@@ -84,6 +86,10 @@ export interface PrettyOptions {
    * Theme for styling the output
    */
   theme?: Theme
+  /**
+   * Custom function for formatting code snippets before printing
+   */
+  formatCode?: FormatCodeFunction
 }
 
 /**
@@ -104,6 +110,10 @@ export interface ProgressOptions {
    * Theme for styling the output
    */
   theme?: Theme
+  /**
+   * Custom function for formatting code snippets before printing
+   */
+  formatCode?: FormatCodeFunction
 }
 
 /**
@@ -124,6 +134,10 @@ export interface ProgressBarOptions {
    * Theme for styling the output
    */
   theme?: Theme
+  /**
+   * Custom function for formatting code snippets before printing
+   */
+  formatCode?: FormatCodeFunction
 }
 
 /**
@@ -139,4 +153,8 @@ export interface SummaryOptions {
    * Theme for styling the output
    */
   theme?: Theme
+  /**
+   * Custom function for formatting code snippets before printing
+   */
+  formatCode?: FormatCodeFunction
 }

@@ -17,6 +17,7 @@ import {
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
+import { defaultFormatCode } from './defaultFormatCode'
 import {
   formatAmbiguousStep,
   formatAttachment,
@@ -52,6 +53,7 @@ const DEFAULT_OPTIONS: Required<PrettyOptions> = {
   summarise: false,
   useStatusIcon: true,
   theme: CUCUMBER_THEME,
+  formatCode: defaultFormatCode,
 }
 
 /**
