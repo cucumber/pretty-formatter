@@ -7,6 +7,7 @@ import {
   composeSnippets,
   composeStats,
 } from './composition'
+import { defaultFormatCode } from './defaultFormatCode'
 import {
   formatError,
   formatForStatus,
@@ -27,6 +28,7 @@ import {
 const DEFAULT_OPTIONS: Required<SummaryOptions> = {
   includeAttachments: true,
   theme: CUCUMBER_THEME,
+  formatCode: defaultFormatCode,
 }
 
 /**
@@ -234,7 +236,7 @@ export class SummaryPrinter {
   private printSnippets() {
     const suggestions = findAllSuggestions(this.query)
     if (suggestions.length > 0) {
-      this.println(composeSnippets(suggestions))
+      this.println(composeSnippets(suggestions, this.options.formatCode, this.stream))
     }
   }
 }

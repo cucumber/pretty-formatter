@@ -1,6 +1,7 @@
 import { Envelope } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
+import { defaultFormatCode } from './defaultFormatCode'
 import { formatStatusCharacter } from './formatting'
 import { SummaryPrinter } from './SummaryPrinter'
 import { CUCUMBER_THEME } from './theme'
@@ -10,6 +11,7 @@ const DEFAULT_OPTIONS: Required<ProgressOptions> = {
   includeAttachments: true,
   summarise: false,
   theme: CUCUMBER_THEME,
+  formatCode: defaultFormatCode,
 }
 
 /**

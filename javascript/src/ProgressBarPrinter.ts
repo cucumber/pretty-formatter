@@ -17,6 +17,7 @@ import {
   composeSnippets,
   composeStats,
 } from './composition'
+import { defaultFormatCode } from './defaultFormatCode'
 import { formatError, formatUndefinedParameterType } from './formatting'
 import { formatProblem } from './formatting/formatProblem'
 import { findAllSuggestions } from './queries'
@@ -39,6 +40,7 @@ const DEFAULT_OPTIONS: Required<ProgressBarOptions> = {
   includeAttachments: true,
   summarise: false,
   theme: CUCUMBER_THEME,
+  formatCode: defaultFormatCode,
 }
 const MAX_BAR_WIDTH = 50
 const MIN_LEGEND_WIDTH = 30
@@ -242,7 +244,7 @@ export class ProgressBarPrinter {
     output += '\n'
     const suggestions = findAllSuggestions(this.query)
     if (suggestions.length > 0) {
-      output += composeSnippets(suggestions)
+      output += composeSnippets(suggestions, this.options.formatCode, this.stream)
       output += '\n'
     }
     return output
