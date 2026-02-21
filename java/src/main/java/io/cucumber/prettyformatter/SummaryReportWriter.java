@@ -28,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -172,7 +173,7 @@ final class SummaryReportWriter implements AutoCloseable {
     private List<Map.Entry<TestStepFinished, TestStep>> findPertinentSteps(
             List<Map.Entry<TestStepFinished, TestStep>> allSteps
     ) {
-        List<Map.Entry<TestStepFinished, TestStep>> result = new java.util.ArrayList<>();
+        List<Map.Entry<TestStepFinished, TestStep>> result = new ArrayList<>();
         boolean foundFirstNonPassed = false;
 
         for (Map.Entry<TestStepFinished, TestStep> entry : allSteps) {
