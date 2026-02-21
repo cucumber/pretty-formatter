@@ -41,15 +41,13 @@ function findPertinentSteps(
 
   for (const [testStepFinished, testStep] of stepsWithFinished) {
     const status = testStepFinished.testStepResult.status
-    if (!foundFirstNonPassed) {
-      if (status !== TestStepResultStatus.PASSED) {
-        result.push([testStepFinished, testStep])
-        foundFirstNonPassed = true
-      }
-    } else {
+    if (foundFirstNonPassed) {
       if (status !== TestStepResultStatus.PASSED && status !== TestStepResultStatus.SKIPPED) {
         result.push([testStepFinished, testStep])
       }
+    } else if (status !== TestStepResultStatus.PASSED) {
+      result.push([testStepFinished, testStep])
+      foundFirstNonPassed = true
     }
   }
   return result

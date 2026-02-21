@@ -177,15 +177,13 @@ final class SummaryReportWriter implements AutoCloseable {
 
         for (Map.Entry<TestStepFinished, TestStep> entry : allSteps) {
             TestStepResultStatus status = entry.getKey().getTestStepResult().getStatus();
-            if (!foundFirstNonPassed) {
-                if (status != PASSED) {
-                    result.add(entry);
-                    foundFirstNonPassed = true;
-                }
-            } else {
+            if (foundFirstNonPassed) {
                 if (status != PASSED && status != SKIPPED) {
                     result.add(entry);
                 }
+            } else if (status != PASSED) {
+                result.add(entry);
+                foundFirstNonPassed = true;
             }
         }
         return result;
