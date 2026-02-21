@@ -43,7 +43,7 @@
     "@typescript-eslint/eslint-plugin": "8.56.0",
     "@typescript-eslint/parser": "8.56.0",
     "chai": "^6.0.0",
-    "eslint": "9.39.2",
+    "eslint": "9.39.3",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-n": "17.24.0",
     "eslint-plugin-simple-import-sort": "12.1.1",
