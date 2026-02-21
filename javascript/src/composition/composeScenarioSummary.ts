@@ -1,4 +1,9 @@
-import { TestCaseFinished, TestStepResultStatus } from '@cucumber/messages'
+import {
+  TestCaseFinished,
+  TestStep,
+  TestStepFinished,
+  TestStepResultStatus,
+} from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
 import {
@@ -24,36 +29,48 @@ import {
 const ERROR_INDENT_LENGTH = 4
 const ATTACHMENT_INDENT_LENGTH = 4
 
-export function composeScenarioSummary(
-  testCaseFinished: TestCaseFinished,
-  query: Query,
-  { includeAttachments, theme }: Required<SummaryOptions>,
+/**
+ * Finds all pertinent (non-passing) steps that should be shown in the summary.
+ * Returns the first non-passed step, plus every subsequent step that is not passed or skipped.
+ */
+function findPertinentSteps(
+  stepsWithFinished: ReadonlyArray<readonly [TestStepFinished, TestStep]>
+): Array<[TestStepFinished, TestStep]> {
+  const result: Array<[TestStepFinished, TestStep]> = []
+  let foundFirstNonPassed = false
+
+  for (const [testStepFinished, testStep] of stepsWithFinished) {
+    const status = testStepFinished.testStepResult.status
+    if (foundFirstNonPassed) {
+      if (status !== TestStepResultStatus.PASSED && status !== TestStepResultStatus.SKIPPED) {
+        result.push([testStepFinished, testStep])
+      }
+    } else if (status !== TestStepResultStatus.PASSED) {
+      result.push([testStepFinished, testStep])
+      foundFirstNonPassed = true
+    }
+  }
+  return result
+}
+
+interface FormatStepContext {
+  query: Query
+  theme: Required<SummaryOptions>['theme']
   stream: NodeJS.WritableStream
-): string {
-  const testCaseStarted = ensure(
-    query.findTestCaseStartedBy(testCaseFinished),
-    'TestCaseStarted must exist for TestCaseFinished'
-  )
-  const pickle = ensure(
-    query.findPickleBy(testCaseFinished),
-    'Pickle must exist for TestCaseFinished'
-  )
-  const location = query.findLocationOf(pickle)
-  const status =
-    query.findMostSevereTestStepResultBy(testCaseFinished)?.status ?? TestStepResultStatus.UNKNOWN
-  const [testStepFinished, testStep] = ensure(
-    query
-      .findTestStepFinishedAndTestStepBy(testCaseStarted)
-      .find(([tsf]) => tsf.testStepResult.status === status),
-    'Responsible step must exist for non-passing scenario'
-  )
+  includeAttachments: boolean
+}
 
+/**
+ * Formats a single step for the summary output.
+ */
+function formatStep(
+  testStepFinished: TestStepFinished,
+  testStep: TestStep,
+  context: FormatStepContext
+): string[] {
+  const { query, theme, stream, includeAttachments } = context
   const lines: string[] = []
-
-  const formattedLocation = formatPickleLocation(pickle, location, theme, stream)
-  const formattedAttempt =
-    testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
-  lines.push(`${pickle.name}${formattedAttempt} ${formattedLocation}`)
+  const status = testStepFinished.testStepResult.status
 
   if (testStep.pickleStepId) {
     const pickleStep = ensure(
@@ -124,6 +141,40 @@ export function composeScenarioSummary(
         )
       )
     })
+  }
+
+  return lines
+}
+
+export function composeScenarioSummary(
+  testCaseFinished: TestCaseFinished,
+  query: Query,
+  { includeAttachments, theme }: Required<SummaryOptions>,
+  stream: NodeJS.WritableStream
+): string {
+  const testCaseStarted = ensure(
+    query.findTestCaseStartedBy(testCaseFinished),
+    'TestCaseStarted must exist for TestCaseFinished'
+  )
+  const pickle = ensure(
+    query.findPickleBy(testCaseFinished),
+    'Pickle must exist for TestCaseFinished'
+  )
+  const location = query.findLocationOf(pickle)
+
+  const allSteps = query.findTestStepFinishedAndTestStepBy(testCaseStarted)
+  const pertinentSteps = findPertinentSteps(allSteps)
+
+  const lines: string[] = []
+
+  const formattedLocation = formatPickleLocation(pickle, location, theme, stream)
+  const formattedAttempt =
+    testCaseStarted.attempt > 0 ? `, after ${testCaseStarted.attempt + 1} attempts` : ''
+  lines.push(`${pickle.name}${formattedAttempt} ${formattedLocation}`)
+
+  const context: FormatStepContext = { query, theme, stream, includeAttachments }
+  for (const [testStepFinished, testStep] of pertinentSteps) {
+    lines.push(...formatStep(testStepFinished, testStep, context))
   }
 
   return lines.join('\n')
