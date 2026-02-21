@@ -160,80 +160,109 @@ final class SummaryReportWriter implements AutoCloseable {
                     testCaseFinishedByStatus,
                     status,
                     this::formatScenarioLineTo,
-                    this::printResponsibleStep
+                    this::printPertinentSteps
             );
         }
     }
 
-    private void printResponsibleStep(TestCaseFinished testCaseFinished, TestStepResultStatus status) {
+    /**
+     * Finds all pertinent (non-passing) steps that should be shown in the summary.
+     * Returns the first non-passed step, plus every subsequent step that is not passed or skipped.
+     */
+    private List<Map.Entry<TestStepFinished, TestStep>> findPertinentSteps(
+            List<Map.Entry<TestStepFinished, TestStep>> allSteps
+    ) {
+        List<Map.Entry<TestStepFinished, TestStep>> result = new java.util.ArrayList<>();
+        boolean foundFirstNonPassed = false;
+
+        for (Map.Entry<TestStepFinished, TestStep> entry : allSteps) {
+            TestStepResultStatus status = entry.getKey().getTestStepResult().getStatus();
+            if (!foundFirstNonPassed) {
+                if (status != PASSED) {
+                    result.add(entry);
+                    foundFirstNonPassed = true;
+                }
+            } else {
+                if (status != PASSED && status != SKIPPED) {
+                    result.add(entry);
+                }
+            }
+        }
+        return result;
+    }
+
+    private void printPertinentSteps(TestCaseFinished testCaseFinished, TestStepResultStatus ignoredStatus) {
         query.findTestCaseStartedBy(testCaseFinished)
                 .map(query::findTestStepFinishedAndTestStepBy)
-                .flatMap(list -> list.stream()
-                        .filter(entry -> entry.getKey().getTestStepResult().getStatus() == status)
-                        .findFirst())
-                .ifPresent(responsibleStep -> {
-                    TestStepFinished testStepFinished = responsibleStep.getKey();
-                    TestStep testStep = responsibleStep.getValue();
-
-                    query.findPickleStepBy(testStep)
-                            .ifPresent(pickleStep ->
-                                    query.findStepBy(pickleStep).ifPresent(step -> {
-                                out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
-                                pickleStep.getArgument().ifPresent(pickleStepArgument -> {
-                                    pickleStepArgument.getDataTable().ifPresent(pickleTable ->
-                                            out.print(new LineBuilder(theme)
-                                                    .accept(lineBuilder -> PickleTableFormatter.builder()
-                                                            .indentation(9)
-                                                            .build()
-                                                            .formatTo(pickleTable, lineBuilder))
-                                                    .build())
-                                    );
-                                    pickleStepArgument.getDocString().ifPresent(pickleDocString ->
-                                            out.print(new LineBuilder(theme)
-                                                    .accept(lineBuilder -> PickleDocStringFormatter.builder()
-                                                            .indentation(9)
-                                                            .build()
-                                                            .formatTo(pickleDocString, lineBuilder))
-                                                    .build())
-                                    );
-                                });
-                                if (status == AMBIGUOUS) {
-                                    out.print(new LineBuilder(theme)
-                                            .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
-                                                    .builder(sourceReferenceFormatter, theme)
-                                                    .indentation(11)
-                                                    .build()
-                                                    .formatTo(query.findStepDefinitionsBy(testStep), lineBuilder))
-                                            .build());
-                                }
-                            }));
-
-                    query.findHookBy(testStep)
-                            .ifPresent(hook -> {
-                                out.println(formatHookStep(testStepFinished, hook));
-                            });
-
-                    ExceptionFormatter formatter = new ExceptionFormatter(11, theme, status);
-                    TestStepResult testStepResult = testStepFinished.getTestStepResult();
-                    String standaloneMessage = testStepResult.getMessage().orElse(null);
-                    testStepResult
-                            .getException()
-                            .flatMap(exception -> formatter.format(exception, standaloneMessage))
-                            .or(() -> Optional.ofNullable(standaloneMessage).map(formatter::format))
-                            .ifPresent(out::print);
-
-                    if (features.contains(MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS)) {
-                        query.findAttachmentsBy(testStepFinished).forEach(attachment ->
-                                out.print(new LineBuilder(theme)
-                                        .newLine()
-                                        .accept(lineBuilder -> AttachmentFormatter.builder()
-                                                .indentation(11)
-                                                .build()
-                                                .formatTo(attachment, lineBuilder))
-                                        .build())
-                        );
+                .ifPresent(allSteps -> {
+                    List<Map.Entry<TestStepFinished, TestStep>> pertinentSteps = findPertinentSteps(allSteps);
+                    for (Map.Entry<TestStepFinished, TestStep> step : pertinentSteps) {
+                        printStep(step.getKey(), step.getValue());
                     }
                 });
+    }
+
+    private void printStep(TestStepFinished testStepFinished, TestStep testStep) {
+        TestStepResultStatus status = testStepFinished.getTestStepResult().getStatus();
+
+        query.findPickleStepBy(testStep)
+                .ifPresent(pickleStep ->
+                        query.findStepBy(pickleStep).ifPresent(step -> {
+                            out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
+                            pickleStep.getArgument().ifPresent(pickleStepArgument -> {
+                                pickleStepArgument.getDataTable().ifPresent(pickleTable ->
+                                        out.print(new LineBuilder(theme)
+                                                .accept(lineBuilder -> PickleTableFormatter.builder()
+                                                        .indentation(9)
+                                                        .build()
+                                                        .formatTo(pickleTable, lineBuilder))
+                                                .build())
+                                );
+                                pickleStepArgument.getDocString().ifPresent(pickleDocString ->
+                                        out.print(new LineBuilder(theme)
+                                                .accept(lineBuilder -> PickleDocStringFormatter.builder()
+                                                        .indentation(9)
+                                                        .build()
+                                                        .formatTo(pickleDocString, lineBuilder))
+                                                .build())
+                                );
+                            });
+                            if (status == AMBIGUOUS) {
+                                out.print(new LineBuilder(theme)
+                                        .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
+                                                .builder(sourceReferenceFormatter, theme)
+                                                .indentation(11)
+                                                .build()
+                                                .formatTo(query.findStepDefinitionsBy(testStep), lineBuilder))
+                                        .build());
+                            }
+                        }));
+
+        query.findHookBy(testStep)
+                .ifPresent(hook -> {
+                    out.println(formatHookStep(testStepFinished, hook));
+                });
+
+        ExceptionFormatter formatter = new ExceptionFormatter(11, theme, status);
+        TestStepResult testStepResult = testStepFinished.getTestStepResult();
+        String standaloneMessage = testStepResult.getMessage().orElse(null);
+        testStepResult
+                .getException()
+                .flatMap(exception -> formatter.format(exception, standaloneMessage))
+                .or(() -> Optional.ofNullable(standaloneMessage).map(formatter::format))
+                .ifPresent(out::print);
+
+        if (features.contains(MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS)) {
+            query.findAttachmentsBy(testStepFinished).forEach(attachment ->
+                    out.print(new LineBuilder(theme)
+                            .newLine()
+                            .accept(lineBuilder -> AttachmentFormatter.builder()
+                                    .indentation(11)
+                                    .build()
+                                    .formatTo(attachment, lineBuilder))
+                            .build())
+            );
+        }
     }
 
     private String formatHookStep(TestStepFinished testStepFinished, Hook hook) {

@@ -9,17 +9,26 @@ Undefined scenarios:
 
 Ambiguous scenarios:
   1) Pending as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:7
+       Given a pending step # samples/failedish-combinations/failedish-combinations.ts:11
+       And an undefined step
        And an ambiguous step
            Multiple matching step definitions found:
              - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
              - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
   2) Undefined as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:12
+       Given an undefined step
+       And an undefined step
        And an ambiguous step
            Multiple matching step definitions found:
              - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
              - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
   3) Ambiguous as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:17
        Given an ambiguous step
+           Multiple matching step definitions found:
+             - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+             - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
+       And an undefined step
+       And an ambiguous step
            Multiple matching step definitions found:
              - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
              - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
@@ -34,6 +43,11 @@ Failed scenarios:
        Given a failing step # samples/failedish-combinations/failedish-combinations.ts:19
            Error: whoops
            samples/failedish-combinations/failedish-combinations.feature:23
+       And an undefined step
+       And an ambiguous step
+           Multiple matching step definitions found:
+             - ^an ambiguous (.*?)$ # samples/failedish-combinations/failedish-combinations.ts:15
+             - ^(.*?) ambiguous step$ # samples/failedish-combinations/failedish-combinations.ts:17
   2) Failed as the first failed-ish step # samples/failedish-combinations/failedish-combinations.feature:44
        Given a failing step # samples/failedish-combinations/failedish-combinations.ts:19
            Error: whoops
