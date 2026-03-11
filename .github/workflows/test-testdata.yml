@@ -1,5 +1,7 @@
 name: test-testdata
 
+permissions: {}
+
 on:
   push:
     branches:
