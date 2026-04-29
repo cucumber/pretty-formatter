@@ -1,7 +1,7 @@
-import { SourceReference } from '@cucumber/messages'
+import type { SourceReference } from '@cucumber/messages'
 
 import { TextBuilder } from '../TextBuilder'
-import { Theme } from '../types'
+import type { Theme } from '../types'
 
 export function formatSourceReference(
   sourceReference: SourceReference,

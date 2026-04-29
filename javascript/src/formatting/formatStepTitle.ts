@@ -1,7 +1,7 @@
-import { PickleStep, Step, TestStep, TestStepResultStatus } from '@cucumber/messages'
+import type { PickleStep, Step, TestStep, TestStepResultStatus } from '@cucumber/messages'
 
 import { TextBuilder } from '../TextBuilder'
-import { Theme } from '../types'
+import type { Theme } from '../types'
 
 export function formatStepTitle(
   testStep: TestStep,
@@ -47,7 +47,7 @@ function formatStepText(
         builder.append(text, theme.step?.text).append(group.value, theme.step?.argument)
       }
     })
-    if (currentIndex != pickleStep.text.length) {
+    if (currentIndex !== pickleStep.text.length) {
       const remainder = pickleStep.text.slice(currentIndex)
       builder.append(remainder, theme.step?.text)
     }

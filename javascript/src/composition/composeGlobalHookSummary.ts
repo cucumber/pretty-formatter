@@ -1,5 +1,5 @@
-import { TestRunHookFinished, TestStepResultStatus } from '@cucumber/messages'
-import { Query } from '@cucumber/query'
+import { type TestRunHookFinished, TestStepResultStatus } from '@cucumber/messages'
+import type { Query } from '@cucumber/query'
 
 import { formatError, formatHookTitle, formatSourceReference } from '../formatting'
 import type { SummaryOptions } from '../types'

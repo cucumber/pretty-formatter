@@ -1,7 +1,7 @@
-import { TestStepResultStatus } from '@cucumber/messages'
+import type { TestStepResultStatus } from '@cucumber/messages'
 
 import { TextBuilder } from '../TextBuilder'
-import { Theme } from '../types'
+import type { Theme } from '../types'
 import { ORDERED_STATUSES } from '../utils'
 
 export function formatCounts(

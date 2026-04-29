@@ -1,7 +1,7 @@
-import { PickleDocString, PickleStepArgument, PickleTable } from '@cucumber/messages'
+import type { PickleDocString, PickleStepArgument, PickleTable } from '@cucumber/messages'
 
 import { TextBuilder } from '../TextBuilder'
-import { Theme } from '../types'
+import type { Theme } from '../types'
 
 export function formatPickleStepArgument(
   pickleStepArgument: PickleStepArgument,
@@ -50,7 +50,7 @@ function formatDataTable(
     builder.append('|', theme.dataTable?.border)
     row.cells.forEach((cell, cellIndex) => {
       builder
-        .append(' ' + cell.value.padEnd(columnWidths[cellIndex]) + ' ', theme.dataTable?.content)
+        .append(` ${cell.value.padEnd(columnWidths[cellIndex])} `, theme.dataTable?.content)
         .append('|', theme.dataTable?.border)
     })
   })

@@ -1,4 +1,4 @@
-import { Envelope } from '@cucumber/messages'
+import type { Envelope } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
 import { defaultFormatCode } from './defaultFormatCode'

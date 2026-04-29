@@ -1,7 +1,7 @@
-import { StepDefinition } from '@cucumber/messages'
+import type { StepDefinition } from '@cucumber/messages'
 
 import { TextBuilder } from '../TextBuilder'
-import { Theme } from '../types'
+import type { Theme } from '../types'
 import { formatSourceReference } from './formatSourceReference'
 
 export function formatAmbiguousStep(

@@ -1,6 +1,6 @@
 import { stripVTControlCharacters } from 'node:util'
 
-import { TestStepResult, TestStepResultStatus } from '@cucumber/messages'
+import { type TestStepResult, TestStepResultStatus } from '@cucumber/messages'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
@@ -55,7 +55,7 @@ export function indentNumbered(original: string, by: number, number: number): st
 }
 
 export function pad(original: string) {
-  return `\n` + original + '\n'
+  return `\n${original}\n`
 }
 
 export function unstyled(text: string) {

@@ -1,5 +1,5 @@
-import { Suggestion } from '@cucumber/messages'
-import { Query } from '@cucumber/query'
+import type { Suggestion } from '@cucumber/messages'
+import type { Query } from '@cucumber/query'
 
 export function findAllSuggestions(query: Query): ReadonlyArray<Suggestion> {
   return query

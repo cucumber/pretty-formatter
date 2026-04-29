@@ -1,10 +1,10 @@
 import {
-  TestCaseFinished,
-  TestStep,
-  TestStepFinished,
+  type TestCaseFinished,
+  type TestStep,
+  type TestStepFinished,
   TestStepResultStatus,
 } from '@cucumber/messages'
-import { Query } from '@cucumber/query'
+import type { Query } from '@cucumber/query'
 
 import {
   formatAmbiguousStep,
