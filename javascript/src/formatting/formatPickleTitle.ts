@@ -1,7 +1,7 @@
-import { Pickle, Scenario } from '@cucumber/messages'
+import type { Pickle, Scenario } from '@cucumber/messages'
 
 import { TextBuilder } from '../TextBuilder'
-import { Theme } from '../types'
+import type { Theme } from '../types'
 
 export function formatPickleTitle(
   pickle: Pickle,
@@ -10,7 +10,7 @@ export function formatPickleTitle(
   stream: NodeJS.WritableStream
 ): string {
   return new TextBuilder(stream)
-    .append(scenario.keyword + ':', theme.scenario?.keyword)
+    .append(`${scenario.keyword}:`, theme.scenario?.keyword)
     .space()
     .append(pickle.name || '', theme.scenario?.name)
     .build(theme.scenario?.all)

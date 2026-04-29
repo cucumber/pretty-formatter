@@ -1,4 +1,4 @@
-import { Envelope, TestCaseFinished, TestStepResultStatus } from '@cucumber/messages'
+import { type Envelope, type TestCaseFinished, TestStepResultStatus } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
 import {

@@ -1,6 +1,6 @@
-import { styleText } from 'node:util'
+import type { styleText } from 'node:util'
 
-import { Snippet, TestStepResultStatus } from '@cucumber/messages'
+import type { Snippet, TestStepResultStatus } from '@cucumber/messages'
 
 export type Style = Parameters<typeof styleText>[0]
 export { TestStepResultStatus } from '@cucumber/messages'

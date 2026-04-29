@@ -1,5 +1,5 @@
 import { TestStepResultStatus } from '@cucumber/messages'
-import { Query } from '@cucumber/query'
+import type { Query } from '@cucumber/query'
 
 import { formatCounts, formatDurations } from '../formatting'
 import type { Theme } from '../types'
@@ -28,10 +28,8 @@ export function composeStats(query: Query, theme: Theme, stream: NodeJS.Writable
       .map((hook) => hook.result.status)
       .reduce(
         (prev, status) => {
-          return {
-            ...prev,
-            [status]: (prev[status] ?? 0) + 1,
-          }
+          prev[status] = (prev[status] ?? 0) + 1
+          return prev
         },
         {} as Partial<Record<TestStepResultStatus, number>>
       )
@@ -44,10 +42,8 @@ export function composeStats(query: Query, theme: Theme, stream: NodeJS.Writable
     .map((testStepResult) => testStepResult?.status ?? TestStepResultStatus.PASSED)
     .reduce(
       (prev, status) => {
-        return {
-          ...prev,
-          [status]: (prev[status] ?? 0) + 1,
-        }
+        prev[status] = (prev[status] ?? 0) + 1
+        return prev
       },
       {} as Partial<Record<TestStepResultStatus, number>>
     )
@@ -59,10 +55,8 @@ export function composeStats(query: Query, theme: Theme, stream: NodeJS.Writable
     .map((testStepFinished) => testStepFinished.testStepResult.status)
     .reduce(
       (prev, status) => {
-        return {
-          ...prev,
-          [status]: (prev[status] ?? 0) + 1,
-        }
+        prev[status] = (prev[status] ?? 0) + 1
+        return prev
       },
       {} as Partial<Record<TestStepResultStatus, number>>
     )

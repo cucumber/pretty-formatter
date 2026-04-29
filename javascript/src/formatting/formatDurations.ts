@@ -1,4 +1,4 @@
-import { Duration, TimeConversion } from '@cucumber/messages'
+import { type Duration, TimeConversion } from '@cucumber/messages'
 import { Duration as LuxonDuration } from 'luxon'
 
 const DURATION_FORMAT = "m'm' s.S's'"

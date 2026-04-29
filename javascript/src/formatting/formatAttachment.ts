@@ -1,7 +1,7 @@
-import { Attachment, AttachmentContentEncoding } from '@cucumber/messages'
+import { type Attachment, AttachmentContentEncoding } from '@cucumber/messages'
 
 import { TextBuilder } from '../TextBuilder'
-import { Theme } from '../types'
+import type { Theme } from '../types'
 
 export function formatAttachment(
   attachment: Attachment,

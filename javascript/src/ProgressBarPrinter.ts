@@ -1,13 +1,13 @@
-import { WriteStream } from 'node:tty'
+import type { WriteStream } from 'node:tty'
 
 import {
-  Envelope,
-  TestCase,
-  TestCaseFinished,
-  TestRunFinished,
-  TestRunHookFinished,
+  type Envelope,
+  type TestCase,
+  type TestCaseFinished,
+  type TestRunFinished,
+  type TestRunHookFinished,
   TestStepResultStatus,
-  UndefinedParameterType,
+  type UndefinedParameterType,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
@@ -22,7 +22,7 @@ import { formatError, formatUndefinedParameterType } from './formatting'
 import { formatProblem } from './formatting/formatProblem'
 import { findAllSuggestions } from './queries'
 import { CUCUMBER_THEME } from './theme'
-import { ProgressBarOptions } from './types'
+import type { ProgressBarOptions } from './types'
 import { indent, indentNumbered, NON_REPORTABLE_STATUSES, ProblemType } from './utils'
 
 enum Phase {

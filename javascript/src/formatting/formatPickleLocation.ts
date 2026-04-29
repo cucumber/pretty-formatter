@@ -1,7 +1,7 @@
-import { Location, Pickle } from '@cucumber/messages'
+import type { Location, Pickle } from '@cucumber/messages'
 
 import { TextBuilder } from '../TextBuilder'
-import { Theme } from '../types'
+import type { Theme } from '../types'
 
 // TODO once Pickle.location is widely implemented, no need to pass location arg
 export function formatPickleLocation(

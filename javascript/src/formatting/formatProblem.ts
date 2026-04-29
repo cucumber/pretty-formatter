@@ -1,5 +1,5 @@
 import { TextBuilder } from '../TextBuilder'
-import { Theme } from '../types'
+import type { Theme } from '../types'
 import { ProblemType } from '../utils'
 
 const PREFIXES: Record<ProblemType, string> = {
@@ -16,7 +16,7 @@ export function formatProblem(
   stream: NodeJS.WritableStream
 ): string {
   return new TextBuilder(stream)
-    .append(PREFIXES[type] + ':', theme.affix)
+    .append(`${PREFIXES[type]}:`, theme.affix)
     .space()
     .append(details)
     .build()

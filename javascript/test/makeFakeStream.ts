@@ -1,4 +1,4 @@
-import { WriteStream } from 'node:tty'
+import type { WriteStream } from 'node:tty'
 
 type FakeStream = WriteStream & { content: string }
 
@@ -20,7 +20,7 @@ class FakeStreamImpl {
     return true
   }
 
-  moveCursor(dx: number, dy: number, callback?: () => void): boolean {
+  moveCursor(_dx: number, dy: number, callback?: () => void): boolean {
     this._cursorOffset = dy
     callback?.()
     return true

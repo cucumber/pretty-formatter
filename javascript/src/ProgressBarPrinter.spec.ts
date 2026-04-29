@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import * as path from 'node:path'
 import { setImmediate } from 'node:timers/promises'
 
-import { Envelope } from '@cucumber/messages'
+import type { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
