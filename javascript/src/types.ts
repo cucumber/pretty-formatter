@@ -1,5 +1,5 @@
+import type { WriteStream } from 'node:tty'
 import type { styleText } from 'node:util'
-
 import type { Snippet, TestStepResultStatus } from '@cucumber/messages'
 
 export type Style = Parameters<typeof styleText>[0]
@@ -121,10 +121,27 @@ export interface ProgressOptions {
  */
 export interface ProgressBarOptions {
   /**
+   * Custom function for formatting code snippets before printing
+   */
+  formatCode?: FormatCodeFunction
+  /**
    * Whether to include attachments in the summary output
    * @defaultValue true
    */
   includeAttachments?: boolean
+  interference?: {
+    /**
+     * How to handle writes to stdout/stderr from outside the printer during a run
+     * - `passthrough`: let all writes through (may garble the progress bar)
+     * - `suppress`: silently discard writes while the run is in progress
+     * @defaultValue 'passthrough'
+     */
+    mode?: 'passthrough' | 'suppress'
+    /**
+     * Which streams should have their writes intercepted during a run
+     */
+    streams?: Iterable<WriteStream>
+  }
   /**
    * Whether to print a summary at the end of the test run
    * @defaultValue false
@@ -134,10 +151,6 @@ export interface ProgressBarOptions {
    * Theme for styling the output
    */
   theme?: Theme
-  /**
-   * Custom function for formatting code snippets before printing
-   */
-  formatCode?: FormatCodeFunction
 }
 
 /**

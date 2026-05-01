@@ -1,14 +1,8 @@
-[meta]
-  
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
-  Getting ready...
-  
 [testRunStarted]
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
-  Running 0 scenarios...
+  Getting ready...
   
 [testRunHookFinished]
   Problems:
@@ -18,7 +12,7 @@
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
-  Running 0 scenarios...
+  Getting ready...
   
 [testRunFinished]
   Problems:

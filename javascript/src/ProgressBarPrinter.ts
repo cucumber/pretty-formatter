@@ -20,6 +20,7 @@ import {
 import { defaultFormatCode } from './defaultFormatCode'
 import { formatError, formatUndefinedParameterType } from './formatting'
 import { formatProblem } from './formatting/formatProblem'
+import { InterferenceInterceptor } from './InterferenceInterceptor'
 import { findAllSuggestions } from './queries'
 import { CUCUMBER_THEME } from './theme'
 import type { ProgressBarOptions } from './types'
@@ -37,10 +38,14 @@ type Problem = {
 }
 
 const DEFAULT_OPTIONS: Required<ProgressBarOptions> = {
+  formatCode: defaultFormatCode,
   includeAttachments: true,
+  interference: {
+    mode: 'passthrough',
+    streams: [],
+  },
   summarise: false,
   theme: CUCUMBER_THEME,
-  formatCode: defaultFormatCode,
 }
 const MAX_BAR_WIDTH = 50
 const MIN_LEGEND_WIDTH = 30
@@ -53,6 +58,7 @@ const MIN_LEGEND_WIDTH = 30
  */
 export class ProgressBarPrinter {
   private readonly stream: WriteStream
+  private readonly interceptor: InterferenceInterceptor
   private readonly options: Required<ProgressBarOptions>
   private readonly query: Query = new Query()
   private readonly printedProblems: Array<Problem> = []
@@ -83,7 +89,10 @@ export class ProgressBarPrinter {
       ...DEFAULT_OPTIONS,
       ...options,
     }
-    this.rerender(true)
+    this.interceptor = new InterferenceInterceptor(
+      this.options.interference.mode,
+      this.options.interference.streams
+    )
   }
 
   /**
@@ -136,12 +145,11 @@ export class ProgressBarPrinter {
       type: ProblemType.PARAMETER_TYPE,
       details: formatUndefinedParameterType(undefinedParameterType),
     })
-    this.rerender()
   }
 
   private handleTestRunStarted() {
-    this.phase = Phase.RUNNING
-    this.rerender()
+    this.interceptor.acquire()
+    this.rerender(true)
   }
 
   private handleTestCase(testCase: TestCase) {
@@ -167,6 +175,8 @@ export class ProgressBarPrinter {
 
   private handleTestCaseStarted() {
     this.runningScenarios++
+    this.phase = Phase.RUNNING
+    this.rerender()
   }
 
   private handleTestStepFinished() {
@@ -214,6 +224,7 @@ export class ProgressBarPrinter {
       })
     }
     this.rerender()
+    this.interceptor.release()
   }
 
   private rerender(initial = false) {
@@ -282,10 +293,12 @@ export class ProgressBarPrinter {
   }
 
   private render(content: string, initial: boolean) {
-    if (!initial) {
-      this.stream.moveCursor(0, -4)
-      this.stream.clearScreenDown()
-    }
-    this.stream.write(content)
+    this.interceptor.bypass(() => {
+      if (!initial) {
+        this.stream.moveCursor(0, -4)
+        this.stream.clearScreenDown()
+      }
+      this.stream.write(content)
+    })
   }
 }

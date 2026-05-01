@@ -1,32 +1,32 @@
-[meta]
+[testRunStarted]
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
   Getting ready...
   
-[testRunStarted]
-  
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
-  Running 0 scenarios...
-  
 [testCase]
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 steps
-  Running 0 scenarios...
+  Getting ready...
   
 [testCase]
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/2 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 steps
-  Running 0 scenarios...
+  Getting ready...
   
 [testCase]
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/9 steps
-  Running 0 scenarios...
+  Getting ready...
+  
+[testCaseStarted]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/9 steps
+  Running 1 scenarios...
   
 [testStepFinished]
   
@@ -54,6 +54,15 @@
   █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
   █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/9 steps
   Running 0 scenarios...
+  
+[testCaseStarted]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+  
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/9 steps
+  Running 1 scenarios...
   
 [testStepFinished]
   Problems:
@@ -92,6 +101,17 @@
   █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
   █████████████████████████████████░░░░░░░░░░░░░░░░░ 6/9 steps
   Running 0 scenarios...
+  
+[testCaseStarted]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+  
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 6/9 steps
+  Running 1 scenarios...
   
 [testStepFinished]
   Problems:
