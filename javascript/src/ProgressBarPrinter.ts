@@ -40,10 +40,7 @@ type Problem = {
 const DEFAULT_OPTIONS: Required<ProgressBarOptions> = {
   formatCode: defaultFormatCode,
   includeAttachments: true,
-  interference: {
-    mode: 'passthrough',
-    streams: [],
-  },
+  interference: { mode: 'passthrough' },
   summarise: false,
   theme: CUCUMBER_THEME,
 }
@@ -89,10 +86,7 @@ export class ProgressBarPrinter {
       ...DEFAULT_OPTIONS,
       ...options,
     }
-    this.interceptor = new InterferenceInterceptor(
-      this.options.interference.mode,
-      this.options.interference.streams
-    )
+    this.interceptor = new InterferenceInterceptor(this.options.interference)
   }
 
   /**

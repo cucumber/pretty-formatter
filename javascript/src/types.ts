@@ -129,19 +129,13 @@ export interface ProgressBarOptions {
    * @defaultValue true
    */
   includeAttachments?: boolean
-  interference?: {
-    /**
-     * How to handle writes to stdout/stderr from outside the printer during a run
-     * - `passthrough`: let all writes through (may garble the progress bar)
-     * - `suppress`: silently discard writes while the run is in progress
-     * @defaultValue 'passthrough'
-     */
-    mode?: 'passthrough' | 'suppress'
-    /**
-     * Which streams should have their writes intercepted during a run
-     */
-    streams?: Iterable<WriteStream>
-  }
+  /**
+   * How to handle writes to stdout/stderr from outside the printer during a run
+   * - `passthrough`: let all writes through (may garble the progress bar)
+   * - `suppress`: silently discard writes to the listed streams while the run is in progress
+   * @defaultValue \{ mode: 'passthrough' \}
+   */
+  interference?: { mode: 'passthrough' } | { mode: 'suppress'; streams: ReadonlyArray<WriteStream> }
   /**
    * Whether to print a summary at the end of the test run
    * @defaultValue false
