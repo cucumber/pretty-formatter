@@ -157,7 +157,7 @@ describe('ProgressBarPrinter', () => {
 
       const before = stream.content
       stream.write('after release')
-      expect(stream.content).to.eq(before + 'after release')
+      expect(stream.content).to.eq(`${before}after release`)
     })
 
     it('intercepts and releases multiple streams independently', () => {
