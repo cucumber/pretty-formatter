@@ -1,32 +1,32 @@
-[meta]
+[testRunStarted]
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
   Getting ready...
   
-[testRunStarted]
-  
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
-  Running 0 scenarios...
-  
 [testCase]
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/2 steps
-  Running 0 scenarios...
+  Getting ready...
   
 [testCase]
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/2 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 steps
-  Running 0 scenarios...
+  Getting ready...
   
 [testCase]
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/7 steps
-  Running 0 scenarios...
+  Getting ready...
+  
+[testCaseStarted]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/7 steps
+  Running 1 scenarios...
   
 [testStepFinished]
   
@@ -50,6 +50,17 @@
   █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
   ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/7 steps
   Running 0 scenarios...
+  
+[testCaseStarted]
+  Problems:
+    1) [3mScenario:[23m A failure in the before hook and a skipped step [90m# samples/hooks-conditional/hooks-conditional.feature:7[39m
+         [31m[1mBefore[22m[39m [90m# samples/hooks-conditional/hooks-conditional.ts:7[39m
+             [31mError: Exception in conditional hook[39m
+             [31msamples/hooks-conditional/hooks-conditional.feature:7[39m
+  
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
+  ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/7 steps
+  Running 1 scenarios...
   
 [testStepFinished]
   Problems:
@@ -87,6 +98,21 @@
   █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
   █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 4/7 steps
   Running 0 scenarios...
+  
+[testCaseStarted]
+  Problems:
+    1) [3mScenario:[23m A failure in the before hook and a skipped step [90m# samples/hooks-conditional/hooks-conditional.feature:7[39m
+         [31m[1mBefore[22m[39m [90m# samples/hooks-conditional/hooks-conditional.ts:7[39m
+             [31mError: Exception in conditional hook[39m
+             [31msamples/hooks-conditional/hooks-conditional.feature:7[39m
+    2) [3mScenario:[23m A failure in the after hook and a passed step [90m# samples/hooks-conditional/hooks-conditional.feature:11[39m
+         [31m[1mAfter[22m[39m [90m# samples/hooks-conditional/hooks-conditional.ts:15[39m
+             [31mError: Exception in conditional hook[39m
+             [31msamples/hooks-conditional/hooks-conditional.feature:11[39m
+  
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
+  █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 4/7 steps
+  Running 1 scenarios...
   
 [testStepFinished]
   Problems:

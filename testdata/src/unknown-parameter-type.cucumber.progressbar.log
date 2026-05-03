@@ -1,24 +1,10 @@
-[meta]
-  
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
-  Getting ready...
-  
-[undefinedParameterType]
-  Problems:
-    1) [3mUndefined parameter type:[23m 'airport' in '{airport} is closed because of a strike'
-  
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
-  Getting ready...
-  
 [testRunStarted]
   Problems:
     1) [3mUndefined parameter type:[23m 'airport' in '{airport} is closed because of a strike'
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
-  Running 0 scenarios...
+  Getting ready...
   
 [testCase]
   Problems:
@@ -26,7 +12,15 @@
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 scenarios
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 steps
-  Running 0 scenarios...
+  Getting ready...
+  
+[testCaseStarted]
+  Problems:
+    1) [3mUndefined parameter type:[23m 'airport' in '{airport} is closed because of a strike'
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 steps
+  Running 1 scenarios...
   
 [testStepFinished]
   Problems:
