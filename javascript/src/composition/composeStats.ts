@@ -12,7 +12,7 @@ export function composeStats(query: Query, theme: Theme, stream: NodeJS.Writable
     lines.push('')
     lines.push(
       formatCounts(
-        'test run',
+        ['test run', 'test runs'],
         {
           [TestStepResultStatus.FAILED]: 1,
         },
@@ -33,7 +33,7 @@ export function composeStats(query: Query, theme: Theme, stream: NodeJS.Writable
         },
         {} as Partial<Record<TestStepResultStatus, number>>
       )
-    lines.push(formatCounts('hooks', globalHookCountsByStatus, theme, stream))
+    lines.push(formatCounts(['hook', 'hooks'], globalHookCountsByStatus, theme, stream))
   }
 
   const scenarioCountsByStatus = query
@@ -47,7 +47,7 @@ export function composeStats(query: Query, theme: Theme, stream: NodeJS.Writable
       },
       {} as Partial<Record<TestStepResultStatus, number>>
     )
-  lines.push(formatCounts('scenarios', scenarioCountsByStatus, theme, stream))
+  lines.push(formatCounts(['scenario', 'scenarios'], scenarioCountsByStatus, theme, stream))
 
   const stepCountsByStatus = query
     .findAllTestCaseFinished()
@@ -60,7 +60,7 @@ export function composeStats(query: Query, theme: Theme, stream: NodeJS.Writable
       },
       {} as Partial<Record<TestStepResultStatus, number>>
     )
-  lines.push(formatCounts('steps', stepCountsByStatus, theme, stream))
+  lines.push(formatCounts(['step', 'steps'], stepCountsByStatus, theme, stream))
 
   const testRunDuration = query.findTestRunDuration()
   if (testRunDuration) {

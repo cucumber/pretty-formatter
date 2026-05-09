@@ -5,14 +5,14 @@ import type { Theme } from '../types'
 import { ORDERED_STATUSES } from '../utils'
 
 export function formatCounts(
-  suffix: string,
+  noun: readonly [singular: string, plural: string],
   counts: Partial<Record<TestStepResultStatus, number>>,
   theme: Theme,
   stream: NodeJS.WritableStream
 ): string {
   const builder = new TextBuilder(stream)
   const total = Object.values(counts).reduce((prev, curr) => prev + curr, 0)
-  builder.append(`${total} ${suffix}`)
+  builder.append(`${total} ${total === 1 ? noun[0] : noun[1]}`)
   if (total > 0) {
     let first = true
     builder.append(' (')

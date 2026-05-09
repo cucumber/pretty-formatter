@@ -6,6 +6,6 @@ Ambiguous scenarios:
              - an ambiguous step # samples/retry-ambiguous/retry-ambiguous.ts:3
              - an ambiguous step # samples/retry-ambiguous/retry-ambiguous.ts:7
 
-1 scenarios (1 ambiguous)
-1 steps (1 ambiguous)
+1 scenario (1 ambiguous)
+1 step (1 ambiguous)
 0m 0.5s (0m 0.0s executing your code)

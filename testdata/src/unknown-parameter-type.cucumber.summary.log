@@ -6,8 +6,8 @@
 [34mThese parameters are missing a parameter type definition:[39m
   1) 'airport' in '{airport} is closed because of a strike'
 
-1 scenarios ([34m1 undefined[39m)
-1 steps ([34m1 undefined[39m)
+1 scenario ([34m1 undefined[39m)
+1 step ([34m1 undefined[39m)
 0m 0.5s (0m 0.0s executing your code)
 
 You can implement missing steps with the snippets below:
