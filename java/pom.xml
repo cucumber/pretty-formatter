@@ -74,7 +74,7 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>compatibility-kit</artifactId>
-            <version>29.1.4</version>
+            <version>29.2.1</version>
             <scope>test</scope>
         </dependency>
 
