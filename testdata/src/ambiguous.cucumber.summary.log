@@ -6,6 +6,6 @@
              • ^a (.*?) with (.*?)$ [90m# samples/ambiguous/ambiguous.ts:3[39m
              • ^a step with (.*?)$ [90m# samples/ambiguous/ambiguous.ts:7[39m
 
-1 scenarios ([35m1 ambiguous[39m)
-1 steps ([35m1 ambiguous[39m)
+1 scenario ([35m1 ambiguous[39m)
+1 step ([35m1 ambiguous[39m)
 0m 0.5s (0m 0.0s executing your code)

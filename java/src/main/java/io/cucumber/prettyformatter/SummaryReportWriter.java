@@ -421,6 +421,7 @@ final class SummaryReportWriter implements AutoCloseable {
         }
 
         out.println(formatSubCounts(
+                "hook",
                 "hooks",
                 testRunHooksFinished,
                 countTestStepResultStatusByTestRunHookFinished()));
@@ -429,6 +430,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private void printScenarioCounts() {
         out.println(formatSubCounts(
+                "scenario",
                 "scenarios",
                 query.findAllTestCaseFinished(),
                 countTestStepResultStatusByTestCaseFinished()));
@@ -436,6 +438,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private void printStepCounts() {
         out.println(formatSubCounts(
+                "step",
                 "steps",
                 // findAllTestCaseFinished excludes non-final test cases
                 // This ensures findTestStepsFinishedBy does not include retried steps
@@ -447,11 +450,13 @@ final class SummaryReportWriter implements AutoCloseable {
     }
 
     private <T> String formatSubCounts(
-            String itemName,
+            String singular,
+            String plural,
             Collection<T> finishedItems,
             Collector<T, ?, Map<TestStepResultStatus, Long>> countTestStepResultStatusByItem
     ) {
-        String countAndName = finishedItems.size() + " " + itemName;
+        int size = finishedItems.size();
+        String countAndName = size + " " + (size == 1 ? singular : plural);
         StringJoiner joiner = new StringJoiner(", ", countAndName + " (", ")");
         joiner.setEmptyValue(countAndName);
         Map<TestStepResultStatus, Long> subCounts = finishedItems.stream()
