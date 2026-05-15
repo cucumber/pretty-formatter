@@ -1,2 +1,4 @@
 .idea/
 *.iml
+ruby/.rspec_status
+ruby/Gemfile.lock

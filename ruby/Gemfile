@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+gem 'cucumber-messages', path: ENV.fetch('CUCUMBER_MESSAGES_RUBY_PATH') if ENV['CUCUMBER_MESSAGES_RUBY_PATH']
+
+if ENV['CUCUMBER_QUERY_RUBY_PATH']
+  gem 'cucumber-query', path: ENV.fetch('CUCUMBER_QUERY_RUBY_PATH')
+elsif ENV['CUCUMBER_QUERY_RUBY_REF']
+  gem 'cucumber-query',
+      git: 'https://github.com/cucumber/query.git',
+      ref: ENV.fetch('CUCUMBER_QUERY_RUBY_REF'),
+      glob: 'ruby/*.gemspec'
+end
+
+gemspec
