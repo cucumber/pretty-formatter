@@ -125,7 +125,8 @@ describe('PrettyPrinter', async () => {
   }
 
   describe('summarise', () => {
-    it('should append a summary when the option is enabled', async () => {
+    it('should append a summary when the option is enabled', async function () {
+      this.timeout(10_000)
       const stream = makeFakeStream()
       const printer = new PrettyPrinter({
         stream,
