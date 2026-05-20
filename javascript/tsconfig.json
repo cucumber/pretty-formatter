@@ -2,8 +2,9 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "include": ["src"],
   "compilerOptions": {
-    "lib": ["dom", "es2023"],
+    "lib": ["es2023"],
     "target": "es2022",
+    "types": ["node", "mocha", "chai"],
     "declaration": true,
     "outDir": "dist",
     "inlineSourceMap": true
