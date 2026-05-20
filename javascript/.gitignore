@@ -1,4 +1,5 @@
 dist/
+*.tsbuildinfo
 .idea/
 .nyc_output/
 coverage/
