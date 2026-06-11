@@ -1,6 +1,6 @@
 import { TestStepResultStatus } from '@cucumber/messages'
 
-import type { Style, Theme } from './types'
+import type { Style, Theme } from './types.js'
 
 const CUCUMBER_STATUS_COLORS: Record<TestStepResultStatus, Style> = {
   [TestStepResultStatus.AMBIGUOUS]: 'magenta',

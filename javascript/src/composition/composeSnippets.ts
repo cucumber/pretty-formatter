@@ -1,6 +1,6 @@
 import type { Suggestion } from '@cucumber/messages'
 
-import type { FormatCodeFunction } from '../types'
+import type { FormatCodeFunction } from '../types.js'
 
 export function composeSnippets(
   suggestions: ReadonlyArray<Suggestion>,

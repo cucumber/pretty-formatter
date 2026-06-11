@@ -1,9 +1,9 @@
 import { type TestRunHookFinished, TestStepResultStatus } from '@cucumber/messages'
 import type { Query } from '@cucumber/query'
 
-import { formatError, formatHookTitle, formatSourceReference } from '../formatting'
-import type { SummaryOptions } from '../types'
-import { GHERKIN_INDENT_LENGTH, indent, join } from '../utils'
+import { formatError, formatHookTitle, formatSourceReference } from '../formatting/index.js'
+import type { SummaryOptions } from '../types.js'
+import { GHERKIN_INDENT_LENGTH, indent, join } from '../utils.js'
 
 export function composeGlobalHookSummary(
   testRunHookFinished: TestRunHookFinished,

@@ -17,7 +17,7 @@ import {
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
-import { defaultFormatCode } from './defaultFormatCode'
+import { defaultFormatCode } from './defaultFormatCode.js'
 import {
   formatAmbiguousStep,
   formatAttachment,
@@ -30,10 +30,10 @@ import {
   formatSourceReference,
   formatStepTitle,
   formatTags,
-} from './formatting'
-import { SummaryPrinter } from './SummaryPrinter'
-import { CUCUMBER_THEME } from './theme'
-import type { PrettyOptions } from './types'
+} from './formatting/index.js'
+import { SummaryPrinter } from './SummaryPrinter.js'
+import { CUCUMBER_THEME } from './theme.js'
+import type { PrettyOptions } from './types.js'
 import {
   ATTACHMENT_INDENT_LENGTH,
   ERROR_INDENT_LENGTH,
@@ -44,7 +44,7 @@ import {
   pad,
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
-} from './utils'
+} from './utils.js'
 
 const DEFAULT_OPTIONS: Required<PrettyOptions> = {
   includeAttachments: true,

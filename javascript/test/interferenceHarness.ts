@@ -4,9 +4,16 @@ import { setTimeout } from 'node:timers/promises'
 
 import type { Envelope } from '@cucumber/messages'
 
-import { ProgressBarPrinter } from '../src'
+import { ProgressBarPrinter } from '../src/index.js'
 
-const DEFAULT_NDJSON = path.join(__dirname, '..', '..', 'testdata', 'src', 'all-statuses.ndjson')
+const DEFAULT_NDJSON = path.join(
+  import.meta.dirname,
+  '..',
+  '..',
+  'testdata',
+  'src',
+  'all-statuses.ndjson'
+)
 const DELAY_MS = 200
 
 async function main() {

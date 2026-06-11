@@ -6,24 +6,24 @@ import {
   composeScenarioSummary,
   composeSnippets,
   composeStats,
-} from './composition'
-import { defaultFormatCode } from './defaultFormatCode'
+} from './composition/index.js'
+import { defaultFormatCode } from './defaultFormatCode.js'
 import {
   formatError,
   formatForStatus,
   formatStatusName,
   formatUndefinedParameterType,
-} from './formatting'
-import { findAllSuggestions, findAllTestCaseFinishedInCanonicalOrder } from './queries'
-import { CUCUMBER_THEME } from './theme'
-import type { SummaryOptions } from './types'
+} from './formatting/index.js'
+import { findAllSuggestions, findAllTestCaseFinishedInCanonicalOrder } from './queries/index.js'
+import { CUCUMBER_THEME } from './theme.js'
+import type { SummaryOptions } from './types.js'
 import {
   GHERKIN_INDENT_LENGTH,
   indent,
   indentNumbered,
   NON_REPORTABLE_STATUSES,
   ORDERED_STATUSES,
-} from './utils'
+} from './utils.js'
 
 const DEFAULT_OPTIONS: Required<SummaryOptions> = {
   includeAttachments: true,

@@ -1,7 +1,7 @@
 import type { Rule } from '@cucumber/messages'
 
-import { TextBuilder } from '../TextBuilder'
-import type { Theme } from '../types'
+import { TextBuilder } from '../TextBuilder.js'
+import type { Theme } from '../types.js'
 
 export function formatRuleTitle(rule: Rule, theme: Theme, stream: NodeJS.WritableStream): string {
   return new TextBuilder(stream)

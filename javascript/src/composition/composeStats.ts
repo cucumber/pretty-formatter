@@ -1,8 +1,8 @@
 import { TestStepResultStatus } from '@cucumber/messages'
 import type { Query } from '@cucumber/query'
 
-import { formatCounts, formatDurations } from '../formatting'
-import type { Theme } from '../types'
+import { formatCounts, formatDurations } from '../formatting/index.js'
+import type { Theme } from '../types.js'
 
 export function composeStats(query: Query, theme: Theme, stream: NodeJS.WritableStream): string {
   const lines: Array<string> = []
