@@ -1,2 +1,2 @@
-export * from './findAllSuggestions'
-export * from './findAllTestCaseFinishedInCanonicalOrder'
+export * from './findAllSuggestions.js'
+export * from './findAllTestCaseFinishedInCanonicalOrder.js'

@@ -8,16 +8,16 @@ import type { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
-import { makeFakeStream } from '../test/makeFakeStream'
-import { PrettyPrinter } from './PrettyPrinter'
-import { CUCUMBER_THEME, DEMO_THEME, NONE_THEME, PLAIN_THEME } from './theme'
-import type { PrettyOptions } from './types'
+import { makeFakeStream } from '../test/makeFakeStream.js'
+import { PrettyPrinter } from './PrettyPrinter.js'
+import { CUCUMBER_THEME, DEMO_THEME, NONE_THEME, PLAIN_THEME } from './theme.js'
+import type { PrettyOptions } from './types.js'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
 
 describe('PrettyPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
-    cwd: path.join(__dirname, '..', '..', 'testdata', 'src'),
+    cwd: path.join(import.meta.dirname, '..', '..', 'testdata', 'src'),
     absolute: true,
   })
 
@@ -135,7 +135,14 @@ describe('PrettyPrinter', async () => {
         },
       })
 
-      const ndjsonFile = path.join(__dirname, '..', '..', 'testdata', 'src', 'minimal.ndjson')
+      const ndjsonFile = path.join(
+        import.meta.dirname,
+        '..',
+        '..',
+        'testdata',
+        'src',
+        'minimal.ndjson'
+      )
       await pipeline(
         fs.createReadStream(ndjsonFile, {
           encoding: 'utf-8',

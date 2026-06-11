@@ -1,8 +1,8 @@
 import type { TestStepResultStatus } from '@cucumber/messages'
 
-import { TextBuilder } from '../TextBuilder'
-import type { Theme } from '../types'
-import { ORDERED_STATUSES } from '../utils'
+import { TextBuilder } from '../TextBuilder.js'
+import type { Theme } from '../types.js'
+import { ORDERED_STATUSES } from '../utils.js'
 
 export function formatCounts(
   noun: readonly [singular: string, plural: string],

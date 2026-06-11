@@ -1,7 +1,7 @@
 import { type Hook, HookType, type TestStepResultStatus } from '@cucumber/messages'
 
-import { TextBuilder } from '../TextBuilder'
-import type { Theme } from '../types'
+import { TextBuilder } from '../TextBuilder.js'
+import type { Theme } from '../types.js'
 
 const HOOK_TYPE_LABELS: Record<HookType, string> = {
   [HookType.BEFORE_TEST_RUN]: 'BeforeAll',

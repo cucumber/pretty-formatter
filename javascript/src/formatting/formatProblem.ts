@@ -1,6 +1,6 @@
-import { TextBuilder } from '../TextBuilder'
-import type { Theme } from '../types'
-import { ProblemType } from '../utils'
+import { TextBuilder } from '../TextBuilder.js'
+import type { Theme } from '../types.js'
+import { ProblemType } from '../utils.js'
 
 const PREFIXES: Record<ProblemType, string> = {
   [ProblemType.PARAMETER_TYPE]: 'Undefined parameter type',

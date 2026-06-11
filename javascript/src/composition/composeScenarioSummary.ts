@@ -15,8 +15,8 @@ import {
   formatPickleStepArgument,
   formatSourceReference,
   formatStepTitle,
-} from '../formatting'
-import type { SummaryOptions } from '../types'
+} from '../formatting/index.js'
+import type { SummaryOptions } from '../types.js'
 import {
   ensure,
   extractReportableMessage,
@@ -24,7 +24,7 @@ import {
   indent,
   join,
   STEP_ARGUMENT_INDENT_LENGTH,
-} from '../utils'
+} from '../utils.js'
 
 const ERROR_INDENT_LENGTH = 4
 const ATTACHMENT_INDENT_LENGTH = 4

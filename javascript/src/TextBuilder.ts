@@ -1,6 +1,6 @@
 import { styleText } from 'node:util'
 
-import type { Style } from './types'
+import type { Style } from './types.js'
 
 export class TextBuilder {
   private text = ''

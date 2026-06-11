@@ -1,8 +1,8 @@
 import type { StepDefinition } from '@cucumber/messages'
 
-import { TextBuilder } from '../TextBuilder'
-import type { Theme } from '../types'
-import { formatSourceReference } from './formatSourceReference'
+import { TextBuilder } from '../TextBuilder.js'
+import type { Theme } from '../types.js'
+import { formatSourceReference } from './formatSourceReference.js'
 
 export function formatAmbiguousStep(
   stepDefinitions: readonly StepDefinition[],

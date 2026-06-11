@@ -16,15 +16,15 @@ import {
   composeScenarioSummary,
   composeSnippets,
   composeStats,
-} from './composition'
-import { defaultFormatCode } from './defaultFormatCode'
-import { formatError, formatUndefinedParameterType } from './formatting'
-import { formatProblem } from './formatting/formatProblem'
-import { InterferenceInterceptor } from './InterferenceInterceptor'
-import { findAllSuggestions } from './queries'
-import { CUCUMBER_THEME } from './theme'
-import type { ProgressBarOptions } from './types'
-import { indent, indentNumbered, NON_REPORTABLE_STATUSES, ProblemType } from './utils'
+} from './composition/index.js'
+import { defaultFormatCode } from './defaultFormatCode.js'
+import { formatProblem } from './formatting/formatProblem.js'
+import { formatError, formatUndefinedParameterType } from './formatting/index.js'
+import { InterferenceInterceptor } from './InterferenceInterceptor.js'
+import { findAllSuggestions } from './queries/index.js'
+import { CUCUMBER_THEME } from './theme.js'
+import type { ProgressBarOptions } from './types.js'
+import { indent, indentNumbered, NON_REPORTABLE_STATUSES, ProblemType } from './utils.js'
 
 enum Phase {
   PREPARING,

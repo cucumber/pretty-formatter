@@ -8,16 +8,16 @@ import type { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
-import { makeFakeStream } from '../test/makeFakeStream'
-import { ProgressPrinter } from './ProgressPrinter'
-import { CUCUMBER_THEME, PLAIN_THEME } from './theme'
-import type { ProgressOptions } from './types'
+import { makeFakeStream } from '../test/makeFakeStream.js'
+import { ProgressPrinter } from './ProgressPrinter.js'
+import { CUCUMBER_THEME, PLAIN_THEME } from './theme.js'
+import type { ProgressOptions } from './types.js'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
 
 describe('ProgressPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
-    cwd: path.join(__dirname, '..', '..', 'testdata', 'src'),
+    cwd: path.join(import.meta.dirname, '..', '..', 'testdata', 'src'),
     absolute: true,
   })
 
@@ -87,7 +87,14 @@ describe('ProgressPrinter', async () => {
         },
       })
 
-      const ndjsonFile = path.join(__dirname, '..', '..', 'testdata', 'src', 'minimal.ndjson')
+      const ndjsonFile = path.join(
+        import.meta.dirname,
+        '..',
+        '..',
+        'testdata',
+        'src',
+        'minimal.ndjson'
+      )
       await pipeline(
         fs.createReadStream(ndjsonFile, {
           encoding: 'utf-8',

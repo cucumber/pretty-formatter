@@ -6,16 +6,16 @@ import type { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
-import { makeFakeStream } from '../test/makeFakeStream'
-import { ProgressBarPrinter } from './ProgressBarPrinter'
-import { indent } from './utils'
+import { makeFakeStream } from '../test/makeFakeStream.js'
+import { ProgressBarPrinter } from './ProgressBarPrinter.js'
+import { indent } from './utils.js'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
 
 describe('ProgressBarPrinter', () => {
   describe('acceptance', () => {
     const ndjsonFiles = globbySync(`*.ndjson`, {
-      cwd: path.join(__dirname, '..', '..', 'testdata', 'src'),
+      cwd: path.join(import.meta.dirname, '..', '..', 'testdata', 'src'),
       absolute: true,
     })
 
@@ -77,7 +77,14 @@ describe('ProgressBarPrinter', () => {
       },
     })
 
-    const ndjsonFile = path.join(__dirname, '..', '..', 'testdata', 'src', 'all-statuses.ndjson')
+    const ndjsonFile = path.join(
+      import.meta.dirname,
+      '..',
+      '..',
+      'testdata',
+      'src',
+      'all-statuses.ndjson'
+    )
     const ndjsonContent = fs.readFileSync(ndjsonFile, { encoding: 'utf-8' })
     const envelopes: Envelope[] = ndjsonContent
       .trim()
@@ -124,7 +131,14 @@ describe('ProgressBarPrinter', () => {
         },
       })
 
-      const ndjsonFile = path.join(__dirname, '..', '..', 'testdata', 'src', 'all-statuses.ndjson')
+      const ndjsonFile = path.join(
+        import.meta.dirname,
+        '..',
+        '..',
+        'testdata',
+        'src',
+        'all-statuses.ndjson'
+      )
       const ndjsonContent = fs.readFileSync(ndjsonFile, { encoding: 'utf-8' })
       const envelopes: Envelope[] = ndjsonContent
         .trim()

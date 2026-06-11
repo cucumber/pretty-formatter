@@ -8,16 +8,16 @@ import type { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 
-import { makeFakeStream } from '../test/makeFakeStream'
-import { SummaryPrinter } from './SummaryPrinter'
-import { CUCUMBER_THEME, PLAIN_THEME } from './theme'
-import type { SummaryOptions } from './types'
+import { makeFakeStream } from '../test/makeFakeStream.js'
+import { SummaryPrinter } from './SummaryPrinter.js'
+import { CUCUMBER_THEME, PLAIN_THEME } from './theme.js'
+import type { SummaryOptions } from './types.js'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
 
 describe('SummaryPrinter', async () => {
   const ndjsonFiles = globbySync(`*.ndjson`, {
-    cwd: path.join(__dirname, '..', '..', 'testdata', 'src'),
+    cwd: path.join(import.meta.dirname, '..', '..', 'testdata', 'src'),
     absolute: true,
   })
 

@@ -1,7 +1,7 @@
 import type { Pickle, Scenario } from '@cucumber/messages'
 
-import { TextBuilder } from '../TextBuilder'
-import type { Theme } from '../types'
+import { TextBuilder } from '../TextBuilder.js'
+import type { Theme } from '../types.js'
 
 export function formatPickleTitle(
   pickle: Pickle,

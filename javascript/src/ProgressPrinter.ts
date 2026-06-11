@@ -1,11 +1,11 @@
 import type { Envelope } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 
-import { defaultFormatCode } from './defaultFormatCode'
-import { formatStatusCharacter } from './formatting'
-import { SummaryPrinter } from './SummaryPrinter'
-import { CUCUMBER_THEME } from './theme'
-import type { ProgressOptions } from './types'
+import { defaultFormatCode } from './defaultFormatCode.js'
+import { formatStatusCharacter } from './formatting/index.js'
+import { SummaryPrinter } from './SummaryPrinter.js'
+import { CUCUMBER_THEME } from './theme.js'
+import type { ProgressOptions } from './types.js'
 
 const DEFAULT_OPTIONS: Required<ProgressOptions> = {
   includeAttachments: true,
