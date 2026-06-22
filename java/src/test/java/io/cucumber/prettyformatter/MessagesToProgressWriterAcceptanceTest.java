@@ -1,7 +1,8 @@
 package io.cucumber.prettyformatter;
 
 import io.cucumber.messages.NdjsonToMessageReader;
-import io.cucumber.messages.ndjson.Deserializer;
+import io.cucumber.messages.ndjson.Json;
+import io.cucumber.messages.types.Envelope;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,6 +27,10 @@ import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessagesToProgressWriterAcceptanceTest {
+
+    private static final NdjsonToMessageReader.Deserializer deserializer = Json.instance()
+            .map(json -> json.deserializer(Envelope.class))
+            .orElseThrow()::readValue;
 
     static List<TestCase> acceptance() throws IOException {
         Map<String, MessagesToProgressWriter.Builder> themes = new LinkedHashMap<>();
@@ -52,7 +57,7 @@ class MessagesToProgressWriterAcceptanceTest {
 
     private static <T extends OutputStream> T writeDotProgress(TestCase testCase, T out, MessagesToProgressWriter.Builder builder) throws IOException {
         try (var in = Files.newInputStream(testCase.source)) {
-            try (var reader = new NdjsonToMessageReader(in, new Deserializer())) {
+            try (var reader = new NdjsonToMessageReader(in, deserializer)) {
                 try (var writer = builder.build(out)) {
                     for (var envelope : reader.lines().toList()) {
                         writer.write(envelope);

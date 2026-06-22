@@ -2,7 +2,7 @@ package io.cucumber.prettyformatter;
 
 import io.cucumber.compatibilitykit.MessageOrderer;
 import io.cucumber.messages.NdjsonToMessageReader;
-import io.cucumber.messages.ndjson.Deserializer;
+import io.cucumber.messages.ndjson.Json;
 import io.cucumber.messages.types.Envelope;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,6 +34,9 @@ class MessagesToSummaryWriterAcceptanceTest {
 
     private static final Random random = new Random(202509171620L);
     private static final MessageOrderer messageOrderer = new MessageOrderer(random);
+    private static final NdjsonToMessageReader.Deserializer deserializer = Json.instance()
+            .map(json -> json.deserializer(Envelope.class))
+            .orElseThrow()::readValue;
 
     static List<TestCase> acceptance() throws IOException {
         Map<String, MessagesToSummaryWriter.Builder> themes = new LinkedHashMap<>();
@@ -67,7 +70,7 @@ class MessagesToSummaryWriterAcceptanceTest {
 
     private static <T extends OutputStream> T writeSummaryReport(TestCase testCase, T out, MessagesToSummaryWriter.Builder builder, Consumer<List<Envelope>> orderer) throws IOException {
         try (var in = Files.newInputStream(testCase.source)) {
-            try (var reader = new NdjsonToMessageReader(in, new Deserializer())) {
+            try (var reader = new NdjsonToMessageReader(in, deserializer)) {
                 List<Envelope> messages = reader.lines().collect(Collectors.toList());
                 orderer.accept(messages);
                 try (var writer = builder.build(out)) {
