@@ -5,13 +5,13 @@ import { pipeline } from 'node:stream/promises'
 
 import { NdjsonToMessageStream } from '@cucumber/message-streams'
 import type { Envelope } from '@cucumber/messages'
-import { expect } from 'chai'
 import { globbySync } from 'globby'
 
 import { makeFakeStream } from '../test/makeFakeStream.js'
 import { PrettyPrinter } from './PrettyPrinter.js'
 import { CUCUMBER_THEME, DEMO_THEME, NONE_THEME, PLAIN_THEME } from './theme.js'
 import type { PrettyOptions } from './types.js'
+import { assertEqualsNormalizingEndOfLine } from './utils.js'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
 
@@ -118,9 +118,7 @@ describe('PrettyPrinter', async () => {
             encoding: 'utf-8',
           })
 
-          const expectedWithNormalizedEndOfLine = expectedOutput.replaceAll(/\r\n/g, '\n')
-          const actualWithNormalizedEndOfLine = stream.content.replaceAll(/\r\n/g, '\n')
-          expect(actualWithNormalizedEndOfLine).to.eq(expectedWithNormalizedEndOfLine)
+          assertEqualsNormalizingEndOfLine(stream.content, expectedOutput)
         })
       }
     })
@@ -169,9 +167,7 @@ describe('PrettyPrinter', async () => {
       )
 
       const expected = expectedPretty + expectedSummary
-      const expectedWithNormalizedEndOfLine = expected.replaceAll(/\r\n/g, '\n')
-      const actualWithNormalizedEndOfLine = stream.content.replaceAll(/\r\n/g, '\n')
-      expect(actualWithNormalizedEndOfLine).to.eq(expectedWithNormalizedEndOfLine)
+      assertEqualsNormalizingEndOfLine(stream.content, expected)
     })
   })
 })

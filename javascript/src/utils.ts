@@ -1,6 +1,7 @@
 import { stripVTControlCharacters } from 'node:util'
 
 import { type TestStepResult, TestStepResultStatus } from '@cucumber/messages'
+import { expect } from 'chai'
 
 export const GHERKIN_INDENT_LENGTH = 2
 export const STEP_ARGUMENT_INDENT_LENGTH = 2
@@ -74,4 +75,10 @@ export function extractReportableMessage(testStepResult: TestStepResult): string
   }
 
   return undefined
+}
+
+export function assertEqualsNormalizingEndOfLine(actual: string, expected: string) {
+  const expectedWithNormalizedEndOfLine = expected.replaceAll(/\r\n/g, '\n')
+  const actualWithNormalizedEndOfLine = actual.replaceAll(/\r\n/g, '\n')
+  expect(actualWithNormalizedEndOfLine).to.eq(expectedWithNormalizedEndOfLine)
 }
