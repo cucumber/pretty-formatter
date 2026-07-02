@@ -16,6 +16,7 @@ import {
   TestStepResultStatus,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
+import * as os from 'os'
 
 import { defaultFormatCode } from './defaultFormatCode.js'
 import {
@@ -96,7 +97,7 @@ export class PrettyPrinter {
   } = {}) {
     this.stream = stream
     this.print = (content) => stream.write(content)
-    this.println = (content = '') => this.print(`${content}\n`)
+    this.println = (content = '') => this.print(`${content}${os.EOL}`)
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
