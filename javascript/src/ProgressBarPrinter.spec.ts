@@ -100,8 +100,8 @@ describe('ProgressBarPrinter', () => {
     const capturedLog = stream.content
     const fullOutputPath = ndjsonFile.replace('.ndjson', '.cucumber.progressbar.log')
     const fullOutputContent = fs.readFileSync(fullOutputPath, { encoding: 'utf-8' })
-    expect(fullOutputContent).to.include(
-      normalizeEol(`[testRunFinished]\n${indent(capturedLog, 2)}`)
+    expect(normalizeEol(fullOutputContent)).to.include(
+      `[testRunFinished]\n${indent(capturedLog, 2)}`
     )
   })
 
