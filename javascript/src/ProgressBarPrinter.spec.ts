@@ -99,7 +99,10 @@ describe('ProgressBarPrinter', () => {
     const capturedLog = stream.content
     const fullOutputPath = ndjsonFile.replace('.ndjson', '.cucumber.progressbar.log')
     const fullOutputContent = fs.readFileSync(fullOutputPath, { encoding: 'utf-8' })
-    expect(fullOutputContent).to.include(`[testRunFinished]\n${indent(capturedLog, 2)}`)
+    const expected = `[testRunFinished]\n${indent(capturedLog, 2)}`
+    const expectedWithNormalizedEndOfLine = expected.replaceAll(/\r\n/g, '\n')
+    const actualWithNormalizedEndOfLine = fullOutputContent.replaceAll(/\r\n/g, '\n')
+    expect(actualWithNormalizedEndOfLine).to.include(expectedWithNormalizedEndOfLine)
   })
 
   describe('interference', () => {

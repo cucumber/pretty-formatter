@@ -70,7 +70,9 @@ describe('ProgressPrinter', async () => {
             encoding: 'utf-8',
           })
 
-          expect(stream.content).to.eq(expectedOutput)
+          const expectedWithNormalizedEndOfLine = expectedOutput.replaceAll(/\r\n/g, '\n')
+          const actualWithNormalizedEndOfLine = stream.content.replaceAll(/\r\n/g, '\n')
+          expect(actualWithNormalizedEndOfLine).to.eq(expectedWithNormalizedEndOfLine)
         })
       }
     })
