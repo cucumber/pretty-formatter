@@ -118,7 +118,7 @@ describe('PrettyPrinter', async () => {
             encoding: 'utf-8',
           })
 
-          expect(normalizeEol(stream.content)).to.eq(normalizeEol(expectedOutput))
+          expect(stream.content).to.eq(normalizeEol(expectedOutput))
         })
       }
     })
@@ -166,7 +166,7 @@ describe('PrettyPrinter', async () => {
         { encoding: 'utf-8' }
       )
 
-      expect(normalizeEol(stream.content)).to.eq(normalizeEol(expectedPretty + expectedSummary))
+      expect(stream.content).to.eq(normalizeEol(expectedPretty + expectedSummary))
     })
   })
 })
