@@ -77,7 +77,7 @@ class MessagesToProgressWriterTest {
         Arrays.fill(messages, envelope);
 
         String progress = renderAsProgress(messages);
-        assertThat(progress).containsPattern("^\\.{80}\n\\.{48}$");
+        assertThat(progress).containsPattern("^\\.{80}\r?\n\\.{48}$");
     }
 
     @Test
@@ -98,7 +98,7 @@ class MessagesToProgressWriterTest {
         Arrays.fill(messages, envelope);
 
         String progress = renderAsProgress(builder().maxWidth(75), messages);
-        assertThat(progress).containsPattern("^\\.{75}\n\\.{53}$");
+        assertThat(progress).containsPattern("^\\.{75}\r?\n\\.{53}$");
     }
 
     private static String renderAsProgress(Envelope... messages) throws IOException {

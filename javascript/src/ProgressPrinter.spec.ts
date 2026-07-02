@@ -7,11 +7,11 @@ import { NdjsonToMessageStream } from '@cucumber/message-streams'
 import type { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
-
 import { makeFakeStream } from '../test/makeFakeStream.js'
 import { ProgressPrinter } from './ProgressPrinter.js'
 import { CUCUMBER_THEME, PLAIN_THEME } from './theme.js'
 import type { ProgressOptions } from './types.js'
+import { normalizeEol } from './utils.js'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
 
@@ -70,7 +70,7 @@ describe('ProgressPrinter', async () => {
             encoding: 'utf-8',
           })
 
-          expect(stream.content).to.eq(expectedOutput)
+          expect(normalizeEol(stream.content)).to.eq(normalizeEol(expectedOutput))
         })
       }
     })
@@ -118,7 +118,7 @@ describe('ProgressPrinter', async () => {
         { encoding: 'utf-8' }
       )
 
-      expect(stream.content).to.eq(expectedProgress + expectedSummary)
+      expect(normalizeEol(stream.content)).to.eq(normalizeEol(expectedProgress + expectedSummary))
     })
   })
 })
