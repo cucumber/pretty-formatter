@@ -1,3 +1,4 @@
+import * as os from 'node:os'
 import {
   type Attachment,
   type Envelope,
@@ -16,7 +17,6 @@ import {
   TestStepResultStatus,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
-import * as os from 'os'
 
 import { defaultFormatCode } from './defaultFormatCode.js'
 import {
