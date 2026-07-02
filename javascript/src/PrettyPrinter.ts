@@ -1,4 +1,3 @@
-import * as os from 'node:os'
 import {
   type Attachment,
   type Envelope,
@@ -97,7 +96,7 @@ export class PrettyPrinter {
   } = {}) {
     this.stream = stream
     this.print = (content) => stream.write(content)
-    this.println = (content = '') => this.print(`${content}${os.EOL}`)
+    this.println = (content = '') => this.print(`${content}\n`)
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
