@@ -60,7 +60,7 @@ describe('ProgressBarPrinter', () => {
         }
         const expectedOutput = fs.readFileSync(expectedPath, { encoding: 'utf-8' })
 
-        expect(normalizeEol(capturedLog)).to.eq(normalizeEol(expectedOutput))
+        expect(capturedLog).to.eq(normalizeEol(expectedOutput))
       })
     }
   })
@@ -101,7 +101,7 @@ describe('ProgressBarPrinter', () => {
     const fullOutputPath = ndjsonFile.replace('.ndjson', '.cucumber.progressbar.log')
     const fullOutputContent = fs.readFileSync(fullOutputPath, { encoding: 'utf-8' })
     expect(normalizeEol(fullOutputContent)).to.include(
-      normalizeEol(`[testRunFinished]\n${indent(capturedLog, 2)}`)
+      `[testRunFinished]\n${indent(capturedLog, 2)}`
     )
   })
 

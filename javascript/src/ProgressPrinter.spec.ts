@@ -70,7 +70,7 @@ describe('ProgressPrinter', async () => {
             encoding: 'utf-8',
           })
 
-          expect(normalizeEol(stream.content)).to.eq(normalizeEol(expectedOutput))
+          expect(stream.content).to.eq(normalizeEol(expectedOutput))
         })
       }
     })
@@ -118,7 +118,7 @@ describe('ProgressPrinter', async () => {
         { encoding: 'utf-8' }
       )
 
-      expect(normalizeEol(stream.content)).to.eq(normalizeEol(expectedProgress + expectedSummary))
+      expect(stream.content).to.eq(normalizeEol(expectedProgress + expectedSummary))
     })
   })
 })
