@@ -8,7 +8,7 @@ import { globbySync } from 'globby'
 
 import { makeFakeStream } from '../test/makeFakeStream.js'
 import { ProgressBarPrinter } from './ProgressBarPrinter.js'
-import { indent } from './utils.js'
+import { indent, normalizeEol } from './utils.js'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
 
@@ -99,10 +99,9 @@ describe('ProgressBarPrinter', () => {
     const capturedLog = stream.content
     const fullOutputPath = ndjsonFile.replace('.ndjson', '.cucumber.progressbar.log')
     const fullOutputContent = fs.readFileSync(fullOutputPath, { encoding: 'utf-8' })
-    const expected = `[testRunFinished]\n${indent(capturedLog, 2)}`
-    const expectedWithNormalizedEndOfLine = expected.replaceAll(/\r\n/g, '\n')
-    const actualWithNormalizedEndOfLine = fullOutputContent.replaceAll(/\r\n/g, '\n')
-    expect(actualWithNormalizedEndOfLine).to.include(expectedWithNormalizedEndOfLine)
+    expect(normalizeEol(fullOutputContent)).to.include(
+      normalizeEol(`[testRunFinished]\n${indent(capturedLog, 2)}`)
+    )
   })
 
   describe('interference', () => {
