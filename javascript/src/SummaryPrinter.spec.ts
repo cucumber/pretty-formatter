@@ -78,7 +78,8 @@ describe('SummaryPrinter', async () => {
           })
 
           const expectedWithNormalizedEndOfLine = expectedOutput.replaceAll(/\r\n/g, '\n')
-          expect(stream.content).to.eq(expectedWithNormalizedEndOfLine)
+          const actualWithNormalizedEndOfLine = stream.content.replaceAll(/\r\n/g, '\n')
+          expect(actualWithNormalizedEndOfLine).to.eq(expectedWithNormalizedEndOfLine)
         })
       }
     })
