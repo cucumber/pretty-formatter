@@ -8,10 +8,10 @@ import type { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import { globbySync } from 'globby'
 import { makeFakeStream } from '../test/makeFakeStream.js'
+import { normalizeEol } from '../test/testUtils.js'
 import { ProgressPrinter } from './ProgressPrinter.js'
 import { CUCUMBER_THEME, PLAIN_THEME } from './theme.js'
 import type { ProgressOptions } from './types.js'
-import { normalizeEol } from './utils.js'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
 

@@ -75,7 +75,3 @@ export function extractReportableMessage(testStepResult: TestStepResult): string
 
   return undefined
 }
-
-export function normalizeEol(value: string) {
-  return value.replaceAll(/\r\n/g, '\n')
-}

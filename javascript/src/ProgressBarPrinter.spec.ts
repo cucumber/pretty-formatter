@@ -7,8 +7,9 @@ import { expect } from 'chai'
 import { globbySync } from 'globby'
 
 import { makeFakeStream } from '../test/makeFakeStream.js'
+import { normalizeEol } from '../test/testUtils.js'
 import { ProgressBarPrinter } from './ProgressBarPrinter.js'
-import { indent, normalizeEol } from './utils.js'
+import { indent } from './utils.js'
 
 const updateExpectedFiles = process.env.UPDATE_EXPECTED_FILES === 'true'
 
