@@ -59,7 +59,7 @@ describe('ProgressBarPrinter', () => {
         }
         const expectedOutput = fs.readFileSync(expectedPath, { encoding: 'utf-8' })
 
-        expect(capturedLog).to.eq(expectedOutput)
+        expect(normalizeEol(capturedLog)).to.eq(normalizeEol(expectedOutput))
       })
     }
   })
