@@ -91,7 +91,7 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>compatibility-kit</artifactId>
-            <version>29.2.2</version>
+            <version>30.0.0</version>
             <scope>test</scope>
         </dependency>
 
