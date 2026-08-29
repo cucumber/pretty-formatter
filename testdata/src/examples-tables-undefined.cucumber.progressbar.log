@@ -48,7 +48,7 @@
   
 [testCaseFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
   
   █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
@@ -57,7 +57,7 @@
   
 [testCaseStarted]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
   
   █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
@@ -66,7 +66,7 @@
   
 [testStepFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
   
   █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
@@ -75,7 +75,7 @@
   
 [testStepFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
   
   █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
@@ -84,7 +84,7 @@
   
 [testStepFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
   
   █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/3 scenarios
@@ -93,9 +93,9 @@
   
 [testCaseFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
-    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:16[39m
          [34m[1mWhen [22mI eat banana cucumbers[39m
   
   █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
@@ -104,9 +104,9 @@
   
 [testCaseStarted]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
-    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:16[39m
          [34m[1mWhen [22mI eat banana cucumbers[39m
   
   █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
@@ -115,9 +115,9 @@
   
 [testStepFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
-    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:16[39m
          [34m[1mWhen [22mI eat banana cucumbers[39m
   
   █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
@@ -126,9 +126,9 @@
   
 [testStepFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
-    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:16[39m
          [34m[1mWhen [22mI eat banana cucumbers[39m
   
   █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
@@ -137,9 +137,9 @@
   
 [testStepFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
-    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:16[39m
          [34m[1mWhen [22mI eat banana cucumbers[39m
   
   █████████████████████████████████░░░░░░░░░░░░░░░░░ 2/3 scenarios
@@ -148,11 +148,11 @@
   
 [testCaseFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
-    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:16[39m
          [34m[1mWhen [22mI eat banana cucumbers[39m
-    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:17[39m
+    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:17[39m
          [34m[1mThen [22mI should have apple cucumbers[39m
   
   ██████████████████████████████████████████████████ 3/3 scenarios
@@ -161,11 +161,11 @@
   
 [testRunFinished]
   Problems:
-    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
          [34m[1mGiven [22mthere are pear cucumbers[39m
-    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:16[39m
          [34m[1mWhen [22mI eat banana cucumbers[39m
-    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:17[39m
+    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:17[39m
          [34m[1mThen [22mI should have apple cucumbers[39m
   
   3 scenarios ([34m3 undefined[39m)

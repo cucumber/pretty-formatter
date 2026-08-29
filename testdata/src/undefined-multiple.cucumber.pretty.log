@@ -1,0 +1,38 @@
+
+[1mFeature:[22m Undefined steps
+
+  [1mScenario:[22m An undefined step causes a failure [90m# samples/undefined-multiple/undefined-multiple.feature:8[39m
+    [34m■[39m [34m[1mGiven [22ma step that is yet to be defined[39m
+
+  [1mScenario:[22m All steps are executed before a single undefined step [90m# samples/undefined-multiple/undefined-multiple.feature:11[39m
+    [32m✔[39m [32m[1mGiven [22man implemented step[39m                                   [90m# samples/undefined-multiple/undefined-multiple.ts:3[39m
+    [32m✔[39m [32m[1mAnd [22man implemented step[39m                                     [90m# samples/undefined-multiple/undefined-multiple.ts:3[39m
+    [34m■[39m [34m[1mAnd [22ma step that is yet to be defined[39m
+
+  [1mScenario:[22m Multiple undefined steps will all remain as undefined [90m# samples/undefined-multiple/undefined-multiple.feature:16[39m
+    [32m✔[39m [32m[1mGiven [22man implemented step[39m                                   [90m# samples/undefined-multiple/undefined-multiple.ts:3[39m
+    [32m✔[39m [32m[1mAnd [22man implemented step[39m                                     [90m# samples/undefined-multiple/undefined-multiple.ts:3[39m
+    [34m■[39m [34m[1mAnd [22ma step that is yet to be defined[39m
+    [34m■[39m [34m[1mAnd [22manother step that is also yet to be defined[39m
+    [34m■[39m [34m[1mAnd [22ma third step that is yet to be defined[39m
+
+  [1mScenario:[22m Multiple defined steps after undefined steps are all skipped [90m# samples/undefined-multiple/undefined-multiple.feature:23[39m
+    [34m■[39m [34m[1mGiven [22ma step that is yet to be defined[39m
+    [33m↷[39m [33m[1mAnd [22ma step that will be skipped[39m                                    [90m# samples/undefined-multiple/undefined-multiple.ts:7[39m
+    [33m↷[39m [33m[1mAnd [22ma step that will be skipped[39m                                    [90m# samples/undefined-multiple/undefined-multiple.ts:7[39m
+
+  [1mScenario:[22m Multiple undefined steps after skipped steps will also remain as undefined [90m# samples/undefined-multiple/undefined-multiple.feature:28[39m
+    [34m■[39m [34m[1mGiven [22ma step that is yet to be defined[39m
+    [33m↷[39m [33m[1mAnd [22ma step that will be skipped[39m                                                  [90m# samples/undefined-multiple/undefined-multiple.ts:7[39m
+    [33m↷[39m [33m[1mAnd [22ma step that will be skipped[39m                                                  [90m# samples/undefined-multiple/undefined-multiple.ts:7[39m
+    [34m■[39m [34m[1mAnd [22ma step that is yet to be defined[39m
+    [34m■[39m [34m[1mAnd [22manother step that is also yet to be defined[39m
+
+  [1mScenario:[22m Multiple missing snippets reflect parameter types [90m# samples/undefined-multiple/undefined-multiple.feature:35[39m
+    [34m■[39m [34m[1mGiven [22ma list of 8 things[39m
+    [34m■[39m [34m[1mAnd [22ma list of 3.14 things[39m
+    [34m■[39m [34m[1mAnd [22ma list of "many" things[39m
+
+  [1mScenario:[22m Multiple undefined steps also cause a failure [90m# samples/undefined-multiple/undefined-multiple.feature:40[39m
+    [34m■[39m [34m[1mGiven [22ma step that is yet to be defined[39m
+    [34m■[39m [34m[1mAnd [22manother step that is also yet to be defined[39m

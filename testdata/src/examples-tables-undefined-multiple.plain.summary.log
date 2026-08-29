@@ -1,0 +1,34 @@
+
+Undefined scenarios:
+  1) Eating cucumbers # samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15
+       Given there are pear cucumbers
+       Then I should have apple cucumbers
+  2) Eating cucumbers # samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16
+       Given there are pear cucumbers
+       When I eat banana cucumbers
+  3) Eating cucumbers # samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17
+       When I eat banana cucumbers
+       Then I should have apple cucumbers
+  4) Eating cucumbers # samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:18
+       Given there are pear cucumbers
+       When I eat banana cucumbers
+       Then I should have apple cucumbers
+
+4 scenarios (4 undefined)
+12 steps (1 passed, 2 skipped, 9 undefined)
+0m 0.33s (0m 0.1s executing your code)
+
+You can implement missing steps with the snippets below:
+
+Given("there are pear cucumbers", () => {
+  return "pending"
+})
+
+Then("I should have apple cucumbers", () => {
+  return "pending"
+})
+
+When("I eat banana cucumbers", () => {
+  return "pending"
+})
+
