@@ -1,10 +1,10 @@
 
 [34mUndefined scenarios:[39m
-  1) Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:15[39m
+  1) Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:15[39m
        [34m[1mGiven [22mthere are pear cucumbers[39m
-  2) Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:16[39m
+  2) Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:16[39m
        [34m[1mWhen [22mI eat banana cucumbers[39m
-  3) Eating cucumbers [90m# samples/examples-tables-undefined/examples-undefined.feature:17[39m
+  3) Eating cucumbers [90m# samples/examples-tables-undefined/examples-tables-undefined.feature:17[39m
        [34m[1mThen [22mI should have apple cucumbers[39m
 
 3 scenarios ([34m3 undefined[39m)
