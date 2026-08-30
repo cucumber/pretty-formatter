@@ -1,6 +1,8 @@
 #ifndef CUCUMBER_PRETTY_FORMATTER_FORMATTER_HPP
 #define CUCUMBER_PRETTY_FORMATTER_FORMATTER_HPP
 
+#include "cucumber/messages/Envelope.hpp"
+
 namespace cucumber::pretty_formatter
 {
     struct Formatter
@@ -14,7 +16,7 @@ namespace cucumber::pretty_formatter
         Formatter(Formatter&&) = default;
         Formatter& operator=(Formatter&&) = default;
 
-        virtual void Update() = 0;
+        virtual void Update(const messages::Envelope& envelope) = 0;
     };
 }
 

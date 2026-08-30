@@ -79,6 +79,7 @@ endif()
 
 # CMake dependencies
 find_package(nlohmann_json REQUIRED)
+find_package(fmt 10 REQUIRED) # version 10 or higher has fmt::println
 if (NOT TARGET cucumber::messages)
     find_package(cucumber_messages REQUIRED)
 endif()
@@ -118,15 +119,23 @@ add_library(cucumber::pretty_formatter ALIAS cucumber_pretty_formatter_lib)
 target_sources(
     cucumber_pretty_formatter_lib
     PRIVATE
+        include/cucumber/pretty-formatter/Ansi.hpp
         include/cucumber/pretty-formatter/Formatter.hpp
+        include/cucumber/pretty-formatter/LineBuilder.hpp
         include/cucumber/pretty-formatter/PrettyPrinter.hpp
         include/cucumber/pretty-formatter/ProgressBarPrinter.hpp
         include/cucumber/pretty-formatter/ProgressPrinter.hpp
+        include/cucumber/pretty-formatter/StepTextFormatter.hpp
         include/cucumber/pretty-formatter/SummaryPrinter.hpp
+        src/cucumber/pretty-formatter/Ansi.cpp
+        src/cucumber/pretty-formatter/LineBuilder.cpp
         src/cucumber/pretty-formatter/PrettyPrinter.cpp
         src/cucumber/pretty-formatter/ProgressBarPrinter.cpp
         src/cucumber/pretty-formatter/ProgressPrinter.cpp
+        src/cucumber/pretty-formatter/StepTextFormatter.cpp
         src/cucumber/pretty-formatter/SummaryPrinter.cpp
+        src/cucumber/pretty-formatter/SourceReferenceFormatter.cpp
+        include/cucumber/pretty-formatter/SourceReferenceFormatter.hpp
 )
 
 target_include_directories(
@@ -136,6 +145,14 @@ target_include_directories(
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/src/
+)
+
+target_link_libraries(
+    cucumber_pretty_formatter_lib
+    PUBLIC
+        cucumber::messages
+        cucumber::query
+        fmt::fmt
 )
 
 set_target_properties(

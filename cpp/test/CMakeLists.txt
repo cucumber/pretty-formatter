@@ -7,7 +7,10 @@ target_link_libraries(cucumber_pretty_formatter.test PUBLIC
 )
 
 target_sources(cucumber_pretty_formatter.test PRIVATE
+    TestAnsi.cpp
+    TestLineBuilder.cpp
     TestPrettyFormatter.cpp
+    TestTheme.cpp
 )
 
 target_compile_definitions(cucumber_pretty_formatter.test
