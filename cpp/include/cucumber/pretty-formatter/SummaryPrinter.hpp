@@ -12,6 +12,8 @@
 #include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/pretty-formatter/Formatter.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
+#include "cucumber/pretty-formatter/PickleDocStringFormatter.hpp"
+#include "cucumber/pretty-formatter/PickleTableFormatter.hpp"
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/StepTextFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
@@ -120,6 +122,10 @@ namespace cucumber::pretty_formatter
 
         StepTextFormatter stepTextFormatter;
         SourceReferenceFormatter sourceReferenceFormatter{ uriFormatter };
+
+        constexpr static auto argumentIndent{ 9 };
+        PickleTableFormatter pickleTableFormatter{ argumentIndent };
+        PickleDocStringFormatter pickleDocStringFormatter{ argumentIndent };
     };
 
     template<class T, class U, class V>

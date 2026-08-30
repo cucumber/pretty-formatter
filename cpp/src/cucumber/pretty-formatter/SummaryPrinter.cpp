@@ -9,6 +9,8 @@
 #include "cucumber/messages/TestStep.hpp"
 #include "cucumber/messages/TestStepFinished.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
+#include "cucumber/pretty-formatter/AmbiguousStepDefinitionsFormatter.hpp"
+#include "cucumber/pretty-formatter/ExceptionFormatter.hpp"
 #include "cucumber/pretty-formatter/Formatter.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
@@ -177,44 +179,60 @@ namespace cucumber::pretty_formatter
                 {
                     if (pickleStep->argument.value()->dataTable.has_value())
                     {
+                        fmt::print(stream, "{}",
+                            LineBuilder{ theme }
+                                .Accept(
+                                    [this, &testStepFinished, &pickleStep](LineBuilder& lineBuilder)
+                                    {
+                                        pickleTableFormatter.Format(lineBuilder, pickleStep->argument.value()->dataTable.value());
+                                    })
+                                .Build());
                     }
 
                     if (pickleStep->argument.value()->docString.has_value())
                     {
+                        fmt::print(stream, "{}",
+                            LineBuilder{ theme }
+                                .Accept(
+                                    [this, &testStepFinished, &pickleStep](LineBuilder& lineBuilder)
+                                    {
+                                        pickleDocStringFormatter.Format(lineBuilder, pickleStep->argument.value()->docString.value());
+                                    })
+                                .Build());
                     }
+                }
+
+                if (status == messages::TestStepResultStatus::AMBIGUOUS)
+                {
+                    fmt::print(stream, "{}",
+                        LineBuilder{ theme }
+                            .Accept(
+                                [this, &testStep](LineBuilder& lineBuilder)
+                                {
+                                    constexpr auto indent = 11;
+                                    AmbiguousStepDefinitionsFormatter{ indent, theme, sourceReferenceFormatter }.Format(lineBuilder,
+                                        query.FindStepDefinitionsBy(testStep));
+                                })
+                            .Build());
                 }
             }
         }
 
-        //---------query.findPickleStepBy(testStep).ifPresent(pickleStep->query.findStepBy(pickleStep).ifPresent(step->{
-        //---------    out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
-        //             pickleStep.getArgument().ifPresent(pickleStepArgument->{
-        //                 pickleStepArgument.getDataTable().ifPresent(pickleTable->out.print(new LineBuilder(theme)
-        //                         .accept(lineBuilder->PickleTableFormatter.builder().indentation(9).build().formatTo(pickleTable, lineBuilder))
-        //                         .build()));
-        //                 pickleStepArgument.getDocString().ifPresent(pickleDocString->out.print(new LineBuilder(theme)
-        //                         .accept(
-        //                             lineBuilder->PickleDocStringFormatter.builder().indentation(9).build().formatTo(pickleDocString, lineBuilder))
-        //                         .build()));
-        //             });
-        //             if (status == AMBIGUOUS)
-        //             {
-        //                 out.print(new LineBuilder(theme)
-        //                         .accept(lineBuilder->AmbiguousStepDefinitionsFormatter.builder(sourceReferenceFormatter, theme)
-        //                                 .indentation(11)
-        //                                 .build()
-        //                                 .formatTo(query.findStepDefinitionsBy(testStep), lineBuilder))
-        //                         .build());
-        //             }
-        //         }));
+        // TODO        query.findHookBy(testStep).ifPresent(hook->{ out.println(formatHookStep(testStepFinished, hook)); });
 
-        //         query.findHookBy(testStep).ifPresent(hook->{ out.println(formatHookStep(testStepFinished, hook)); });
+        const auto testStepResult = testStepFinished->testStepResult;
+        constexpr auto indent = 11;
+        ExceptionFormatter exceptionFormatter{ indent, theme, status };
+        const auto message = testStepResult->message;
 
-        //         ExceptionFormatter formatter = new ExceptionFormatter(11, theme, status);
-        //         TestStepResult testStepResult = testStepFinished.getTestStepResult();
-        //         String standaloneMessage = testStepResult.getMessage().orElse(null);
-        //         testStepResult.getException().flatMap(exception->formatter.format(exception, standaloneMessage)).or
-        //             (()->Optional.ofNullable(standaloneMessage).map(formatter::format)).ifPresent(out::print);
+        if (testStepResult->exception.has_value())
+        {
+            fmt::print(stream, "{}", exceptionFormatter.Format(testStepResult->exception.value(), message).value_or(""));
+        }
+        else if (message.has_value())
+        {
+            fmt::print(stream, "{}", exceptionFormatter.Format(message.value()));
+        }
 
         //         if (features.contains(MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS))
         //         {

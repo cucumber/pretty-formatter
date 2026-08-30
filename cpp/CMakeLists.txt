@@ -120,22 +120,32 @@ target_sources(
     cucumber_pretty_formatter_lib
     PRIVATE
         include/cucumber/pretty-formatter/Ansi.hpp
+        include/cucumber/pretty-formatter/AmbiguousStepDefinitionsFormatter.hpp
+        include/cucumber/pretty-formatter/AttachmentFormatter.hpp
+        include/cucumber/pretty-formatter/ExceptionFormatter.hpp
         include/cucumber/pretty-formatter/Formatter.hpp
         include/cucumber/pretty-formatter/LineBuilder.hpp
+        include/cucumber/pretty-formatter/PickleDocStringFormatter.hpp
+        include/cucumber/pretty-formatter/PickleTableFormatter.hpp
         include/cucumber/pretty-formatter/PrettyPrinter.hpp
         include/cucumber/pretty-formatter/ProgressBarPrinter.hpp
         include/cucumber/pretty-formatter/ProgressPrinter.hpp
+        include/cucumber/pretty-formatter/SourceReferenceFormatter.hpp
         include/cucumber/pretty-formatter/StepTextFormatter.hpp
         include/cucumber/pretty-formatter/SummaryPrinter.hpp
         src/cucumber/pretty-formatter/Ansi.cpp
+        src/cucumber/pretty-formatter/AmbiguousStepDefinitionsFormatter.cpp
+        src/cucumber/pretty-formatter/AttachmentFormatter.cpp
+        src/cucumber/pretty-formatter/ExceptionFormatter.cpp
         src/cucumber/pretty-formatter/LineBuilder.cpp
+        src/cucumber/pretty-formatter/PickleDocStringFormatter.cpp
+        src/cucumber/pretty-formatter/PickleTableFormatter.cpp
         src/cucumber/pretty-formatter/PrettyPrinter.cpp
         src/cucumber/pretty-formatter/ProgressBarPrinter.cpp
         src/cucumber/pretty-formatter/ProgressPrinter.cpp
+        src/cucumber/pretty-formatter/SourceReferenceFormatter.cpp
         src/cucumber/pretty-formatter/StepTextFormatter.cpp
         src/cucumber/pretty-formatter/SummaryPrinter.cpp
-        src/cucumber/pretty-formatter/SourceReferenceFormatter.cpp
-        include/cucumber/pretty-formatter/SourceReferenceFormatter.hpp
 )
 
 target_include_directories(
