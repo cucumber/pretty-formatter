@@ -1,7 +1,9 @@
 #ifndef CUCUMBER_PRETTY_FORMATTER_SUMMARY_PRINTER_HPP
 #define CUCUMBER_PRETTY_FORMATTER_SUMMARY_PRINTER_HPP
 
+#include "cucumber/messages/Duration.hpp"
 #include "cucumber/messages/Envelope.hpp"
+#include "cucumber/messages/Exception.hpp"
 #include "cucumber/messages/Pickle.hpp"
 #include "cucumber/messages/PickleStep.hpp"
 #include "cucumber/messages/Step.hpp"
@@ -96,6 +98,9 @@ namespace cucumber::pretty_formatter
             const std::shared_ptr<const messages::TestStep>& testStep);
 
         messages::TestStepResultStatus GetTestStepResultStatusBy(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished);
+        std::optional<std::shared_ptr<const messages::Exception>> GetTestRunWithException() const;
+
+        std::shared_ptr<const messages::Duration> GetExecutionDuration() const;
 
         void FormatScenarioLineTo(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished, LineBuilder& lineBuilder);
         void PrintNonPassingSteps(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished,
@@ -127,42 +132,6 @@ namespace cucumber::pretty_formatter
         PickleTableFormatter pickleTableFormatter{ argumentIndent };
         PickleDocStringFormatter pickleDocStringFormatter{ argumentIndent };
     };
-
-    template<class T, class U, class V>
-    void SummaryPrinter::PrintFinishedItemByStatus(std::string finishedItemname,
-        std::map<messages::TestStepResultStatus, std::vector<T>> finishedItemByStatus, messages::TestStepResultStatus status,
-        U&& formatFinishedItem, V&& printSupplementaryContent)
-    {
-        if (finishedItemByStatus.find(status) == finishedItemByStatus.end())
-        {
-            return;
-        }
-
-        fmt::println(stream, "{}",
-            LineBuilder{ theme }
-                .NewLine()
-                .Append(theme->Style(Theme::Element::step, status, fmt::format("{} {}:", messages::to_string(status), finishedItemname)))
-                .Build());
-
-        const auto& finishedItems = finishedItemByStatus.at(status);
-        for (auto index{ 0 }; index < finishedItems.size(); ++index)
-        {
-            const auto& finishedItem = finishedItems.at(index);
-            fmt::println(stream, "{}",
-                LineBuilder{ theme }
-                    .Append("  ")
-                    .Append(std::to_string(index + 1))
-                    .Append(") ")
-                    .Accept(
-                        [this, &formatFinishedItem, &finishedItem](LineBuilder& lineBuilder)
-                        {
-                            std::invoke(std::forward<U>(formatFinishedItem), this, finishedItem, lineBuilder);
-                        })
-                    .Build());
-
-            std::invoke(std::forward<V>(printSupplementaryContent), this, finishedItem, status);
-        }
-    }
 }
 
 #endif

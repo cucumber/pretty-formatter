@@ -149,26 +149,6 @@ namespace cucumber::pretty_formatter
             return Factory{}.Build();
         }
 
-        [[nodiscard]] std::string Style(Element element, const std::string& text) const
-        {
-            const auto ansi = FindAnsiBy(element);
-            if (ansi.has_value())
-            {
-                return ansi->first.ToString() + text + ansi->second.ToString();
-            }
-            return text;
-        }
-
-        [[nodiscard]] std::string Style(Element element, messages::TestStepResultStatus status, const std::string& text) const
-        {
-            const auto ansi = FindAnsiBy(element, status);
-            if (ansi.has_value())
-            {
-                return ansi->first.ToString() + text + ansi->second.ToString();
-            }
-            return text;
-        }
-
         [[nodiscard]] std::string Style(Element element, std::string_view text) const
         {
             const auto ansi = FindAnsiBy(element);

@@ -1,11 +1,16 @@
 #include "cucumber/pretty-formatter/SummaryPrinter.hpp"
+#include "cucumber/messages/Duration.hpp"
+#include "cucumber/messages/DurationUtil.hpp"
 #include "cucumber/messages/Envelope.hpp"
+#include "cucumber/messages/Exception.hpp"
 #include "cucumber/messages/Hook.hpp"
 #include "cucumber/messages/Pickle.hpp"
 #include "cucumber/messages/PickleStep.hpp"
+#include "cucumber/messages/Snippet.hpp"
 #include "cucumber/messages/Step.hpp"
 #include "cucumber/messages/TestCaseFinished.hpp"
 #include "cucumber/messages/TestCaseStarted.hpp"
+#include "cucumber/messages/TestRunHookFinished.hpp"
 #include "cucumber/messages/TestStep.hpp"
 #include "cucumber/messages/TestStepFinished.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
@@ -16,16 +21,24 @@
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
 #include <algorithm>
+#include <cctype>
+#include <chrono>
+#include <cstddef>
 #include <cstdint>
+#include <fmt/core.h>
+#include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <functional>
 #include <iterator>
 #include <map>
 #include <memory>
+#include <numeric>
 #include <optional>
 #include <ostream>
 #include <set>
 #include <string>
+#include <string_view>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -55,10 +68,132 @@ namespace cucumber::pretty_formatter
                 std::inserter(result, result.end()));
             return result;
         }();
+
+        auto PickleComparator(const std::shared_ptr<const messages::Pickle>& lhs, const std::shared_ptr<const messages::Pickle>& rhs)
+            -> std::int32_t
+        {
+            if (lhs->uri != rhs->uri)
+            {
+                return static_cast<std::int32_t>(rhs->uri.compare(lhs->uri));
+            }
+            if (!lhs->location.has_value() || !rhs->location.has_value())
+            {
+                return 0;
+            }
+            if (lhs->location.value()->line != rhs->location.value()->line)
+            {
+                return static_cast<std::int32_t>(lhs->location.value()->line) - static_cast<std::int32_t>(rhs->location.value()->line);
+            }
+            return static_cast<std::int32_t>(lhs->location.value()->column.value_or(0)) -
+                   static_cast<std::int32_t>(rhs->location.value()->column.value_or(0));
+        }
+
+        char ToLower(char chr)
+        {
+            return static_cast<char>(std::tolower(chr));
+        }
+
+        std::string ToLower(std::string text)
+        {
+            std::transform(text.begin(), text.end(), text.begin(), static_cast<char (*)(char)>(ToLower));
+            return text;
+        }
+
+        std::string ToLower(std::string_view text)
+        {
+            return ToLower(std::string{ text });
+        }
+
+        char ToUpper(char chr)
+        {
+            return static_cast<char>(std::toupper(chr));
+        }
+
+        std::string ToUpper(std::string text)
+        {
+            std::transform(text.begin(), text.end(), text.begin(), static_cast<char (*)(char)>(ToUpper));
+            return text;
+        }
+
+        std::string ToUpper(std::string_view text)
+        {
+            return ToUpper(std::string{ text });
+        }
+
+        std::string SentenceCase(std::string text)
+        {
+            if (text.empty())
+            {
+                return text;
+            }
+
+            std::transform(text.begin(), text.end(), text.begin(), static_cast<char (*)(char)>(ToLower));
+
+            text.front() = ToUpper(text.front());
+
+            return text;
+        }
+
+        std::string SentenceCase(std::string_view text)
+        {
+            return SentenceCase(std::string{ text });
+        }
+
+        template<class T, class StatusOf>
+        std::string FormatSubCounts(std::string_view singular, std::string_view plural,
+            const std::vector<std::shared_ptr<const T>>& finishedItems, const Theme& theme, StatusOf&& statusOf)
+        {
+            const auto size = finishedItems.size();
+            const auto countAndName = fmt::format("{} {}", size, size == 1 ? singular : plural);
+
+            std::map<messages::TestStepResultStatus, std::size_t> counts;
+            for (const auto& item : finishedItems)
+            {
+                ++counts[std::invoke(std::forward<StatusOf>(statusOf), item)];
+            }
+
+            std::vector<std::string> subCounts;
+            for (const auto status : allStatuses)
+            {
+                if (const auto count = counts[status]; count != 0)
+                {
+                    subCounts.push_back(
+                        theme.Style(Theme::Element::step, status, fmt::format("{} {}", count, ToLower(messages::to_string(status)))));
+                }
+            }
+
+            if (subCounts.empty())
+            {
+                return countAndName;
+            }
+
+            return fmt::format("{} ({})", countAndName, fmt::join(subCounts, ", "));
+        }
+
+        std::chrono::minutes ToMinutes(const std::shared_ptr<const messages::Duration>& duration)
+        {
+            return std::chrono::minutes{ duration->seconds / 60 };
+        }
+
+        std::chrono::seconds ToSeconds(const std::shared_ptr<const messages::Duration>& duration)
+        {
+            return std::chrono::seconds{ duration->seconds % 60 };
+        }
+
+        std::chrono::milliseconds ToMilliSeconds(const std::shared_ptr<const messages::Duration>& duration)
+        {
+            return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::nanoseconds{ duration->nanos });
+        }
+
+        std::string FormatDuration(const std::shared_ptr<const messages::Duration>& duration)
+        {
+            return fmt::format("{}m {}.{}s", ToMinutes(duration).count(), ToSeconds(duration).count(), ToMilliSeconds(duration).count());
+            // return fmt::format("{}m {}.{:03}s", ToMinutes(duration).count(), ToSeconds(duration).count(), ToMilliSeconds(duration).count());
+        }
     }
 
-    SummaryPrinter::SummaryPrinter(const ProtectedConstructorTag&, std::ostream& stream, std::shared_ptr<struct Theme> theme,
-        std::function<std::string(std::string)> uriFormatter, std::set<enum Options> options)
+    SummaryPrinter::SummaryPrinter([[maybe_unused]] const ProtectedConstructorTag& tag, std::ostream& stream,
+        std::shared_ptr<struct Theme> theme, std::function<std::string(std::string)> uriFormatter, std::set<enum Options> options)
         : stream{ stream }
         , theme{ std::move(theme) }
         , uriFormatter{ std::move(uriFormatter) }
@@ -83,28 +218,6 @@ namespace cucumber::pretty_formatter
         PrintNonPassingTestRun();
         PrintStats();
         PrintSnippets();
-    }
-
-    namespace
-    {
-        auto PickleComparator(const std::shared_ptr<const messages::Pickle>& lhs, const std::shared_ptr<const messages::Pickle>& rhs)
-            -> std::int32_t
-        {
-            if (lhs->uri != rhs->uri)
-            {
-                return static_cast<std::int32_t>(rhs->uri.compare(lhs->uri));
-            }
-            if (!lhs->location.has_value() || !rhs->location.has_value())
-            {
-                return 0;
-            }
-            if (lhs->location.value()->line != rhs->location.value()->line)
-            {
-                return static_cast<std::int32_t>(lhs->location.value()->line) - static_cast<std::int32_t>(rhs->location.value()->line);
-            }
-            return static_cast<std::int32_t>(lhs->location.value()->column.value_or(0)) -
-                   static_cast<std::int32_t>(rhs->location.value()->column.value_or(0));
-        }
     }
 
     void SummaryPrinter::PrintNonPassingScenarios()
@@ -143,22 +256,105 @@ namespace cucumber::pretty_formatter
     }
 
     void SummaryPrinter::PrintTestRunCount()
-    {}
+    {
+        const auto& optException = GetTestRunWithException();
+        if (optException.has_value())
+        {
+            fmt::println(stream, "1 test run ({})", theme->Style(Theme::Element::step, messages::TestStepResultStatus::FAILED, "1 failed"));
+        }
+    }
 
     void SummaryPrinter::PrintGlobalHookCount()
-    {}
+    {
+        // List<TestRunHookFinished> testRunHooksFinished = query.findAllTestRunHookFinished();
+        // if (testRunHooksFinished.isEmpty()) {
+        //     return;
+        // }
+
+        // out.println(formatSubCounts(
+        //         "hook",
+        //         "hooks",
+        //         testRunHooksFinished,
+        //         countTestStepResultStatusByTestRunHookFinished()));
+    }
 
     void SummaryPrinter::PrintScenarioCounts()
-    {}
+    {
+        fmt::println(stream, "{}",
+            FormatSubCounts("scenario", "scenarios", query.FindAllTestCaseFinished(), *theme,
+                [this](const auto& item)
+                {
+                    return GetTestStepResultStatusBy(item);
+                }));
+    }
 
     void SummaryPrinter::PrintStepCounts()
-    {}
+    {
+        const auto& allTestCasesFinished = query.FindAllTestCaseFinished();
+        std::vector<std::shared_ptr<const messages::TestStepFinished>> testStepsFinished;
+        for (const auto& testCaseFinished : allTestCasesFinished)
+        {
+            const auto& testStepsFinishedForCase = query.FindTestStepsFinishedBy(testCaseFinished);
+            testStepsFinished.insert(testStepsFinished.end(), testStepsFinishedForCase.begin(), testStepsFinishedForCase.end());
+        }
+
+        fmt::println(stream, "{}",
+            FormatSubCounts("step", "steps", testStepsFinished, *theme,
+                [this](const auto& item)
+                {
+                    return item->testStepResult->status;
+                }));
+    }
 
     void SummaryPrinter::PrintDurations()
-    {}
+    {
+        const auto& optRunDuration = query.FindTestRunDuration();
+        if (optRunDuration.has_value())
+        {
+            fmt::println(stream, "{} ({} executing your code)", FormatDuration(*optRunDuration), FormatDuration(GetExecutionDuration()));
+        }
+    }
 
     void SummaryPrinter::PrintSnippets()
-    {}
+    {
+        const auto& allTestCasesFinishedOrdered =
+            query.FindAllTestCaseFinishedOrderBy(query::findPickleByTestCaseFinished, PickleComparator);
+
+        std::vector<std::shared_ptr<const messages::Snippet>> snippets;
+        std::unordered_set<std::string> seen;
+
+        for (const auto& testCaseFinished : allTestCasesFinishedOrdered)
+        {
+            const auto& optPickle = query.FindPickleBy(testCaseFinished);
+            if (optPickle.has_value())
+            {
+                const auto& pickle = optPickle.value();
+                const auto& suggestions = query.FindSuggestionsBy(pickle);
+
+                for (const auto& suggestion : suggestions)
+                {
+                    for (const auto& snippet : suggestion->snippets)
+                    {
+                        if (seen.insert(snippet->language + "-" + snippet->code).second)
+                        {
+                            snippets.push_back(snippet);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (snippets.empty())
+        {
+            return;
+        }
+
+        fmt::println(stream, "\nYou can implement missing steps with the snippets below:\n");
+        for (const auto& snippet : snippets)
+        {
+            fmt::println(stream, "{}\n", snippet->code);
+        }
+    }
 
     void SummaryPrinter::PrintStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
         const std::shared_ptr<const messages::TestStep>& testStep)
@@ -255,6 +451,43 @@ namespace cucumber::pretty_formatter
             return mostSevereTestStepResult.value()->status;
         }
         return messages::TestStepResultStatus::PASSED;
+    }
+
+    std::optional<std::shared_ptr<const messages::Exception>> SummaryPrinter::GetTestRunWithException() const
+    {
+        const auto& optTestRunFinished = query.FindTestRunFinished();
+
+        if (optTestRunFinished.has_value())
+        {
+            const auto& testRunFinished = optTestRunFinished.value();
+            if (!testRunFinished->success)
+            {
+                return testRunFinished->exception;
+            }
+        }
+
+        return std::nullopt;
+    }
+
+    std::shared_ptr<const messages::Duration> SummaryPrinter::GetExecutionDuration() const
+    {
+        const auto& allTestRunHookFinished = query.FindAllTestRunHookFinished();
+        const auto& allTestStepFinished = query.FindAllTestStepFinished();
+
+        const auto testRunHookFinishedDuration = std::accumulate(allTestRunHookFinished.begin(), allTestRunHookFinished.end(),
+            messages::Duration{},
+            [this](const messages::Duration& totalDuration, const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished)
+            {
+                return totalDuration + *testRunHookFinished->result->duration;
+            });
+
+        const auto testStepFinishedDuration = std::accumulate(allTestStepFinished.begin(), allTestStepFinished.end(), messages::Duration{},
+            [this](const messages::Duration& totalDuration, const std::shared_ptr<const messages::TestStepFinished>& testStepFinished)
+            {
+                return totalDuration + *testStepFinished->testStepResult->duration;
+            });
+
+        return std::make_shared<messages::Duration>(testRunHookFinishedDuration + testStepFinishedDuration);
     }
 
     void SummaryPrinter::FormatScenarioLineTo(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished,
@@ -405,6 +638,43 @@ namespace cucumber::pretty_formatter
                     FormatLocationCommentTo(lineBuilder, testStep);
                 })
             .Build();
+    }
+
+    template<class T, class U, class V>
+    void SummaryPrinter::PrintFinishedItemByStatus(std::string finishedItemname,
+        std::map<messages::TestStepResultStatus, std::vector<T>> finishedItemByStatus, messages::TestStepResultStatus status,
+        U&& formatFinishedItem, V&& printSupplementaryContent)
+    {
+        if (finishedItemByStatus.find(status) == finishedItemByStatus.end())
+        {
+            return;
+        }
+
+        fmt::println(stream, "{}",
+            LineBuilder{ theme }
+                .NewLine()
+                .Append(theme->Style(Theme::Element::step, status,
+                    fmt::format("{} {}:", SentenceCase(messages::to_string(status)), finishedItemname)))
+                .Build());
+
+        const auto& finishedItems = finishedItemByStatus.at(status);
+        for (auto index{ 0 }; index < finishedItems.size(); ++index)
+        {
+            const auto& finishedItem = finishedItems.at(index);
+            fmt::println(stream, "{}",
+                LineBuilder{ theme }
+                    .Append("  ")
+                    .Append(std::to_string(index + 1))
+                    .Append(") ")
+                    .Accept(
+                        [this, &formatFinishedItem, &finishedItem](LineBuilder& lineBuilder)
+                        {
+                            std::invoke(std::forward<U>(formatFinishedItem), this, finishedItem, lineBuilder);
+                        })
+                    .Build());
+
+            std::invoke(std::forward<V>(printSupplementaryContent), this, finishedItem, status);
+        }
     }
 
     /////////////////////////////////////////////////////////////////////
