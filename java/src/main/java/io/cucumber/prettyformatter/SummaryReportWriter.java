@@ -493,7 +493,7 @@ final class SummaryReportWriter implements AutoCloseable {
         long minutes = duration.toMinutes();
         long seconds = duration.toSecondsPart();
         long milliseconds = duration.toMillisPart();
-        return "%sm %d.%ds".formatted(String.valueOf(minutes), seconds, milliseconds);
+        return "%sm %d.%03ds".formatted(minutes, seconds, milliseconds);
     }
 
     private void printUnknownParameterTypes() {

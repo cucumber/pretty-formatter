@@ -16,7 +16,7 @@ Undefined scenarios:
 
 4 scenarios (4 undefined)
 12 steps (1 passed, 2 skipped, 9 undefined)
-0m 0.33s (0m 0.1s executing your code)
+0m 0.033s (0m 0.001s executing your code)
 
 You can implement missing steps with the snippets below:
 

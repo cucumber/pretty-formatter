@@ -8,7 +8,7 @@ These parameters are missing a parameter type definition:
 
 1 scenario (1 undefined)
 1 step (1 undefined)
-0m 0.5s (0m 0.0s executing your code)
+0m 0.005s (0m 0.000s executing your code)
 
 You can implement missing steps with the snippets below:
 

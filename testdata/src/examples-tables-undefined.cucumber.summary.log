@@ -9,7 +9,7 @@
 
 3 scenarios ([34m3 undefined[39m)
 9 steps ([32m3 passed[39m, [33m3 skipped[39m, [34m3 undefined[39m)
-0m 0.25s (0m 0.3s executing your code)
+0m 0.025s (0m 0.003s executing your code)
 
 You can implement missing steps with the snippets below:
 

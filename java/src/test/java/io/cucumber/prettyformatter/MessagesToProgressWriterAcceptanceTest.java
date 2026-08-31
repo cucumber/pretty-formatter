@@ -3,7 +3,8 @@ package io.cucumber.prettyformatter;
 import io.cucumber.messages.NdjsonToMessageReader;
 import io.cucumber.messages.ndjson.Json;
 import io.cucumber.messages.types.Envelope;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -70,6 +71,7 @@ class MessagesToProgressWriterAcceptanceTest {
 
     @ParameterizedTest
     @MethodSource("acceptance")
+    @DisabledIfEnvironmentVariable(named = "UPDATE_EXPECTED_FILES", matches = "true")
     void test(TestCase testCase) throws IOException {
         ByteArrayOutputStream bytes = writeDotProgress(testCase, new ByteArrayOutputStream(), testCase.builder);
         assertThat(bytes.toString(UTF_8)).isEqualToIgnoringNewLines(Files.readString(testCase.expected));
@@ -77,7 +79,7 @@ class MessagesToProgressWriterAcceptanceTest {
 
     @ParameterizedTest
     @MethodSource("acceptance")
-    @Disabled
+    @EnabledIfEnvironmentVariable(named = "UPDATE_EXPECTED_FILES", matches = "true")
     void updateExpectedFiles(TestCase testCase) throws IOException {
         try (OutputStream out = Files.newOutputStream(testCase.expected)) {
             writeDotProgress(testCase, out, testCase.builder);
