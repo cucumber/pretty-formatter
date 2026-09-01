@@ -12,12 +12,6 @@
   <a href="https://search.maven.org/search?q=g:io.cucumber%20AND%20a:pretty-formatter" style="text-decoration: none"><img src="https://img.shields.io/maven-central/v/io.cucumber/pretty-formatter.svg?label=Maven%20Central" alt="Latest version on Maven Central"></a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/cucumber/pretty-formatter/actions" style="text-decoration: none"><img src="https://github.com/cucumber/pretty-formatter/actions/workflows/test-javascript.yaml/badge.svg" alt="Build status"></a>
-  <a href="https://github.com/cucumber/pretty-formatter/actions" style="text-decoration: none"><img src="https://github.com/cucumber/pretty-formatter/actions/workflows/test-java.yml/badge.svg" alt="Build status"></a>
-</p>
-
-
 This package provides several printers and utilities for rich formatting of Cucumber progress and results in the terminal.
 
 ## Pretty
