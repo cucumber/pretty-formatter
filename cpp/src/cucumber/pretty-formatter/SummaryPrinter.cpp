@@ -69,8 +69,9 @@ namespace cucumber::pretty_formatter
             return result;
         }();
 
-        auto PickleComparator(const std::shared_ptr<const messages::Pickle>& lhs, const std::shared_ptr<const messages::Pickle>& rhs)
-            -> std::int32_t
+        std::int32_t PickleComparator(const std::shared_ptr<const messages::Pickle>& lhs,
+            const std::shared_ptr<const messages::Pickle>& rhs)
+
         {
             if (lhs->uri != rhs->uri)
             {
@@ -190,6 +191,20 @@ namespace cucumber::pretty_formatter
             return fmt::format("{}m {}.{}s", ToMinutes(duration).count(), ToSeconds(duration).count(), ToMilliSeconds(duration).count());
             // return fmt::format("{}m {}.{:03}s", ToMinutes(duration).count(), ToSeconds(duration).count(), ToMilliSeconds(duration).count());
         }
+
+        template<typename Proj, typename Instance, typename ListType>
+        auto GroupBy(Instance&& instance, Proj&& proj, const std::vector<std::shared_ptr<const ListType>>& list)
+        {
+            std::map<messages::TestStepResultStatus, std::vector<std::shared_ptr<const ListType>>> groupedByProj;
+
+            for (const auto& item : list)
+            {
+                groupedByProj[std::invoke(std::forward<Proj>(proj), std::forward<Instance>(instance), item)].push_back(item);
+            }
+
+            return groupedByProj;
+        }
+
     }
 
     SummaryPrinter::SummaryPrinter([[maybe_unused]] const ProtectedConstructorTag& tag, std::ostream& stream,
@@ -198,7 +213,9 @@ namespace cucumber::pretty_formatter
         , theme{ std::move(theme) }
         , uriFormatter{ std::move(uriFormatter) }
         , options{ std::move(options) }
-    {}
+    {
+#warning implement me
+    }
 
     void SummaryPrinter::Update(const messages::Envelope& envelope)
     {
@@ -222,12 +239,9 @@ namespace cucumber::pretty_formatter
 
     void SummaryPrinter::PrintNonPassingScenarios()
     {
-        const auto allTestCasesFinished = query.FindAllTestCaseFinishedOrderBy(query::findPickleByTestCaseFinished, PickleComparator);
-        std::map<messages::TestStepResultStatus, std::vector<std::shared_ptr<const messages::TestCaseFinished>>> testCaseFinishedByStatus;
-        for (const auto& testCaseFinished : allTestCasesFinished)
-        {
-            testCaseFinishedByStatus[GetTestStepResultStatusBy(testCaseFinished)].push_back(testCaseFinished);
-        }
+        const auto& allTestCasesFinished = query.FindAllTestCaseFinishedOrderBy(query::findPickleByTestCaseFinished, PickleComparator);
+        const auto& testCaseFinishedByStatus =
+            GroupBy(this, &SummaryPrinter::GetTestStepResultStatusByTestCaseFinished, allTestCasesFinished);
 
         for (const auto& status : failingStatuses)
         {
@@ -237,13 +251,41 @@ namespace cucumber::pretty_formatter
     }
 
     void SummaryPrinter::PrintUnknownParameterTypes()
-    {}
+    {
+        const auto& undefinedParameterTypes = query.FindAllUndefinedParameterTypes();
+        if (undefinedParameterTypes.empty())
+        {
+            return;
+        }
+
+        fmt::println(stream, "\n{}",
+            theme->Style(Theme::Element::step, messages::TestStepResultStatus::UNDEFINED,
+                "These parameters are missing a parameter type definition:"));
+
+        auto index{ 0 };
+        for (const auto& undefinedParameterType : undefinedParameterTypes)
+        {
+            fmt::println(stream, "  {}) '{}' in '{}'", ++index, undefinedParameterType->name, undefinedParameterType->expression);
+        }
+    }
 
     void SummaryPrinter::PrintNonPassingGlobalHooks()
-    {}
+    {
+        const auto& allTestRunHooksFinished = query.FindAllTestRunHookFinished();
+        const auto& testRunHookFinishedByStatus =
+            GroupBy(this, &SummaryPrinter::GetTestStepResultStatusByTestRunHookFinished, allTestRunHooksFinished);
+
+        for (const auto& status : failingStatuses)
+        {
+            PrintFinishedItemByStatus("hooks", testRunHookFinishedByStatus, status, &SummaryPrinter::FormatHookLineTo,
+                &SummaryPrinter::PrintTestRunHookException);
+        }
+    }
 
     void SummaryPrinter::PrintNonPassingTestRun()
-    {}
+    {
+#warning implement me
+    }
 
     void SummaryPrinter::PrintStats()
     {
@@ -284,7 +326,7 @@ namespace cucumber::pretty_formatter
             FormatSubCounts("scenario", "scenarios", query.FindAllTestCaseFinished(), *theme,
                 [this](const auto& item)
                 {
-                    return GetTestStepResultStatusBy(item);
+                    return GetTestStepResultStatusByTestCaseFinished(item);
                 }));
     }
 
@@ -442,8 +484,8 @@ namespace cucumber::pretty_formatter
 
     /////////////////////////////////////////////////////////////////////
 
-    messages::TestStepResultStatus SummaryPrinter::GetTestStepResultStatusBy(
-        const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
+    messages::TestStepResultStatus SummaryPrinter::GetTestStepResultStatusByTestCaseFinished(
+        const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished) const
     {
         const auto mostSevereTestStepResult = query.FindMostSevereTestStepResultBy(testCaseFinished);
         if (mostSevereTestStepResult.has_value())
@@ -451,6 +493,18 @@ namespace cucumber::pretty_formatter
             return mostSevereTestStepResult.value()->status;
         }
         return messages::TestStepResultStatus::PASSED;
+    }
+
+    messages::TestStepResultStatus SummaryPrinter::GetTestStepResultStatusByTestRunHookFinished(
+        const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished) const
+    {
+        return testRunHookFinished->result->status;
+    }
+
+    messages::TestStepResultStatus SummaryPrinter::GetTestStepResultStatusByTestStepFinished(
+        const std::shared_ptr<const messages::TestStepFinished>& testStepFinished) const
+    {
+        return testStepFinished->testStepResult->status;
     }
 
     std::optional<std::shared_ptr<const messages::Exception>> SummaryPrinter::GetTestRunWithException() const
@@ -566,6 +620,18 @@ namespace cucumber::pretty_formatter
         {
             PrintStep(testStepFinished, testStep);
         }
+    }
+
+    void SummaryPrinter::FormatHookLineTo(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
+        LineBuilder& lineBuilder)
+    {
+#warning implement me
+    }
+
+    void SummaryPrinter::PrintTestRunHookException(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
+        [[maybe_unused]] messages::TestStepResultStatus ignoredStatus)
+    {
+#warning implement me
     }
 
     void SummaryPrinter::FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Pickle>& pickle) const
@@ -686,7 +752,9 @@ namespace cucumber::pretty_formatter
                 return uri;
             } }
         , options{ Options::includeFeatureLine, Options::includeRuleLine, Options::useStatusIcon, Options::includeAttachments }
-    {}
+    {
+#warning implement me
+    }
 
     SummaryPrinter::Factory& SummaryPrinter::Factory::Theme(std::shared_ptr<struct Theme> theme)
     {

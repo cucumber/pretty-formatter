@@ -9,6 +9,7 @@
 #include "cucumber/messages/Step.hpp"
 #include "cucumber/messages/TestCaseFinished.hpp"
 #include "cucumber/messages/TestCaseStarted.hpp"
+#include "cucumber/messages/TestRunHookFinished.hpp"
 #include "cucumber/messages/TestStep.hpp"
 #include "cucumber/messages/TestStepFinished.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
@@ -97,7 +98,12 @@ namespace cucumber::pretty_formatter
         void PrintStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
             const std::shared_ptr<const messages::TestStep>& testStep);
 
-        messages::TestStepResultStatus GetTestStepResultStatusBy(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished);
+        messages::TestStepResultStatus GetTestStepResultStatusByTestCaseFinished(
+            const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished) const;
+        messages::TestStepResultStatus GetTestStepResultStatusByTestRunHookFinished(
+            const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished) const;
+        messages::TestStepResultStatus GetTestStepResultStatusByTestStepFinished(
+            const std::shared_ptr<const messages::TestStepFinished>& testStepFinished) const;
         std::optional<std::shared_ptr<const messages::Exception>> GetTestRunWithException() const;
 
         std::shared_ptr<const messages::Duration> GetExecutionDuration() const;
@@ -105,6 +111,10 @@ namespace cucumber::pretty_formatter
         void FormatScenarioLineTo(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished, LineBuilder& lineBuilder);
         void PrintNonPassingSteps(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished,
             messages::TestStepResultStatus ignoredStatus);
+
+        void FormatHookLineTo(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished, LineBuilder& lineBuilder);
+        void PrintTestRunHookException(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
+            [[maybe_unused]] messages::TestStepResultStatus ignoredStatus);
 
         void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Pickle>& pickle) const;
         void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::TestStep>& testStep) const;
