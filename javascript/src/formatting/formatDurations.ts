@@ -1,7 +1,7 @@
 import { type Duration, TimeConversion } from '@cucumber/messages'
 import { Duration as LuxonDuration } from 'luxon'
 
-const DURATION_FORMAT = "m'm' s.S's'"
+const DURATION_FORMAT = "m'm' s.SSS's'"
 
 export function formatDurations(
   testRunDuration: Duration,

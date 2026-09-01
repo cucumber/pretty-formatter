@@ -50,5 +50,5 @@
   
   1 scenario ([31m1 failed[39m)
   2 steps ([33m1 skipped[39m, [31m1 failed[39m)
-  0m 0.7s (0m 0.2s executing your code)
+  0m 0.007s (0m 0.002s executing your code)
   

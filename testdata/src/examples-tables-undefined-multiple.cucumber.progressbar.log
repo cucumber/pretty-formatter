@@ -285,7 +285,7 @@
   
   4 scenarios ([34m4 undefined[39m)
   12 steps ([32m1 passed[39m, [33m2 skipped[39m, [34m9 undefined[39m)
-  0m 0.33s (0m 0.1s executing your code)
+  0m 0.033s (0m 0.001s executing your code)
   
   You can implement missing steps with the snippets below:
   
