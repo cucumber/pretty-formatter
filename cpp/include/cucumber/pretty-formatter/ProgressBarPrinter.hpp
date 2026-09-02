@@ -14,7 +14,7 @@ namespace cucumber::pretty_formatter
     struct ProgressBarPrinter : Formatter
     {
         ProgressBarPrinter(std::ostream& stream, std::unique_ptr<Theme> theme, std::size_t maxWidth,
-            std::string_view clearLine = "\x1b[{}A\x1b[0J");
+            std::string_view clearLine = "\r\x1b[{}A\x1b[0J");
         ~ProgressBarPrinter() override;
 
         ProgressBarPrinter(const ProgressBarPrinter&) = delete;
