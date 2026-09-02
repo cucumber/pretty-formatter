@@ -167,13 +167,13 @@ namespace cucumber::pretty_formatter
 
     TEST_P(ProgressBarFormatterTest, TestData)
     {
-        std::map<std::string_view, std::shared_ptr<Theme>> themes{
-            { "cucumber", Theme::Cucumber() },
-        };
+        std::map<std::string_view, std::unique_ptr<Theme>> themes;
+        themes.try_emplace("cucumber", Theme::Cucumber());
 
         ASSERT_THAT(themes, testing::Contains(testing::Key(GetParam().theme)));
 
-        Validate(GetParam().input, GetParam().output, std::make_unique<ProgressBarPrinter>(stream, themes.at(GetParam().theme), 80));
+        Validate(GetParam().input, GetParam().output,
+            std::make_unique<ProgressBarPrinter>(std::cout, std::move(themes.at(GetParam().theme)), 80, ""));
     }
 
     INSTANTIATE_TEST_SUITE_P(Acceptance, PrettyFormatterTest, testing::ValuesIn(EnumerateTestData("pretty")));
