@@ -63,7 +63,7 @@ namespace cucumber::pretty_formatter
             , bulletPointIcon{ std::move(bulletPointIcon) }
         {}
 
-        static std::shared_ptr<Theme> Cucumber()
+        static std::unique_ptr<Theme> Cucumber()
         {
             return Factory{}
                 .Style(Element::attachment, Ansi{ Ansi::Attribute::foregroundBlue }, Ansi{ Ansi::Attribute::foregroundDefault })
@@ -125,7 +125,7 @@ namespace cucumber::pretty_formatter
                 .Build();
         }
 
-        static std::shared_ptr<Theme> Plain()
+        static std::unique_ptr<Theme> Plain()
         {
             return Factory{}
                 .StatusIcon(messages::TestStepResultStatus::AMBIGUOUS, "✘")
@@ -144,7 +144,7 @@ namespace cucumber::pretty_formatter
                 .Build();
         }
 
-        static std::shared_ptr<Theme> None()
+        static std::unique_ptr<Theme> None()
         {
             return Factory{}.Build();
         }
@@ -269,9 +269,9 @@ namespace cucumber::pretty_formatter
                 return *this;
             }
 
-            std::shared_ptr<Theme> Build()
+            std::unique_ptr<Theme> Build()
             {
-                return std::make_shared<Theme>(statusIconByStatus, progressIconByStatus, styleByElement, styleByStatusByElement,
+                return std::make_unique<Theme>(statusIconByStatus, progressIconByStatus, styleByElement, styleByStatusByElement,
                     bulletPointIcon);
             }
 
