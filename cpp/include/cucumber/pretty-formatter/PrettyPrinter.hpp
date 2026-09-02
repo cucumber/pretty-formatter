@@ -51,8 +51,12 @@ namespace cucumber::pretty_formatter
 
     private:
         std::shared_ptr<Theme> theme;
-        std::shared_ptr<struct Data> data;
-        std::unique_ptr<struct Printer> printer;
+
+        struct Data;
+        std::shared_ptr<Data> data;
+
+        struct Printer;
+        std::unique_ptr<Printer> printer;
     };
 }
 

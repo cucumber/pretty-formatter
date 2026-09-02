@@ -77,7 +77,7 @@ namespace cucumber::pretty_formatter
         }
     }
 
-    struct Data
+    struct PrettyPrinter::Data
     {
         explicit Data(std::set<PrettyPrinter::Options> options)
             : options{ std::move(options) }
@@ -319,7 +319,7 @@ namespace cucumber::pretty_formatter
             }() };
     };
 
-    struct Printer
+    struct PrettyPrinter::Printer
     {
         Printer(std::ostream& stream, std::shared_ptr<Theme> theme, std::shared_ptr<Data> data,
             std::function<std::string(std::string)> uriFormatter, std::set<PrettyPrinter::Options> options)
