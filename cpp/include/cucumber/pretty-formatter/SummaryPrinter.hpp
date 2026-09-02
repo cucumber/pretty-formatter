@@ -4,6 +4,7 @@
 #include "cucumber/messages/Duration.hpp"
 #include "cucumber/messages/Envelope.hpp"
 #include "cucumber/messages/Exception.hpp"
+#include "cucumber/messages/Hook.hpp"
 #include "cucumber/messages/Pickle.hpp"
 #include "cucumber/messages/PickleStep.hpp"
 #include "cucumber/messages/Step.hpp"
@@ -40,9 +41,6 @@ namespace cucumber::pretty_formatter
     {
         enum class Options : std::uint8_t
         {
-            includeFeatureLine,
-            includeRuleLine,
-            useStatusIcon,
             includeAttachments
         };
 
@@ -114,7 +112,7 @@ namespace cucumber::pretty_formatter
 
         void FormatHookLineTo(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished, LineBuilder& lineBuilder);
         void PrintTestRunHookException(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
-            [[maybe_unused]] messages::TestStepResultStatus ignoredStatus);
+            [[maybe_unused]] messages::TestStepResultStatus status);
 
         void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Pickle>& pickle) const;
         void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::TestStep>& testStep) const;
@@ -124,9 +122,12 @@ namespace cucumber::pretty_formatter
 
         std::string FormatAttempt(const std::shared_ptr<const messages::TestCaseStarted>& testCaseStarted) const;
 
+        std::string FormatHookStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
+            const std::shared_ptr<const messages::Hook>& hook) const;
+
         std::string FormatPickleStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
             const std::shared_ptr<const messages::TestStep>& testStep, const std::shared_ptr<const messages::PickleStep>& pickleStep,
-            const std::shared_ptr<const messages::Step>& step);
+            const std::shared_ptr<const messages::Step>& step) const;
 
         std::ostream& stream; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members) : ostream isn't copyable
         std::shared_ptr<struct Theme> theme;

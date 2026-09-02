@@ -19,7 +19,7 @@ namespace cucumber::pretty_formatter
     {}
 
     std::optional<std::string> ExceptionFormatter::Format(const std::shared_ptr<const messages::Exception>& exception,
-        std::optional<std::string> message)
+        const std::optional<std::string>& message)
     {
         if (status == messages::TestStepResultStatus::FAILED && exception->stackTrace.has_value())
         {

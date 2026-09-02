@@ -4,6 +4,7 @@
 #include "cucumber/messages/Envelope.hpp"
 #include "cucumber/messages/Exception.hpp"
 #include "cucumber/messages/Hook.hpp"
+#include "cucumber/messages/HookType.hpp"
 #include "cucumber/messages/Pickle.hpp"
 #include "cucumber/messages/PickleStep.hpp"
 #include "cucumber/messages/Snippet.hpp"
@@ -15,6 +16,7 @@
 #include "cucumber/messages/TestStepFinished.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/pretty-formatter/AmbiguousStepDefinitionsFormatter.hpp"
+#include "cucumber/pretty-formatter/AttachmentFormatter.hpp"
 #include "cucumber/pretty-formatter/ExceptionFormatter.hpp"
 #include "cucumber/pretty-formatter/Formatter.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
@@ -38,6 +40,7 @@
 #include <set>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -188,8 +191,7 @@ namespace cucumber::pretty_formatter
 
         std::string FormatDuration(const std::shared_ptr<const messages::Duration>& duration)
         {
-            return fmt::format("{}m {}.{}s", ToMinutes(duration).count(), ToSeconds(duration).count(), ToMilliSeconds(duration).count());
-            // return fmt::format("{}m {}.{:03}s", ToMinutes(duration).count(), ToSeconds(duration).count(), ToMilliSeconds(duration).count());
+            return fmt::format("{}m {}.{:03}s", ToMinutes(duration).count(), ToSeconds(duration).count(), ToMilliSeconds(duration).count());
         }
 
         template<typename Proj, typename Instance, typename ListType>
@@ -205,6 +207,14 @@ namespace cucumber::pretty_formatter
             return groupedByProj;
         }
 
+        const std::unordered_map<messages::HookType, std::string_view> formatHookType = {
+            { messages::HookType::BEFORE_TEST_RUN, "BeforeAll" },
+            { messages::HookType::AFTER_TEST_RUN, "AfterAll" },
+            { messages::HookType::BEFORE_TEST_CASE, "Before" },
+            { messages::HookType::AFTER_TEST_CASE, "After" },
+            { messages::HookType::BEFORE_TEST_STEP, "BeforeStep" },
+            { messages::HookType::AFTER_TEST_STEP, "AfterStep" },
+        };
     }
 
     SummaryPrinter::SummaryPrinter([[maybe_unused]] const ProtectedConstructorTag& tag, std::ostream& stream,
@@ -213,9 +223,7 @@ namespace cucumber::pretty_formatter
         , theme{ std::move(theme) }
         , uriFormatter{ std::move(uriFormatter) }
         , options{ std::move(options) }
-    {
-#warning implement me
-    }
+    {}
 
     void SummaryPrinter::Update(const messages::Envelope& envelope)
     {
@@ -284,7 +292,22 @@ namespace cucumber::pretty_formatter
 
     void SummaryPrinter::PrintNonPassingTestRun()
     {
-#warning implement me
+        const auto& optException = GetTestRunWithException();
+        if (optException.has_value())
+        {
+            fmt::println(stream, "{}",
+                theme->Style(Theme::Element::step, messages::TestStepResultStatus::FAILED,
+                    SentenceCase(messages::to_string(messages::TestStepResultStatus::FAILED)) + " test run:"));
+
+            constexpr auto indent{ 7 };
+            ExceptionFormatter exceptionFormatter{ indent, theme, messages::TestStepResultStatus::FAILED };
+
+            const auto formattedException = exceptionFormatter.Format(optException.value());
+            if (formattedException.has_value())
+            {
+                fmt::print(stream, "{}", formattedException.value());
+            }
+        }
     }
 
     void SummaryPrinter::PrintStats()
@@ -308,16 +331,18 @@ namespace cucumber::pretty_formatter
 
     void SummaryPrinter::PrintGlobalHookCount()
     {
-        // List<TestRunHookFinished> testRunHooksFinished = query.findAllTestRunHookFinished();
-        // if (testRunHooksFinished.isEmpty()) {
-        //     return;
-        // }
+        const auto& allTestRunHookFinished = query.FindAllTestRunHookFinished();
+        if (allTestRunHookFinished.empty())
+        {
+            return;
+        }
 
-        // out.println(formatSubCounts(
-        //         "hook",
-        //         "hooks",
-        //         testRunHooksFinished,
-        //         countTestStepResultStatusByTestRunHookFinished()));
+        fmt::println(stream, "{}",
+            FormatSubCounts("hook", "hooks", allTestRunHookFinished, *theme,
+                [this](const auto& item)
+                {
+                    return GetTestStepResultStatusByTestRunHookFinished(item);
+                }));
     }
 
     void SummaryPrinter::PrintScenarioCounts()
@@ -456,12 +481,17 @@ namespace cucumber::pretty_formatter
             }
         }
 
-        // TODO        query.findHookBy(testStep).ifPresent(hook->{ out.println(formatHookStep(testStepFinished, hook)); });
+        const auto& optHook = query.FindHookBy(testStep);
+        if (optHook.has_value())
+        {
+            const auto& hook = optHook.value();
+            fmt::println(stream, "{}", FormatHookStep(testStepFinished, hook));
+        }
 
         const auto testStepResult = testStepFinished->testStepResult;
         constexpr auto indent = 11;
         ExceptionFormatter exceptionFormatter{ indent, theme, status };
-        const auto message = testStepResult->message;
+        const auto& message = testStepResult->message;
 
         if (testStepResult->exception.has_value())
         {
@@ -472,14 +502,23 @@ namespace cucumber::pretty_formatter
             fmt::print(stream, "{}", exceptionFormatter.Format(message.value()));
         }
 
-        //         if (features.contains(MessagesToSummaryWriter.SummaryFeature.INCLUDE_ATTACHMENTS))
-        //         {
-        //             query.findAttachmentsBy(testStepFinished)
-        //                 .forEach(attachment->out.print(new LineBuilder(theme)
-        //                         .newLine()
-        //                         .accept(lineBuilder->AttachmentFormatter.builder().indentation(11).build().formatTo(attachment, lineBuilder))
-        //                         .build()));
-        //         }
+        if (options.find(SummaryPrinter::Options::includeAttachments) != options.end())
+        {
+            const auto& attachments = query.FindAttachmentsBy(testStepFinished);
+            for (const auto& attachment : attachments)
+            {
+                fmt::print(stream, "{}",
+                    LineBuilder{ theme }
+                        .NewLine()
+                        .Accept(
+                            [this, &attachment](LineBuilder& lineBuilder)
+                            {
+                                constexpr auto indent = 11;
+                                AttachmentFormatter{ indent }.Format(lineBuilder, attachment);
+                            })
+                        .Build());
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////
@@ -625,13 +664,44 @@ namespace cucumber::pretty_formatter
     void SummaryPrinter::FormatHookLineTo(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
         LineBuilder& lineBuilder)
     {
-#warning implement me
+        const auto& optHook = query.FindHookBy(testRunHookFinished);
+        if (optHook.has_value())
+        {
+            const auto& hook = optHook.value();
+            lineBuilder.Append(hook->type.has_value() ? formatHookType.at(hook->type.value()) : "Unknown")
+                .Accept(
+                    [this, &hook](auto& lineBuilder)
+                    {
+                        if (hook->name.has_value())
+                        {
+                            const auto& name = hook->name.value();
+                            lineBuilder.Append(fmt::format("({})", name));
+                        }
+                    })
+                .Accept(
+                    [this, &hook](auto& lineBuilder)
+                    {
+                        FormatLocationCommentTo(lineBuilder, hook);
+                    });
+        }
     }
 
     void SummaryPrinter::PrintTestRunHookException(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
-        [[maybe_unused]] messages::TestStepResultStatus ignoredStatus)
+        [[maybe_unused]] messages::TestStepResultStatus status)
     {
-#warning implement me
+        const auto& result = testRunHookFinished->result;
+        constexpr auto indent = 7;
+        ExceptionFormatter exceptionFormatter{ indent, theme, status };
+        const auto& message = result->message;
+
+        if (result->exception.has_value())
+        {
+            fmt::print(stream, "{}", exceptionFormatter.Format(result->exception.value(), message).value_or(""));
+        }
+        else if (message.has_value())
+        {
+            fmt::print(stream, "{}", exceptionFormatter.Format(message.value()));
+        }
     }
 
     void SummaryPrinter::FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Pickle>& pickle) const
@@ -683,13 +753,33 @@ namespace cucumber::pretty_formatter
         return ", after " + std::to_string(attempt + 1) + " attempts";
     }
 
+    std::string SummaryPrinter::FormatHookStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
+        const std::shared_ptr<const messages::Hook>& hook) const
+    {
+        const auto& status = testStepFinished->testStepResult->status;
+        constexpr auto indent{ 7 };
+        return LineBuilder{ theme }
+            .Indent(indent)
+            .Begin(Theme::Element::step, status)
+            .Append(Theme::Element::stepKeyword, hook->type.has_value() ? formatHookType.at(hook->type.value()) : "Unknown")
+            .Append(hook->name.has_value() ? "(" + hook->name.value() + ")" : "")
+            .End(Theme::Element::step, status)
+            .Accept(
+                [this, &hook](auto& lineBuilder)
+                {
+                    FormatLocationCommentTo(lineBuilder, hook);
+                })
+            .Build();
+    }
+
     std::string SummaryPrinter::FormatPickleStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
         const std::shared_ptr<const messages::TestStep>& testStep, const std::shared_ptr<const messages::PickleStep>& pickleStep,
-        const std::shared_ptr<const messages::Step>& step)
+        const std::shared_ptr<const messages::Step>& step) const
     {
         const auto status = testStepFinished->testStepResult->status;
+        constexpr auto indent{ 7 };
         return LineBuilder{ theme }
-            .Indent(7)
+            .Indent(indent)
             .Begin(Theme::Element::step, status)
             .Append(Theme::Element::stepKeyword, step->keyword)
             .Accept(
@@ -751,10 +841,8 @@ namespace cucumber::pretty_formatter
             {
                 return uri;
             } }
-        , options{ Options::includeFeatureLine, Options::includeRuleLine, Options::useStatusIcon, Options::includeAttachments }
-    {
-#warning implement me
-    }
+        , options{ Options::includeAttachments }
+    {}
 
     SummaryPrinter::Factory& SummaryPrinter::Factory::Theme(std::shared_ptr<struct Theme> theme)
     {
@@ -790,12 +878,6 @@ namespace cucumber::pretty_formatter
 
     std::unique_ptr<Formatter> SummaryPrinter::Factory::Build(std::ostream& stream) const
     {
-        auto optionsCopy = options;
-        if (!theme->HasStatusIcons())
-        {
-            optionsCopy.erase(Options::useStatusIcon);
-        }
-
-        return std::make_unique<SummaryPrinter>(SummaryPrinter::ProtectedConstructorTag{}, stream, theme, uriFormatter, optionsCopy);
+        return std::make_unique<SummaryPrinter>(SummaryPrinter::ProtectedConstructorTag{}, stream, theme, uriFormatter, options);
     }
 }

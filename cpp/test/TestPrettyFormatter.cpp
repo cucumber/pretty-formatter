@@ -155,7 +155,11 @@ namespace cucumber::pretty_formatter
                 .Build(stream));
         formatters.try_emplace("progress", std::make_unique<ProgressPrinter>(stream, themes.at(GetParam().theme), 80));
         formatters.try_emplace("progressbar", std::make_unique<ProgressBarPrinter>(stream));
-        formatters.try_emplace("summary", SummaryPrinter::Factory{}.Theme(themes.at(GetParam().theme)).Build(stream));
+        formatters.try_emplace("summary",
+            SummaryPrinter::Factory{}
+                .Theme(themes.at(GetParam().theme))
+                .Options(SummaryPrinter::Options::includeAttachments, GetParam().theme != "exclude-attachments")
+                .Build(stream));
 
         ASSERT_THAT(formatters, testing::Contains(testing::Key(GetParam().formatter)));
 
