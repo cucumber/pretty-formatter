@@ -1,3 +1,4 @@
+#include "EnumerateTestData.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/pretty-formatter/Ansi.hpp"
 #include "cucumber/pretty-formatter/Formatter.hpp"
@@ -20,6 +21,7 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace cucumber::pretty_formatter
@@ -80,60 +82,40 @@ namespace cucumber::pretty_formatter
             return result.empty() ? std::string{ "empty" } : result;
         }
 
-        struct FormatterTestParam
+        struct PrettyFormatterBaseTest : public testing::TestWithParam<FormatterTestParam>
         {
-            std::filesystem::path input;
-            std::filesystem::path output;
-            std::string theme;
-            std::string formatter;
-        };
-
-        void PrintTo(const FormatterTestParam& param, std::ostream* stream)
-        {
-            *stream << param.input.stem().string() << "." << param.theme << "." << param.formatter;
-        }
-
-        std::vector<FormatterTestParam> EnumerateTestData()
-        {
-            std::vector<FormatterTestParam> result;
-            const std::filesystem::path testdataPath{ std::filesystem::path{ TESTDATA_SRC } };
-
-            for (const auto& entry : std::filesystem::directory_iterator(testdataPath))
+            void Validate(std::filesystem::path input, std::filesystem::path output, std::unique_ptr<Formatter> formatter)
             {
-                if (entry.is_regular_file() && entry.path().extension() == ".log")
+                std::ifstream inputStream{ input };
+                for (std::string line; std::getline(inputStream, line);)
                 {
-                    auto& test = result.emplace_back();
-
-                    test.output = entry.path();
-
-                    auto filename = entry.path().stem().string();
-
-                    test.input = testdataPath / (filename.substr(0, filename.find_first_of('.')) + ".ndjson");
-                    filename = filename.substr(filename.find_first_of('.') + 1);
-
-                    test.theme = filename.substr(0, filename.find_first_of('.'));
-                    filename = filename.substr(filename.find_first_of('.') + 1);
-
-                    test.formatter = filename.substr(filename.find_first_of('.') + 1);
-
-                    if (test.formatter == "progressbar")
-                    {
-                        result.pop_back();
-                    }
+                    formatter->Update(nlohmann::json::parse(line));
                 }
+
+                std::ifstream expected{ output };
+                EXPECT_THAT(stream.str(),
+                    testing::StrEq(std::string{ (std::istreambuf_iterator<char>(expected)), std::istreambuf_iterator<char>() }));
             }
 
-            return result;
-        }
+        protected:
+            std::ostringstream stream;
+        };
 
-        struct PrettyFormatterTest : public testing::TestWithParam<FormatterTestParam>
+        struct PrettyFormatterTest : PrettyFormatterBaseTest
+        {};
+
+        struct SummaryFormatterTest : PrettyFormatterBaseTest
+        {};
+
+        struct ProgressFormatterTest : PrettyFormatterBaseTest
+        {};
+
+        struct ProgressBarFormatterTest : PrettyFormatterBaseTest
         {};
     }
 
-    TEST_P(PrettyFormatterTest, FormatterTest)
+    TEST_P(PrettyFormatterTest, TestData)
     {
-        std::ostringstream stream;
-
         std::map<std::string_view, std::shared_ptr<Theme>> themes{
             { "cucumber", Theme::Cucumber() },
             { "demo", Demo() },
@@ -145,36 +127,57 @@ namespace cucumber::pretty_formatter
 
         ASSERT_THAT(themes, testing::Contains(testing::Key(GetParam().theme)));
 
-        std::map<std::string_view, std::unique_ptr<Formatter>> formatters;
-        formatters.try_emplace("pretty",
-            PrettyPrinter::Factory{}
-                .Theme(themes.at(GetParam().theme))
-                .Options(PrettyPrinter::Options::includeFeatureLine, GetParam().theme != "exclude-features-and-rules")
-                .Options(PrettyPrinter::Options::includeRuleLine, GetParam().theme != "exclude-features-and-rules")
-                .Options(PrettyPrinter::Options::includeAttachments, GetParam().theme != "exclude-attachments")
-                .Build(stream));
-        formatters.try_emplace("progress", std::make_unique<ProgressPrinter>(stream, themes.at(GetParam().theme), 80));
-        formatters.try_emplace("progressbar", std::make_unique<ProgressBarPrinter>(stream));
-        formatters.try_emplace("summary",
+        Validate(GetParam().input, GetParam().output,
+            std::move(PrettyPrinter::Factory{}
+                    .Theme(themes.at(GetParam().theme))
+                    .Options(PrettyPrinter::Options::includeFeatureLine, GetParam().theme != "exclude-features-and-rules")
+                    .Options(PrettyPrinter::Options::includeRuleLine, GetParam().theme != "exclude-features-and-rules")
+                    .Options(PrettyPrinter::Options::includeAttachments, GetParam().theme != "exclude-attachments")
+                    .Build(stream)));
+    }
+
+    TEST_P(SummaryFormatterTest, TestData)
+    {
+        std::map<std::string_view, std::shared_ptr<Theme>> themes{
+            { "cucumber", Theme::Cucumber() },
+            { "plain", Theme::Plain() },
+            { "exclude-attachments", Theme::Plain() },
+        };
+
+        ASSERT_THAT(themes, testing::Contains(testing::Key(GetParam().theme)));
+
+        Validate(GetParam().input, GetParam().output,
             SummaryPrinter::Factory{}
                 .Theme(themes.at(GetParam().theme))
                 .Options(SummaryPrinter::Options::includeAttachments, GetParam().theme != "exclude-attachments")
                 .Build(stream));
-
-        ASSERT_THAT(formatters, testing::Contains(testing::Key(GetParam().formatter)));
-
-        auto& formatter = formatters.at(GetParam().formatter);
-
-        std::ifstream input{ GetParam().input };
-        for (std::string line; std::getline(input, line);)
-        {
-            formatter->Update(nlohmann::json::parse(line));
-        }
-
-        std::ifstream expected{ GetParam().output };
-        EXPECT_THAT(stream.str(),
-            testing::StrEq(std::string{ (std::istreambuf_iterator<char>(expected)), std::istreambuf_iterator<char>() }));
     }
 
-    INSTANTIATE_TEST_SUITE_P(Acceptance, PrettyFormatterTest, testing::ValuesIn(EnumerateTestData()));
+    TEST_P(ProgressFormatterTest, TestData)
+    {
+        std::map<std::string_view, std::shared_ptr<Theme>> themes{
+            { "cucumber", Theme::Cucumber() },
+            { "plain", Theme::Plain() },
+        };
+
+        ASSERT_THAT(themes, testing::Contains(testing::Key(GetParam().theme)));
+
+        Validate(GetParam().input, GetParam().output, std::make_unique<ProgressPrinter>(stream, themes.at(GetParam().theme), 80));
+    }
+
+    TEST_P(ProgressBarFormatterTest, TestData)
+    {
+        std::map<std::string_view, std::shared_ptr<Theme>> themes{
+            { "cucumber", Theme::Cucumber() },
+        };
+
+        ASSERT_THAT(themes, testing::Contains(testing::Key(GetParam().theme)));
+
+        Validate(GetParam().input, GetParam().output, std::make_unique<ProgressBarPrinter>(stream, themes.at(GetParam().theme), 80));
+    }
+
+    INSTANTIATE_TEST_SUITE_P(Acceptance, PrettyFormatterTest, testing::ValuesIn(EnumerateTestData("pretty")));
+    INSTANTIATE_TEST_SUITE_P(Acceptance, SummaryFormatterTest, testing::ValuesIn(EnumerateTestData("summary")));
+    INSTANTIATE_TEST_SUITE_P(Acceptance, ProgressFormatterTest, testing::ValuesIn(EnumerateTestData("progress")));
+    INSTANTIATE_TEST_SUITE_P(Acceptance, ProgressBarFormatterTest, testing::ValuesIn(EnumerateTestData("progressbar")));
 }

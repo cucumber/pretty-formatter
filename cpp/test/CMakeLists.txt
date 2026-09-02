@@ -7,6 +7,8 @@ target_link_libraries(cucumber_pretty_formatter.test PUBLIC
 )
 
 target_sources(cucumber_pretty_formatter.test PRIVATE
+    EnumerateTestData.cpp
+    EnumerateTestData.hpp
     TestAnsi.cpp
     TestLineBuilder.cpp
     TestPrettyFormatter.cpp
