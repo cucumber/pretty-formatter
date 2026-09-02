@@ -1,0 +1,38 @@
+
+Feature: Undefined steps
+
+  Scenario: An undefined step causes a failure # samples/undefined-multiple/undefined-multiple.feature:8
+    ■ Given a step that is yet to be defined
+
+  Scenario: All steps are executed before a single undefined step # samples/undefined-multiple/undefined-multiple.feature:11
+    ✔ Given an implemented step                                   # samples/undefined-multiple/undefined-multiple.ts:3
+    ✔ And an implemented step                                     # samples/undefined-multiple/undefined-multiple.ts:3
+    ■ And a step that is yet to be defined
+
+  Scenario: Multiple undefined steps will all remain as undefined # samples/undefined-multiple/undefined-multiple.feature:16
+    ✔ Given an implemented step                                   # samples/undefined-multiple/undefined-multiple.ts:3
+    ✔ And an implemented step                                     # samples/undefined-multiple/undefined-multiple.ts:3
+    ■ And a step that is yet to be defined
+    ■ And another step that is also yet to be defined
+    ■ And a third step that is yet to be defined
+
+  Scenario: Multiple defined steps after undefined steps are all skipped # samples/undefined-multiple/undefined-multiple.feature:23
+    ■ Given a step that is yet to be defined
+    ↷ And a step that will be skipped                                    # samples/undefined-multiple/undefined-multiple.ts:7
+    ↷ And a step that will be skipped                                    # samples/undefined-multiple/undefined-multiple.ts:7
+
+  Scenario: Multiple undefined steps after skipped steps will also remain as undefined # samples/undefined-multiple/undefined-multiple.feature:28
+    ■ Given a step that is yet to be defined
+    ↷ And a step that will be skipped                                                  # samples/undefined-multiple/undefined-multiple.ts:7
+    ↷ And a step that will be skipped                                                  # samples/undefined-multiple/undefined-multiple.ts:7
+    ■ And a step that is yet to be defined
+    ■ And another step that is also yet to be defined
+
+  Scenario: Multiple missing snippets reflect parameter types # samples/undefined-multiple/undefined-multiple.feature:35
+    ■ Given a list of 8 things
+    ■ And a list of 3.14 things
+    ■ And a list of "many" things
+
+  Scenario: Multiple undefined steps also cause a failure # samples/undefined-multiple/undefined-multiple.feature:40
+    ■ Given a step that is yet to be defined
+    ■ And another step that is also yet to be defined

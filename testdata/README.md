@@ -8,9 +8,17 @@ the CCK's reference implementation.
 * The expected `.log` files are created by running a test that updates them.
 
 We ensure the `.ndjson` files stay up to date by running `npm install` in CI
-and verifying nothing changed.
+and verifying nothing changed. 
 
-Should there be changes, these tests can be used to update the expected data:
- * Java: `MessagesToPrettyWriterAcceptanceTest#updateExpectedFiles`
- * Java: `MessagesToSummaryWriterAcceptanceTest#updateExpectedFiles`
- * Java: `MessagesToProgressWriterAcceptanceTest#updateExpectedFiles`
+Should there be changes, the Java or Javascript tests can be used to update the
+expected data.
+ 
+```shell
+cd java
+UPDATE_EXPECTED_FILES=true mvn test
+```
+
+```shell
+cd javascript
+UPDATE_EXPECTED_FILES=true npm test
+```

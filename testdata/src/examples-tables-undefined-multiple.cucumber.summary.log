@@ -1,0 +1,34 @@
+
+[34mUndefined scenarios:[39m
+  1) Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+       [34m[1mGiven [22mthere are pear cucumbers[39m
+       [34m[1mThen [22mI should have apple cucumbers[39m
+  2) Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+       [34m[1mGiven [22mthere are pear cucumbers[39m
+       [34m[1mWhen [22mI eat banana cucumbers[39m
+  3) Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17[39m
+       [34m[1mWhen [22mI eat banana cucumbers[39m
+       [34m[1mThen [22mI should have apple cucumbers[39m
+  4) Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:18[39m
+       [34m[1mGiven [22mthere are pear cucumbers[39m
+       [34m[1mWhen [22mI eat banana cucumbers[39m
+       [34m[1mThen [22mI should have apple cucumbers[39m
+
+4 scenarios ([34m4 undefined[39m)
+12 steps ([32m1 passed[39m, [33m2 skipped[39m, [34m9 undefined[39m)
+0m 0.033s (0m 0.001s executing your code)
+
+You can implement missing steps with the snippets below:
+
+Given("there are pear cucumbers", () => {
+  return "pending"
+})
+
+Then("I should have apple cucumbers", () => {
+  return "pending"
+})
+
+When("I eat banana cucumbers", () => {
+  return "pending"
+})
+

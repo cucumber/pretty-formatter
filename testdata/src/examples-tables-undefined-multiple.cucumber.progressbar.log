@@ -1,0 +1,304 @@
+[testRunStarted]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/0 steps
+  Getting ready...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/1 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 steps
+  Getting ready...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/2 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/6 steps
+  Getting ready...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/3 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/9 steps
+  Getting ready...
+  
+[testCase]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/12 steps
+  Getting ready...
+  
+[testCaseStarted]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 scenarios
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 scenarios
+  ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 scenarios
+  ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/4 scenarios
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/12 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/4 scenarios
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/12 steps
+  Running 0 scenarios...
+  
+[testCaseStarted]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/4 scenarios
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/4 scenarios
+  █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 4/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/4 scenarios
+  █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 5/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/4 scenarios
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 6/12 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 2/4 scenarios
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 6/12 steps
+  Running 0 scenarios...
+  
+[testCaseStarted]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 2/4 scenarios
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 6/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 2/4 scenarios
+  █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 7/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 2/4 scenarios
+  █████████████████████████████████░░░░░░░░░░░░░░░░░ 8/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+  
+  █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 2/4 scenarios
+  ██████████████████████████████████████░░░░░░░░░░░░ 9/12 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  ██████████████████████████████████████░░░░░░░░░░░░ 3/4 scenarios
+  ██████████████████████████████████████░░░░░░░░░░░░ 9/12 steps
+  Running 0 scenarios...
+  
+[testCaseStarted]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  ██████████████████████████████████████░░░░░░░░░░░░ 3/4 scenarios
+  ██████████████████████████████████████░░░░░░░░░░░░ 9/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  ██████████████████████████████████████░░░░░░░░░░░░ 3/4 scenarios
+  ██████████████████████████████████████████░░░░░░░░ 10/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  ██████████████████████████████████████░░░░░░░░░░░░ 3/4 scenarios
+  ██████████████████████████████████████████████░░░░ 11/12 steps
+  Running 1 scenarios...
+  
+[testStepFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  ██████████████████████████████████████░░░░░░░░░░░░ 3/4 scenarios
+  ██████████████████████████████████████████████████ 12/12 steps
+  Running 1 scenarios...
+  
+[testCaseFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    4) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:18[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  ██████████████████████████████████████████████████ 4/4 scenarios
+  ██████████████████████████████████████████████████ 12/12 steps
+  Running 0 scenarios...
+  
+[testRunFinished]
+  Problems:
+    1) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    2) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+    3) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+    4) [3mScenario:[23m Eating cucumbers [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:18[39m
+         [34m[1mGiven [22mthere are pear cucumbers[39m
+         [34m[1mWhen [22mI eat banana cucumbers[39m
+         [34m[1mThen [22mI should have apple cucumbers[39m
+  
+  4 scenarios ([34m4 undefined[39m)
+  12 steps ([32m1 passed[39m, [33m2 skipped[39m, [34m9 undefined[39m)
+  0m 0.033s (0m 0.001s executing your code)
+  
+  You can implement missing steps with the snippets below:
+  
+  Given("there are pear cucumbers", () => {
+    return "pending"
+  })
+  
+  Then("I should have apple cucumbers", () => {
+    return "pending"
+  })
+  
+  When("I eat banana cucumbers", () => {
+    return "pending"
+  })
+  
+  

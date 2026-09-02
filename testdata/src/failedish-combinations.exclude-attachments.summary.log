@@ -55,7 +55,7 @@ Failed scenarios:
 
 9 scenarios (1 skipped, 1 pending, 1 undefined, 4 ambiguous, 2 failed)
 27 steps (11 skipped, 2 pending, 6 undefined, 6 ambiguous, 2 failed)
-0m 0.73s (0m 0.5s executing your code)
+0m 0.073s (0m 0.005s executing your code)
 
 You can implement missing steps with the snippets below:
 

@@ -1,0 +1,26 @@
+
+[44m[1mFeature:[22m [3mExamples Tables - With Many Undefined Steps[23m[49m
+
+  [33m[1m@undefined[22m[39m
+  [44m[1mScenario Outline:[22m [3mEating cucumbers[23m[49m   [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:15[39m
+    [34m[1mGiven [22m[3mthere are pear cucumbers[23m[39m
+    [33m[1mWhen [22m[3mI eat [23m[1m1[22m[3m cucumbers[23m[39m             [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.ts:8[39m
+    [34m[1mThen [22m[3mI should have apple cucumbers[23m[39m
+
+  [33m[1m@undefined[22m[39m
+  [44m[1mScenario Outline:[22m [3mEating cucumbers[23m[49m [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:16[39m
+    [34m[1mGiven [22m[3mthere are pear cucumbers[23m[39m
+    [34m[1mWhen [22m[3mI eat banana cucumbers[23m[39m
+    [33m[1mThen [22m[3mI should have [23m[1m12[22m[3m cucumbers[23m[39m  [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.ts:12[39m
+
+  [33m[1m@undefined[22m[39m
+  [44m[1mScenario Outline:[22m [3mEating cucumbers[23m[49m   [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:17[39m
+    [32m[1mGiven [22m[3mthere are [23m[1m0[22m[3m cucumbers[23m[39m        [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.ts:4[39m
+    [34m[1mWhen [22m[3mI eat banana cucumbers[23m[39m
+    [34m[1mThen [22m[3mI should have apple cucumbers[23m[39m
+
+  [33m[1m@undefined[22m[39m
+  [44m[1mScenario Outline:[22m [3mEating cucumbers[23m[49m   [90m# samples/examples-tables-undefined-multiple/examples-tables-undefined-multiple.feature:18[39m
+    [34m[1mGiven [22m[3mthere are pear cucumbers[23m[39m
+    [34m[1mWhen [22m[3mI eat banana cucumbers[23m[39m
+    [34m[1mThen [22m[3mI should have apple cucumbers[23m[39m
