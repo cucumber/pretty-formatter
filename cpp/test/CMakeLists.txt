@@ -15,6 +15,10 @@ target_sources(cucumber_pretty_formatter.test PRIVATE
     TestTheme.cpp
 )
 
+target_include_directories(cucumber_pretty_formatter.test PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/../src/
+)
+
 target_compile_definitions(cucumber_pretty_formatter.test
     PRIVATE
         TESTDATA_SRC="${PROJECT_SOURCE_DIR}/../testdata/src"

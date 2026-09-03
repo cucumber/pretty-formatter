@@ -1,39 +1,18 @@
 #ifndef CUCUMBER_PRETTY_FORMATTER_SUMMARY_PRINTER_HPP
 #define CUCUMBER_PRETTY_FORMATTER_SUMMARY_PRINTER_HPP
 
-#include "cucumber/messages/Duration.hpp"
 #include "cucumber/messages/Envelope.hpp"
-#include "cucumber/messages/Exception.hpp"
-#include "cucumber/messages/Hook.hpp"
-#include "cucumber/messages/Pickle.hpp"
-#include "cucumber/messages/PickleStep.hpp"
-#include "cucumber/messages/Step.hpp"
-#include "cucumber/messages/TestCaseFinished.hpp"
-#include "cucumber/messages/TestCaseStarted.hpp"
-#include "cucumber/messages/TestRunHookFinished.hpp"
-#include "cucumber/messages/TestStep.hpp"
-#include "cucumber/messages/TestStepFinished.hpp"
-#include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/pretty-formatter/Formatter.hpp"
-#include "cucumber/pretty-formatter/LineBuilder.hpp"
-#include "cucumber/pretty-formatter/PickleDocStringFormatter.hpp"
-#include "cucumber/pretty-formatter/PickleTableFormatter.hpp"
-#include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
-#include "cucumber/pretty-formatter/StepTextFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
-#include "cucumber/query/Query.hpp"
 #include <cstdint>
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <functional>
-#include <map>
 #include <memory>
-#include <optional>
 #include <ostream>
 #include <set>
 #include <string>
-#include <vector>
 
 namespace cucumber::pretty_formatter
 {
@@ -73,75 +52,11 @@ namespace cucumber::pretty_formatter
     private:
         void PrintSummary();
 
-        void PrintNonPassingScenarios();
+        struct Data;
+        std::unique_ptr<Data> data;
 
-        template<class T, class U, class V>
-        void PrintFinishedItemByStatus(std::string finishedItemname,
-            std::map<messages::TestStepResultStatus, std::vector<T>> finishedItemByStatus, messages::TestStepResultStatus status,
-            U&& formatFinishedItem, V&& printSupplementaryContent);
-
-        void PrintUnknownParameterTypes();
-        void PrintNonPassingGlobalHooks();
-        void PrintNonPassingTestRun();
-        void PrintStats();
-
-        void PrintTestRunCount();
-        void PrintGlobalHookCount();
-        void PrintScenarioCounts();
-        void PrintStepCounts();
-        void PrintDurations();
-
-        void PrintSnippets();
-
-        void PrintStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-            const std::shared_ptr<const messages::TestStep>& testStep);
-
-        messages::TestStepResultStatus GetTestStepResultStatusByTestCaseFinished(
-            const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished) const;
-        messages::TestStepResultStatus GetTestStepResultStatusByTestRunHookFinished(
-            const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished) const;
-        messages::TestStepResultStatus GetTestStepResultStatusByTestStepFinished(
-            const std::shared_ptr<const messages::TestStepFinished>& testStepFinished) const;
-        std::optional<std::shared_ptr<const messages::Exception>> GetTestRunWithException() const;
-
-        std::shared_ptr<const messages::Duration> GetExecutionDuration() const;
-
-        void FormatScenarioLineTo(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished, LineBuilder& lineBuilder);
-        void PrintNonPassingSteps(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished,
-            messages::TestStepResultStatus ignoredStatus);
-
-        void FormatHookLineTo(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished, LineBuilder& lineBuilder);
-        void PrintTestRunHookException(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
-            [[maybe_unused]] messages::TestStepResultStatus status);
-
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Pickle>& pickle) const;
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::TestStep>& testStep) const;
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Hook>& hook) const;
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::optional<std::string>& comment) const;
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::string& comment) const;
-
-        std::string FormatAttempt(const std::shared_ptr<const messages::TestCaseStarted>& testCaseStarted) const;
-
-        std::string FormatHookStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-            const std::shared_ptr<const messages::Hook>& hook) const;
-
-        std::string FormatPickleStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-            const std::shared_ptr<const messages::TestStep>& testStep, const std::shared_ptr<const messages::PickleStep>& pickleStep,
-            const std::shared_ptr<const messages::Step>& step) const;
-
-        std::ostream& stream; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members) : ostream isn't copyable
-        std::shared_ptr<struct Theme> theme;
-        std::function<std::string(std::string)> uriFormatter;
-        std::set<enum Options> options;
-
-        query::Query query;
-
-        StepTextFormatter stepTextFormatter;
-        SourceReferenceFormatter sourceReferenceFormatter{ uriFormatter };
-
-        constexpr static auto argumentIndent{ 9 };
-        PickleTableFormatter pickleTableFormatter{ argumentIndent };
-        PickleDocStringFormatter pickleDocStringFormatter{ argumentIndent };
+        struct Printer;
+        std::unique_ptr<Printer> printer;
     };
 }
 

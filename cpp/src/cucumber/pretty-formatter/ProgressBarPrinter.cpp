@@ -1,4 +1,6 @@
 #include "cucumber/pretty-formatter/ProgressBarPrinter.hpp"
+#include "cucumber/messages/Duration.hpp"
+#include "cucumber/messages/DurationUtil.hpp"
 #include "cucumber/messages/Envelope.hpp"
 #include "cucumber/messages/TestCase.hpp"
 #include "cucumber/messages/TestCaseFinished.hpp"
@@ -7,29 +9,389 @@
 #include "cucumber/messages/TestRunHookFinished.hpp"
 #include "cucumber/messages/TestRunStarted.hpp"
 #include "cucumber/messages/TestStepFinished.hpp"
+#include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/messages/UndefinedParameterType.hpp"
+#include "cucumber/pretty-formatter/Ansi.hpp"
+#include "cucumber/pretty-formatter/CaseUtil.hpp"
+#include "cucumber/pretty-formatter/FormatDuration.hpp"
+#include "cucumber/pretty-formatter/GroupBy.hpp"
+#include "cucumber/pretty-formatter/LineBuilder.hpp"
+#include "cucumber/pretty-formatter/Statuses.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
+#include <algorithm>
+#include <cmath>
 #include <cstddef>
+#include <cstdint>
 #include <fmt/core.h>
+#include <fmt/format.h>
 #include <fmt/ostream.h>
+#include <iterator>
+#include <map>
 #include <memory>
+#include <numeric>
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 namespace cucumber::pretty_formatter
 {
+    namespace
+    {
+        enum class ProblemType : std::uint8_t
+        {
+            parameter,
+            globalHook,
+            testCase,
+            testRun,
+        };
+
+        std::string FormatProblem(ProblemType type, std::string_view message)
+        {
+            switch (type)
+            {
+                case ProblemType::parameter:
+                    return fmt::format("{}Undefined parameter type:{} {}", Ansi{ Ansi::Attribute::italic }.ToString(), message,
+                        Ansi{ Ansi::Attribute::italicOff }.ToString());
+                case ProblemType::globalHook:
+                    return fmt::format("{}Global hook:{} {}", Ansi{ Ansi::Attribute::italic }.ToString(), message,
+                        Ansi{ Ansi::Attribute::italicOff }.ToString());
+                case ProblemType::testCase:
+                    return fmt::format("{}Scenario:{} {}", Ansi{ Ansi::Attribute::italic }.ToString(), message,
+                        Ansi{ Ansi::Attribute::italicOff }.ToString());
+                case ProblemType::testRun:
+                    return fmt::format("{}Test run:{} {}", Ansi{ Ansi::Attribute::italic }.ToString(), message,
+                        Ansi{ Ansi::Attribute::italicOff }.ToString());
+            }
+            return "Unknown problem";
+        }
+
+        std::string IndentNumbered(std::size_t indent, std::size_t number, const std::string& message)
+        {
+            std::string indentStr(indent, ' ');
+
+            std::istringstream istream{ message };
+            std::vector<std::string> lines;
+            bool first = true;
+            for (std::string line; std::getline(istream, line);)
+            {
+                if (line == "")
+                {
+                    lines.emplace_back("");
+                }
+                else
+                {
+                    if (first)
+                    {
+                        first = false;
+                        lines.emplace_back(fmt::format("{}{}) {}", indentStr, number, line));
+                    }
+                    else
+                    {
+                        lines.emplace_back(fmt::format("{}   {}", indentStr, line));
+                    }
+                }
+            }
+
+            return fmt::format("{}", fmt::join(lines, "\n"));
+        }
+
+        std::string FormatGlobalHookError(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
+            query::Query& query, Theme& theme)
+        {
+            const auto& optHook = query.FindHookBy(testRunHookFinished);
+            const auto status = testRunHookFinished->result->status;
+
+            return "";
+        }
+
+        std::string FormatCounts(std::string_view singular, std::string_view plural,
+            const std::map<messages::TestStepResultStatus, std::size_t>& counts, Theme& theme)
+        {
+            const auto total = std::accumulate(counts.begin(), counts.end(), 0U,
+                [&](std::size_t total, const auto& pair)
+                {
+                    const auto& [status, count] = pair;
+                    return total + count;
+                });
+
+            std::string result = fmt::format("{} {}", total, total == 1 ? singular : plural);
+
+            if (total != 0)
+            {
+                bool first = true;
+                result += " (";
+                for (const auto& status : allStatuses)
+                {
+                    if (counts.find(status) != counts.end())
+                    {
+                        if (!first)
+                        {
+                            result += ", ";
+                        }
+                        result += theme.Style(Theme::Element::step, status,
+                            fmt::format("{} {}", counts.at(status), ToLower(messages::to_string(status))));
+                        first = false;
+                    }
+                }
+                result += ")";
+            }
+
+            return result;
+        }
+
+        std::string MakeStats(const query::Query& query, const std::shared_ptr<Theme>& theme)
+        {
+            std::vector<std::string> lines;
+
+            {
+                const auto& optTestRunFinished = query.FindTestRunFinished();
+                if (optTestRunFinished.has_value() && optTestRunFinished.value()->exception.has_value())
+                {
+                    lines.emplace_back("");
+                    lines.emplace_back(FormatCounts("test run", "test runs", { { messages::TestStepResultStatus::FAILED, 1 } }, *theme));
+                }
+            }
+
+            {
+                const auto& allTestRunHookFinished = query.FindAllTestRunHookFinished();
+                if (!allTestRunHookFinished.empty())
+                {
+                    const auto& hooksGroupedByStatus = GroupBy(
+                        [](const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished)
+                        {
+                            return testRunHookFinished->result->status;
+                        },
+                        allTestRunHookFinished);
+
+                    std::map<messages::TestStepResultStatus, std::size_t> hookCountGroupedByStatus;
+                    std::transform(hooksGroupedByStatus.begin(), hooksGroupedByStatus.end(),
+                        std::inserter(hookCountGroupedByStatus, hookCountGroupedByStatus.end()),
+                        [](const auto& pair)
+                        {
+                            return std::make_pair(pair.first, pair.second.size());
+                        });
+
+                    lines.emplace_back(FormatCounts("hook", "hooks", hookCountGroupedByStatus, *theme));
+                }
+            }
+
+            {
+                std::map<messages::TestStepResultStatus, std::size_t> testCaseCountGroupedByStatus;
+                const auto& allTestCaseFinished = query.FindAllTestCaseFinished();
+                for (const auto& testCaseFinished : allTestCaseFinished)
+                {
+                    const auto& optMostSevereTestStepResult = query.FindMostSevereTestStepResultBy(testCaseFinished);
+                    if (optMostSevereTestStepResult.has_value())
+                    {
+                        const auto& mostSevereTestStepResult = optMostSevereTestStepResult.value();
+                        testCaseCountGroupedByStatus[mostSevereTestStepResult->status]++;
+                    }
+                    else
+                    {
+                        testCaseCountGroupedByStatus[messages::TestStepResultStatus::PASSED]++;
+                    }
+                }
+
+                lines.emplace_back(FormatCounts("scenario", "scenarios", testCaseCountGroupedByStatus, *theme));
+            }
+
+            {
+                std::map<messages::TestStepResultStatus, std::size_t> stepCountGroupedByStatus;
+                const auto& allTestCaseFinished = query.FindAllTestCaseFinished();
+                for (const auto& testCaseFinished : allTestCaseFinished)
+                {
+                    const auto& testStepsFinished = query.FindTestStepsFinishedBy(testCaseFinished);
+                    for (const auto& testStepFinished : testStepsFinished)
+                    {
+                        stepCountGroupedByStatus[testStepFinished->testStepResult->status]++;
+                    }
+                }
+
+                lines.emplace_back(FormatCounts("step", "steps", stepCountGroupedByStatus, *theme));
+            }
+
+            {
+                const auto& optTestRunDuration = query.FindTestRunDuration();
+                if (optTestRunDuration.has_value())
+                {
+                    const auto& allTestRunHookFinished = query.FindAllTestRunHookFinished();
+                    const auto testRunHookDuration =
+                        std::accumulate(allTestRunHookFinished.begin(), allTestRunHookFinished.end(), messages::Duration{},
+                            [](const auto& total, const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished)
+                            {
+                                return total + *testRunHookFinished->result->duration;
+                            });
+
+                    const auto& allTestStepFinished = query.FindAllTestStepFinished();
+                    const auto testStepDuration =
+                        std::accumulate(allTestStepFinished.begin(), allTestStepFinished.end(), messages::Duration{},
+                            [](const auto& total, const std::shared_ptr<const messages::TestStepFinished>& testStepFinished)
+                            {
+                                return total + *testStepFinished->testStepResult->duration;
+                            });
+
+                    lines.emplace_back(fmt::format("{} ({} executing your code)", FormatDuration(optTestRunDuration.value()),
+                        FormatDuration(std::make_shared<messages::Duration>(testRunHookDuration + testStepDuration))));
+                }
+            }
+
+            return fmt::format("{}", fmt::join(lines, "\n"));
+        }
+    }
+
+    ProgressBarPrinter::TtyOstream::TtyOstream(std::ostream& stream)
+        : stream{ stream }
+    {}
+
+    void ProgressBarPrinter::TtyOstream::Write(std::string_view output)
+    {
+        fmt::print(stream, "{}", output);
+        stream.flush();
+    }
+
+    void ProgressBarPrinter::TtyOstream::ClearScreenDown()
+    {
+        fmt::print(stream, "\x1b[0J");
+    }
+
+    void ProgressBarPrinter::TtyOstream::MoveCursorUp(std::size_t lines)
+    {
+        fmt::print(stream, "\r\x1b[{}A", lines);
+    }
+
     struct ProgressBarPrinter::Data : query::Query
-    {};
+    {
+        enum class Phase : std::uint8_t
+        {
+            preparing,
+            running,
+            done,
+        };
+
+        void Update(const cucumber::messages::Envelope& envelope)
+        {
+            query::Query::Update(envelope);
+
+            if (envelope.testCase.has_value())
+            {
+                TestCase(envelope.testCase.value());
+            }
+
+            if (envelope.testCaseStarted.has_value())
+            {
+                TestCaseStarted();
+            }
+
+            if (envelope.testCaseFinished.has_value())
+            {
+                TestCaseFinished(envelope.testCaseFinished.value());
+            }
+
+            if (envelope.testStepFinished.has_value())
+            {
+                TestStepFinished();
+            }
+
+            if (envelope.testRunFinished.has_value())
+            {
+                TestRunFinished();
+            }
+        }
+
+        [[nodiscard]] Phase Phase() const
+        {
+            return phase;
+        }
+
+        [[nodiscard]] std::size_t TotalScenarios() const
+        {
+            return totalScenarios;
+        }
+
+        [[nodiscard]] std::size_t TotalSteps() const
+        {
+            return totalSteps;
+        }
+
+        [[nodiscard]] std::size_t FinishedScenarios() const
+        {
+            return finishedScenarios;
+        }
+
+        [[nodiscard]] std::size_t FinishedSteps() const
+        {
+            return finishedSteps;
+        }
+
+        [[nodiscard]] std::size_t RunningScenarios() const
+        {
+            return runningScenarios;
+        }
+
+    private:
+        void TestCase(const std::shared_ptr<const messages::TestCase>& testCase)
+        {
+            ++totalScenarios;
+            totalSteps += testCase->testSteps.size();
+        }
+
+        void TestCaseStarted()
+        {
+            ++runningScenarios;
+            phase = Phase::running;
+        }
+
+        void TestCaseFinished(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
+        {
+            --runningScenarios;
+            ++finishedScenarios;
+
+            if (testCaseFinished->willBeRetried)
+            {
+                const auto& optTestCase = FindTestCaseBy(testCaseFinished);
+                if (optTestCase.has_value())
+                {
+                    --finishedScenarios;
+                    finishedSteps -= optTestCase.value()->testSteps.size();
+                }
+            }
+        }
+
+        void TestStepFinished()
+        {
+            ++finishedSteps;
+        }
+
+        void TestRunFinished()
+        {
+            phase = Phase::done;
+        }
+
+        enum Phase phase
+        {
+            Phase::preparing
+        };
+
+        std::size_t totalScenarios{ 0 };
+        std::size_t totalSteps{ 0 };
+
+        std::size_t finishedScenarios{ 0 };
+        std::size_t finishedSteps{ 0 };
+
+        std::size_t runningScenarios{ 0 };
+    };
 
     struct ProgressBarPrinter::Printer
     {
-        Printer(std::ostream& stream, Data& data, std::string_view clearLine)
-            : stream{ stream }
+        Printer(Tty& tty, Data& data, std::shared_ptr<Theme> theme, std::size_t maxWidth)
+            : tty{ tty }
             , data{ data }
-            , clearLine{ clearLine }
+            , theme{ std::move(theme) }
+            , maxWidth{ maxWidth }
         {}
 
         ~Printer() = default;
@@ -41,78 +403,160 @@ namespace cucumber::pretty_formatter
         Printer& operator=(Printer&&) = delete;
 
         void UndefinedParameterType(const std::shared_ptr<const messages::UndefinedParameterType>& undefinedParameterType)
-        {}
+        {
+            pendingProblems.emplace_back(ProblemType::parameter,
+                fmt::format("'{}' in '{}'", undefinedParameterType->name, undefinedParameterType->expression));
+            ReRender();
+        }
 
-        void TestRunStarted(const std::shared_ptr<const messages::TestRunStarted>& testRunStarted)
+        void TestRunStarted()
         {
             ReRender(true);
         }
 
-        void TestCase(const std::shared_ptr<const messages::TestCase>& testCase)
-        {}
+        void TestCase()
+        {
+            ReRender();
+        }
 
         void TestRunHookFinished(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished)
-        {}
+        {
+            if (failingStatuses.find(testRunHookFinished->result->status) != failingStatuses.end())
+            {
+                // pendingProblems.emplace_back(ProblemType::globalHook,
+                //     fmt::format("{} hook: {}", ToLower(messages::to_string(testRunHookFinished->hookType)),
+                //         testRunHookFinished->result->message.value_or("")));
+            }
+
+            ReRender();
+        }
 
         void TestCaseStarted(const std::shared_ptr<const messages::TestCaseStarted>& testCaseStarted)
-        {}
+        {
+            ReRender();
+        }
 
         void TestStepFinished(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished)
-        {}
+        {
+            ReRender();
+        }
 
         void TestCaseFinished(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
-        {}
+        {
+            ReRender();
+        }
 
         void TestRunFinished(const std::shared_ptr<const messages::TestRunFinished>& testRunFinished)
-        {}
+        {
+            ReRender();
+        }
 
     private:
-        void ReRender(bool initial)
+        [[nodiscard]] std::string MakeRepeatedString(std::string_view str, std::size_t count) const
+        {
+            std::string result;
+            result.reserve(str.size() * count);
+            for (std::size_t i = 0; i < count; ++i)
+            {
+                result.append(str);
+            }
+            return result;
+        }
+
+        [[nodiscard]] std::string MakeBar(std::size_t finished, std::size_t total, std::string_view label) const
+        {
+            const auto barWidth = maxWidth;
+            const auto ratio = total > 0 ? static_cast<double>(finished) / static_cast<double>(total) : 0.0;
+            const auto filledCount = static_cast<std::size_t>(std::round(ratio * static_cast<double>(barWidth)));
+            const auto emptyCount = barWidth - filledCount;
+
+            auto filled = MakeRepeatedString("█", filledCount);
+            auto empty = MakeRepeatedString("░", emptyCount);
+
+            return fmt::format("{}{} {}/{} {}", filled, empty, finished, total, label);
+        }
+
+        [[nodiscard]] std::string MakeStatus() const
+        {
+            switch (data.Phase())
+            {
+                case Data::Phase::preparing:
+                    return "Getting ready...";
+                case Data::Phase::running:
+                    return fmt::format("Running {} scenarios...", data.RunningScenarios());
+                case Data::Phase::done:
+                    return "Done";
+            }
+            return "Unknown";
+        }
+
+        [[nodiscard]] std::string MakeProgressBlock() const
+        {
+            return fmt::format("\n{}\n{}\n{}\n", MakeBar(data.FinishedScenarios(), data.TotalScenarios(), "scenarios"),
+                MakeBar(data.FinishedSteps(), data.TotalSteps(), "steps"), MakeStatus());
+        }
+
+        [[nodiscard]] std::string MakeSummaryBlock() const
+        {
+            return fmt::format("\n{}\n", MakeStats(data, theme));
+        }
+
+        void ReRender(bool initial = false)
         {
             std::string output;
 
-            output = fmt::format("[testRunStarted]\n");
-            output += fmt::format("  \n");
-            output += fmt::format("  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0 / 0 scenarios\n");
-            output += fmt::format("  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0 / 0 steps\n");
-            output += fmt::format("  Getting ready...\n");
-            output += fmt::format("  \n");
+            if (!pendingProblems.empty())
+            {
+                if (printedProblemCount == 0)
+                {
+                    output += "Problems:\n";
+                }
+
+                for (const auto& [type, problem] : pendingProblems)
+                {
+                    const auto problemText = FormatProblem(type, problem);
+                    ++printedProblemCount;
+                    output += IndentNumbered(2, printedProblemCount, problemText) + "\n";
+                }
+            }
+
+            if (data.Phase() == Data::Phase::done)
+            {
+                output += MakeSummaryBlock();
+            }
+            else
+            {
+                output += MakeProgressBlock();
+            }
 
             Render(initial, output);
-
-            output = fmt::format("[testCase]\n");
-            output += fmt::format("  \n");
-            output += fmt::format("  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0 / 1 scenarios\n");
-            output += fmt::format("  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0 / 3 steps\n");
-            output += fmt::format("  Getting ready...\n");
-            output += fmt::format("  ");
-
-            Render(false, output);
         }
 
         void Render(bool initial, std::string_view output)
         {
             if (!initial)
             {
-                fmt::print(stream, fmt::runtime(clearLine), 4);
+                tty.MoveCursorUp(4);
+                tty.ClearScreenDown();
             }
-            fmt::print(stream, "{}", output);
-            stream.flush();
+            tty.Write(output);
         }
 
-        std::ostream& stream;
+        Tty& tty;
         Data& data;
-        std::string_view clearLine;
+        std::shared_ptr<Theme> theme;
+        std::size_t maxWidth;
+
+        std::vector<std::pair<ProblemType, std::string>> pendingProblems;
+        std::size_t printedProblemCount{ 0 };
     };
 
-    ProgressBarPrinter::ProgressBarPrinter(std::ostream& stream, std::unique_ptr<Theme> theme, std::size_t maxWidth,
-        std::string_view clearLine)
-        : theme{ std::move(theme) }
-        , data{ std::make_unique<Data>() }
-        , printer{ std::make_unique<Printer>(stream, *data, clearLine) }
+    ProgressBarPrinter::ProgressBarPrinter(Tty& tty, std::shared_ptr<Theme> theme, std::size_t maxWidth)
+        : data{ std::make_unique<Data>() }
+        , printer{ std::make_unique<Printer>(tty, *data, std::move(theme), maxWidth) }
     {}
 
-    ProgressBarPrinter ::~ProgressBarPrinter() = default;
+    ProgressBarPrinter::~ProgressBarPrinter() = default;
 
     void ProgressBarPrinter::Update(const messages::Envelope& envelope)
     {
@@ -124,11 +568,11 @@ namespace cucumber::pretty_formatter
         }
         if (envelope.testRunStarted.has_value())
         {
-            printer->TestRunStarted(envelope.testRunStarted.value());
+            printer->TestRunStarted();
         }
         if (envelope.testCase.has_value())
         {
-            printer->TestCase(envelope.testCase.value());
+            printer->TestCase();
         }
         if (envelope.testRunHookFinished.has_value())
         {
