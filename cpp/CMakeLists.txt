@@ -151,6 +151,12 @@ target_sources(
         src/cucumber/pretty-formatter/Statuses.hpp
         src/cucumber/pretty-formatter/StepTextFormatter.cpp
         src/cucumber/pretty-formatter/StepTextFormatter.hpp
+        src/cucumber/pretty-formatter/FormatSnippets.cpp
+        src/cucumber/pretty-formatter/FormatSnippets.hpp
+        src/cucumber/pretty-formatter/Indent.cpp
+        src/cucumber/pretty-formatter/Indent.hpp
+        src/cucumber/pretty-formatter/PickleComparator.cpp
+        src/cucumber/pretty-formatter/PickleComparator.hpp
         src/cucumber/pretty-formatter/SummaryPrinter.cpp
 )
 

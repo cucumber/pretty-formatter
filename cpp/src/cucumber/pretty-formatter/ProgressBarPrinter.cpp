@@ -13,7 +13,9 @@
 #include "cucumber/messages/UndefinedParameterType.hpp"
 #include "cucumber/pretty-formatter/Ansi.hpp"
 #include "cucumber/pretty-formatter/CaseUtil.hpp"
+#include "cucumber/pretty-formatter/ExceptionFormatter.hpp"
 #include "cucumber/pretty-formatter/FormatDuration.hpp"
+#include "cucumber/pretty-formatter/FormatSnippets.hpp"
 #include "cucumber/pretty-formatter/GroupBy.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
 #include "cucumber/pretty-formatter/Statuses.hpp"
@@ -51,22 +53,29 @@ namespace cucumber::pretty_formatter
 
         std::string FormatProblem(ProblemType type, std::string_view message)
         {
+            std::string_view typeStr = "Unknown problem";
+
             switch (type)
             {
                 case ProblemType::parameter:
-                    return fmt::format("{}Undefined parameter type:{} {}", Ansi{ Ansi::Attribute::italic }.ToString(), message,
-                        Ansi{ Ansi::Attribute::italicOff }.ToString());
+                    typeStr = "Undefined parameter type:";
+                    break;
+
                 case ProblemType::globalHook:
-                    return fmt::format("{}Global hook:{} {}", Ansi{ Ansi::Attribute::italic }.ToString(), message,
-                        Ansi{ Ansi::Attribute::italicOff }.ToString());
+                    typeStr = "Global hook:";
+                    break;
+
                 case ProblemType::testCase:
-                    return fmt::format("{}Scenario:{} {}", Ansi{ Ansi::Attribute::italic }.ToString(), message,
-                        Ansi{ Ansi::Attribute::italicOff }.ToString());
+                    typeStr = "Scenario:";
+                    break;
+
                 case ProblemType::testRun:
-                    return fmt::format("{}Test run:{} {}", Ansi{ Ansi::Attribute::italic }.ToString(), message,
-                        Ansi{ Ansi::Attribute::italicOff }.ToString());
+                    typeStr = "Test run:";
+                    break;
             }
-            return "Unknown problem";
+
+            return fmt::format("{}{}{} {}", Ansi{ Ansi::Attribute::italic }.ToString(), typeStr,
+                Ansi{ Ansi::Attribute::italicOff }.ToString(), message);
         }
 
         std::string IndentNumbered(std::size_t indent, std::size_t number, const std::string& message)
@@ -406,7 +415,6 @@ namespace cucumber::pretty_formatter
         {
             pendingProblems.emplace_back(ProblemType::parameter,
                 fmt::format("'{}' in '{}'", undefinedParameterType->name, undefinedParameterType->expression));
-            ReRender();
         }
 
         void TestRunStarted()
@@ -423,9 +431,6 @@ namespace cucumber::pretty_formatter
         {
             if (failingStatuses.find(testRunHookFinished->result->status) != failingStatuses.end())
             {
-                // pendingProblems.emplace_back(ProblemType::globalHook,
-                //     fmt::format("{} hook: {}", ToLower(messages::to_string(testRunHookFinished->hookType)),
-                //         testRunHookFinished->result->message.value_or("")));
             }
 
             ReRender();
@@ -443,11 +448,30 @@ namespace cucumber::pretty_formatter
 
         void TestCaseFinished(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
         {
+            if (!testCaseFinished->willBeRetried)
+            {
+                const auto& optMostSevereTestStepResult = data.FindMostSevereTestStepResultBy(testCaseFinished);
+                if (optMostSevereTestStepResult.has_value() &&
+                    failingStatuses.find(optMostSevereTestStepResult.value()->status) != failingStatuses.end())
+                {
+                    pendingProblems.emplace_back(ProblemType::testCase, "");
+                }
+            }
             ReRender();
         }
 
         void TestRunFinished(const std::shared_ptr<const messages::TestRunFinished>& testRunFinished)
         {
+            if (testRunFinished->exception.has_value())
+            {
+                ExceptionFormatter exceptionFormatter{ 4, theme, messages::TestStepResultStatus::FAILED };
+                const auto& optFormattedException = exceptionFormatter.Format(testRunFinished->exception.value());
+                if (optFormattedException.has_value())
+                {
+                    pendingProblems.emplace_back(ProblemType::testRun, "\n" + optFormattedException.value());
+                }
+            }
+
             ReRender();
         }
 
@@ -498,7 +522,15 @@ namespace cucumber::pretty_formatter
 
         [[nodiscard]] std::string MakeSummaryBlock() const
         {
-            return fmt::format("\n{}\n", MakeStats(data, theme));
+            std::string summary = fmt::format("\n{}\n", MakeStats(data, theme));
+
+            const auto& optSnippets = FormatSnippets(data);
+            if (optSnippets.has_value())
+            {
+                summary += optSnippets.value() + "\n";
+            }
+
+            return summary;
         }
 
         void ReRender(bool initial = false)
@@ -512,7 +544,7 @@ namespace cucumber::pretty_formatter
                     output += "Problems:\n";
                 }
 
-                for (const auto& [type, problem] : pendingProblems)
+                for (const auto& [type, problem] : std::exchange(pendingProblems, {}))
                 {
                     const auto problemText = FormatProblem(type, problem);
                     ++printedProblemCount;
@@ -547,7 +579,8 @@ namespace cucumber::pretty_formatter
         std::shared_ptr<Theme> theme;
         std::size_t maxWidth;
 
-        std::vector<std::pair<ProblemType, std::string>> pendingProblems;
+        using ProblemEntry = std::pair<ProblemType, std::string>;
+        std::vector<ProblemEntry> pendingProblems;
         std::size_t printedProblemCount{ 0 };
     };
 

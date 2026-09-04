@@ -103,7 +103,7 @@ namespace cucumber::pretty_formatter
         }
 
         const auto padding = indent - unstyledLength;
-        return std::string(padding,
-            ' '); // NOLINT(modernize-return-braced-init-list): explicit constructor can't be called using braced initializers.
+        return std::string( // NOLINT(modernize-return-braced-init-list): explicit constructor can't be called using braced initializers.
+            padding, ' ');
     }
 }
