@@ -46,22 +46,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Checkout cucumber/messages
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
-          path: messages-src
-          persist-credentials: false
-
-      - name: Checkout cucumber/query
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: cucumber/query
-          ref: ${{ env.QUERY_REF }}
-          path: query-src
-          persist-credentials: false
-
       - name: ccache
         uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
         with:
@@ -99,17 +83,17 @@ jobs:
           cmake --build fmt-src/build
           sudo cmake --install fmt-src/build
 
-      - name: Build and install cucumber_messages
-        working-directory: messages-src/cpp
-        run: |
-          cmake --workflow --preset host-system
-          sudo cmake --install build/host-system
+      - name: Install cucumber/messages
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
 
-      - name: Build and install cucumber_query
-        working-directory: query-src/cpp
-        run: |
-          cmake --workflow --preset host-system
-          sudo cmake --install build/host-system
+      - name: Install cucumber/query
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/query
+          ref: ${{ env.QUERY_REF }}
 
       - name: Build and unit test
         working-directory: cpp
@@ -122,22 +106,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Checkout cucumber/messages
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
-          path: messages-src
-          persist-credentials: false
-
-      - name: Checkout cucumber/query
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: cucumber/query
-          ref: ${{ env.QUERY_REF }}
-          path: query-src
-          persist-credentials: false
-
       - name: ccache
         uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
         with:
@@ -148,17 +116,17 @@ jobs:
       - name: Install dependencies
         run: brew install nlohmann-json googletest fmt
 
-      - name: Build and install cucumber_messages
-        working-directory: messages-src/cpp
-        run: |
-          cmake --workflow --preset host-system
-          sudo cmake --install build/host-system
+      - name: Install cucumber/messages
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
 
-      - name: Build and install cucumber_query
-        working-directory: query-src/cpp
-        run: |
-          cmake --workflow --preset host-system
-          sudo cmake --install build/host-system
+      - name: Install cucumber/query
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/query
+          ref: ${{ env.QUERY_REF }}
 
       - name: Build and unit test
         working-directory: cpp
@@ -171,22 +139,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Checkout cucumber/messages
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
-          path: messages-src
-          persist-credentials: false
-
-      - name: Checkout cucumber/query
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: cucumber/query
-          ref: ${{ env.QUERY_REF }}
-          path: query-src
-          persist-credentials: false
-
       - name: Install build tools
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
 
@@ -197,17 +149,17 @@ jobs:
           # Expose the vcpkg toolchain so find_package() locates the packages.
           echo "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
 
-      - name: Build and install cucumber_messages
-        working-directory: messages-src/cpp
-        run: |
-          cmake --workflow --preset host-system
-          cmake --install build/host-system
+      - name: Install cucumber/messages
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
 
-      - name: Build and install cucumber_query
-        working-directory: query-src/cpp
-        run: |
-          cmake --workflow --preset host-system
-          cmake --install build/host-system
+      - name: Install cucumber/query
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/query
+          ref: ${{ env.QUERY_REF }}
 
       - name: Build and unit test
         working-directory: cpp
@@ -218,22 +170,6 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
-
-      - name: Checkout cucumber/messages
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
-          path: messages-src
-          persist-credentials: false
-
-      - name: Checkout cucumber/query
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: cucumber/query
-          ref: ${{ env.QUERY_REF }}
-          path: query-src
           persist-credentials: false
 
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -254,11 +190,17 @@ jobs:
           append-timestamp: false
           save: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Build and install cucumber_messages
-        working-directory: messages-src/cpp
-        run: |
-          cmake --workflow --preset host-system
-          sudo cmake --install build/host-system
+      - name: Install cucumber/messages
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
+
+      - name: Install cucumber/query
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/query
+          ref: ${{ env.QUERY_REF }}
 
       - name: Coverage
         working-directory: cpp
@@ -277,14 +219,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Checkout cucumber/messages
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
-          path: messages-src
-          persist-credentials: false
-
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -297,17 +231,17 @@ jobs:
           append-timestamp: false
           save: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Build and install cucumber_messages
-        working-directory: messages-src/cpp
-        run: |
-          cmake --workflow --preset host-system
-          sudo cmake --install build/host-system
+      - name: Install cucumber/messages
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
 
-      - name: Build and install cucumber_query
-        working-directory: query-src/cpp
-        run: |
-          cmake --workflow --preset host-system
-          sudo cmake --install build/host-system
+      - name: Install cucumber/query
+        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        with:
+          repository: cucumber/query
+          ref: ${{ env.QUERY_REF }}
 
       - name: Lint
         working-directory: cpp
