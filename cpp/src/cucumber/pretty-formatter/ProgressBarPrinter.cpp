@@ -502,11 +502,20 @@ namespace cucumber::pretty_formatter
             const auto& optTestCaseStarted = data.FindTestCaseStartedBy(testCaseFinished);
             if (optTestCaseStarted.has_value())
             {
-                const auto& optPickle = data.FindPickleBy(optTestCaseStarted.value());
+                const auto& testCaseStarted = optTestCaseStarted.value();
+                const auto& optPickle = data.FindPickleBy(testCaseStarted);
                 if (optPickle.has_value())
                 {
                     const auto& pickle = optPickle.value();
                     lineBuilder.Append(pickle->name)
+                        .Accept(
+                            [&testCaseStarted](LineBuilder& lineBuilder)
+                            {
+                                if (testCaseStarted->attempt > 0)
+                                {
+                                    lineBuilder.Append(", after " + std::to_string(testCaseStarted->attempt + 1) + " attempts");
+                                }
+                            })
                         .Append(" ")
                         .Append(Theme::Element::location, "# " + sourceReferenceFormatter.Format(pickle->uri, data.FindLocationOf(pickle)));
                 }
