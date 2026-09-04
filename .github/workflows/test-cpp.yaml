@@ -72,7 +72,32 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y nlohmann-json3-dev libgtest-dev libgmock-dev libfmt-dev
+          sudo apt-get install -y nlohmann-json3-dev libgtest-dev libgmock-dev
+
+      # Ubuntu 24.04 ships fmt 9; newer runners provide fmt 10+ via apt.
+      - name: Install libfmt (apt)
+        if: matrix.config.os != 'ubuntu-24.04'
+        run: sudo apt-get install -y libfmt-dev
+
+
+      - name: Checkout libfmt
+        if: matrix.config.os == 'ubuntu-24.04'
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: fmtlib/fmt
+          ref: 10.2.1
+          path: fmt-src
+          persist-credentials: false
+
+      - name: Install libfmt (from source)
+        if: matrix.config.os == 'ubuntu-24.04'
+        run: |
+          cmake -S fmt-src -B fmt-src/build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DFMT_TEST=OFF -DFMT_DOC=OFF \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+          cmake --build fmt-src/build
+          sudo cmake --install fmt-src/build
 
       - name: Build and install cucumber_messages
         working-directory: messages-src/cpp
