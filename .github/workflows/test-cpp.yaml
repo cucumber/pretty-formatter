@@ -167,7 +167,7 @@ jobs:
       - name: Install dependencies
         shell: pwsh
         run: |
-          vcpkg install nlohmann-json gtest --triplet x64-windows
+          vcpkg install nlohmann-json gtest fmt --triplet x64-windows
           # Expose the vcpkg toolchain so find_package() locates the packages.
           echo "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
 
