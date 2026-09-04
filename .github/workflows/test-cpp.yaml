@@ -18,9 +18,10 @@ on:
       - .github/**
 
 env:
-  # Git ref (tag, branch, or SHA) of the cucumber_messages dependency to build
-  # against.
+  # Git ref (tag, branch, or SHA) of the cucumber dependencies to build against.
+  # renovate: datasource=git-refs depName=cucumber/messages packageName=https://github.com/cucumber/messages currentValue=main
   MESSAGES_REF: e85a9eaf3fa3787c25bc62b6ea67672e709ee4fa
+  # renovate: datasource=git-refs depName=cucumber/query packageName=https://github.com/cucumber/query currentValue=main
   QUERY_REF: 527f7cd114daa82bf4c60fd9c3433885ca86b212
 
 jobs:
