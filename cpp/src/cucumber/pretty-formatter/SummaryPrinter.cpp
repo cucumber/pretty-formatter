@@ -21,9 +21,11 @@
 #include "cucumber/pretty-formatter/Formatter.hpp"
 #include "cucumber/pretty-formatter/GroupBy.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
+#include "cucumber/pretty-formatter/LocationComment.hpp"
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Statuses.hpp"
 #include "cucumber/pretty-formatter/StepFormatter.hpp"
+#include "cucumber/pretty-formatter/TestRunHookFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
 #include <chrono>
@@ -100,15 +102,6 @@ namespace cucumber::pretty_formatter
 
             return fmt::format("{} ({})", countAndName, fmt::join(subCounts, ", "));
         }
-
-        const std::unordered_map<messages::HookType, std::string_view> formatHookType = {
-            { messages::HookType::BEFORE_TEST_RUN, "BeforeAll" },
-            { messages::HookType::AFTER_TEST_RUN, "AfterAll" },
-            { messages::HookType::BEFORE_TEST_CASE, "Before" },
-            { messages::HookType::AFTER_TEST_CASE, "After" },
-            { messages::HookType::BEFORE_TEST_STEP, "BeforeStep" },
-            { messages::HookType::AFTER_TEST_STEP, "AfterStep" },
-        };
     }
 
     struct SummaryPrinter::Data : query::Query
@@ -410,69 +403,18 @@ namespace cucumber::pretty_formatter
 
         void FormatHookLineTo(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished, LineBuilder& lineBuilder)
         {
-            const auto& optHook = data.FindHookBy(testRunHookFinished);
-            if (optHook.has_value())
-            {
-                const auto& hook = optHook.value();
-                lineBuilder.Append(hook->type.has_value() ? formatHookType.at(hook->type.value()) : "Unknown")
-                    .Accept(
-                        [this, &hook](auto& lineBuilder)
-                        {
-                            if (hook->name.has_value())
-                            {
-                                const auto& name = hook->name.value();
-                                lineBuilder.Append(fmt::format("({})", name));
-                            }
-                        })
-                    .Accept(
-                        [this, &hook](auto& lineBuilder)
-                        {
-                            FormatLocationCommentTo(lineBuilder, hook);
-                        });
-            }
+            testRunHookFormatter.FormatHookLineTo(lineBuilder, testRunHookFinished);
         }
 
         void PrintTestRunHookException(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
             [[maybe_unused]] messages::TestStepResultStatus status)
         {
-            const auto& result = testRunHookFinished->result;
-            constexpr auto indent = 7;
-            ExceptionFormatter exceptionFormatter{ indent, theme, status };
-            const auto& message = result->message;
-
-            if (result->exception.has_value())
-            {
-                fmt::print(stream, "{}", exceptionFormatter.Format(result->exception.value(), message).value_or(""));
-            }
-            else if (message.has_value())
-            {
-                fmt::print(stream, "{}", exceptionFormatter.Format(message.value()));
-            }
+            fmt::print(stream, "{}", testRunHookFormatter.FormatException(testRunHookFinished));
         }
 
         void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Pickle>& pickle) const
         {
-            const auto& comment = sourceReferenceFormatter.Format(pickle->uri, data.FindLocationOf(pickle));
-            FormatLocationCommentTo(lineBuilder, comment);
-        }
-
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Hook>& hook) const
-        {
-            const auto& comment = sourceReferenceFormatter.Format(hook->sourceReference);
-            FormatLocationCommentTo(lineBuilder, comment);
-        }
-
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::optional<std::string>& comment) const
-        {
-            if (comment.has_value())
-            {
-                FormatLocationCommentTo(lineBuilder, comment.value());
-            }
-        }
-
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::string& comment) const
-        {
-            lineBuilder.Append(" ").Append(Theme::Element::location, "# " + comment);
+            AppendLocationComment(lineBuilder, sourceReferenceFormatter.Format(pickle->uri, data.FindLocationOf(pickle)));
         }
 
         std::string FormatAttempt(const std::shared_ptr<const messages::TestCaseStarted>& testCaseStarted) const
@@ -535,6 +477,9 @@ namespace cucumber::pretty_formatter
         constexpr static auto stepIndent{ 7 };
         StepFormatter stepFormatter{ data, theme, sourceReferenceFormatter, stepIndent,
             options.find(Options::includeAttachments) != options.end() };
+
+        constexpr static auto hookIndent{ 7 };
+        TestRunHookFormatter testRunHookFormatter{ data, theme, sourceReferenceFormatter, hookIndent };
     };
 
     SummaryPrinter::SummaryPrinter([[maybe_unused]] const ProtectedConstructorTag& tag, std::ostream& stream,

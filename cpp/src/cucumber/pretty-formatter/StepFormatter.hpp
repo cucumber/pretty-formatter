@@ -48,7 +48,6 @@ namespace cucumber::pretty_formatter
             const std::shared_ptr<const messages::Hook>& hook) const;
 
         void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::TestStep>& testStep) const;
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Hook>& hook) const;
 
         query::Query& data;
         std::shared_ptr<Theme> theme;

@@ -20,6 +20,7 @@
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Statuses.hpp"
 #include "cucumber/pretty-formatter/StepFormatter.hpp"
+#include "cucumber/pretty-formatter/TestRunHookFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
 #include <algorithm>
@@ -109,15 +110,6 @@ namespace cucumber::pretty_formatter
             }
 
             return fmt::format("{}", fmt::join(lines, "\n"));
-        }
-
-        std::string FormatGlobalHookError(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished,
-            query::Query& query, Theme& theme)
-        {
-            const auto& optHook = query.FindHookBy(testRunHookFinished);
-            const auto status = testRunHookFinished->result->status;
-
-            return "";
         }
 
         std::string FormatCounts(std::string_view singular, std::string_view plural,
@@ -406,8 +398,8 @@ namespace cucumber::pretty_formatter
             , theme{ theme }
             , maxWidth{ maxWidth }
             , uriFormatter{ std::move(uriFormatter) }
-            , stepFormatter{ data, std::move(theme), sourceReferenceFormatter, stepIndent,
-                options.find(Options::includeAttachments) != options.end() }
+            , stepFormatter{ data, theme, sourceReferenceFormatter, stepIndent, options.find(Options::includeAttachments) != options.end() }
+            , testRunHookFormatter{ data, std::move(theme), sourceReferenceFormatter, stepIndent }
         {}
 
         ~Printer() = default;
@@ -438,6 +430,7 @@ namespace cucumber::pretty_formatter
         {
             if (failingStatuses.find(testRunHookFinished->result->status) != failingStatuses.end())
             {
+                pendingProblems.emplace_back(ProblemType::globalHook, FormatGlobalHookProblem(testRunHookFinished));
             }
 
             ReRender();
@@ -483,9 +476,28 @@ namespace cucumber::pretty_formatter
         }
 
     private:
+        std::string FormatGlobalHookProblem(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished)
+        {
+            LineBuilder lineBuilder{ theme };
+
+            lineBuilder.Accept(
+                [this, &testRunHookFinished](LineBuilder& lineBuilder)
+                {
+                    testRunHookFormatter.FormatHookLineTo(lineBuilder, testRunHookFinished);
+                });
+
+            const auto exception = testRunHookFormatter.FormatException(testRunHookFinished);
+            if (!exception.empty())
+            {
+                lineBuilder.NewLine().Append(exception);
+            }
+
+            return lineBuilder.Build();
+        }
+
         std::string FormatTestCaseProblem(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
         {
-            std::string header;
+            LineBuilder lineBuilder{ theme };
 
             const auto& optTestCaseStarted = data.FindTestCaseStartedBy(testCaseFinished);
             if (optTestCaseStarted.has_value())
@@ -494,22 +506,19 @@ namespace cucumber::pretty_formatter
                 if (optPickle.has_value())
                 {
                     const auto& pickle = optPickle.value();
-                    header = LineBuilder{ theme }
-                                 .Append(pickle->name)
-                                 .Append(" ")
-                                 .Append(Theme::Element::location,
-                                     "# " + sourceReferenceFormatter.Format(pickle->uri, data.FindLocationOf(pickle)))
-                                 .Build();
+                    lineBuilder.Append(pickle->name)
+                        .Append(" ")
+                        .Append(Theme::Element::location, "# " + sourceReferenceFormatter.Format(pickle->uri, data.FindLocationOf(pickle)));
                 }
             }
 
             const auto steps = stepFormatter.FormatNonPassingSteps(testCaseFinished);
-            if (steps.empty())
+            if (!steps.empty())
             {
-                return header;
+                lineBuilder.NewLine().Append(steps);
             }
 
-            return header + "\n" + steps;
+            return lineBuilder.Build();
         }
 
         [[nodiscard]] std::string MakeRepeatedString(std::string_view str, std::size_t count) const
@@ -623,6 +632,7 @@ namespace cucumber::pretty_formatter
                 return uri;
             } };
         StepFormatter stepFormatter;
+        TestRunHookFormatter testRunHookFormatter;
 
         using ProblemEntry = std::pair<ProblemType, std::string>;
         std::vector<ProblemEntry> pendingProblems;

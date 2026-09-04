@@ -1,6 +1,5 @@
 #include "cucumber/pretty-formatter/StepFormatter.hpp"
 #include "cucumber/messages/Hook.hpp"
-#include "cucumber/messages/HookType.hpp"
 #include "cucumber/messages/PickleStep.hpp"
 #include "cucumber/messages/Step.hpp"
 #include "cucumber/messages/TestCaseFinished.hpp"
@@ -9,8 +8,10 @@
 #include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/pretty-formatter/AmbiguousStepDefinitionsFormatter.hpp"
 #include "cucumber/pretty-formatter/AttachmentFormatter.hpp"
-#include "cucumber/pretty-formatter/ExceptionFormatter.hpp"
+#include "cucumber/pretty-formatter/FormatResultException.hpp"
+#include "cucumber/pretty-formatter/HookTypeName.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
+#include "cucumber/pretty-formatter/LocationComment.hpp"
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
@@ -19,11 +20,8 @@
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <memory>
-#include <optional>
 #include <sstream>
 #include <string>
-#include <string_view>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -55,28 +53,6 @@ namespace cucumber::pretty_formatter
             }
 
             return nonPassingSteps;
-        }
-
-        const std::unordered_map<messages::HookType, std::string_view> formatHookType = {
-            { messages::HookType::BEFORE_TEST_RUN, "BeforeAll" },
-            { messages::HookType::AFTER_TEST_RUN, "AfterAll" },
-            { messages::HookType::BEFORE_TEST_CASE, "Before" },
-            { messages::HookType::AFTER_TEST_CASE, "After" },
-            { messages::HookType::BEFORE_TEST_STEP, "BeforeStep" },
-            { messages::HookType::AFTER_TEST_STEP, "AfterStep" },
-        };
-
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::string& comment)
-        {
-            lineBuilder.Append(" ").Append(Theme::Element::location, "# " + comment);
-        }
-
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::optional<std::string>& comment)
-        {
-            if (comment.has_value())
-            {
-                FormatLocationCommentTo(lineBuilder, comment.value());
-            }
         }
     }
 
@@ -181,17 +157,7 @@ namespace cucumber::pretty_formatter
         }
 
         const auto testStepResult = testStepFinished->testStepResult;
-        ExceptionFormatter exceptionFormatter{ deepIndent, theme, status };
-        const auto& message = testStepResult->message;
-
-        if (testStepResult->exception.has_value())
-        {
-            fmt::print(stream, "{}", exceptionFormatter.Format(testStepResult->exception.value(), message).value_or(""));
-        }
-        else if (message.has_value())
-        {
-            fmt::print(stream, "{}", exceptionFormatter.Format(message.value()));
-        }
+        fmt::print(stream, "{}", FormatResultException(testStepResult, deepIndent, theme));
 
         if (includeAttachments)
         {
@@ -220,13 +186,13 @@ namespace cucumber::pretty_formatter
         return LineBuilder{ theme }
             .Indent(indent)
             .Begin(Theme::Element::step, status)
-            .Append(Theme::Element::stepKeyword, hook->type.has_value() ? formatHookType.at(hook->type.value()) : "Unknown")
+            .Append(Theme::Element::stepKeyword, HookTypeName(hook->type))
             .Append(hook->name.has_value() ? "(" + hook->name.value() + ")" : "")
             .End(Theme::Element::step, status)
             .Accept(
                 [this, &hook](auto& lineBuilder)
                 {
-                    FormatLocationCommentTo(lineBuilder, hook);
+                    AppendLocationComment(lineBuilder, sourceReferenceFormatter, hook->sourceReference);
                 })
             .Build();
     }
@@ -263,14 +229,6 @@ namespace cucumber::pretty_formatter
             return;
         }
 
-        const auto& sourceReference = optUnambiguousStepDefinition.value()->sourceReference;
-        const auto& comment = sourceReferenceFormatter.Format(sourceReference);
-        cucumber::pretty_formatter::FormatLocationCommentTo(lineBuilder, comment);
-    }
-
-    void StepFormatter::FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Hook>& hook) const
-    {
-        const auto& comment = sourceReferenceFormatter.Format(hook->sourceReference);
-        cucumber::pretty_formatter::FormatLocationCommentTo(lineBuilder, comment);
+        AppendLocationComment(lineBuilder, sourceReferenceFormatter, optUnambiguousStepDefinition.value()->sourceReference);
     }
 }

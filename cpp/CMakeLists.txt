@@ -136,9 +136,15 @@ target_sources(
         src/cucumber/pretty-formatter/ExceptionFormatter.hpp
         src/cucumber/pretty-formatter/FormatDuration.cpp
         src/cucumber/pretty-formatter/FormatDuration.hpp
+        src/cucumber/pretty-formatter/FormatResultException.cpp
+        src/cucumber/pretty-formatter/FormatResultException.hpp
         src/cucumber/pretty-formatter/GroupBy.hpp
+        src/cucumber/pretty-formatter/HookTypeName.cpp
+        src/cucumber/pretty-formatter/HookTypeName.hpp
         src/cucumber/pretty-formatter/LineBuilder.cpp
         src/cucumber/pretty-formatter/LineBuilder.hpp
+        src/cucumber/pretty-formatter/LocationComment.cpp
+        src/cucumber/pretty-formatter/LocationComment.hpp
         src/cucumber/pretty-formatter/PickleDocStringFormatter.cpp
         src/cucumber/pretty-formatter/PickleDocStringFormatter.hpp
         src/cucumber/pretty-formatter/PickleTableFormatter.cpp
@@ -159,6 +165,8 @@ target_sources(
         src/cucumber/pretty-formatter/Indent.hpp
         src/cucumber/pretty-formatter/PickleComparator.cpp
         src/cucumber/pretty-formatter/PickleComparator.hpp
+        src/cucumber/pretty-formatter/TestRunHookFormatter.cpp
+        src/cucumber/pretty-formatter/TestRunHookFormatter.hpp
         src/cucumber/pretty-formatter/SummaryPrinter.cpp
 )
 
