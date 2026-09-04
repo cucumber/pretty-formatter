@@ -242,6 +242,5 @@ install(
 if(CUCUMBER_PRETTY_FORMATTER_BUILD_TESTS)
     find_package(GTest REQUIRED)
     include(CTest)
-    enable_testing()
     add_subdirectory(test)
 endif()

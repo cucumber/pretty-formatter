@@ -1,0 +1,300 @@
+name: test-cpp
+
+permissions: {}
+
+on:
+  push:
+    branches:
+      - main
+      - renovate/**
+    paths:
+      - cpp/**
+      - testdata/**
+      - .github/**
+  pull_request:
+    paths:
+      - cpp/**
+      - testdata/**
+      - .github/**
+
+env:
+  # Git ref (tag, branch, or SHA) of the cucumber_messages dependency to build
+  # against.
+  MESSAGES_REF: e85a9eaf3fa3787c25bc62b6ea67672e709ee4fa
+  QUERY_REF: 527f7cd114daa82bf4c60fd9c3433885ca86b212
+
+jobs:
+  test-cpp-system-packages-linux:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: ubuntu-24.04, cxx: g++, version: 12 }
+          - { os: ubuntu-24.04, cxx: g++, version: 13 }
+          - { os: ubuntu-24.04, cxx: clang++, version: 16 }
+          - { os: ubuntu-24.04, cxx: clang++, version: 17 }
+          - { os: ubuntu-26.04, cxx: g++, version: 14 }
+          - { os: ubuntu-26.04, cxx: g++, version: 15 }
+          - { os: ubuntu-26.04, cxx: clang++, version: 21 }
+          - { os: ubuntu-26.04, cxx: clang++, version: 22 }
+    env:
+      CXX: ${{ matrix.config.cxx }}-${{ matrix.config.version }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Checkout cucumber/messages
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
+          path: messages-src
+          persist-credentials: false
+
+      - name: Checkout cucumber/query
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: cucumber/query
+          ref: ${{ env.QUERY_REF }}
+          path: query-src
+          persist-credentials: false
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
+        with:
+          key: ${{ github.job }}-${{ matrix.config.os }}-${{ matrix.config.cxx }}-${{ matrix.config.version }}-${{ github.ref }}
+          append-timestamp: false
+          save: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nlohmann-json3-dev libgtest-dev libgmock-dev libfmt-dev
+
+      - name: Build and install cucumber_messages
+        working-directory: messages-src/cpp
+        run: |
+          cmake --workflow --preset host-system
+          sudo cmake --install build/host-system
+
+      - name: Build and install cucumber_query
+        working-directory: query-src/cpp
+        run: |
+          cmake --workflow --preset host-system
+          sudo cmake --install build/host-system
+
+      - name: Build and unit test
+        working-directory: cpp
+        run: cmake --workflow --preset test-system
+
+      - name: Check testdata coverage
+        working-directory: cpp
+        run: cmake --build build/test-system --target check-testdata-coverage
+
+  test-cpp-system-packages-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Checkout cucumber/messages
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
+          path: messages-src
+          persist-credentials: false
+
+      - name: Checkout cucumber/query
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: cucumber/query
+          ref: ${{ env.QUERY_REF }}
+          path: query-src
+          persist-credentials: false
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
+        with:
+          key: ${{ github.job }}-${{ github.ref }}
+          append-timestamp: false
+          save: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Install dependencies
+        run: brew install nlohmann-json googletest fmt
+
+      - name: Build and install cucumber_messages
+        working-directory: messages-src/cpp
+        run: |
+          cmake --workflow --preset host-system
+          sudo cmake --install build/host-system
+
+      - name: Build and install cucumber_query
+        working-directory: query-src/cpp
+        run: |
+          cmake --workflow --preset host-system
+          sudo cmake --install build/host-system
+
+      - name: Build and unit test
+        working-directory: cpp
+        run: cmake --workflow --preset test-system
+
+      - name: Check testdata coverage
+        working-directory: cpp
+        run: cmake --build build/test-system --target check-testdata-coverage
+
+  test-cpp-system-packages-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Checkout cucumber/messages
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
+          path: messages-src
+          persist-credentials: false
+
+      - name: Checkout cucumber/query
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: cucumber/query
+          ref: ${{ env.QUERY_REF }}
+          path: query-src
+          persist-credentials: false
+
+      - name: Install build tools
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          vcpkg install nlohmann-json gtest --triplet x64-windows
+          # Expose the vcpkg toolchain so find_package() locates the packages.
+          echo "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
+
+      - name: Build and install cucumber_messages
+        working-directory: messages-src/cpp
+        run: |
+          cmake --workflow --preset host-system
+          cmake --install build/host-system
+
+      - name: Build and install cucumber_query
+        working-directory: query-src/cpp
+        run: |
+          cmake --workflow --preset host-system
+          cmake --install build/host-system
+
+      - name: Build and unit test
+        working-directory: cpp
+        run: cmake --workflow --preset test-system
+
+      - name: Check testdata coverage
+        working-directory: cpp
+        run: cmake --build build/test-system --target check-testdata-coverage
+
+  test-cpp-coverage:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Checkout cucumber/messages
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
+          path: messages-src
+          persist-credentials: false
+
+      - name: Checkout cucumber/query
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: cucumber/query
+          ref: ${{ env.QUERY_REF }}
+          path: query-src
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nlohmann-json3-dev libgtest-dev libgmock-dev
+          python -m pip install gcovr==8.6
+          gcovr --version
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
+        with:
+          key: ${{ github.job }}-${{ github.ref }}
+          append-timestamp: false
+          save: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and install cucumber_messages
+        working-directory: messages-src/cpp
+        run: |
+          cmake --workflow --preset host-system
+          sudo cmake --install build/host-system
+
+      - name: Coverage
+        working-directory: cpp
+        run: cmake --workflow --preset coverage
+
+      - name: Show coverage summary
+        working-directory: cpp
+        run: cat build/coverage/coverage-summary.md
+
+  test-cpp-lint:
+    runs-on: ubuntu-26.04
+    env:
+      CXX: clang++
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Checkout cucumber/messages
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: cucumber/messages
+          ref: ${{ env.MESSAGES_REF }}
+          path: messages-src
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang clang-tidy nlohmann-json3-dev libgtest-dev libgmock-dev
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
+        with:
+          key: ${{ github.job }}-${{ github.ref }}
+          append-timestamp: false
+          save: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and install cucumber_messages
+        working-directory: messages-src/cpp
+        run: |
+          cmake --workflow --preset host-system
+          sudo cmake --install build/host-system
+
+      - name: Build and install cucumber_query
+        working-directory: query-src/cpp
+        run: |
+          cmake --workflow --preset host-system
+          sudo cmake --install build/host-system
+
+      - name: Lint
+        working-directory: cpp
+        run: cmake --workflow --preset tidy
