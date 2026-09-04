@@ -125,6 +125,7 @@ target_sources(
         include/cucumber/pretty-formatter/ProgressBarPrinter.hpp
         include/cucumber/pretty-formatter/ProgressPrinter.hpp
         include/cucumber/pretty-formatter/SummaryPrinter.hpp
+        include/cucumber/pretty-formatter/Theme.hpp
         src/cucumber/pretty-formatter/AmbiguousStepDefinitionsFormatter.cpp
         src/cucumber/pretty-formatter/AmbiguousStepDefinitionsFormatter.hpp
         src/cucumber/pretty-formatter/Ansi.cpp
@@ -167,6 +168,7 @@ target_sources(
         src/cucumber/pretty-formatter/PickleComparator.hpp
         src/cucumber/pretty-formatter/TestRunHookFormatter.cpp
         src/cucumber/pretty-formatter/TestRunHookFormatter.hpp
+        src/cucumber/pretty-formatter/Theme.cpp
         src/cucumber/pretty-formatter/SummaryPrinter.cpp
 )
 
