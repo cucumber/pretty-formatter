@@ -1,8 +1,7 @@
 add_executable(cucumber_pretty_formatter.test)
 
 target_link_libraries(cucumber_pretty_formatter.test PUBLIC
-    cucumber_pretty_formatter_lib
-    GTest::gmock
+    cucumber::pretty_formatter
     GTest::gmock_main
 )
 
