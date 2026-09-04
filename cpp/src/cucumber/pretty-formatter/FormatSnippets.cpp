@@ -50,7 +50,11 @@ namespace cucumber::pretty_formatter
         }
 
         std::vector<std::string> lines{ "", "You can implement missing steps with the snippets below:", "" };
-        std::transform(snippets.begin(), snippets.end(), std::back_inserter(lines), AsUnary(&messages::Snippet::code));
+        for (const auto& snippet : snippets)
+        {
+            lines.emplace_back(snippet->code);
+            lines.emplace_back("");
+        }
         return fmt::format("{}", fmt::join(lines, "\n"));
     }
 }

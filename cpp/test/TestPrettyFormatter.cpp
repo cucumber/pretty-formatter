@@ -320,7 +320,14 @@ namespace cucumber::pretty_formatter
         ASSERT_THAT(themes, testing::Contains(testing::Key(GetParam().theme)));
 
         Validate(GetParam().input, GetParam().output,
-            std::make_unique<ProgressBarPrinter>(fakeTty, std::move(themes.at(GetParam().theme)), 50), fakeTty);
+            std::make_unique<ProgressBarPrinter>(
+                fakeTty, std::move(themes.at(GetParam().theme)), 50,
+                [](std::string uri) -> std::string
+                {
+                    return uri;
+                },
+                std::set<ProgressBarPrinter::Options>{ ProgressBarPrinter::Options ::includeAttachments }),
+            fakeTty);
     }
 
     INSTANTIATE_TEST_SUITE_P(Acceptance, PrettyFormatterTest, testing::ValuesIn(EnumerateTestData("pretty")));

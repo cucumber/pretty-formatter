@@ -5,14 +5,23 @@
 #include "cucumber/pretty-formatter/Formatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include <cstddef>
+#include <cstdint>
+#include <functional>
 #include <memory>
 #include <ostream>
+#include <set>
+#include <string>
 #include <string_view>
 
 namespace cucumber::pretty_formatter
 {
     struct ProgressBarPrinter : Formatter
     {
+        enum class Options : std::uint8_t
+        {
+            includeAttachments
+        };
+
         struct Tty
         {
             Tty() = default;
@@ -48,7 +57,8 @@ namespace cucumber::pretty_formatter
             std::ostream& stream;
         };
 
-        ProgressBarPrinter(Tty& tty, std::shared_ptr<Theme> theme, std::size_t maxWidth);
+        ProgressBarPrinter(Tty& tty, std::shared_ptr<Theme> theme, std::size_t maxWidth,
+            std::function<std::string(std::string)> uriFormatter, std::set<enum Options> options);
         ~ProgressBarPrinter() override;
 
         ProgressBarPrinter(const ProgressBarPrinter&) = delete;

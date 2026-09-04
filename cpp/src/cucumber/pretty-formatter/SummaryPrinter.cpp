@@ -15,19 +15,15 @@
 #include "cucumber/messages/TestStep.hpp"
 #include "cucumber/messages/TestStepFinished.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
-#include "cucumber/pretty-formatter/AmbiguousStepDefinitionsFormatter.hpp"
-#include "cucumber/pretty-formatter/AttachmentFormatter.hpp"
 #include "cucumber/pretty-formatter/CaseUtil.hpp"
 #include "cucumber/pretty-formatter/ExceptionFormatter.hpp"
 #include "cucumber/pretty-formatter/FormatDuration.hpp"
 #include "cucumber/pretty-formatter/Formatter.hpp"
 #include "cucumber/pretty-formatter/GroupBy.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
-#include "cucumber/pretty-formatter/PickleDocStringFormatter.hpp"
-#include "cucumber/pretty-formatter/PickleTableFormatter.hpp"
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Statuses.hpp"
-#include "cucumber/pretty-formatter/StepTextFormatter.hpp"
+#include "cucumber/pretty-formatter/StepFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
 #include <chrono>
@@ -54,32 +50,6 @@ namespace cucumber::pretty_formatter
 {
     namespace
     {
-        std::vector<query::TestStepFinishedAndTestStep> FindNonPassingSteps(
-            const std::vector<query::TestStepFinishedAndTestStep>& allTestStepFinishedAndTestStep)
-        {
-            std::vector<query::TestStepFinishedAndTestStep> nonPassingSteps;
-            bool foundFirstNonPassed = false;
-
-            for (const auto& [testStepFinished, testStep] : allTestStepFinishedAndTestStep)
-            {
-                const auto status = testStepFinished->testStepResult->status;
-                if (foundFirstNonPassed)
-                {
-                    if (status != messages::TestStepResultStatus::PASSED && status != messages::TestStepResultStatus::SKIPPED)
-                    {
-                        nonPassingSteps.push_back({ testStepFinished, testStep });
-                    }
-                }
-                else if (status != messages::TestStepResultStatus::PASSED)
-                {
-                    nonPassingSteps.push_back({ testStepFinished, testStep });
-                    foundFirstNonPassed = true;
-                }
-            }
-
-            return nonPassingSteps;
-        }
-
         std::int32_t PickleComparator(const std::shared_ptr<const messages::Pickle>& lhs,
             const std::shared_ptr<const messages::Pickle>& rhs)
 
@@ -381,104 +351,6 @@ namespace cucumber::pretty_formatter
             }
         }
 
-        void PrintStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-            const std::shared_ptr<const messages::TestStep>& testStep)
-        {
-            const auto status = testStepFinished->testStepResult->status;
-            const auto& optPickleStep = data.FindPickleStepBy(testStep);
-
-            if (optPickleStep.has_value())
-            {
-                const auto& pickleStep = optPickleStep.value();
-                const auto& optStep = data.FindStepBy(pickleStep);
-                if (optStep.has_value())
-                {
-                    const auto& step = optStep.value();
-                    fmt::println(stream, "{}", FormatPickleStep(testStepFinished, testStep, pickleStep, step));
-
-                    if (pickleStep->argument.has_value())
-                    {
-                        if (pickleStep->argument.value()->dataTable.has_value())
-                        {
-                            fmt::print(stream, "{}",
-                                LineBuilder{ theme }
-                                    .Accept(
-                                        [this, &testStepFinished, &pickleStep](LineBuilder& lineBuilder)
-                                        {
-                                            pickleTableFormatter.Format(lineBuilder, pickleStep->argument.value()->dataTable.value());
-                                        })
-                                    .Build());
-                        }
-
-                        if (pickleStep->argument.value()->docString.has_value())
-                        {
-                            fmt::print(stream, "{}",
-                                LineBuilder{ theme }
-                                    .Accept(
-                                        [this, &testStepFinished, &pickleStep](LineBuilder& lineBuilder)
-                                        {
-                                            pickleDocStringFormatter.Format(lineBuilder, pickleStep->argument.value()->docString.value());
-                                        })
-                                    .Build());
-                        }
-                    }
-
-                    if (status == messages::TestStepResultStatus::AMBIGUOUS)
-                    {
-                        fmt::print(stream, "{}",
-                            LineBuilder{ theme }
-                                .Accept(
-                                    [this, &testStep](LineBuilder& lineBuilder)
-                                    {
-                                        constexpr auto indent = 11;
-                                        AmbiguousStepDefinitionsFormatter{ indent, theme, sourceReferenceFormatter }.Format(lineBuilder,
-                                            data.FindStepDefinitionsBy(testStep));
-                                    })
-                                .Build());
-                    }
-                }
-            }
-
-            const auto& optHook = data.FindHookBy(testStep);
-            if (optHook.has_value())
-            {
-                const auto& hook = optHook.value();
-                fmt::println(stream, "{}", FormatHookStep(testStepFinished, hook));
-            }
-
-            const auto testStepResult = testStepFinished->testStepResult;
-            constexpr auto indent = 11;
-            ExceptionFormatter exceptionFormatter{ indent, theme, status };
-            const auto& message = testStepResult->message;
-
-            if (testStepResult->exception.has_value())
-            {
-                fmt::print(stream, "{}", exceptionFormatter.Format(testStepResult->exception.value(), message).value_or(""));
-            }
-            else if (message.has_value())
-            {
-                fmt::print(stream, "{}", exceptionFormatter.Format(message.value()));
-            }
-
-            if (options.find(Options::includeAttachments) != options.end())
-            {
-                const auto& attachments = data.FindAttachmentsBy(testStepFinished);
-                for (const auto& attachment : attachments)
-                {
-                    fmt::print(stream, "{}",
-                        LineBuilder{ theme }
-                            .NewLine()
-                            .Accept(
-                                [this, &attachment](LineBuilder& lineBuilder)
-                                {
-                                    constexpr auto indent = 11;
-                                    AttachmentFormatter{ indent }.Format(lineBuilder, attachment);
-                                })
-                            .Build());
-                }
-            }
-        }
-
         messages::TestStepResultStatus GetTestStepResultStatusByTestRunHookFinished(
             const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished) const
         {
@@ -533,23 +405,7 @@ namespace cucumber::pretty_formatter
         void PrintNonPassingSteps(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished,
             [[maybe_unused]] messages::TestStepResultStatus ignoredStatus)
         {
-            const auto optTestCaseStarted = data.FindTestCaseStartedBy(testCaseFinished);
-            if (!optTestCaseStarted.has_value())
-            {
-                return;
-            }
-
-            const auto allTestStepFinishedAndTestStep = data.FindTestStepFinishedAndTestStepBy(optTestCaseStarted.value());
-            if (allTestStepFinishedAndTestStep.empty())
-            {
-                return;
-            }
-
-            const auto nonPassingSteps = FindNonPassingSteps(allTestStepFinishedAndTestStep);
-            for (const auto& [testStepFinished, testStep] : nonPassingSteps)
-            {
-                PrintStep(testStepFinished, testStep);
-            }
+            fmt::print(stream, "{}", stepFormatter.FormatNonPassingSteps(testCaseFinished));
         }
 
         void FormatHookLineTo(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished, LineBuilder& lineBuilder)
@@ -600,20 +456,6 @@ namespace cucumber::pretty_formatter
             FormatLocationCommentTo(lineBuilder, comment);
         }
 
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::TestStep>& testStep) const
-        {
-            const auto& optUnambiguousStepDefinition = data.FindUnambiguousStepDefinitionBy(testStep);
-
-            if (!optUnambiguousStepDefinition.has_value())
-            {
-                return;
-            }
-
-            const auto& sourceReference = optUnambiguousStepDefinition.value()->sourceReference;
-            const auto& comment = sourceReferenceFormatter.Format(sourceReference);
-            FormatLocationCommentTo(lineBuilder, comment);
-        }
-
         void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Hook>& hook) const
         {
             const auto& comment = sourceReferenceFormatter.Format(hook->sourceReference);
@@ -641,49 +483,6 @@ namespace cucumber::pretty_formatter
                 return "";
             }
             return ", after " + std::to_string(attempt + 1) + " attempts";
-        }
-
-        std::string FormatHookStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-            const std::shared_ptr<const messages::Hook>& hook) const
-        {
-            const auto& status = testStepFinished->testStepResult->status;
-            constexpr auto indent{ 7 };
-            return LineBuilder{ theme }
-                .Indent(indent)
-                .Begin(Theme::Element::step, status)
-                .Append(Theme::Element::stepKeyword, hook->type.has_value() ? formatHookType.at(hook->type.value()) : "Unknown")
-                .Append(hook->name.has_value() ? "(" + hook->name.value() + ")" : "")
-                .End(Theme::Element::step, status)
-                .Accept(
-                    [this, &hook](auto& lineBuilder)
-                    {
-                        FormatLocationCommentTo(lineBuilder, hook);
-                    })
-                .Build();
-        }
-
-        std::string FormatPickleStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-            const std::shared_ptr<const messages::TestStep>& testStep, const std::shared_ptr<const messages::PickleStep>& pickleStep,
-            const std::shared_ptr<const messages::Step>& step) const
-        {
-            const auto status = testStepFinished->testStepResult->status;
-            constexpr auto indent{ 7 };
-            return LineBuilder{ theme }
-                .Indent(indent)
-                .Begin(Theme::Element::step, status)
-                .Append(Theme::Element::stepKeyword, step->keyword)
-                .Accept(
-                    [this, &testStep, &pickleStep](auto& lineBuilder)
-                    {
-                        stepTextFormatter.Format(lineBuilder, testStep, pickleStep);
-                    })
-                .End(Theme::Element::step, status)
-                .Accept(
-                    [this, &testStep](auto& lineBuilder)
-                    {
-                        FormatLocationCommentTo(lineBuilder, testStep);
-                    })
-                .Build();
         }
 
         template<class T, class U, class V>
@@ -731,12 +530,11 @@ namespace cucumber::pretty_formatter
 
         std::set<enum Options> options;
 
-        StepTextFormatter stepTextFormatter;
         SourceReferenceFormatter sourceReferenceFormatter{ uriFormatter };
 
-        constexpr static auto argumentIndent{ 9 };
-        PickleTableFormatter pickleTableFormatter{ argumentIndent };
-        PickleDocStringFormatter pickleDocStringFormatter{ argumentIndent };
+        constexpr static auto stepIndent{ 7 };
+        StepFormatter stepFormatter{ data, theme, sourceReferenceFormatter, stepIndent,
+            options.find(Options::includeAttachments) != options.end() };
     };
 
     SummaryPrinter::SummaryPrinter([[maybe_unused]] const ProtectedConstructorTag& tag, std::ostream& stream,

@@ -7,7 +7,6 @@
 #include "cucumber/messages/TestCaseStarted.hpp"
 #include "cucumber/messages/TestRunFinished.hpp"
 #include "cucumber/messages/TestRunHookFinished.hpp"
-#include "cucumber/messages/TestRunStarted.hpp"
 #include "cucumber/messages/TestStepFinished.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/messages/UndefinedParameterType.hpp"
@@ -18,7 +17,9 @@
 #include "cucumber/pretty-formatter/FormatSnippets.hpp"
 #include "cucumber/pretty-formatter/GroupBy.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
+#include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Statuses.hpp"
+#include "cucumber/pretty-formatter/StepFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
 #include <algorithm>
@@ -28,11 +29,13 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
+#include <functional>
 #include <iterator>
 #include <map>
 #include <memory>
 #include <numeric>
 #include <ostream>
+#include <set>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -396,11 +399,15 @@ namespace cucumber::pretty_formatter
 
     struct ProgressBarPrinter::Printer
     {
-        Printer(Tty& tty, Data& data, std::shared_ptr<Theme> theme, std::size_t maxWidth)
+        Printer(Tty& tty, Data& data, std::shared_ptr<Theme> theme, std::size_t maxWidth,
+            std::function<std::string(std::string)> uriFormatter, std::set<enum Options> options)
             : tty{ tty }
             , data{ data }
-            , theme{ std::move(theme) }
+            , theme{ theme }
             , maxWidth{ maxWidth }
+            , uriFormatter{ std::move(uriFormatter) }
+            , stepFormatter{ data, std::move(theme), sourceReferenceFormatter, stepIndent,
+                options.find(Options::includeAttachments) != options.end() }
         {}
 
         ~Printer() = default;
@@ -454,7 +461,7 @@ namespace cucumber::pretty_formatter
                 if (optMostSevereTestStepResult.has_value() &&
                     failingStatuses.find(optMostSevereTestStepResult.value()->status) != failingStatuses.end())
                 {
-                    pendingProblems.emplace_back(ProblemType::testCase, "");
+                    pendingProblems.emplace_back(ProblemType::testCase, FormatTestCaseProblem(testCaseFinished));
                 }
             }
             ReRender();
@@ -476,6 +483,35 @@ namespace cucumber::pretty_formatter
         }
 
     private:
+        std::string FormatTestCaseProblem(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
+        {
+            std::string header;
+
+            const auto& optTestCaseStarted = data.FindTestCaseStartedBy(testCaseFinished);
+            if (optTestCaseStarted.has_value())
+            {
+                const auto& optPickle = data.FindPickleBy(optTestCaseStarted.value());
+                if (optPickle.has_value())
+                {
+                    const auto& pickle = optPickle.value();
+                    header = LineBuilder{ theme }
+                                 .Append(pickle->name)
+                                 .Append(" ")
+                                 .Append(Theme::Element::location,
+                                     "# " + sourceReferenceFormatter.Format(pickle->uri, data.FindLocationOf(pickle)))
+                                 .Build();
+                }
+            }
+
+            const auto steps = stepFormatter.FormatNonPassingSteps(testCaseFinished);
+            if (steps.empty())
+            {
+                return header;
+            }
+
+            return header + "\n" + steps;
+        }
+
         [[nodiscard]] std::string MakeRepeatedString(std::string_view str, std::size_t count) const
         {
             std::string result;
@@ -579,14 +615,24 @@ namespace cucumber::pretty_formatter
         std::shared_ptr<Theme> theme;
         std::size_t maxWidth;
 
+        std::function<std::string(std::string)> uriFormatter;
+
+        constexpr static std::size_t stepIndent{ 2 };
+        SourceReferenceFormatter sourceReferenceFormatter{ [](std::string uri)
+            {
+                return uri;
+            } };
+        StepFormatter stepFormatter;
+
         using ProblemEntry = std::pair<ProblemType, std::string>;
         std::vector<ProblemEntry> pendingProblems;
         std::size_t printedProblemCount{ 0 };
     };
 
-    ProgressBarPrinter::ProgressBarPrinter(Tty& tty, std::shared_ptr<Theme> theme, std::size_t maxWidth)
+    ProgressBarPrinter::ProgressBarPrinter(Tty& tty, std::shared_ptr<Theme> theme, std::size_t maxWidth,
+        std::function<std::string(std::string)> uriFormatter, std::set<enum Options> options)
         : data{ std::make_unique<Data>() }
-        , printer{ std::make_unique<Printer>(tty, *data, std::move(theme), maxWidth) }
+        , printer{ std::make_unique<Printer>(tty, *data, std::move(theme), maxWidth, std::move(uriFormatter), std::move(options)) }
     {}
 
     ProgressBarPrinter::~ProgressBarPrinter() = default;

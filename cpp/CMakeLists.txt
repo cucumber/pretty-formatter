@@ -149,6 +149,8 @@ target_sources(
         src/cucumber/pretty-formatter/SourceReferenceFormatter.cpp
         src/cucumber/pretty-formatter/SourceReferenceFormatter.hpp
         src/cucumber/pretty-formatter/Statuses.hpp
+        src/cucumber/pretty-formatter/StepFormatter.cpp
+        src/cucumber/pretty-formatter/StepFormatter.hpp
         src/cucumber/pretty-formatter/StepTextFormatter.cpp
         src/cucumber/pretty-formatter/StepTextFormatter.hpp
         src/cucumber/pretty-formatter/FormatSnippets.cpp
