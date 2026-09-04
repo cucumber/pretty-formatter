@@ -17,7 +17,7 @@
         {
             "name": "host-system",
             "displayName": "Host build (system dependencies)",
-            "description": "Build and install the library using C++ dependencies already installed on the system. Does not use Conan and does not build tests.",
+            "description": "Build and install the library using C++ dependencies already installed on the system.",
             "inherits": "base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
