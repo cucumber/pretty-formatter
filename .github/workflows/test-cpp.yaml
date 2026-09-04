@@ -222,7 +222,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang clang-tidy nlohmann-json3-dev libgtest-dev libgmock-dev
+          sudo apt-get install -y clang clang-tidy nlohmann-json3-dev libgtest-dev libgmock-dev libfmt-dev
 
       - name: ccache
         uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
