@@ -3,11 +3,16 @@
 #include "cucumber/messages/DurationUtil.hpp"
 #include "cucumber/messages/Envelope.hpp"
 #include "cucumber/messages/Exception.hpp"
+#include "cucumber/messages/Hook.hpp"
+#include "cucumber/messages/HookType.hpp"
 #include "cucumber/messages/Pickle.hpp"
+#include "cucumber/messages/PickleStep.hpp"
 #include "cucumber/messages/Snippet.hpp"
+#include "cucumber/messages/Step.hpp"
 #include "cucumber/messages/TestCaseFinished.hpp"
 #include "cucumber/messages/TestCaseStarted.hpp"
 #include "cucumber/messages/TestRunHookFinished.hpp"
+#include "cucumber/messages/TestStep.hpp"
 #include "cucumber/messages/TestStepFinished.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/pretty-formatter/CaseUtil.hpp"
@@ -23,6 +28,7 @@
 #include "cucumber/pretty-formatter/TestRunHookFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <fmt/core.h>
@@ -38,6 +44,7 @@
 #include <set>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
