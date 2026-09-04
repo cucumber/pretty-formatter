@@ -1,12 +1,10 @@
 #include "cucumber/pretty-formatter/FormatSnippets.hpp"
 #include "cucumber/messages/Snippet.hpp"
-#include "cucumber/pretty-formatter/AsUnary.hpp"
 #include "cucumber/pretty-formatter/PickleComparator.hpp"
 #include "cucumber/query/Query.hpp"
-#include <algorithm>
 #include <fmt/core.h>
 #include <fmt/format.h>
-#include <iterator>
+#include <fmt/ranges.h>
 #include <memory>
 #include <optional>
 #include <string>

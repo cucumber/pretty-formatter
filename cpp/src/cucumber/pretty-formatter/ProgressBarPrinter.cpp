@@ -30,6 +30,7 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
+#include <fmt/ranges.h>
 #include <functional>
 #include <iterator>
 #include <map>

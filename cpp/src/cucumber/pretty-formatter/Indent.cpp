@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <fmt/core.h>
 #include <fmt/format.h>
+#include <fmt/ranges.h>
 #include <sstream>
 #include <string>
 #include <vector>
