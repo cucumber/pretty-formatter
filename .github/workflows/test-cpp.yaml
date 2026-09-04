@@ -169,10 +169,6 @@ jobs:
         working-directory: cpp
         run: cmake --build --preset test-system
 
-      - name: test
-        working-directory: cpp
-        run: ctest --preset test-system
-
       - name: Diagnose discovery
         working-directory: cpp/build/test-system
         shell: pwsh
@@ -186,6 +182,11 @@ jobs:
             ForEach-Object { Write-Host "--- $($_.FullName) ---"; Get-Content $_.FullName }
           Write-Host "=== ctest verbose ==="
           ctest -V
+
+      - name: test
+        working-directory: cpp
+        run: ctest --preset test-system
+
 
       - name: Build and unit test
         working-directory: cpp
