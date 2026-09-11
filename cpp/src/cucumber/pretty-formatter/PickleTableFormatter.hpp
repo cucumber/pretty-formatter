@@ -14,7 +14,7 @@ namespace cucumber::pretty_formatter
     {
         explicit PickleTableFormatter(std::size_t indent);
 
-        void Format(LineBuilder& lineBuilder, const std::shared_ptr<const messages::PickleTable>& pickleTable);
+        void Format(LineBuilder& lineBuilder, const messages::PickleTable& pickleTable);
 
     private:
         void Format(LineBuilder& lineBuilder, const std::vector<std::vector<std::string>>& cells) const;

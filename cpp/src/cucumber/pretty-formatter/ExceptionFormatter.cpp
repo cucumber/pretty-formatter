@@ -18,20 +18,19 @@ namespace cucumber::pretty_formatter
         , status{ status }
     {}
 
-    std::optional<std::string> ExceptionFormatter::Format(const std::shared_ptr<const messages::Exception>& exception,
-        const std::optional<std::string>& message)
+    std::optional<std::string> ExceptionFormatter::Format(const messages::Exception& exception, const std::optional<std::string>& message)
     {
-        if (status == messages::TestStepResultStatus::FAILED && exception->stackTrace.has_value())
+        if (status == messages::TestStepResultStatus::FAILED && exception.stackTrace.has_value())
         {
-            return Format(exception->stackTrace.value());
+            return Format(exception.stackTrace.value());
         }
 
         if (status == messages::TestStepResultStatus::FAILED || status == messages::TestStepResultStatus::PENDING ||
             status == messages::TestStepResultStatus::SKIPPED)
         {
-            if (exception->message.has_value())
+            if (exception.message.has_value())
             {
-                return Format(exception->message.value());
+                return Format(exception.message.value());
             }
             if (message.has_value())
             {
@@ -43,7 +42,7 @@ namespace cucumber::pretty_formatter
         return std::nullopt;
     }
 
-    std::optional<std::string> ExceptionFormatter::Format(const std::shared_ptr<const messages::Exception>& exception)
+    std::optional<std::string> ExceptionFormatter::Format(const messages::Exception& exception)
     {
         return Format(exception, std::nullopt);
     }

@@ -9,7 +9,7 @@
 
 namespace cucumber::pretty_formatter
 {
-    [[nodiscard]] std::string FormatResultException(const std::shared_ptr<const messages::TestStepResult>& result, std::size_t indent,
+    [[nodiscard]] std::string FormatResultException(const messages::TestStepResult& result, std::size_t indent,
         const std::shared_ptr<Theme>& theme);
 }
 

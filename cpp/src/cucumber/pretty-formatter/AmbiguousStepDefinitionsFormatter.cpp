@@ -24,15 +24,15 @@ namespace cucumber::pretty_formatter
     {}
 
     void AmbiguousStepDefinitionsFormatter::Format(LineBuilder& lineBuilder,
-        const std::vector<std::shared_ptr<const messages::StepDefinition>>& stepDefinitions)
+        const query::OwningView<messages::StepDefinition>& stepDefinitions)
     {
         lineBuilder.Indent(indent).Append("Multiple matching step definitions found:").NewLine();
 
         for (const auto& stepDefinition : stepDefinitions)
         {
-            lineBuilder.Indent(indent).Append("  ").Append(theme->BulletPointIcon()).Append(" ").Append(stepDefinition->pattern->source);
+            lineBuilder.Indent(indent).Append("  ").Append(theme->BulletPointIcon()).Append(" ").Append(stepDefinition.pattern.source);
 
-            const auto optUri = sourceReferenceFormatter.Format(stepDefinition->sourceReference);
+            const auto optUri = sourceReferenceFormatter.Format(stepDefinition.sourceReference);
             if (optUri.has_value())
             {
                 lineBuilder.Append(" ").Append(Theme::Element::location, "# " + optUri.value());

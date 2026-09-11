@@ -3,33 +3,38 @@
 
 #include "cucumber/messages/TestStepResultStatus.hpp"
 #include <functional>
+#include <iterator>
 #include <map>
-#include <memory>
+#include <type_traits>
 #include <vector>
 
 namespace cucumber::pretty_formatter
 {
-    template<typename Proj, typename Instance, typename ListType>
-    auto GroupBy(Instance&& instance, Proj&& proj, const std::vector<std::shared_ptr<const ListType>>& list)
+    template<typename Proj, typename Instance, typename Container>
+    auto GroupBy(Instance&& instance, Proj&& proj, const Container& list)
     {
-        std::map<messages::TestStepResultStatus, std::vector<std::shared_ptr<const ListType>>> groupedByProj;
+        using ElementType = std::remove_reference_t<decltype(*std::begin(list))>;
+
+        std::map<messages::TestStepResultStatus, std::vector<std::reference_wrapper<ElementType>>> groupedByProj;
 
         for (const auto& item : list)
         {
-            groupedByProj[std::invoke(std::forward<Proj>(proj), std::forward<Instance>(instance), item)].push_back(item);
+            groupedByProj[std::invoke(std::forward<Proj>(proj), std::forward<Instance>(instance), item)].emplace_back(item);
         }
 
         return groupedByProj;
     }
 
-    template<typename Proj, typename ListType>
-    auto GroupBy(Proj&& proj, const std::vector<std::shared_ptr<const ListType>>& list)
+    template<typename Proj, typename Container>
+    auto GroupBy(Proj&& proj, const Container& list)
     {
-        std::map<messages::TestStepResultStatus, std::vector<std::shared_ptr<const ListType>>> groupedByProj;
+        using ElementType = std::remove_reference_t<decltype(*std::begin(list))>;
+
+        std::map<messages::TestStepResultStatus, std::vector<std::reference_wrapper<ElementType>>> groupedByProj;
 
         for (const auto& item : list)
         {
-            groupedByProj[std::invoke(std::forward<Proj>(proj), item)].push_back(item);
+            groupedByProj[std::invoke(std::forward<Proj>(proj), item)].emplace_back(item);
         }
 
         return groupedByProj;

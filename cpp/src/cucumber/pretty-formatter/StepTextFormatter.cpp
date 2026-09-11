@@ -5,29 +5,29 @@
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include <cstddef>
-#include <memory>
 #include <string>
 #include <vector>
 
 namespace cucumber::pretty_formatter
 {
-    void StepTextFormatter::Format(LineBuilder& lineBuilder, const std::shared_ptr<const messages::TestStep>& testStep,
-        const std::shared_ptr<const messages::PickleStep>& pickleStep) const
+    void StepTextFormatter::Format(LineBuilder& lineBuilder, const messages::TestStep& testStep,
+        const messages::PickleStep& pickleStep) const
     {
-        Format(lineBuilder, pickleStep->text, GetStepMatchArguments(testStep));
+        Format(lineBuilder, pickleStep.text, GetStepMatchArguments(testStep));
     }
 
-    std::vector<std::shared_ptr<const messages::StepMatchArgument>> StepTextFormatter::GetStepMatchArguments(
-        const std::shared_ptr<const messages::TestStep>& testStep) const
+    std::vector<const messages::StepMatchArgument*> StepTextFormatter::GetStepMatchArguments(const messages::TestStep& testStep) const
     {
-        std::vector<std::shared_ptr<const messages::StepMatchArgument>> stepMatchArguments;
+        std::vector<const messages::StepMatchArgument*> stepMatchArguments;
 
-        if (testStep->stepMatchArgumentsLists.has_value() && testStep->stepMatchArgumentsLists.value().size() == 1)
+        if (testStep.stepMatchArgumentsLists && testStep.stepMatchArgumentsLists->size() == 1)
         {
-            for (const auto& argumentsList : testStep->stepMatchArgumentsLists.value())
+            for (const auto& argumentsList : *testStep.stepMatchArgumentsLists)
             {
-                stepMatchArguments.insert(stepMatchArguments.end(), argumentsList->stepMatchArguments.begin(),
-                    argumentsList->stepMatchArguments.end());
+                for (const auto& stepMatchArgument : argumentsList.stepMatchArguments)
+                {
+                    stepMatchArguments.push_back(std::addressof(stepMatchArgument));
+                }
             }
         }
 
@@ -35,17 +35,17 @@ namespace cucumber::pretty_formatter
     }
 
     void StepTextFormatter::Format(LineBuilder& lineBuilder, std::string_view stepText,
-        const std::vector<std::shared_ptr<const messages::StepMatchArgument>>& stepMatchArguments) const
+        const std::vector<const messages::StepMatchArgument*>& stepMatchArguments) const
     {
         std::size_t pos = 0;
 
         for (const auto& stepArgument : stepMatchArguments)
         {
             const auto& group = stepArgument->group;
-            if (group->value.has_value() && group->start.has_value())
+            if (group.value && group.start)
             {
-                const auto groupValue = group->value.value();
-                const auto groupStart = group->start.value();
+                const auto groupValue = *group.value;
+                const auto groupStart = *group.start;
                 const auto text = stepText.substr(pos, groupStart - pos);
 
                 pos = groupStart + groupValue.size();

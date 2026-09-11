@@ -13,7 +13,7 @@ namespace cucumber::pretty_formatter
         : indent{ indent }
     {}
 
-    void PickleDocStringFormatter::Format(LineBuilder& lineBuilder, const std::shared_ptr<const messages::PickleDocString>& docString)
+    void PickleDocStringFormatter::Format(LineBuilder& lineBuilder, const messages::PickleDocString& docString)
     {
         lineBuilder.Indent(indent)
             .Begin(Theme::Element::docString)
@@ -21,15 +21,15 @@ namespace cucumber::pretty_formatter
             .Accept(
                 [&docString](auto& lineBuilder)
                 {
-                    if (docString->mediaType.has_value())
+                    if (docString.mediaType.has_value())
                     {
-                        lineBuilder.Append(Theme::Element::docStringMediaType, docString->mediaType.value());
+                        lineBuilder.Append(Theme::Element::docStringMediaType, docString.mediaType.value());
                     }
                 })
             .End(Theme::Element::docString)
             .NewLine();
 
-        std::istringstream stream{ docString->content };
+        std::istringstream stream{ docString.content };
         for (std::string line; std::getline(stream, line);)
         {
             lineBuilder.Indent(indent)

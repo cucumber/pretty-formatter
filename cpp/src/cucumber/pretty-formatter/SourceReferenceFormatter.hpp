@@ -14,9 +14,8 @@ namespace cucumber::pretty_formatter
     {
         explicit SourceReferenceFormatter(std::function<std::string(std::string)> uriFormatter);
 
-        [[nodiscard]] std::optional<std::string> Format(const std::shared_ptr<const messages::SourceReference>& sourceReference) const;
-        [[nodiscard]] std::string Format(const std::string& uri,
-            const std::optional<std::shared_ptr<const messages::Location>>& location) const;
+        [[nodiscard]] std::optional<std::string> Format(const messages::SourceReference& sourceReference) const;
+        [[nodiscard]] std::string Format(const std::string& uri, const messages::Location* location) const;
 
     private:
         std::function<std::string(std::string)> uriFormatter;

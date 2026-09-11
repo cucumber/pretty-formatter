@@ -9,21 +9,20 @@
 
 namespace cucumber::pretty_formatter
 {
-    std::int32_t PickleComparator(const std::shared_ptr<const messages::Pickle>& lhs, const std::shared_ptr<const messages::Pickle>& rhs)
+    std::int32_t PickleComparator(const messages::Pickle& lhs, const messages::Pickle& rhs)
     {
-        if (lhs->uri != rhs->uri)
+        if (lhs.uri != rhs.uri)
         {
-            return static_cast<std::int32_t>(rhs->uri.compare(lhs->uri));
+            return static_cast<std::int32_t>(rhs.uri.compare(lhs.uri));
         }
-        if (!lhs->location.has_value() || !rhs->location.has_value())
+        if (!lhs.location || !rhs.location)
         {
             return 0;
         }
-        if (lhs->location.value()->line != rhs->location.value()->line)
+        if (lhs.location->line != rhs.location->line)
         {
-            return static_cast<std::int32_t>(lhs->location.value()->line) - static_cast<std::int32_t>(rhs->location.value()->line);
+            return static_cast<std::int32_t>(lhs.location->line) - static_cast<std::int32_t>(rhs.location->line);
         }
-        return static_cast<std::int32_t>(lhs->location.value()->column.value_or(0)) -
-               static_cast<std::int32_t>(rhs->location.value()->column.value_or(0));
+        return static_cast<std::int32_t>(lhs.location->column.value_or(0)) - static_cast<std::int32_t>(rhs.location->column.value_or(0));
     }
 }

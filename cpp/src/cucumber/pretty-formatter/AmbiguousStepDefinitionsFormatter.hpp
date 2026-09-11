@@ -5,9 +5,9 @@
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
+#include "cucumber/query/Query.hpp"
 #include <cstddef>
 #include <memory>
-#include <vector>
 
 namespace cucumber::pretty_formatter
 {
@@ -18,7 +18,7 @@ namespace cucumber::pretty_formatter
         AmbiguousStepDefinitionsFormatter(std::size_t indent, std::shared_ptr<Theme> theme,
             SourceReferenceFormatter sourceReferenceFormatter);
 
-        void Format(LineBuilder& lineBuilder, const std::vector<std::shared_ptr<const messages::StepDefinition>>& stepDefinitions);
+        void Format(LineBuilder& lineBuilder, const query::OwningView<messages::StepDefinition>& stepDefinitions);
 
     private:
         std::size_t indent;

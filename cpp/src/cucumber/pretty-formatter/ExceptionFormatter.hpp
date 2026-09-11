@@ -15,10 +15,9 @@ namespace cucumber::pretty_formatter
     {
         ExceptionFormatter(std::size_t indent, std::shared_ptr<Theme> theme, messages::TestStepResultStatus status);
 
-        std::optional<std::string> Format(const std::shared_ptr<const messages::Exception>& exception,
-            const std::optional<std::string>& message);
+        std::optional<std::string> Format(const messages::Exception& exception, const std::optional<std::string>& message);
 
-        std::optional<std::string> Format(const std::shared_ptr<const messages::Exception>& exception);
+        std::optional<std::string> Format(const messages::Exception& exception);
 
         std::string Format(const std::string& message);
 

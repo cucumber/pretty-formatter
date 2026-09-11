@@ -9,7 +9,7 @@
 
 namespace cucumber::pretty_formatter
 {
-    std::string FormatDuration(const std::shared_ptr<const messages::Duration>& duration);
+    std::string FormatDuration(const messages::Duration& duration);
 }
 
 #endif

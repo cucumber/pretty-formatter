@@ -15,7 +15,7 @@ namespace cucumber::pretty_formatter
     void AppendLocationComment(LineBuilder& lineBuilder, const std::optional<std::string>& comment);
 
     void AppendLocationComment(LineBuilder& lineBuilder, const SourceReferenceFormatter& sourceReferenceFormatter,
-        const std::shared_ptr<const messages::SourceReference>& sourceReference);
+        const messages::SourceReference& sourceReference);
 }
 
 #endif

@@ -5,7 +5,6 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/ranges.h>
-#include <memory>
 #include <optional>
 #include <string>
 #include <unordered_set>
@@ -18,24 +17,23 @@ namespace cucumber::pretty_formatter
         const auto& allTestCasesFinishedOrdered =
             query.FindAllTestCaseFinishedOrderBy(query::findPickleByTestCaseFinished, PickleComparator);
 
-        std::vector<std::shared_ptr<const messages::Snippet>> snippets;
+        std::vector<const messages::Snippet*> snippets;
         std::unordered_set<std::string> seen;
 
         for (const auto& testCaseFinished : allTestCasesFinishedOrdered)
         {
-            const auto& optPickle = query.FindPickleBy(testCaseFinished);
-            if (optPickle.has_value())
+            const auto* pickle = query.FindPickleBy(testCaseFinished);
+            if (pickle != nullptr)
             {
-                const auto& pickle = optPickle.value();
-                const auto& suggestions = query.FindSuggestionsBy(pickle);
+                const auto suggestions = query.FindSuggestionsBy(*pickle);
 
                 for (const auto& suggestion : suggestions)
                 {
-                    for (const auto& snippet : suggestion->snippets)
+                    for (const auto& snippet : suggestion.snippets)
                     {
-                        if (seen.insert(snippet->language + "-" + snippet->code).second)
+                        if (seen.insert(snippet.language + "-" + snippet.code).second)
                         {
-                            snippets.push_back(snippet);
+                            snippets.push_back(std::addressof(snippet));
                         }
                     }
                 }

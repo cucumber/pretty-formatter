@@ -12,12 +12,12 @@ namespace cucumber::pretty_formatter
     {
         explicit AttachmentFormatter(std::size_t indent);
 
-        void Format(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Attachment>& attachment);
+        void Format(LineBuilder& lineBuilder, const messages::Attachment& attachment);
 
     private:
-        void FormatBase64(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Attachment>& attachment) const;
+        void FormatBase64(LineBuilder& lineBuilder, const messages::Attachment& attachment) const;
 
-        void FormatText(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Attachment>& attachment) const;
+        void FormatText(LineBuilder& lineBuilder, const messages::Attachment& attachment) const;
 
         std::size_t indent;
     };

@@ -15,16 +15,16 @@ namespace cucumber::pretty_formatter
         : indent{ indent }
     {}
 
-    void PickleTableFormatter::Format(LineBuilder& lineBuilder, const std::shared_ptr<const messages::PickleTable>& pickleTable)
+    void PickleTableFormatter::Format(LineBuilder& lineBuilder, const messages::PickleTable& pickleTable)
     {
         std::vector<std::vector<std::string>> cells;
-        for (const auto& row : pickleTable->rows)
+        for (const auto& row : pickleTable.rows)
         {
             auto& cellValues = cells.emplace_back();
 
-            for (const auto& cell : row->cells)
+            for (const auto& cell : row.cells)
             {
-                cellValues.push_back(cell->value);
+                cellValues.push_back(cell.value);
             }
         }
 

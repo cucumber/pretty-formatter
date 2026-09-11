@@ -24,20 +24,18 @@ namespace cucumber::pretty_formatter
         , indent{ indent }
     {}
 
-    void TestRunHookFormatter::FormatHookLineTo(LineBuilder& lineBuilder,
-        const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished) const
+    void TestRunHookFormatter::FormatHookLineTo(LineBuilder& lineBuilder, const messages::TestRunHookFinished& testRunHookFinished) const
     {
-        const auto& optHook = data.FindHookBy(testRunHookFinished);
-        if (optHook.has_value())
+        const auto* hook = data.FindHookBy(testRunHookFinished);
+        if (hook != nullptr)
         {
-            const auto& hook = optHook.value();
             lineBuilder.Append(HookTypeName(hook->type))
                 .Accept(
                     [&hook](LineBuilder& lineBuilder)
                     {
-                        if (hook->name.has_value())
+                        if (hook->name)
                         {
-                            lineBuilder.Append(fmt::format("({})", hook->name.value()));
+                            lineBuilder.Append(fmt::format("({})", *hook->name));
                         }
                     })
                 .Accept(
@@ -48,8 +46,8 @@ namespace cucumber::pretty_formatter
         }
     }
 
-    std::string TestRunHookFormatter::FormatException(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished) const
+    std::string TestRunHookFormatter::FormatException(const messages::TestRunHookFinished& testRunHookFinished) const
     {
-        return FormatResultException(testRunHookFinished->result, indent, theme);
+        return FormatResultException(testRunHookFinished.result, indent, theme);
     }
 }

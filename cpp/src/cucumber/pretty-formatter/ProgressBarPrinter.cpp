@@ -153,8 +153,8 @@ namespace cucumber::pretty_formatter
             std::vector<std::string> lines;
 
             {
-                const auto& optTestRunFinished = query.FindTestRunFinished();
-                if (optTestRunFinished.has_value() && optTestRunFinished.value()->exception.has_value())
+                const auto* testRunFinished = query.FindTestRunFinished();
+                if (testRunFinished != nullptr && testRunFinished->exception)
                 {
                     lines.emplace_back("");
                     lines.emplace_back(FormatCounts("test run", "test runs", { { messages::TestStepResultStatus::FAILED, 1 } }, *theme));
@@ -162,13 +162,13 @@ namespace cucumber::pretty_formatter
             }
 
             {
-                const auto& allTestRunHookFinished = query.FindAllTestRunHookFinished();
+                const auto allTestRunHookFinished = query.FindAllTestRunHookFinished();
                 if (!allTestRunHookFinished.empty())
                 {
                     const auto& hooksGroupedByStatus = GroupBy(
-                        [](const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished)
+                        [](const messages::TestRunHookFinished& testRunHookFinished)
                         {
-                            return testRunHookFinished->result->status;
+                            return testRunHookFinished.result.status;
                         },
                         allTestRunHookFinished);
 
@@ -186,13 +186,11 @@ namespace cucumber::pretty_formatter
 
             {
                 std::map<messages::TestStepResultStatus, std::size_t> testCaseCountGroupedByStatus;
-                const auto& allTestCaseFinished = query.FindAllTestCaseFinished();
-                for (const auto& testCaseFinished : allTestCaseFinished)
+                for (const auto& testCaseFinished : query.FindAllTestCaseFinished())
                 {
-                    const auto& optMostSevereTestStepResult = query.FindMostSevereTestStepResultBy(testCaseFinished);
-                    if (optMostSevereTestStepResult.has_value())
+                    const auto* mostSevereTestStepResult = query.FindMostSevereTestStepResultBy(testCaseFinished);
+                    if (mostSevereTestStepResult != nullptr)
                     {
-                        const auto& mostSevereTestStepResult = optMostSevereTestStepResult.value();
                         testCaseCountGroupedByStatus[mostSevereTestStepResult->status]++;
                     }
                     else
@@ -206,13 +204,11 @@ namespace cucumber::pretty_formatter
 
             {
                 std::map<messages::TestStepResultStatus, std::size_t> stepCountGroupedByStatus;
-                const auto& allTestCaseFinished = query.FindAllTestCaseFinished();
-                for (const auto& testCaseFinished : allTestCaseFinished)
+                for (const auto& testCaseFinished : query.FindAllTestCaseFinished())
                 {
-                    const auto& testStepsFinished = query.FindTestStepsFinishedBy(testCaseFinished);
-                    for (const auto& testStepFinished : testStepsFinished)
+                    for (const auto& testStepFinished : query.FindTestStepsFinishedBy(testCaseFinished))
                     {
-                        stepCountGroupedByStatus[testStepFinished->testStepResult->status]++;
+                        stepCountGroupedByStatus[testStepFinished.testStepResult.status]++;
                     }
                 }
 
@@ -220,27 +216,27 @@ namespace cucumber::pretty_formatter
             }
 
             {
-                const auto& optTestRunDuration = query.FindTestRunDuration();
+                const auto optTestRunDuration = query.FindTestRunDuration();
                 if (optTestRunDuration.has_value())
                 {
-                    const auto& allTestRunHookFinished = query.FindAllTestRunHookFinished();
+                    const auto allTestRunHookFinished = query.FindAllTestRunHookFinished();
                     const auto testRunHookDuration =
                         std::accumulate(allTestRunHookFinished.begin(), allTestRunHookFinished.end(), messages::Duration{},
-                            [](const auto& total, const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished)
+                            [](const auto& total, const messages::TestRunHookFinished& testRunHookFinished)
                             {
-                                return total + *testRunHookFinished->result->duration;
+                                return total + testRunHookFinished.result.duration;
                             });
 
-                    const auto& allTestStepFinished = query.FindAllTestStepFinished();
+                    const auto allTestStepFinished = query.FindAllTestStepFinished();
                     const auto testStepDuration =
                         std::accumulate(allTestStepFinished.begin(), allTestStepFinished.end(), messages::Duration{},
-                            [](const auto& total, const std::shared_ptr<const messages::TestStepFinished>& testStepFinished)
+                            [](const auto& total, const messages::TestStepFinished& testStepFinished)
                             {
-                                return total + *testStepFinished->testStepResult->duration;
+                                return total + testStepFinished.testStepResult.duration;
                             });
 
                     lines.emplace_back(fmt::format("{} ({} executing your code)", FormatDuration(optTestRunDuration.value()),
-                        FormatDuration(std::make_shared<messages::Duration>(testRunHookDuration + testStepDuration))));
+                        FormatDuration(testRunHookDuration + testStepDuration)));
                 }
             }
 
@@ -281,27 +277,27 @@ namespace cucumber::pretty_formatter
         {
             query::Query::Update(envelope);
 
-            if (envelope.testCase.has_value())
+            if (envelope.testCase)
             {
-                TestCase(envelope.testCase.value());
+                TestCase(*envelope.testCase);
             }
 
-            if (envelope.testCaseStarted.has_value())
+            if (envelope.testCaseStarted)
             {
                 TestCaseStarted();
             }
 
-            if (envelope.testCaseFinished.has_value())
+            if (envelope.testCaseFinished)
             {
-                TestCaseFinished(envelope.testCaseFinished.value());
+                TestCaseFinished(*envelope.testCaseFinished);
             }
 
-            if (envelope.testStepFinished.has_value())
+            if (envelope.testStepFinished)
             {
                 TestStepFinished();
             }
 
-            if (envelope.testRunFinished.has_value())
+            if (envelope.testRunFinished)
             {
                 TestRunFinished();
             }
@@ -338,10 +334,10 @@ namespace cucumber::pretty_formatter
         }
 
     private:
-        void TestCase(const std::shared_ptr<const messages::TestCase>& testCase)
+        void TestCase(const messages::TestCase& testCase)
         {
             ++totalScenarios;
-            totalSteps += testCase->testSteps.size();
+            totalSteps += testCase.testSteps.size();
         }
 
         void TestCaseStarted()
@@ -350,18 +346,18 @@ namespace cucumber::pretty_formatter
             phase = Phase::running;
         }
 
-        void TestCaseFinished(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
+        void TestCaseFinished(const messages::TestCaseFinished& testCaseFinished)
         {
             --runningScenarios;
             ++finishedScenarios;
 
-            if (testCaseFinished->willBeRetried)
+            if (testCaseFinished.willBeRetried)
             {
-                const auto& optTestCase = FindTestCaseBy(testCaseFinished);
-                if (optTestCase.has_value())
+                const auto* testCase = FindTestCaseBy(testCaseFinished);
+                if (testCase != nullptr)
                 {
                     --finishedScenarios;
-                    finishedSteps -= optTestCase.value()->testSteps.size();
+                    finishedSteps -= testCase->testSteps.size();
                 }
             }
         }
@@ -411,10 +407,10 @@ namespace cucumber::pretty_formatter
         Printer(Printer&&) = delete;
         Printer& operator=(Printer&&) = delete;
 
-        void UndefinedParameterType(const std::shared_ptr<const messages::UndefinedParameterType>& undefinedParameterType)
+        void UndefinedParameterType(const messages::UndefinedParameterType& undefinedParameterType)
         {
             pendingProblems.emplace_back(ProblemType::parameter,
-                fmt::format("'{}' in '{}'", undefinedParameterType->name, undefinedParameterType->expression));
+                fmt::format("'{}' in '{}'", undefinedParameterType.name, undefinedParameterType.expression));
         }
 
         void TestRunStarted()
@@ -427,9 +423,9 @@ namespace cucumber::pretty_formatter
             ReRender();
         }
 
-        void TestRunHookFinished(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished)
+        void TestRunHookFinished(const messages::TestRunHookFinished& testRunHookFinished)
         {
-            if (failingStatuses.find(testRunHookFinished->result->status) != failingStatuses.end())
+            if (failingStatuses.find(testRunHookFinished.result.status) != failingStatuses.end())
             {
                 pendingProblems.emplace_back(ProblemType::globalHook, FormatGlobalHookProblem(testRunHookFinished));
             }
@@ -437,23 +433,22 @@ namespace cucumber::pretty_formatter
             ReRender();
         }
 
-        void TestCaseStarted(const std::shared_ptr<const messages::TestCaseStarted>& testCaseStarted)
+        void TestCaseStarted(const messages::TestCaseStarted& testCaseStarted)
         {
             ReRender();
         }
 
-        void TestStepFinished(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished)
+        void TestStepFinished(const messages::TestStepFinished& testStepFinished)
         {
             ReRender();
         }
 
-        void TestCaseFinished(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
+        void TestCaseFinished(const messages::TestCaseFinished& testCaseFinished)
         {
-            if (!testCaseFinished->willBeRetried)
+            if (!testCaseFinished.willBeRetried)
             {
-                const auto& optMostSevereTestStepResult = data.FindMostSevereTestStepResultBy(testCaseFinished);
-                if (optMostSevereTestStepResult.has_value() &&
-                    failingStatuses.find(optMostSevereTestStepResult.value()->status) != failingStatuses.end())
+                const auto* mostSevereTestStepResult = data.FindMostSevereTestStepResultBy(testCaseFinished);
+                if (mostSevereTestStepResult != nullptr && failingStatuses.find(mostSevereTestStepResult->status) != failingStatuses.end())
                 {
                     pendingProblems.emplace_back(ProblemType::testCase, FormatTestCaseProblem(testCaseFinished));
                 }
@@ -461,15 +456,15 @@ namespace cucumber::pretty_formatter
             ReRender();
         }
 
-        void TestRunFinished(const std::shared_ptr<const messages::TestRunFinished>& testRunFinished)
+        void TestRunFinished(const messages::TestRunFinished& testRunFinished)
         {
-            if (testRunFinished->exception.has_value())
+            if (testRunFinished.exception)
             {
                 ExceptionFormatter exceptionFormatter{ 4, theme, messages::TestStepResultStatus::FAILED };
-                const auto& optFormattedException = exceptionFormatter.Format(testRunFinished->exception.value());
-                if (optFormattedException.has_value())
+                const auto& optFormattedException = exceptionFormatter.Format(*testRunFinished.exception);
+                if (optFormattedException)
                 {
-                    pendingProblems.emplace_back(ProblemType::testRun, "\n" + optFormattedException.value());
+                    pendingProblems.emplace_back(ProblemType::testRun, "\n" + *optFormattedException);
                 }
             }
 
@@ -477,7 +472,7 @@ namespace cucumber::pretty_formatter
         }
 
     private:
-        std::string FormatGlobalHookProblem(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished)
+        std::string FormatGlobalHookProblem(const messages::TestRunHookFinished& testRunHookFinished)
         {
             LineBuilder lineBuilder{ theme };
 
@@ -496,18 +491,16 @@ namespace cucumber::pretty_formatter
             return lineBuilder.Build();
         }
 
-        std::string FormatTestCaseProblem(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
+        std::string FormatTestCaseProblem(const messages::TestCaseFinished& testCaseFinished)
         {
             LineBuilder lineBuilder{ theme };
 
-            const auto& optTestCaseStarted = data.FindTestCaseStartedBy(testCaseFinished);
-            if (optTestCaseStarted.has_value())
+            const auto* testCaseStarted = data.FindTestCaseStartedBy(testCaseFinished);
+            if (testCaseStarted != nullptr)
             {
-                const auto& testCaseStarted = optTestCaseStarted.value();
-                const auto& optPickle = data.FindPickleBy(testCaseStarted);
-                if (optPickle.has_value())
+                const auto* pickle = data.FindPickleBy(*testCaseStarted);
+                if (pickle != nullptr)
                 {
-                    const auto& pickle = optPickle.value();
                     lineBuilder.Append(pickle->name)
                         .Accept(
                             [&testCaseStarted](LineBuilder& lineBuilder)
@@ -518,7 +511,8 @@ namespace cucumber::pretty_formatter
                                 }
                             })
                         .Append(" ")
-                        .Append(Theme::Element::location, "# " + sourceReferenceFormatter.Format(pickle->uri, data.FindLocationOf(pickle)));
+                        .Append(Theme::Element::location,
+                            "# " + sourceReferenceFormatter.Format(pickle->uri, data.FindLocationOf(*pickle)));
                 }
             }
 
@@ -661,37 +655,37 @@ namespace cucumber::pretty_formatter
     {
         data->Update(envelope);
 
-        if (envelope.undefinedParameterType.has_value())
+        if (envelope.undefinedParameterType)
         {
-            printer->UndefinedParameterType(envelope.undefinedParameterType.value());
+            printer->UndefinedParameterType(*envelope.undefinedParameterType);
         }
-        if (envelope.testRunStarted.has_value())
+        if (envelope.testRunStarted)
         {
             printer->TestRunStarted();
         }
-        if (envelope.testCase.has_value())
+        if (envelope.testCase)
         {
             printer->TestCase();
         }
-        if (envelope.testRunHookFinished.has_value())
+        if (envelope.testRunHookFinished)
         {
-            printer->TestRunHookFinished(envelope.testRunHookFinished.value());
+            printer->TestRunHookFinished(*envelope.testRunHookFinished);
         }
-        if (envelope.testCaseStarted.has_value())
+        if (envelope.testCaseStarted)
         {
-            printer->TestCaseStarted(envelope.testCaseStarted.value());
+            printer->TestCaseStarted(*envelope.testCaseStarted);
         }
-        if (envelope.testStepFinished.has_value())
+        if (envelope.testStepFinished)
         {
-            printer->TestStepFinished(envelope.testStepFinished.value());
+            printer->TestStepFinished(*envelope.testStepFinished);
         }
-        if (envelope.testCaseFinished.has_value())
+        if (envelope.testCaseFinished)
         {
-            printer->TestCaseFinished(envelope.testCaseFinished.value());
+            printer->TestCaseFinished(*envelope.testCaseFinished);
         }
-        if (envelope.testRunFinished.has_value())
+        if (envelope.testRunFinished)
         {
-            printer->TestRunFinished(envelope.testRunFinished.value());
+            printer->TestRunFinished(*envelope.testRunFinished);
         }
     }
 }

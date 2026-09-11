@@ -37,7 +37,7 @@ namespace cucumber::pretty_formatter
 
             for (const auto& [testStepFinished, testStep] : allTestStepFinishedAndTestStep)
             {
-                const auto status = testStepFinished->testStepResult->status;
+                const auto status = testStepFinished->testStepResult.status;
                 if (foundFirstNonPassed)
                 {
                     if (status != messages::TestStepResultStatus::PASSED && status != messages::TestStepResultStatus::SKIPPED)
@@ -67,15 +67,15 @@ namespace cucumber::pretty_formatter
         , includeAttachments{ includeAttachments }
     {}
 
-    std::string StepFormatter::FormatNonPassingSteps(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished)
+    std::string StepFormatter::FormatNonPassingSteps(const messages::TestCaseFinished& testCaseFinished)
     {
-        const auto optTestCaseStarted = data.FindTestCaseStartedBy(testCaseFinished);
-        if (!optTestCaseStarted.has_value())
+        const auto* testCaseStarted = data.FindTestCaseStartedBy(testCaseFinished);
+        if (testCaseStarted == nullptr)
         {
             return "";
         }
 
-        const auto allTestStepFinishedAndTestStep = data.FindTestStepFinishedAndTestStepBy(optTestCaseStarted.value());
+        const auto allTestStepFinishedAndTestStep = data.FindTestStepFinishedAndTestStepBy(*testCaseStarted);
         if (allTestStepFinishedAndTestStep.empty())
         {
             return "";
@@ -84,51 +84,48 @@ namespace cucumber::pretty_formatter
         std::string result;
         for (const auto& [testStepFinished, testStep] : FindNonPassingSteps(allTestStepFinishedAndTestStep))
         {
-            result += FormatStep(testStepFinished, testStep);
+            result += FormatStep(*testStepFinished, *testStep);
         }
 
         return result;
     }
 
-    std::string StepFormatter::FormatStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-        const std::shared_ptr<const messages::TestStep>& testStep)
+    std::string StepFormatter::FormatStep(const messages::TestStepFinished& testStepFinished, const messages::TestStep& testStep)
     {
         std::ostringstream stream;
 
-        const auto status = testStepFinished->testStepResult->status;
-        const auto& optPickleStep = data.FindPickleStepBy(testStep);
+        const auto status = testStepFinished.testStepResult.status;
+        const auto* pickleStep = data.FindPickleStepBy(testStep);
 
-        if (optPickleStep.has_value())
+        if (pickleStep != nullptr)
         {
-            const auto& pickleStep = optPickleStep.value();
-            const auto& optStep = data.FindStepBy(pickleStep);
-            if (optStep.has_value())
+            const auto* step = data.FindStepBy(*pickleStep);
+            if (step != nullptr)
             {
-                const auto& step = optStep.value();
-                fmt::println(stream, "{}", FormatPickleStep(testStepFinished, testStep, pickleStep, step));
+                fmt::println(stream, "{}", FormatPickleStep(testStepFinished, testStep, *pickleStep, *step));
 
-                if (pickleStep->argument.has_value())
+                if (pickleStep->argument)
                 {
-                    if (pickleStep->argument.value()->dataTable.has_value())
+                    if (pickleStep->argument->dataTable)
                     {
                         fmt::print(stream, "{}",
                             LineBuilder{ theme }
                                 .Accept(
                                     [this, &pickleStep](LineBuilder& lineBuilder)
                                     {
-                                        pickleTableFormatter.Format(lineBuilder, pickleStep->argument.value()->dataTable.value());
+                                        pickleTableFormatter.Format(lineBuilder, *pickleStep->argument->dataTable);
                                     })
                                 .Build());
                     }
 
-                    if (pickleStep->argument.value()->docString.has_value())
+                    if (pickleStep->argument->docString)
                     {
                         fmt::print(stream, "{}",
                             LineBuilder{ theme }
                                 .Accept(
                                     [this, &pickleStep](LineBuilder& lineBuilder)
                                     {
-                                        pickleDocStringFormatter.Format(lineBuilder, pickleStep->argument.value()->docString.value());
+                                        pickleDocStringFormatter.Format(lineBuilder, *pickleStep->argument->docString);
                                     })
                                 .Build());
                     }
@@ -149,19 +146,17 @@ namespace cucumber::pretty_formatter
             }
         }
 
-        const auto& optHook = data.FindHookBy(testStep);
-        if (optHook.has_value())
+        const auto* hook = data.FindHookBy(testStep);
+        if (hook != nullptr)
         {
-            const auto& hook = optHook.value();
-            fmt::println(stream, "{}", FormatHookStep(testStepFinished, hook));
+            fmt::println(stream, "{}", FormatHookStep(testStepFinished, *hook));
         }
 
-        const auto testStepResult = testStepFinished->testStepResult;
-        fmt::print(stream, "{}", FormatResultException(testStepResult, deepIndent, theme));
+        fmt::print(stream, "{}", FormatResultException(testStepFinished.testStepResult, deepIndent, theme));
 
         if (includeAttachments)
         {
-            const auto& attachments = data.FindAttachmentsBy(testStepFinished);
+            const auto attachments = data.FindAttachmentsBy(testStepFinished);
             for (const auto& attachment : attachments)
             {
                 fmt::print(stream, "{}",
@@ -179,33 +174,31 @@ namespace cucumber::pretty_formatter
         return stream.str();
     }
 
-    std::string StepFormatter::FormatHookStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-        const std::shared_ptr<const messages::Hook>& hook) const
+    std::string StepFormatter::FormatHookStep(const messages::TestStepFinished& testStepFinished, const messages::Hook& hook) const
     {
-        const auto& status = testStepFinished->testStepResult->status;
+        const auto& status = testStepFinished.testStepResult.status;
         return LineBuilder{ theme }
             .Indent(indent)
             .Begin(Theme::Element::step, status)
-            .Append(Theme::Element::stepKeyword, HookTypeName(hook->type))
-            .Append(hook->name.has_value() ? "(" + hook->name.value() + ")" : "")
+            .Append(Theme::Element::stepKeyword, HookTypeName(hook.type))
+            .Append(hook.name.has_value() ? "(" + hook.name.value() + ")" : "")
             .End(Theme::Element::step, status)
             .Accept(
                 [this, &hook](auto& lineBuilder)
                 {
-                    AppendLocationComment(lineBuilder, sourceReferenceFormatter, hook->sourceReference);
+                    AppendLocationComment(lineBuilder, sourceReferenceFormatter, hook.sourceReference);
                 })
             .Build();
     }
 
-    std::string StepFormatter::FormatPickleStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-        const std::shared_ptr<const messages::TestStep>& testStep, const std::shared_ptr<const messages::PickleStep>& pickleStep,
-        const std::shared_ptr<const messages::Step>& step) const
+    std::string StepFormatter::FormatPickleStep(const messages::TestStepFinished& testStepFinished, const messages::TestStep& testStep,
+        const messages::PickleStep& pickleStep, const messages::Step& step) const
     {
-        const auto status = testStepFinished->testStepResult->status;
+        const auto status = testStepFinished.testStepResult.status;
         return LineBuilder{ theme }
             .Indent(indent)
             .Begin(Theme::Element::step, status)
-            .Append(Theme::Element::stepKeyword, step->keyword)
+            .Append(Theme::Element::stepKeyword, step.keyword)
             .Accept(
                 [this, &testStep, &pickleStep](auto& lineBuilder)
                 {
@@ -220,15 +213,15 @@ namespace cucumber::pretty_formatter
             .Build();
     }
 
-    void StepFormatter::FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::TestStep>& testStep) const
+    void StepFormatter::FormatLocationCommentTo(LineBuilder& lineBuilder, const messages::TestStep& testStep) const
     {
-        const auto& optUnambiguousStepDefinition = data.FindUnambiguousStepDefinitionBy(testStep);
+        const auto* unambiguousStepDefinition = data.FindUnambiguousStepDefinitionBy(testStep);
 
-        if (!optUnambiguousStepDefinition.has_value())
+        if (unambiguousStepDefinition == nullptr)
         {
             return;
         }
 
-        AppendLocationComment(lineBuilder, sourceReferenceFormatter, optUnambiguousStepDefinition.value()->sourceReference);
+        AppendLocationComment(lineBuilder, sourceReferenceFormatter, unambiguousStepDefinition->sourceReference);
     }
 }

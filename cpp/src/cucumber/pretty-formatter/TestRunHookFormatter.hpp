@@ -25,10 +25,9 @@ namespace cucumber::pretty_formatter
         TestRunHookFormatter& operator=(const TestRunHookFormatter&) = delete;
         TestRunHookFormatter& operator=(TestRunHookFormatter&&) = delete;
 
-        void FormatHookLineTo(LineBuilder& lineBuilder,
-            const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished) const;
+        void FormatHookLineTo(LineBuilder& lineBuilder, const messages::TestRunHookFinished& testRunHookFinished) const;
 
-        [[nodiscard]] std::string FormatException(const std::shared_ptr<const messages::TestRunHookFinished>& testRunHookFinished) const;
+        [[nodiscard]] std::string FormatException(const messages::TestRunHookFinished& testRunHookFinished) const;
 
     private:
         query::Query& data;

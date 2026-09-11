@@ -8,8 +8,8 @@
 #include "cucumber/pretty-formatter/ProgressPrinter.hpp"
 #include "cucumber/pretty-formatter/SummaryPrinter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
-#include "nlohmann/json.hpp"
-#include "nlohmann/json_fwd.hpp"
+#include "cucumber/query/EnvelopeArchive.hpp"
+#include "cucumber/query/NdjsonEnvelopeReader.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <cctype>
@@ -180,10 +180,12 @@ namespace cucumber::pretty_formatter
             void Validate(std::filesystem::path input, std::filesystem::path output, std::unique_ptr<Formatter> formatter)
             {
                 std::ifstream inputStream{ input };
-                for (std::string line; std::getline(inputStream, line);)
-                {
-                    formatter->Update(nlohmann::json::parse(line));
-                }
+                query::EnvelopeArchive archive;
+                query::LoadNdjson(archive, inputStream,
+                    [&formatter](const messages::Envelope& envelope)
+                    {
+                        formatter->Update(envelope);
+                    });
 
                 std::ifstream expected{ output };
                 EXPECT_THAT(stream.str(),
@@ -211,27 +213,26 @@ namespace cucumber::pretty_formatter
                 std::ostringstream stream;
 
                 std::ifstream inputStream{ input };
+                query::EnvelopeArchive archive;
 
                 std::string previousContent;
-                for (std::string line; std::getline(inputStream, line);)
-                {
-                    messages::Envelope envelope;
-                    envelope.from_json(nlohmann::json::parse(line));
-
-                    formatter->Update(envelope);
-
-                    auto newContent = fakeTty.GetOutput();
-
-                    if (!newContent.empty() && newContent != previousContent)
+                query::LoadNdjson(archive, inputStream,
+                    [&](const messages::Envelope& envelope)
                     {
-                        if (stream.tellp() > 0)
+                        formatter->Update(envelope);
+
+                        auto newContent = fakeTty.GetOutput();
+
+                        if (!newContent.empty() && newContent != previousContent)
                         {
-                            stream << "\n";
+                            if (stream.tellp() > 0)
+                            {
+                                stream << "\n";
+                            }
+                            fmt::print(stream, "[{}]\n{}", GetMessageType(envelope), Indent(newContent, 2));
+                            previousContent = std::move(newContent);
                         }
-                        fmt::print(stream, "[{}]\n{}", GetMessageType(envelope), Indent(newContent, 2));
-                        previousContent = std::move(newContent);
-                    }
-                }
+                    });
 
                 std::ifstream expected{ output };
                 EXPECT_THAT(stream.str(),

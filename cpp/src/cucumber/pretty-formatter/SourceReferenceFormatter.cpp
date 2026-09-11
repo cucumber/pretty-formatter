@@ -13,15 +13,14 @@ namespace cucumber::pretty_formatter
         : uriFormatter{ std::move(uriFormatter) }
     {}
 
-    std::optional<std::string> SourceReferenceFormatter::Format(
-        const std::shared_ptr<const messages::SourceReference>& sourceReference) const
+    std::optional<std::string> SourceReferenceFormatter::Format(const messages::SourceReference& sourceReference) const
     {
-        if (sourceReference->uri.has_value())
+        if (sourceReference.uri)
         {
-            auto uri = uriFormatter(sourceReference->uri.value());
-            if (sourceReference->location.has_value())
+            auto uri = uriFormatter(*sourceReference.uri);
+            if (sourceReference.location)
             {
-                return uri + ":" + std::to_string(sourceReference->location.value()->line);
+                return uri + ":" + std::to_string(sourceReference.location->line);
             }
             return uri;
         }
@@ -29,14 +28,13 @@ namespace cucumber::pretty_formatter
         return std::nullopt;
     }
 
-    std::string SourceReferenceFormatter::Format(const std::string& uri,
-        const std::optional<std::shared_ptr<const messages::Location>>& location) const
+    std::string SourceReferenceFormatter::Format(const std::string& uri, const messages::Location* location) const
     {
         auto uriFormatted = uriFormatter(uri);
 
-        if (location.has_value())
+        if (location != nullptr)
         {
-            return uriFormatted + ":" + std::to_string(location.value()->line);
+            return uriFormatted + ":" + std::to_string(location->line);
         }
 
         return uriFormatted;

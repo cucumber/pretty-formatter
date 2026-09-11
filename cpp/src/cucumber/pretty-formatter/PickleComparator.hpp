@@ -9,7 +9,7 @@
 
 namespace cucumber::pretty_formatter
 {
-    std::int32_t PickleComparator(const std::shared_ptr<const messages::Pickle>& lhs, const std::shared_ptr<const messages::Pickle>& rhs);
+    std::int32_t PickleComparator(const messages::Pickle& lhs, const messages::Pickle& rhs);
 }
 
 #endif

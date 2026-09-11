@@ -20,15 +20,15 @@ namespace cucumber::pretty_formatter
 
     void ProgressPrinter::Update(const messages::Envelope& envelope)
     {
-        if (envelope.testRunHookFinished.has_value())
+        if (envelope.testRunHookFinished)
         {
-            PrintStatus(envelope.testRunHookFinished.value()->result->status);
+            PrintStatus(envelope.testRunHookFinished->result.status);
         }
-        if (envelope.testStepFinished.has_value())
+        if (envelope.testStepFinished)
         {
-            PrintStatus(envelope.testStepFinished.value()->testStepResult->status);
+            PrintStatus(envelope.testStepFinished->testStepResult.status);
         }
-        if (envelope.testRunFinished.has_value())
+        if (envelope.testRunFinished)
         {
             stream << "\n";
         }

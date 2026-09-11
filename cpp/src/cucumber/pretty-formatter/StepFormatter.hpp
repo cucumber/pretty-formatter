@@ -34,20 +34,17 @@ namespace cucumber::pretty_formatter
         StepFormatter& operator=(const StepFormatter&) = delete;
         StepFormatter& operator=(StepFormatter&&) = delete;
 
-        [[nodiscard]] std::string FormatNonPassingSteps(const std::shared_ptr<const messages::TestCaseFinished>& testCaseFinished);
+        [[nodiscard]] std::string FormatNonPassingSteps(const messages::TestCaseFinished& testCaseFinished);
 
-        [[nodiscard]] std::string FormatStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-            const std::shared_ptr<const messages::TestStep>& testStep);
+        [[nodiscard]] std::string FormatStep(const messages::TestStepFinished& testStepFinished, const messages::TestStep& testStep);
 
     private:
-        [[nodiscard]] std::string FormatPickleStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-            const std::shared_ptr<const messages::TestStep>& testStep, const std::shared_ptr<const messages::PickleStep>& pickleStep,
-            const std::shared_ptr<const messages::Step>& step) const;
+        [[nodiscard]] std::string FormatPickleStep(const messages::TestStepFinished& testStepFinished, const messages::TestStep& testStep,
+            const messages::PickleStep& pickleStep, const messages::Step& step) const;
 
-        [[nodiscard]] std::string FormatHookStep(const std::shared_ptr<const messages::TestStepFinished>& testStepFinished,
-            const std::shared_ptr<const messages::Hook>& hook) const;
+        [[nodiscard]] std::string FormatHookStep(const messages::TestStepFinished& testStepFinished, const messages::Hook& hook) const;
 
-        void FormatLocationCommentTo(LineBuilder& lineBuilder, const std::shared_ptr<const messages::TestStep>& testStep) const;
+        void FormatLocationCommentTo(LineBuilder& lineBuilder, const messages::TestStep& testStep) const;
 
         query::Query& data;
         std::shared_ptr<Theme> theme;

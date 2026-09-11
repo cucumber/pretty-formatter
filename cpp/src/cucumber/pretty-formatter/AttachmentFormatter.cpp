@@ -15,9 +15,9 @@ namespace cucumber::pretty_formatter
         : indent{ indent }
     {}
 
-    void AttachmentFormatter::Format(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Attachment>& attachment)
+    void AttachmentFormatter::Format(LineBuilder& lineBuilder, const messages::Attachment& attachment)
     {
-        if (attachment->contentEncoding == messages::AttachmentContentEncoding::BASE64)
+        if (attachment.contentEncoding == messages::AttachmentContentEncoding::BASE64)
         {
             FormatBase64(lineBuilder, attachment);
         }
@@ -27,19 +27,19 @@ namespace cucumber::pretty_formatter
         }
     }
 
-    void AttachmentFormatter::FormatBase64(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Attachment>& attachment) const
+    void AttachmentFormatter::FormatBase64(LineBuilder& lineBuilder, const messages::Attachment& attachment) const
     {
-        const auto bytes = (attachment->body.size() / 4) * 3;
-        const auto filename = attachment->fileName.has_value() ? attachment->fileName.value() + " " : "";
+        const auto bytes = (attachment.body.size() / 4) * 3;
+        const auto filename = attachment.fileName.has_value() ? attachment.fileName.value() + " " : "";
 
         lineBuilder.Indent(indent)
-            .Append(Theme::Element::attachment, fmt::format("Embedding {}[{} {} bytes]", filename, attachment->mediaType, bytes))
+            .Append(Theme::Element::attachment, fmt::format("Embedding {}[{} {} bytes]", filename, attachment.mediaType, bytes))
             .NewLine();
     }
 
-    void AttachmentFormatter::FormatText(LineBuilder& lineBuilder, const std::shared_ptr<const messages::Attachment>& attachment) const
+    void AttachmentFormatter::FormatText(LineBuilder& lineBuilder, const messages::Attachment& attachment) const
     {
-        std::istringstream stream{ attachment->body };
+        std::istringstream stream{ attachment.body };
         for (std::string line; std::getline(stream, line);)
         {
             lineBuilder.Indent(indent).Append(Theme::Element::attachment, line).NewLine();

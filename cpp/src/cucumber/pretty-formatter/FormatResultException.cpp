@@ -8,20 +8,19 @@
 
 namespace cucumber::pretty_formatter
 {
-    std::string FormatResultException(const std::shared_ptr<const messages::TestStepResult>& result, std::size_t indent,
-        const std::shared_ptr<Theme>& theme)
+    std::string FormatResultException(const messages::TestStepResult& result, std::size_t indent, const std::shared_ptr<Theme>& theme)
     {
-        ExceptionFormatter exceptionFormatter{ indent, theme, result->status };
-        const auto& message = result->message;
+        ExceptionFormatter exceptionFormatter{ indent, theme, result.status };
+        const auto& message = result.message;
 
-        if (result->exception.has_value())
+        if (result.exception)
         {
-            return exceptionFormatter.Format(result->exception.value(), message).value_or("");
+            return exceptionFormatter.Format(*result.exception, message).value_or("");
         }
 
-        if (message.has_value())
+        if (message)
         {
-            return exceptionFormatter.Format(message.value());
+            return exceptionFormatter.Format(*message);
         }
 
         return "";

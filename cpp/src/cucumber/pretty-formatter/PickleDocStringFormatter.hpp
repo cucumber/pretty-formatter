@@ -12,7 +12,7 @@ namespace cucumber::pretty_formatter
     {
         explicit PickleDocStringFormatter(std::size_t indent);
 
-        void Format(LineBuilder& lineBuilder, const std::shared_ptr<const messages::PickleDocString>& docString);
+        void Format(LineBuilder& lineBuilder, const messages::PickleDocString& docString);
 
     private:
         static constexpr auto* delimiter{ R"(""")" };
