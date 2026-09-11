@@ -62,7 +62,6 @@ jobs:
         if: matrix.config.os != 'ubuntu-24.04'
         run: sudo apt-get install -y libfmt-dev
 
-
       - name: Checkout libfmt
         if: matrix.config.os == 'ubuntu-24.04'
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
