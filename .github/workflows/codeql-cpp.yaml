@@ -54,7 +54,6 @@ jobs:
           sudo apt-get install -y nlohmann-json3-dev libgtest-dev libgmock-dev
 
       - name: Checkout libfmt
-        if: matrix.config.os == 'ubuntu-24.04'
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           repository: fmtlib/fmt
@@ -63,7 +62,6 @@ jobs:
           persist-credentials: false
 
       - name: Install libfmt (from source)
-        if: matrix.config.os == 'ubuntu-24.04'
         run: |
           cmake -S fmt-src -B fmt-src/build \
             -DCMAKE_BUILD_TYPE=Release \
