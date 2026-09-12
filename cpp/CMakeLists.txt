@@ -142,6 +142,8 @@ target_sources(
         src/cucumber/pretty-formatter/GroupBy.hpp
         src/cucumber/pretty-formatter/HookTypeName.cpp
         src/cucumber/pretty-formatter/HookTypeName.hpp
+        src/cucumber/pretty-formatter/InterferenceInterceptor.cpp
+        src/cucumber/pretty-formatter/InterferenceInterceptor.hpp
         src/cucumber/pretty-formatter/LineBuilder.cpp
         src/cucumber/pretty-formatter/LineBuilder.hpp
         src/cucumber/pretty-formatter/LocationComment.cpp

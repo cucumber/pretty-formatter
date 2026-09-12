@@ -9,6 +9,7 @@ target_sources(cucumber_pretty_formatter.test PRIVATE
     EnumerateTestData.cpp
     EnumerateTestData.hpp
     TestAnsi.cpp
+    TestInterferenceInterceptor.cpp
     TestLineBuilder.cpp
     TestPrettyFormatter.cpp
     TestTheme.cpp

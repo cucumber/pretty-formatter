@@ -16,6 +16,7 @@
 #include "cucumber/pretty-formatter/FormatDuration.hpp"
 #include "cucumber/pretty-formatter/FormatSnippets.hpp"
 #include "cucumber/pretty-formatter/GroupBy.hpp"
+#include "cucumber/pretty-formatter/InterferenceInterceptor.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Statuses.hpp"
@@ -391,6 +392,10 @@ namespace cucumber::pretty_formatter
         Printer(Tty& tty, Data& data, std::shared_ptr<Theme> theme, std::size_t maxWidth,
             std::function<std::string(std::string)> uriFormatter, std::set<enum Options> options)
             : tty{ tty }
+            , interferenceInterceptor{ [this](std::string_view output)
+                {
+                    this->tty.Write(output);
+                } }
             , data{ data }
             , theme{ theme }
             , maxWidth{ maxWidth }
@@ -415,6 +420,7 @@ namespace cucumber::pretty_formatter
 
         void TestRunStarted()
         {
+            interferenceInterceptor.Acquire();
             ReRender(true);
         }
 
@@ -431,6 +437,7 @@ namespace cucumber::pretty_formatter
             }
 
             ReRender();
+            interferenceInterceptor.Release();
         }
 
         void TestCaseStarted(const messages::TestCaseStarted& testCaseStarted)
@@ -615,15 +622,20 @@ namespace cucumber::pretty_formatter
 
         void Render(bool initial, std::string_view output)
         {
-            if (!initial)
-            {
-                tty.MoveCursorUp(4);
-                tty.ClearScreenDown();
-            }
-            tty.Write(output);
+            interferenceInterceptor.Bypass(
+                [this, initial, output]
+                {
+                    if (!initial)
+                    {
+                        tty.MoveCursorUp(4);
+                        tty.ClearScreenDown();
+                    }
+                    tty.Write(output);
+                });
         }
 
         Tty& tty;
+        InterferenceInterceptor interferenceInterceptor;
         Data& data;
         std::shared_ptr<Theme> theme;
         std::size_t maxWidth;
