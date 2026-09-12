@@ -437,7 +437,6 @@ namespace cucumber::pretty_formatter
             }
 
             ReRender();
-            interferenceInterceptor.Release();
         }
 
         void TestCaseStarted(const messages::TestCaseStarted& testCaseStarted)
@@ -476,6 +475,7 @@ namespace cucumber::pretty_formatter
             }
 
             ReRender();
+            interferenceInterceptor.Release();
         }
 
     private:
