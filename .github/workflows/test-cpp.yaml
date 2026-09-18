@@ -19,7 +19,7 @@ on:
 
 env:
   # renovate: datasource=git-refs depName=cucumber/messages packageName=https://github.com/cucumber/messages currentValue=main
-  MESSAGES_REF: cpp-breaking-change-use-shared_ptrs-for-messages
+  MESSAGES_REF: main
   # renovate: datasource=git-refs depName=cucumber/query packageName=https://github.com/cucumber/query currentValue=main
   QUERY_REF: feature/cpp
 
