@@ -29,7 +29,7 @@ namespace cucumber::pretty_formatter
 
     public:
         SummaryPrinter(const ProtectedConstructorTag&, std::ostream& stream, std::shared_ptr<struct Theme> theme,
-            std::function<std::string(std::string)> uriFormatter, std::set<enum Options> options);
+            std::function<std::string(std::string)> uriFormatter, std::set<Options> options);
 
         void Update(const messages::Envelope& envelope) override;
 
@@ -39,14 +39,14 @@ namespace cucumber::pretty_formatter
 
             Factory& Theme(std::shared_ptr<struct Theme> theme);
             Factory& RemoveUriPrefix(std::string prefix);
-            Factory& Options(enum Options option, bool enabled = true);
+            Factory& Options(SummaryPrinter::Options option, bool enabled = true);
 
             std::unique_ptr<Formatter> Build(std::ostream& stream) const;
 
         private:
             std::shared_ptr<struct Theme> theme;
             std::function<std::string(std::string)> uriFormatter;
-            std::set<enum Options> options;
+            std::set<SummaryPrinter::Options> options;
         };
 
     private:

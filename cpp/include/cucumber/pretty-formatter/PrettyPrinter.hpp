@@ -36,17 +36,18 @@ namespace cucumber::pretty_formatter
 
         struct Factory
         {
+
             Factory();
 
             Factory& Theme(std::shared_ptr<Theme> theme);
             Factory& RemoveUriPrefix(std::string prefix);
-            Factory& Options(enum Options option, bool enabled = true);
+            Factory& Options(PrettyPrinter::Options option, bool enabled = true);
             std::unique_ptr<Formatter> Build(std::ostream& stream);
 
         private:
             std::shared_ptr<struct Theme> theme;
             std::function<std::string(std::string)> uriFormatter;
-            std::set<enum Options> options;
+            std::set<PrettyPrinter::Options> options;
         };
 
     private:
