@@ -2,9 +2,9 @@
 #include "cucumber/messages/PickleTable.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
+#include "fmt/format.h"
 #include <algorithm>
 #include <cstddef>
-#include <fmt/format.h>
 #include <memory>
 #include <string>
 #include <vector>

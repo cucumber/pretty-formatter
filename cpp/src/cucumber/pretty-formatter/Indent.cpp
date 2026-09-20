@@ -1,8 +1,8 @@
 #include "cucumber/pretty-formatter/Indent.hpp"
+#include "fmt/core.h"
+#include "fmt/format.h"
+#include "fmt/ranges.h"
 #include <cstddef>
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/ranges.h>
 #include <sstream>
 #include <string>
 #include <vector>

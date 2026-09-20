@@ -28,13 +28,13 @@
 #include "cucumber/pretty-formatter/TestRunHookFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
+#include "fmt/core.h"
+#include "fmt/format.h"
+#include "fmt/ostream.h"
+#include "fmt/ranges.h"
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/ostream.h>
-#include <fmt/ranges.h>
 #include <functional>
 #include <map>
 #include <memory>

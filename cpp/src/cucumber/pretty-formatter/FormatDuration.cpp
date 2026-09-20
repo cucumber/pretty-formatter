@@ -1,8 +1,8 @@
 #include "cucumber/pretty-formatter/FormatDuration.hpp"
 #include "cucumber/messages/Duration.hpp"
+#include "fmt/core.h"
+#include "fmt/format.h"
 #include <chrono>
-#include <fmt/core.h>
-#include <fmt/format.h>
 #include <memory>
 #include <string>
 

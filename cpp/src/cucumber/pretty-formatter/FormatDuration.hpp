@@ -2,8 +2,8 @@
 #define CUCUMBER_PRETTY_FORMATTER_FORMAT_DURATION_HPP
 
 #include "cucumber/messages/Duration.hpp"
+#include "fmt/core.h"
 #include <chrono>
-#include <fmt/core.h>
 #include <memory>
 #include <string>
 

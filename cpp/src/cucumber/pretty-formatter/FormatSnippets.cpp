@@ -2,9 +2,9 @@
 #include "cucumber/messages/Snippet.hpp"
 #include "cucumber/pretty-formatter/PickleComparator.hpp"
 #include "cucumber/query/Query.hpp"
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/ranges.h>
+#include "fmt/core.h"
+#include "fmt/format.h"
+#include "fmt/ranges.h"
 #include <optional>
 #include <string>
 #include <unordered_set>

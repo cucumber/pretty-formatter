@@ -33,10 +33,10 @@
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
 #include "fmt/core.h"
+#include "fmt/format.h"
 #include "fmt/ostream.h"
 #include <algorithm>
 #include <cstddef>
-#include <fmt/format.h>
 #include <functional>
 #include <iterator>
 #include <map>

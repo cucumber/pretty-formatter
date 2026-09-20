@@ -4,10 +4,10 @@
 #include "cucumber/messages/Envelope.hpp"
 #include "cucumber/pretty-formatter/Formatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
+#include "fmt/core.h"
+#include "fmt/format.h"
+#include "fmt/ostream.h"
 #include <cstdint>
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/ostream.h>
 #include <functional>
 #include <memory>
 #include <ostream>

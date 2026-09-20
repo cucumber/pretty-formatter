@@ -1,9 +1,9 @@
 #ifndef CUCUMBER_PRETTY_FORMATTER_INDENT_HPP
 #define CUCUMBER_PRETTY_FORMATTER_INDENT_HPP
 
+#include "fmt/core.h"
+#include "fmt/format.h"
 #include <cstddef>
-#include <fmt/core.h>
-#include <fmt/format.h>
 #include <string>
 
 namespace cucumber::pretty_formatter

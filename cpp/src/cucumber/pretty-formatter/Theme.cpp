@@ -1,8 +1,8 @@
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/pretty-formatter/Ansi.hpp"
-#include <fmt/core.h>
-#include <fmt/format.h>
+#include "fmt/core.h"
+#include "fmt/format.h"
 #include <map>
 #include <memory>
 #include <optional>
@@ -13,8 +13,7 @@
 namespace cucumber::pretty_formatter
 {
     Theme::Theme(std::map<messages::TestStepResultStatus, std::string> statusIconByStatus,
-        std::map<messages::TestStepResultStatus, std::string> progressIconByStatus,
-        std::map<Element, std::pair<Ansi, Ansi>> styleByElement,
+        std::map<messages::TestStepResultStatus, std::string> progressIconByStatus, std::map<Element, std::pair<Ansi, Ansi>> styleByElement,
         std::map<Element, std::map<messages::TestStepResultStatus, std::pair<Ansi, Ansi>>> styleByStatusByElement,
         std::optional<std::string> bulletPointIcon)
         : statusIconByStatus{ std::move(statusIconByStatus) }

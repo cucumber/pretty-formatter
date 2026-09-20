@@ -15,10 +15,10 @@
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
+#include "fmt/core.h"
+#include "fmt/format.h"
+#include "fmt/ostream.h"
 #include <cstddef>
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/ostream.h>
 #include <memory>
 #include <sstream>
 #include <string>

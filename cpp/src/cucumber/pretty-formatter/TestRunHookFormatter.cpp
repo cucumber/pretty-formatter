@@ -7,9 +7,9 @@
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
+#include "fmt/core.h"
+#include "fmt/format.h"
 #include <cstddef>
-#include <fmt/core.h>
-#include <fmt/format.h>
 #include <memory>
 #include <string>
 #include <utility>

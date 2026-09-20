@@ -3,8 +3,8 @@
 #include "cucumber/messages/AttachmentContentEncoding.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
+#include "fmt/format.h"
 #include <cstddef>
-#include <fmt/format.h>
 #include <memory>
 #include <sstream>
 #include <string>

@@ -2,8 +2,8 @@
 #define CUCUMBER_PRETTY_FORMATTER_FORMAT_SNIPPETS_HPP
 
 #include "cucumber/query/Query.hpp"
-#include <fmt/core.h>
-#include <fmt/format.h>
+#include "fmt/core.h"
+#include "fmt/format.h"
 #include <optional>
 #include <string>
 

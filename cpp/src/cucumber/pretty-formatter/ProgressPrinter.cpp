@@ -2,9 +2,9 @@
 #include "cucumber/messages/Envelope.hpp"
 #include "cucumber/messages/TestStepResultStatus.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
+#include "fmt/core.h"
+#include "fmt/ostream.h"
 #include <cstddef>
-#include <fmt/core.h>
-#include <fmt/ostream.h>
 #include <memory>
 #include <ostream>
 #include <utility>

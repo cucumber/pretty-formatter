@@ -1,8 +1,8 @@
 #include "cucumber/pretty-formatter/PickleComparator.hpp"
 #include "cucumber/messages/Pickle.hpp"
+#include "fmt/core.h"
+#include "fmt/format.h"
 #include <cstdint>
-#include <fmt/core.h>
-#include <fmt/format.h>
 #include <memory>
 #include <optional>
 #include <string>

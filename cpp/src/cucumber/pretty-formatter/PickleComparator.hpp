@@ -2,9 +2,9 @@
 #define CUCUMBER_PRETTY_FORMATTER_PICKLE_COMPARATOR_HPP
 
 #include "cucumber/messages/Pickle.hpp"
+#include "fmt/core.h"
+#include "fmt/format.h"
 #include <cstdint>
-#include <fmt/core.h>
-#include <fmt/format.h>
 #include <memory>
 
 namespace cucumber::pretty_formatter
