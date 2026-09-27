@@ -1,0 +1,8 @@
+
+[1mFeature:[22m Doc strings with expressions
+
+  [1mScenario:[22m a doc string with a cucumber expression [90m# samples/doc-strings-with-expression/doc-strings-with-expression.feature:5[39m
+    [32m✔[39m [32m[1mGiven [22ma [1m"Cucumber"[22m with a doc string:[39m         [90m# samples/doc-strings-with-expression/doc-strings-with-expression.ts:4[39m
+        """
+        Cucumis sativus
+        """

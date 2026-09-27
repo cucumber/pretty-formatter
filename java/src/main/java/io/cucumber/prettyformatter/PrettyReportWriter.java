@@ -3,10 +3,7 @@ package io.cucumber.prettyformatter;
 import io.cucumber.messages.types.Attachment;
 import io.cucumber.messages.types.Feature;
 import io.cucumber.messages.types.Pickle;
-import io.cucumber.messages.types.PickleDocString;
 import io.cucumber.messages.types.PickleStep;
-import io.cucumber.messages.types.PickleStepArgument;
-import io.cucumber.messages.types.PickleTable;
 import io.cucumber.messages.types.PickleTag;
 import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
@@ -56,7 +53,7 @@ final class PrettyReportWriter implements AutoCloseable {
     private final SourceReferenceFormatter sourceReferenceFormatter;
     private final StepTextFormatter stepTextFormatter;
     private final Function<String, String> uriFormatter;
-    private final PrintWriter writer;
+    private final PrintWriter out;
     private final Set<MessagesToPrettyWriter.PrettyFeature> features;
     private final PrettyReportData data;
 
@@ -69,7 +66,7 @@ final class PrettyReportWriter implements AutoCloseable {
 
     ) {
         this.theme = requireNonNull(theme);
-        this.writer = createPrintWriter(requireNonNull(out));
+        this.out = createPrintWriter(requireNonNull(out));
         this.uriFormatter = requireNonNull(uriFormatter);
         this.features = features;
         this.data = data;
@@ -96,16 +93,16 @@ final class PrettyReportWriter implements AutoCloseable {
             }
         });
 
-        writer.println();
+        out.println();
         printTags(event);
         printScenarioDefinition(event);
-        writer.flush();
+        out.flush();
     }
 
     private void printFeature(Feature feature) {
         data.ifNotSeenBefore(feature, () -> {
-            writer.println();
-            writer.println(new LineBuilder(theme)
+            out.println();
+            out.println(new LineBuilder(theme)
                     .begin(FEATURE)
                     .title(FEATURE_KEYWORD, feature.getKeyword(), FEATURE_NAME, feature.getName())
                     .end(FEATURE)
@@ -115,7 +112,7 @@ final class PrettyReportWriter implements AutoCloseable {
 
     private void printRule(Rule rule) {
         data.ifNotSeenBefore(rule, () ->
-                writer.println(new LineBuilder(theme)
+                out.println(new LineBuilder(theme)
                         .newLine()
                         .indent(data.getAfterFeatureIndent())
                         .begin(RULE)
@@ -130,7 +127,7 @@ final class PrettyReportWriter implements AutoCloseable {
                         .indent(data.getScenarioIndentBy(event))
                         .append(TAG, formatTagLine(pickleTags))
                         .build())
-                .ifPresent(writer::println);
+                .ifPresent(out::println);
     }
 
     private String formatTagLine(List<PickleTag> pickleTags) {
@@ -142,7 +139,7 @@ final class PrettyReportWriter implements AutoCloseable {
     private void printScenarioDefinition(TestCaseStarted event) {
         data.findPickleBy(event).ifPresent(pickle ->
                 data.findScenarioBy(pickle).ifPresent(scenario ->
-                        writer.println(formatScenarioLine(event, pickle, scenario))));
+                        out.println(formatScenarioLine(event, pickle, scenario))));
     }
 
     private String formatScenarioLine(TestCaseStarted event, Pickle pickle, Scenario scenario) {
@@ -167,53 +164,20 @@ final class PrettyReportWriter implements AutoCloseable {
         printStep(event);
         printAmbiguousStep(event);
         printException(event);
-        writer.flush();
+        out.flush();
     }
 
     private void printStep(TestStepFinished event) {
         data.findTestStepBy(event).ifPresent(testStep ->
                 data.findPickleStepBy(testStep).ifPresent(pickleStep ->
                         data.findStepBy(pickleStep).ifPresent(step -> {
-                            writer.println(formatStep(event, testStep, pickleStep, step));
+                            out.println(formatStep(event, testStep, pickleStep, step));
                             pickleStep.getArgument().ifPresent(pickleStepArgument -> {
-                                var dataTableIndex = pickleStepArgument.getDataTable()
-                                        .flatMap(PickleTable::getArgumentIndex)
-                                        .orElse(-1);
-                                var docStringIndex  = pickleStepArgument.getDocString()
-                                        .flatMap(PickleDocString::getArgumentIndex)
-                                        .orElse(-1);
-
-                                if (dataTableIndex < docStringIndex) {
-                                    printDataTableArgument(event, pickleStepArgument);
-                                    printDocStringArgument(event, pickleStepArgument);
-                                } else {
-                                    printDocStringArgument(event, pickleStepArgument);
-                                    printDataTableArgument(event, pickleStepArgument);
-                                }
+                                int indent = data.getArgumentIndentBy(event);
+                                var printer = new PickleStepArgumentPrinter(theme, indent);
+                                printer.printTo(pickleStepArgument, out);
                             });
                         })));
-    }
-
-    private void printDocStringArgument(TestStepFinished event, PickleStepArgument pickleStepArgument) {
-        pickleStepArgument.getDocString().ifPresent(pickleDocString ->
-                writer.print(new LineBuilder(theme)
-                        .accept(lineBuilder -> PickleDocStringFormatter.builder()
-                                .indentation(data.getArgumentIndentBy(event))
-                                .build()
-                                .formatTo(pickleDocString, lineBuilder))
-                        .build())
-        );
-    }
-
-    private void printDataTableArgument(TestStepFinished event, PickleStepArgument pickleStepArgument) {
-        pickleStepArgument.getDataTable().ifPresent(pickleTable ->
-                writer.print(new LineBuilder(theme)
-                        .accept(lineBuilder -> PickleTableFormatter.builder()
-                                .indentation(data.getArgumentIndentBy(event))
-                                .build()
-                                .formatTo(pickleTable, lineBuilder))
-                        .build())
-        );
     }
 
     private String formatStep(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
@@ -253,7 +217,7 @@ final class PrettyReportWriter implements AutoCloseable {
     private void printAmbiguousStep(TestStepFinished event) {
         if (event.getTestStepResult().getStatus() == AMBIGUOUS) {
             data.findTestStepBy(event).ifPresent(testStep -> {
-                writer.print(new LineBuilder(theme)
+                out.print(new LineBuilder(theme)
                         .accept(lineBuilder -> AmbiguousStepDefinitionsFormatter
                                 .builder(sourceReferenceFormatter, theme)
                                 .indentation(data.getStackTraceIndentBy(event))
@@ -274,33 +238,33 @@ final class PrettyReportWriter implements AutoCloseable {
                 .flatMap(exception -> formatter.format(exception, standaloneMessage))
                 // Fallback for when there is no exception at all
                 .or(() -> Optional.ofNullable(standaloneMessage).map(formatter::format))
-                .ifPresent(writer::print);
+                .ifPresent(out::print);
     }
 
     void handleAttachment(Attachment attachment) {
         if (!features.contains(INCLUDE_ATTACHMENTS)) {
             return;
         }
-        writer.println();
-        writer.print(new LineBuilder(theme)
+        out.println();
+        out.print(new LineBuilder(theme)
                 .accept(lineBuilder -> AttachmentFormatter.builder()
                         .indentation(data.getAttachmentIndentBy(attachment))
                         .build()
                         .formatTo(attachment, lineBuilder))
                 .build());
-        writer.println();
-        writer.flush();
+        out.println();
+        out.flush();
     }
 
     void handleTestRunFinished(TestRunFinished event) {
         event.getException().ifPresent(exception -> {
             ExceptionFormatter formatter = new ExceptionFormatter(0, theme, FAILED);
-            formatter.format(exception).ifPresent(writer::print);
+            formatter.format(exception).ifPresent(out::print);
         });
     }
 
     @Override
     public void close() {
-        writer.close();
+        out.close();
     }
 }

@@ -1,0 +1,16 @@
+
+Feature: Data Tables and Doc Strings
+
+  Scenario: DataTable followed by DocString       # samples/data-tables-doc-strings/data-tables-doc-strings.feature:5
+    ✔ Given a step with a data table a doc string # samples/data-tables-doc-strings/data-tables-doc-strings.ts:4
+        | hello |
+        """
+        world
+        """
+
+  Scenario: DocString followed by DataTable       # samples/data-tables-doc-strings/data-tables-doc-strings.feature:12
+    ✔ Given a step with a doc string a data table # samples/data-tables-doc-strings/data-tables-doc-strings.ts:9
+        """
+        hello
+        """
+        | world |

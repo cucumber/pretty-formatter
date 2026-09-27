@@ -1,0 +1,6 @@
+
+Feature: Data Tables
+
+  Scenario: a table with a Cucumber expression # samples/data-tables-with-expression/data-tables-with-expression.feature:5
+    ✔ Given a "Cucumber" with a table          # samples/data-tables-with-expression/data-tables-with-expression.ts:4
+        | Species | Cucumis sativus |

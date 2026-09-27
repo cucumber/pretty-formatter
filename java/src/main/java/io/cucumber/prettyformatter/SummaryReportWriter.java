@@ -209,22 +209,8 @@ final class SummaryReportWriter implements AutoCloseable {
                         query.findStepBy(pickleStep).ifPresent(step -> {
                             out.println(formatPickleStep(testStepFinished, testStep, pickleStep, step));
                             pickleStep.getArgument().ifPresent(pickleStepArgument -> {
-                                pickleStepArgument.getDataTable().ifPresent(pickleTable ->
-                                        out.print(new LineBuilder(theme)
-                                                .accept(lineBuilder -> PickleTableFormatter.builder()
-                                                        .indentation(9)
-                                                        .build()
-                                                        .formatTo(pickleTable, lineBuilder))
-                                                .build())
-                                );
-                                pickleStepArgument.getDocString().ifPresent(pickleDocString ->
-                                        out.print(new LineBuilder(theme)
-                                                .accept(lineBuilder -> PickleDocStringFormatter.builder()
-                                                        .indentation(9)
-                                                        .build()
-                                                        .formatTo(pickleDocString, lineBuilder))
-                                                .build())
-                                );
+                                var printer = new PickleStepArgumentPrinter(theme, 9);
+                                printer.printTo(pickleStepArgument, out);
                             });
                             if (status == AMBIGUOUS) {
                                 out.print(new LineBuilder(theme)
@@ -238,9 +224,7 @@ final class SummaryReportWriter implements AutoCloseable {
                         }));
 
         query.findHookBy(testStep)
-                .ifPresent(hook -> {
-                    out.println(formatHookStep(testStepFinished, hook));
-                });
+                .ifPresent(hook -> out.println(formatHookStep(testStepFinished, hook)));
 
         ExceptionFormatter formatter = new ExceptionFormatter(11, theme, status);
         TestStepResult testStepResult = testStepFinished.getTestStepResult();
@@ -354,7 +338,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
 
     private static String formatAttempt(TestCaseStarted testCaseStarted) {
-        Long attempt = testCaseStarted.getAttempt();
+        long attempt = testCaseStarted.getAttempt();
         if (attempt == 0) {
             return "";
         }
@@ -382,10 +366,7 @@ final class SummaryReportWriter implements AutoCloseable {
 
     private void formatLocationCommentTo(Hook hook, LineBuilder lineBuilder) {
         sourceReferenceFormatter.format(hook.getSourceReference())
-                .ifPresent(comment -> {
-                    lineBuilder.append(" ")
-                            .append(LOCATION, "# " + comment);
-                });
+                .ifPresent(comment -> lineBuilder.append(" ").append(LOCATION, "# " + comment));
     }
 
     private void printNonPassingTestRun() {
