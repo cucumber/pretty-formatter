@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 project(cucumber_pretty_formatter VERSION 4.0.2 LANGUAGES CXX)
 
 # Options
-if (POLICY CMP0077)
+if(POLICY CMP0077)
     # Allow CMake 3.13+ to override options when using FetchContent / add_subdirectory.
     cmake_policy(SET CMP0077 NEW)
-endif ()
+endif()
 
 option(CUCUMBER_PRETTY_FORMATTER_BUILD_TESTS "Build the unit tests." Off)
 option(CUCUMBER_PRETTY_FORMATTER_ENABLE_CLANG_TIDY "Run clang-tidy as part of the build." Off)
@@ -56,17 +56,17 @@ endif()
 # Configuration
 include(GNUInstallDirs)
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS)
 endif()
 
 # CMake dependencies
 find_package(nlohmann_json REQUIRED)
 find_package(fmt 10 REQUIRED) # version 10 or higher has fmt::println
-if (NOT TARGET cucumber::messages)
+if(NOT TARGET cucumber::messages)
     find_package(cucumber_messages REQUIRED)
 endif()
-if (NOT TARGET cucumber::query)
+if(NOT TARGET cucumber::query)
     find_package(cucumber_query REQUIRED)
 endif()
 
@@ -81,7 +81,7 @@ if(CUCUMBER_PRETTY_FORMATTER_ENABLE_COVERAGE)
         $<$<COMPILE_LANGUAGE:CXX>:-fno-elide-constructors>
     )
 
-    if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
         link_libraries(gcov)
     else()
         add_link_options(--coverage)
