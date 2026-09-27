@@ -50,9 +50,10 @@ describe('ProgressBarPrinter', () => {
           }
         }
 
-        const capturedLog = changes
+        const capturedLog = `${changes
           .map(([envelope, content]) => `[${Object.keys(envelope)}]\n${indent(content, 2)}`)
-          .join('\n')
+          .join('\n')}
+`
 
         const expectedPath = ndjsonFile.replace('.ndjson', '.cucumber.progressbar.log')
         if (updateExpectedFiles) {

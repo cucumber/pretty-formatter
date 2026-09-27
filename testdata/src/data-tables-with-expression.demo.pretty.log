@@ -1,0 +1,6 @@
+
+[44m[1mFeature:[22m [3mData Tables[23m[49m
+
+  [44m[1mScenario:[22m [3ma table with a Cucumber expression[23m[49m [90m# samples/data-tables-with-expression/data-tables-with-expression.feature:5[39m
+    [32m[1mGiven [22m[3ma [23m[1m"Cucumber"[22m[3m with a table[23m[39m            [90m# samples/data-tables-with-expression/data-tables-with-expression.ts:4[39m
+      [90m[2m|[22m[3m Species [23m[2m|[22m[3m Cucumis sativus [23m[2m|[22m[39m

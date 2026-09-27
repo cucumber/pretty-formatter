@@ -1,0 +1,8 @@
+
+Feature: Doc strings with expressions
+
+  Scenario: a doc string with a cucumber expression # samples/doc-strings-with-expression/doc-strings-with-expression.feature:5
+    ✔ Given a "Cucumber" with a doc string:         # samples/doc-strings-with-expression/doc-strings-with-expression.ts:4
+        """
+        Cucumis sativus
+        """
