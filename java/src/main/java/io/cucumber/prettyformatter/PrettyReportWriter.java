@@ -3,7 +3,10 @@ package io.cucumber.prettyformatter;
 import io.cucumber.messages.types.Attachment;
 import io.cucumber.messages.types.Feature;
 import io.cucumber.messages.types.Pickle;
+import io.cucumber.messages.types.PickleDocString;
 import io.cucumber.messages.types.PickleStep;
+import io.cucumber.messages.types.PickleStepArgument;
+import io.cucumber.messages.types.PickleTable;
 import io.cucumber.messages.types.PickleTag;
 import io.cucumber.messages.types.Rule;
 import io.cucumber.messages.types.Scenario;
@@ -173,24 +176,44 @@ final class PrettyReportWriter implements AutoCloseable {
                         data.findStepBy(pickleStep).ifPresent(step -> {
                             writer.println(formatStep(event, testStep, pickleStep, step));
                             pickleStep.getArgument().ifPresent(pickleStepArgument -> {
-                                pickleStepArgument.getDataTable().ifPresent(pickleTable ->
-                                        writer.print(new LineBuilder(theme)
-                                                .accept(lineBuilder -> PickleTableFormatter.builder()
-                                                        .indentation(data.getArgumentIndentBy(event))
-                                                        .build()
-                                                        .formatTo(pickleTable, lineBuilder))
-                                                .build())
-                                );
-                                pickleStepArgument.getDocString().ifPresent(pickleDocString ->
-                                        writer.print(new LineBuilder(theme)
-                                                .accept(lineBuilder -> PickleDocStringFormatter.builder()
-                                                        .indentation(data.getArgumentIndentBy(event))
-                                                        .build()
-                                                        .formatTo(pickleDocString, lineBuilder))
-                                                .build())
-                                );
+                                var dataTableIndex = pickleStepArgument.getDataTable()
+                                        .flatMap(PickleTable::getArgumentIndex)
+                                        .orElse(-1);
+                                var docStringIndex  = pickleStepArgument.getDocString()
+                                        .flatMap(PickleDocString::getArgumentIndex)
+                                        .orElse(-1);
+
+                                if (dataTableIndex < docStringIndex) {
+                                    printDataTableArgument(event, pickleStepArgument);
+                                    printDocStringArgument(event, pickleStepArgument);
+                                } else {
+                                    printDocStringArgument(event, pickleStepArgument);
+                                    printDataTableArgument(event, pickleStepArgument);
+                                }
                             });
                         })));
+    }
+
+    private void printDocStringArgument(TestStepFinished event, PickleStepArgument pickleStepArgument) {
+        pickleStepArgument.getDocString().ifPresent(pickleDocString ->
+                writer.print(new LineBuilder(theme)
+                        .accept(lineBuilder -> PickleDocStringFormatter.builder()
+                                .indentation(data.getArgumentIndentBy(event))
+                                .build()
+                                .formatTo(pickleDocString, lineBuilder))
+                        .build())
+        );
+    }
+
+    private void printDataTableArgument(TestStepFinished event, PickleStepArgument pickleStepArgument) {
+        pickleStepArgument.getDataTable().ifPresent(pickleTable ->
+                writer.print(new LineBuilder(theme)
+                        .accept(lineBuilder -> PickleTableFormatter.builder()
+                                .indentation(data.getArgumentIndentBy(event))
+                                .build()
+                                .formatTo(pickleTable, lineBuilder))
+                        .build())
+        );
     }
 
     private String formatStep(TestStepFinished event, TestStep testStep, PickleStep pickleStep, Step step) {
