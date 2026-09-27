@@ -8,6 +8,13 @@ export function formatPickleStepArgument(
   theme: Theme,
   stream: NodeJS.WritableStream
 ): string {
+  if (pickleStepArgument.docString && pickleStepArgument.dataTable) {
+    if ((pickleStepArgument.dataTable.argumentIndex || -1) < (pickleStepArgument.docString.argumentIndex || -1)) {
+      return formatDataTable(pickleStepArgument.dataTable, theme, stream) + "\n" + formatDocString(pickleStepArgument.docString, theme, stream)
+    } else {
+      return formatDocString(pickleStepArgument.docString, theme, stream) + "\n" + formatDataTable(pickleStepArgument.dataTable, theme, stream)
+    }
+  }
   if (pickleStepArgument.docString) {
     return formatDocString(pickleStepArgument.docString, theme, stream)
   }
