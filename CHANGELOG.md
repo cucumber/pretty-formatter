@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [cpp] add c++ implementation for PrettyFormatter, SummaryFormatter, ProgressFormatter and ProgressBarFormatter ([#126](https://github.com/cucumber/pretty-formatter/pull/126))
 
+## [4.1.0] - 2026-09-27
+### Added
+- Render doc string and data table arguments in argument order ([#131](https://github.com/cucumber/pretty-formatter/pull/131))
+
 ## [4.0.2] - 2026-09-01
 ### Fixed
 - Pad milliseconds part of duration with leading zeros ([#124](https://github.com/cucumber/pretty-formatter/pull/124))
@@ -112,7 +116,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Java implementation ([#1](https://github.com/cucumber/pretty-formatter/pull/1) M.P. Korstanje)
 
-[Unreleased]: https://github.com/cucumber/pretty-formatter/compare/v4.0.2...HEAD
+[Unreleased]: https://github.com/cucumber/pretty-formatter/compare/v4.1.0...HEAD
+[4.1.0]: https://github.com/cucumber/pretty-formatter/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/cucumber/pretty-formatter/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/cucumber/pretty-formatter/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/cucumber/pretty-formatter/compare/v3.3.1...v4.0.0

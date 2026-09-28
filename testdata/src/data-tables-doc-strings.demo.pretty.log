@@ -1,0 +1,16 @@
+
+[44m[1mFeature:[22m [3mData Tables and Doc Strings[23m[49m
+
+  [44m[1mScenario:[22m [3mDataTable followed by DocString[23m[49m     [90m# samples/data-tables-doc-strings/data-tables-doc-strings.feature:5[39m
+    [32m[1mGiven [22m[3ma step with a data table a doc string[23m[39m [90m# samples/data-tables-doc-strings/data-tables-doc-strings.ts:4[39m
+      [90m[2m|[22m[3m hello [23m[2m|[22m[39m
+      [90m[2m"""[22m[39m
+      [90m[3mworld[23m[39m
+      [90m[2m"""[22m[39m
+
+  [44m[1mScenario:[22m [3mDocString followed by DataTable[23m[49m     [90m# samples/data-tables-doc-strings/data-tables-doc-strings.feature:12[39m
+    [32m[1mGiven [22m[3ma step with a doc string a data table[23m[39m [90m# samples/data-tables-doc-strings/data-tables-doc-strings.ts:9[39m
+      [90m[2m"""[22m[39m
+      [90m[3mhello[23m[39m
+      [90m[2m"""[22m[39m
+      [90m[2m|[22m[3m world [23m[2m|[22m[39m

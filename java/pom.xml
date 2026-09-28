@@ -5,18 +5,18 @@
     <parent>
         <groupId>io.cucumber</groupId>
         <artifactId>cucumber-parent</artifactId>
-        <version>5.6.0</version>
+        <version>5.7.0</version>
     </parent>
 
     <artifactId>pretty-formatter</artifactId>
-    <version>4.0.3-SNAPSHOT</version>
+    <version>4.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Pretty Formatter</name>
     <description>Writes a pretty report of the scenario execution as it happens</description>
     <url>https://github.com/cucumber/pretty-formatter</url>
 
     <properties>
-        <project.build.outputTimestamp>1788287212</project.build.outputTimestamp>
+        <project.build.outputTimestamp>1790517155</project.build.outputTimestamp>
     </properties>
 
     <scm>
@@ -47,7 +47,7 @@
             <dependency>
                 <groupId>tools.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
-                <version>3.2.2</version>
+                <version>3.2.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>messages</artifactId>
-            <version>[32.0.0,35.0.0)</version>
+            <version>[34.0.2,35.0.0)</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -91,7 +91,7 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>compatibility-kit</artifactId>
-            <version>30.0.0</version>
+            <version>31.0.0</version>
             <scope>test</scope>
         </dependency>
 
