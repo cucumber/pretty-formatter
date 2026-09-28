@@ -133,6 +133,8 @@ target_sources(
         src/cucumber/pretty-formatter/LocationComment.hpp
         src/cucumber/pretty-formatter/PickleDocStringFormatter.cpp
         src/cucumber/pretty-formatter/PickleDocStringFormatter.hpp
+        src/cucumber/pretty-formatter/PickleStepArgumentFormatter.cpp
+        src/cucumber/pretty-formatter/PickleStepArgumentFormatter.hpp
         src/cucumber/pretty-formatter/PickleTableFormatter.cpp
         src/cucumber/pretty-formatter/PickleTableFormatter.hpp
         src/cucumber/pretty-formatter/PrettyPrinter.cpp

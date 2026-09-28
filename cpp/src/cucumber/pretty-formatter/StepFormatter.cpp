@@ -12,6 +12,7 @@
 #include "cucumber/pretty-formatter/HookTypeName.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
 #include "cucumber/pretty-formatter/LocationComment.hpp"
+#include "cucumber/pretty-formatter/PickleStepArgumentFormatter.hpp"
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/Theme.hpp"
 #include "cucumber/query/Query.hpp"
@@ -104,31 +105,10 @@ namespace cucumber::pretty_formatter
             {
                 fmt::println(stream, "{}", FormatPickleStep(testStepFinished, testStep, *pickleStep, *step));
 
-                if (pickleStep->argument)
+                if (pickleStep->argument.has_value())
                 {
-                    if (pickleStep->argument->dataTable)
-                    {
-                        fmt::print(stream, "{}",
-                            LineBuilder{ theme }
-                                .Accept(
-                                    [this, &pickleStep](LineBuilder& lineBuilder)
-                                    {
-                                        pickleTableFormatter.Format(lineBuilder, *pickleStep->argument->dataTable);
-                                    })
-                                .Build());
-                    }
-
-                    if (pickleStep->argument->docString)
-                    {
-                        fmt::print(stream, "{}",
-                            LineBuilder{ theme }
-                                .Accept(
-                                    [this, &pickleStep](LineBuilder& lineBuilder)
-                                    {
-                                        pickleDocStringFormatter.Format(lineBuilder, *pickleStep->argument->docString);
-                                    })
-                                .Build());
-                    }
+                    PickleStepArgumentFormatter stepArgumentFormatter{ stream, theme, argumentIndent };
+                    stepArgumentFormatter.Format(*pickleStep->argument);
                 }
 
                 if (status == messages::TestStepResultStatus::AMBIGUOUS)

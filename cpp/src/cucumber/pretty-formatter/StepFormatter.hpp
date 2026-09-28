@@ -55,8 +55,6 @@ namespace cucumber::pretty_formatter
         bool includeAttachments;
 
         StepTextFormatter stepTextFormatter;
-        PickleTableFormatter pickleTableFormatter{ argumentIndent };
-        PickleDocStringFormatter pickleDocStringFormatter{ argumentIndent };
     };
 }
 

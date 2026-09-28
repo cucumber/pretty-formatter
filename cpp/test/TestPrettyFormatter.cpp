@@ -233,6 +233,7 @@ namespace cucumber::pretty_formatter
                             previousContent = std::move(newContent);
                         }
                     });
+                stream << "\n";
 
                 std::ifstream expected{ output };
                 EXPECT_THAT(stream.str(),

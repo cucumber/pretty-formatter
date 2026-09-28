@@ -27,6 +27,7 @@
 #include "cucumber/pretty-formatter/Formatter.hpp"
 #include "cucumber/pretty-formatter/LineBuilder.hpp"
 #include "cucumber/pretty-formatter/PickleDocStringFormatter.hpp"
+#include "cucumber/pretty-formatter/PickleStepArgumentFormatter.hpp"
 #include "cucumber/pretty-formatter/PickleTableFormatter.hpp"
 #include "cucumber/pretty-formatter/SourceReferenceFormatter.hpp"
 #include "cucumber/pretty-formatter/StepTextFormatter.hpp"
@@ -478,33 +479,10 @@ namespace cucumber::pretty_formatter
                     {
                         fmt::println(stream, "{}", FormatStep(testStepFinished, *testStep, *pickleStep, *step));
 
-                        if (pickleStep->argument)
+                        if (pickleStep->argument.has_value())
                         {
-                            const auto& argument = *pickleStep->argument;
-                            if (argument.dataTable)
-                            {
-                                fmt::print(stream, "{}",
-                                    LineBuilder{ theme }
-                                        .Accept(
-                                            [this, &testStepFinished, &argument](LineBuilder& lineBuilder)
-                                            {
-                                                PickleTableFormatter{ data->GetArgumentIndentBy(testStepFinished) }.Format(lineBuilder,
-                                                    *argument.dataTable);
-                                            })
-                                        .Build());
-                            }
-                            if (argument.docString)
-                            {
-                                fmt::print(stream, "{}",
-                                    LineBuilder{ theme }
-                                        .Accept(
-                                            [this, &testStepFinished, &argument](LineBuilder& lineBuilder)
-                                            {
-                                                PickleDocStringFormatter{ data->GetArgumentIndentBy(testStepFinished) }.Format(lineBuilder,
-                                                    *argument.docString);
-                                            })
-                                        .Build());
-                            }
+                            PickleStepArgumentFormatter stepArgumentFormatter{ stream, theme, data->GetArgumentIndentBy(testStepFinished) };
+                            stepArgumentFormatter.Format(*pickleStep->argument);
                         }
                     }
                 }
