@@ -17,12 +17,6 @@ on:
       - testdata/**
       - .github/**
 
-env:
-  # renovate: datasource=git-refs depName=cucumber/messages packageName=https://github.com/cucumber/messages currentValue=main
-  MESSAGES_REF: main
-  # renovate: datasource=git-refs depName=cucumber/query packageName=https://github.com/cucumber/query currentValue=main
-  QUERY_REF: feature/cpp
-
 jobs:
   test-cpp-system-packages-linux:
     runs-on: ${{ matrix.config.os }}
@@ -82,16 +76,16 @@ jobs:
           sudo cmake --install fmt-src/build
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
+          dependency: dependencies/messages.version
+          working-directory: cpp
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/query
-          ref: ${{ env.QUERY_REF }}
+          dependency: dependencies/query.version
+          working-directory: cpp
 
       - name: Build and unit test
         working-directory: cpp
@@ -115,16 +109,16 @@ jobs:
         run: brew install nlohmann-json googletest fmt
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
+          dependency: dependencies/messages.version
+          working-directory: cpp
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/query
-          ref: ${{ env.QUERY_REF }}
+          dependency: dependencies/query.version
+          working-directory: cpp
 
       - name: Build and unit test
         working-directory: cpp
@@ -148,16 +142,16 @@ jobs:
           echo "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
+          dependency: dependencies/messages.version
+          working-directory: cpp
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/query
-          ref: ${{ env.QUERY_REF }}
+          dependency: dependencies/query.version
+          working-directory: cpp
 
       - name: configure
         working-directory: cpp
@@ -216,16 +210,16 @@ jobs:
           save: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
+          dependency: dependencies/messages.version
+          working-directory: cpp
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/query
-          ref: ${{ env.QUERY_REF }}
+          dependency: dependencies/query.version
+          working-directory: cpp
 
       - name: Coverage
         working-directory: cpp
@@ -257,16 +251,16 @@ jobs:
           save: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/messages
-          ref: ${{ env.MESSAGES_REF }}
+          dependency: dependencies/messages.version
+          working-directory: cpp
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@9ba4a623ec838b1358e18683a85a0914f3779363
+        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
-          repository: cucumber/query
-          ref: ${{ env.QUERY_REF }}
+          dependency: dependencies/query.version
+          working-directory: cpp
 
       - name: Lint
         working-directory: cpp
