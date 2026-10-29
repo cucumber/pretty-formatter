@@ -81,58 +81,58 @@ Here's the schema for a theme:
 
 ```ts
 interface Theme {
-    attachment?: Style
-    dataTable?: {
-        all?: Style
-        border?: Style
-        content?: Style
-    }
-    docString?: {
-        all?: Style
-        content?: Style
-        delimiter?: Style
-        mediaType?: Style
-    }
-    feature?: {
-        all?: Style
-        keyword?: Style
-        name?: Style
-    }
-    location?: Style
-    rule?: {
-        all?: Style
-        keyword?: Style
-        name?: Style
-    }
-    scenario?: {
-        all?: Style
-        keyword?: Style
-        name?: Style
-    }
-    status?: {
-        all?: Partial<Record<TestStepResultStatus, Style>>
-        icon?: Partial<Record<TestStepResultStatus, string>>
-        progress?: Partial<Record<TestStepResultStatus, string>>
-    }
-    step?: {
-        argument?: Style
-        keyword?: Style
-        text?: Style
-    }
-    tag?: Style
-    symbol?: {
-        bullet?: string
-    }
+  attachment?: Style
+  dataTable?: {
+    all?: Style
+    border?: Style
+    content?: Style
+  }
+  docString?: {
+    all?: Style
+    content?: Style
+    delimiter?: Style
+    mediaType?: Style
+  }
+  feature?: {
+    all?: Style
+    keyword?: Style
+    name?: Style
+  }
+  location?: Style
+  rule?: {
+    all?: Style
+    keyword?: Style
+    name?: Style
+  }
+  scenario?: {
+    all?: Style
+    keyword?: Style
+    name?: Style
+  }
+  status?: {
+    all?: Partial<Record<TestStepResultStatus, Style>>
+    icon?: Partial<Record<TestStepResultStatus, string>>
+    progress?: Partial<Record<TestStepResultStatus, string>>
+  }
+  step?: {
+    argument?: Style
+    keyword?: Style
+    text?: Style
+  }
+  tag?: Style
+  symbol?: {
+    bullet?: string
+  }
 }
 
 enum TestStepResultStatus {
-    UNKNOWN = "UNKNOWN",
-    PASSED = "PASSED",
-    SKIPPED = "SKIPPED",
-    PENDING = "PENDING",
-    UNDEFINED = "UNDEFINED",
-    AMBIGUOUS = "AMBIGUOUS",
-    FAILED = "FAILED"
+  UNKNOWN = 'UNKNOWN',
+  PASSED = 'PASSED',
+  SKIPPED = 'SKIPPED',
+  PENDING = 'PENDING',
+  UNDEFINED = 'UNDEFINED',
+  AMBIGUOUS = 'AMBIGUOUS',
+  FAILED = 'FAILED',
 }
 ```
 
