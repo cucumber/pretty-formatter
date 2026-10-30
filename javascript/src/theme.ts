@@ -38,7 +38,7 @@ export const CUCUMBER_THEME: Theme = {
   feature: {
     keyword: 'bold',
   },
-  location: 'blackBright',
+  location: 'gray',
   status: {
     all: CUCUMBER_STATUS_COLORS,
     icon: CUCUMBER_STATUS_ICONS,
@@ -63,12 +63,12 @@ export const DEMO_THEME: Theme = {
   affix: 'italic',
   attachment: 'blue',
   dataTable: {
-    all: 'blackBright',
+    all: 'gray',
     border: 'dim',
     content: 'italic',
   },
   docString: {
-    all: 'blackBright',
+    all: 'gray',
     content: 'italic',
     delimiter: 'dim',
     mediaType: 'bold',
@@ -78,7 +78,7 @@ export const DEMO_THEME: Theme = {
     keyword: 'bold',
     name: 'italic',
   },
-  location: 'blackBright',
+  location: 'gray',
   status: {
     all: CUCUMBER_STATUS_COLORS,
   },
