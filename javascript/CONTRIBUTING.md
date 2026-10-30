@@ -12,7 +12,7 @@ npm install
 
 Dependencies are kept to a minimum.
 
-We use the `@cucumber/query` library to populate a `Query` object in each printer that can be interrogated to get the required data from the test run. 
+We use the `@cucumber/query` library to populate a `Query` object in each printer that can be interrogated to get the required data from the test run.
 
 Terminal styling is done with [`styleText`](https://nodejs.org/api/util.html#utilstyletextformat-text-options) from `node:util`, using the `stream` option for correct feature detection. We avoid third-party terminal/colour libraries in favour of this built-in. Our `TextBuilder` class wraps `styleText` to provide a convenient way to accumulate styled text.
 
