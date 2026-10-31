@@ -146,12 +146,14 @@ jobs:
         with:
           dependency: dependencies/messages.version
           working-directory: cpp
+          poreset: test-system
 
       - name: Install cucumber/query
         uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/query.version
           working-directory: cpp
+          poreset: test-system
 
       - name: configure
         working-directory: cpp
@@ -178,7 +180,6 @@ jobs:
       - name: test
         working-directory: cpp
         run: ctest --preset test-system
-
 
       - name: Build and unit test
         working-directory: cpp
