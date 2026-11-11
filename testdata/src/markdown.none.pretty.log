@@ -12,9 +12,7 @@ Feature: Cheese
         """gherkin
         Given there are 24 apples in Mary's basket
         """
-
           We are logging some plain text (fail)
-
       When we use a data table and attach something and then fail # samples/markdown/markdown.ts:12
         | name | age |
         | Bill | 3   |
@@ -33,9 +31,7 @@ Feature: Cheese
         """gherkin
         Given there are 24 apples in Mary's basket
         """
-
           We are logging some plain text (pass)
-
       When we use a data table and attach something and then pass # samples/markdown/markdown.ts:12
         | name | age |
         | Bill | 3   |

@@ -245,14 +245,12 @@ final class PrettyReportWriter implements AutoCloseable {
         if (!features.contains(INCLUDE_ATTACHMENTS)) {
             return;
         }
-        out.println();
         out.print(new LineBuilder(theme)
                 .accept(lineBuilder -> AttachmentFormatter.builder()
                         .indentation(data.getAttachmentIndentBy(attachment))
                         .build()
                         .formatTo(attachment, lineBuilder))
                 .build());
-        out.println();
         out.flush();
     }
 

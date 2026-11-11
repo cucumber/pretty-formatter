@@ -6,6 +6,9 @@ The formatter is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Use a compact presentation for log lines and attachments ([#141](https://github.com/cucumber/pretty-formatter/pull/141))
+
 ### Added
 - [cpp] add c++ implementation for PrettyFormatter, SummaryFormatter, ProgressFormatter and ProgressBarFormatter ([#126](https://github.com/cucumber/pretty-formatter/pull/126))
 

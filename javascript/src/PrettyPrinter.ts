@@ -41,7 +41,6 @@ import {
   extractReportableMessage,
   GHERKIN_INDENT_LENGTH,
   indent,
-  pad,
   STEP_ARGUMENT_INDENT_LENGTH,
   unstyled,
 } from './utils.js'
@@ -427,14 +426,12 @@ export class PrettyPrinter {
     const scenarioIndent = this.getScenarioIndentBy(attachment)
     const content = formatAttachment(attachment, this.options.theme, this.stream)
     this.println(
-      pad(
-        indent(
-          content,
-          scenarioIndent +
-            (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
-            GHERKIN_INDENT_LENGTH +
-            ATTACHMENT_INDENT_LENGTH
-        )
+      indent(
+        content,
+        scenarioIndent +
+          (this.options.useStatusIcon ? GHERKIN_INDENT_LENGTH : 0) +
+          GHERKIN_INDENT_LENGTH +
+          ATTACHMENT_INDENT_LENGTH
       )
     )
   }

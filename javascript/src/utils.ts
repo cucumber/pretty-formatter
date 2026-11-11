@@ -54,10 +54,6 @@ export function indentNumbered(original: string, by: number, number: number): st
     .join('\n')
 }
 
-export function pad(original: string) {
-  return `\n${original}\n`
-}
-
 export function unstyled(text: string) {
   return stripVTControlCharacters(text)
 }

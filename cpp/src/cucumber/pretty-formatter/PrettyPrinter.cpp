@@ -383,9 +383,8 @@ namespace cucumber::pretty_formatter
                 return;
             }
 
-            fmt::println(stream, "{}",
+            fmt::print(stream, "{}",
                 LineBuilder{ theme }
-                    .NewLine()
                     .Accept(
                         [this, &attachment](auto& lineBuilder)
                         {
