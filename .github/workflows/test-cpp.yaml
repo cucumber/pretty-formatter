@@ -76,13 +76,13 @@ jobs:
           sudo cmake --install fmt-src/build
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/messages.version
           working-directory: cpp
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/query.version
           working-directory: cpp
@@ -109,13 +109,13 @@ jobs:
         run: brew install nlohmann-json googletest fmt
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/messages.version
           working-directory: cpp
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/query.version
           working-directory: cpp
@@ -142,14 +142,14 @@ jobs:
           echo "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/messages.version
           working-directory: cpp
           preset: test-system
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/query.version
           working-directory: cpp
@@ -211,13 +211,13 @@ jobs:
           save: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/messages.version
           working-directory: cpp
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/query.version
           working-directory: cpp
@@ -252,13 +252,13 @@ jobs:
           save: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install cucumber/messages
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/messages.version
           working-directory: cpp
 
       - name: Install cucumber/query
-        uses: cucumber/ci-actions/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
+        uses: cucumber/action-cpp/install-cpp-dep@8bbc6bac84313ef426e8a0e6ffa64659d0dc174b
         with:
           dependency: dependencies/query.version
           working-directory: cpp
