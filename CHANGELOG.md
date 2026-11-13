@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Use a compact presentation for log lines and attachments ([#141](https://github.com/cucumber/pretty-formatter/pull/141))
+- Update dependency messages to v35
 
 ### Added
 - [cpp] add c++ implementation for PrettyFormatter, SummaryFormatter, ProgressFormatter and ProgressBarFormatter ([#126](https://github.com/cucumber/pretty-formatter/pull/126))
