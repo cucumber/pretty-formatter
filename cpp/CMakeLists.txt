@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
-project(cucumber_pretty_formatter VERSION 4.0.2 LANGUAGES CXX)
+project(cucumber_pretty_formatter VERSION 4.2.0 LANGUAGES CXX)
 
 # Options
 if(POLICY CMP0077)
