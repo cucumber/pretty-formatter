@@ -25,7 +25,7 @@
     "prepublishOnly": "tsc --build tsconfig.build.json"
   },
   "dependencies": {
-    "@cucumber/query": "16.2.0",
+    "@cucumber/query": "16.3.0",
     "luxon": "^3.7.2"
   },
   "peerDependencies": {
